@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>misc on shiny-labs</title>
+    <link>https://shiny-labs.github.io/tags/misc/</link>
+    <description>Recent content in misc on shiny-labs</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <managingEditor>shiny-labs@kylma.fr (shiny-labs)</managingEditor>
+    <webMaster>shiny-labs@kylma.fr (shiny-labs)</webMaster>
+    <lastBuildDate>Sat, 20 Jul 2019 11:56:22 +0200</lastBuildDate>
+    
+	<atom:link href="https://shiny-labs.github.io/tags/misc/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>GoogleCTF Beginner&#39;s Quest 2019 - Ad</title>
+      <link>https://shiny-labs.github.io/posts/190720-googlectf-beginners-2019-ad/</link>
+      <pubDate>Sat, 20 Jul 2019 11:56:22 +0200</pubDate>
+      <author>shiny-labs@kylma.fr (shiny-labs)</author>
+      <guid>https://shiny-labs.github.io/posts/190720-googlectf-beginners-2019-ad/</guid>
+      <description>Description of the challenge:  We interrupt this program for a commercial break
+https://www.youtube.com/watch?v=QzFuwljOj8Y
+ Solving A flag is hidden in the youtube video:
+Flag: CTF{9e796ca74932912c216a1cd00c25c84fae00e139}</description>
+    </item>
+    
+    <item>
+      <title>GoogleCTF Beginner&#39;s Quest 2019 - Enter Space-Time Coordinates</title>
+      <link>https://shiny-labs.github.io/posts/190719-googlectf-beginners-2019-enter-space-time-coordinates/</link>
+      <pubDate>Fri, 19 Jul 2019 23:53:22 +0200</pubDate>
+      <author>shiny-labs@kylma.fr (shiny-labs)</author>
+      <guid>https://shiny-labs.github.io/posts/190719-googlectf-beginners-2019-enter-space-time-coordinates/</guid>
+      <description>Description  Ok well done. The console is on. It&amp;rsquo;s asking for coordinates. Beating heavily on the console yields little results, but the only time anything changes on your display is when you put in numbers.. So what numbers are you going to go for? You see the starship&amp;rsquo;s logs, but is there a manual? Or should you just keep beating the console?
+ Solving Here we go!
+$ file 00c2a73eec8abb4afb9c3ef3a161b64b451446910535bfc0cc81c2b04aa132ed 00c2a73eec8abb4afb9c3ef3a161b64b451446910535bfc0cc81c2b04aa132ed: Zip archive data, at least v2.</description>
+    </item>
+    
+  </channel>
+</rss>
