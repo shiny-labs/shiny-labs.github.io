@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="generator" content="Hugo 0.65.0" />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://shiny-labs.github.io/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://shiny-labs.github.io/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://shiny-labs.github.io/favicon-16x16.png">
+    <link rel="manifest" href="https://shiny-labs.github.io/site.webmanifest">
+    <link rel="mask-icon" href="https://shiny-labs.github.io/safari-pinned-tab.svg" color="#000000">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
+
+
+    <link rel="stylesheet" href="https://shiny-labs.github.io/css/bulma.min.css">
+    <link rel="stylesheet" href="https://shiny-labs.github.io/css/main.css">
+    <link rel="stylesheet" href="https://shiny-labs.github.io/css/syntax.css">
+
+    
+    <title>shiny-labs || Lattice Diamond Tutorial: Project FrankANDstein</title>
+</head>
+<body><nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item no-squiggly" href="https://shiny-labs.github.io/">
+            <h1 id="logo" class="glitch">shiny-labs</h1>
+        </a>
+    </div>
+
+    <div class="navbar-menu">
+        <div class="navbar-start">
+            
+        </div>
+
+        <div class="navbar-end">
+            
+            <h3 id="subtitle">Exploit, reverse engineering and cats.</h3>
+        </div>
+    </div>
+</nav>
+
+<div id="content">
+
+            <div class="columns is-centered">
+                <div class="column is-10" id="menu-column"><div id="menu" class="tabs is-centered is-medium">
+    <ul>
+            <li><a href="https://shiny-labs.github.io/" class="no-squiggly">Home</a></li>
+            <li><a href="https://shiny-labs.github.io/posts/" class="no-squiggly">Posts</a></li>
+            <li><a href="https://shiny-labs.github.io/tags/" class="no-squiggly">Tags</a></li>
+            <li><a href="https://shiny-labs.github.io/about/" class="no-squiggly">About</a></li>
+            <li><a href="https://shiny-labs.github.io/archives/" class="no-squiggly">Archives</a></li>
+  </ul>
+</div>
+</div>
+            </div>
+
+            <div class="columns is-centered">
+                <div class="column is-10" id="main-column">
+<div class="columns">
+<div class="column is-10" id="main-column">
+    <article class="article">
+        <div >
+            <h1 class="article-title">Lattice Diamond Tutorial: Project FrankANDstein</h1>
+            
+<div class="post-meta">
+  <p class="article-meta">
+  <span>Date</span> &#x5b;
+  <time datetime="April 16, 2019">
+      Apr 16
+    </time>
+  &#x5d;
+        
+        
+  <span>Categories</span> &#x5b;
+    <a href="https://shiny-labs.github.io/categories/fpga">fpga</a>
+  &#x5d;
+        
+        
+  <span>Tags</span> &#x5b;
+    <a href="https://shiny-labs.github.io/tags/verilog">verilog</a>
+    <a href="https://shiny-labs.github.io/tags/latticediamond">latticeDiamond</a>
+  &#x5d;
+  </p>
+</div>
+
+        </div>
+        <div>
+            <p>The goal of this mini-project is to create and simulate a full project for Lattice Diamond, from start to end.</p>
+<p>As a test subject, we will use the AND gate. We will create our own frankANDstein gate and give it liiiiiife.</p>
+<h1 id="installation">Installation</h1>
+<p>/!\ I didn&rsquo;t read the fine prints <em>before</em> installing, but short story, the simulator <code>Active HDL</code> is not included on the Linux version of Lattice Diamond. So find yourself a Windows box :(. I&rsquo;m leaving the Archlinux instructions because I sometimes use the Linux version to quickly reprogram the board but if you&rsquo;re doing firmware development, you need a Windows machine.</p>
+<h2 id="archlinux-installation">Archlinux Installation</h2>
+<p>There is a AUR package for <code>lattice-diamond</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ yaourt -S lattice-diamond
+</code></pre></div><p>Edit the PKGBUILD to uncomment the compression of the 3GB package though:</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="err">#</span><span class="nx">PKGEXT</span><span class="p">=</span><span class="s">&#34;.pkg.tar&#34;</span> <span class="err">#</span> <span class="nx">The</span> <span class="kn">package</span> <span class="nx">is</span> <span class="nx">over</span> <span class="mi">3</span> <span class="nx">GB</span><span class="p">,</span> <span class="nx">uncomment</span> <span class="nx">this</span> <span class="nx">line</span> <span class="k">if</span> <span class="nx">you</span> <span class="nx">prefer</span> <span class="nx">not</span> <span class="nx">compressing</span> <span class="nx">it</span>
+</code></pre></div><p>Note: the package was still too big for my poor 4G /tmp, you can temporarily resize the tmpfs with: (solution from <a href="https://wiki.archlinux.org/index.php/tmpfs">arch wiki</a>)</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="c1"># mount -o remount,size=8G,noatime /tmp</span>
+</code></pre></div><p>Trying to start it:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">➔ /usr/local/diamond/3.10_x64/bin/lin64/diamond <span class="p">&amp;</span>
+Error: License checkout failed.
+
+
+Cannot find license file.
+ The license files <span class="o">(</span>or license server system network addresses<span class="o">)</span> attempted are
+listed below.  Use LM_LICENSE_FILE to use a different license file,
+ or contact your software provider <span class="k">for</span> a license file.
+Feature:       LSC_DIAMOND_A
+Filename:      /usr/local/diamond/3.10_x64/bin/lin64/../../license/license.dat
+License path:  /usr/local/diamond/3.10_x64/bin/lin64/../../license/license.dat:
+FlexNet Licensing error:-1,359.  System Error: <span class="m">2</span> <span class="s2">&#34;No such file or directory&#34;</span>
+For further information, refer to the FlexNet Licensing documentation,
+available at <span class="s2">&#34;www.flexerasoftware.com&#34;</span>.
+</code></pre></div><h2 id="request-a-free-license">Request a Free License</h2>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">Lattice Diamond Free License
+
+Lattice Diamond design software offers leading-edge design and implementation tools optimized for cost sensitive, low-power Lattice FPGA architectures. The free license enables users to design and evaluate the performance of non-SERDES based Diamond supported devices.
+</code></pre></div><p>To request a license you will need the following:</p>
+<pre><code>Physical MAC address (12-digit hexadecimal value)
+</code></pre>
+<p>Go <a href="http://www.latticesemi.com/Support/Licensing/DiamondAndiCEcube2SoftwareLicensing/DiamondFree">here to</a>  request a Free License, the <code>license.dat</code> file will be sent to you by email.</p>
+<p>Note: it takes <em>a full day</em> for your account to be validated before you can request a license.</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="c1"># cp license.dat /usr/local/diamond/3.10_x64/bin/lin64/../../license/license.dat</span>
+$ /usr/local/diamond/3.10_x64/bin/lin64/diamond <span class="p">&amp;</span>
+</code></pre></div><h2 id="license-troubleshooting">License Troubleshooting</h2>
+<p><img src="frankandstein_15_error.png" alt=""></p>
+<ul>
+<li>According to <a href="https://www.latticesemi.com/en/Support/AnswerDatabase/3/9/2/3923">https://www.latticesemi.com/en/Support/AnswerDatabase/3/9/2/3923</a> Active-HDL Lattice Edition is included in the Free subscription but is only supported on Windows.</li>
+<li><a href="http://www.latticesemi.com/en/Support/AnswerDatabase/2/5/5/2558">http://www.latticesemi.com/en/Support/AnswerDatabase/2/5/5/2558</a> has some tips and <a href="https://discourse.tinyfpga.com/t/lattice-diamond-help/67/4">https://discourse.tinyfpga.com/t/lattice-diamond-help/67/4</a> also</li>
+<li>Check that the environment variable <code>LM_LICENSE_FILE</code> points to the correct license file</li>
+<li>Make sure that <code>license.dat</code> is placed in <code>\lscc\diamond\license</code></li>
+<li>Make sure that you don&rsquo;t have several <code>license.dat</code> lying around: search for all <code>license.dat</code> files, delete all of them and copy the <code>license.dat</code> in your mail to <code>\lscc\diamond\license</code>.</li>
+</ul>
+<h1 id="create-a-new-project">Create a New Project</h1>
+<p>Go to <code>File &gt; New &gt; Project </code></p>
+<p><img src="frankandstein_00_new_project.png" alt=""></p>
+<p>In the new windows, hit <code>Next</code> then choose a (cool) name and a (equally cool) location for your project:</p>
+<p><img src="frankandstein_01_project_name.png" alt=""></p>
+<p>No source file yet, just hit <code>Next</code></p>
+<p><img src="frankandstein_02_source.png" alt=""></p>
+<p>Select the device for your project. My board uses a LCMXO2-1200HC-4SG32C FPGA, so:</p>
+<p><img src="frankandstein_03_device.png" alt=""></p>
+<p>Leave the default synthesis tool and hit <code>Next:</code></p>
+<p><img src="frankandstein_04_synthesis_tool.png" alt=""></p>
+<p>Hit the last button, a <code>Finish</code> to create your project at last!</p>
+<p><img src="frankandstein_05_project_information.png" alt=""></p>
+<p><img src="frankandstein_06_project_summary.png" alt=""></p>
+<h1 id="write-the-verilog-code">Write the Verilog Code</h1>
+<p>Create a new code file with <code>File &gt; New &gt; File</code></p>
+<p><img src="frankandstein_07_new_file.png" alt=""></p>
+<p>FrankANDstein is not a very original logic gate, it copies everything from her big sister the AND gate, hence the truth table is the same:</p>
+<table>
+<thead>
+<tr>
+<th>input_1</th>
+<th>input_2</th>
+<th>and_result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+<p>The AND gate has two input parameters: input_1 and input_2 and one output: and_result. The result is 1 only when both inputs are 1.</p>
+<h2 id="step-1-declaring-a-module">Step 1: Declaring a Module!</h2>
+<p>The module is a basic building block in Verilog, similar to a function in C. Like a funtion, it has inputs and outputs. Let&rsquo;s declare a module named <code>frankandstein</code>, which has 2 inputs and 1 output:</p>
+<div class="highlight"><pre class="chroma"><code class="language-verilog" data-lang="verilog"><span class="k">module</span> <span class="n">frankandstein</span><span class="p">(</span><span class="n">input_1</span><span class="p">,</span> <span class="n">input_2</span><span class="p">,</span> <span class="n">and_result</span><span class="p">);</span>
+    <span class="k">input</span> <span class="n">input_1</span><span class="p">;</span>
+    <span class="k">input</span> <span class="n">input_2</span><span class="p">;</span>
+    <span class="k">output</span> <span class="n">and_result</span><span class="p">;</span>
+
+    <span class="c1">// CODEME: where&#39;s the module logic?
+</span><span class="c1"></span>
+<span class="k">endmodule</span>
+</code></pre></div><blockquote>
+<p>note 1: there is a shorter syntax to declare a module, but I&rsquo;m focusing on readability.</p>
+</blockquote>
+<blockquote>
+<p>note 2: if you&rsquo;re coming from C like me, you might be itchy at seeing the <code>endmodule</code> line without a terminating&gt; <code>;</code>. Alas, you&rsquo;ll have to get used to it, as <code>endmodule;</code> will trip some Verilog parsers as invalid syntax, for &gt; example in Lattice Diamond:</p>
+</blockquote>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">ERROR - frankandstein.v(10,11-10,12) (VERI-1137) syntax error near ;
+</code></pre></div><h2 id="step-2-module-logic">Step 2: Module Logic</h2>
+<p>As the truth table illustrates, the output of our AND gate should be 1 only when both inputs are equal to 1. Let&rsquo;s add that logic to our module and replace our previous comment:</p>
+<div class="highlight"><pre class="chroma"><code class="language-verilog" data-lang="verilog"><span class="k">module</span> <span class="n">frankandstein</span><span class="p">(</span><span class="n">input_1</span><span class="p">,</span> <span class="n">input_2</span><span class="p">,</span> <span class="n">and_result</span><span class="p">);</span>
+    <span class="k">input</span> <span class="n">input_1</span><span class="p">;</span>
+    <span class="k">input</span> <span class="n">input_2</span><span class="p">;</span>
+    <span class="k">output</span> <span class="n">and_result</span><span class="p">;</span>
+
+    <span class="k">assign</span> <span class="n">and_result</span> <span class="o">=</span> <span class="n">input_1</span> <span class="o">&amp;</span> <span class="n">input_2</span><span class="p">;</span>
+
+<span class="k">endmodule</span>
+</code></pre></div><p>Tadaaa, our module is complete! Well, at least, theoretically.</p>
+<p>The Lattice Diamond editor checks the code while it&rsquo;s being written and will display error messages -if any- in the <code>output</code> panel at the bottom of the window.</p>
+<h1 id="synthetization">Synthetization</h1>
+<p>Click on the <code>Process</code> tab :</p>
+<p><img src="frankandstein_08_process.png" alt=""></p>
+<p>Then double-click <code>synthesize design</code> to synthesize the code and ensure that you have no errors.<img src="frankandstein_09_synthesize_before.png" alt=""></p>
+<p>If all goes well, you should have green checks in front of <code>Synthesize Design</code> :</p>
+<p><img src="frankandstein_10_synthesize_after.png" alt=""></p>
+<h1 id="testbench-and-simulation">Testbench and Simulation</h1>
+<p>Synthesizing Verilog and mapping it into hardware is a very costly (and long) step. We should ensure our module works correctly before wasting time trying to synthesize it!</p>
+<p>This is where testbench and simulation appear!</p>
+<p>Your code didn&rsquo;t work like you wanted on the first try? (It rarely does anyway&hellip;) Simulator allows you to look at what&rsquo;s going on, look at the signals waveforms without any expensive equipment to perform it on real hardware.</p>
+<p>And to go with it, you need a testbench, ie you need to write a bunch more of Verilog lines. A testbench file will instantiate the module and provide funny inputs to it (well, the ones you define really, I hope they are funny). The testbench can then be run through a simulator.</p>
+<p>Note: code for the testbench will <em>not</em> be synthesized, which allow us to use code we couldn&rsquo;t use normally in FPGA code (also called non-synthesizable code).</p>
+<p>Create a new benchtest file with <code>File &gt; New &gt; File</code></p>
+<p><img src="frankandstein_11_new_testbench.png" alt=""></p>
+<div class="highlight"><pre class="chroma"><code class="language-verilog" data-lang="verilog"><span class="k">module</span> <span class="n">frankandstein_tb</span><span class="p">;</span>
+
+<span class="c1">// variables
+</span><span class="c1"></span><span class="kt">wire</span> <span class="n">w_and_result</span><span class="p">;</span>
+<span class="kt">reg</span> <span class="n">r_input_1</span><span class="p">,</span> <span class="n">r_input_2</span><span class="p">;</span>
+
+
+<span class="c1">// module instance
+</span><span class="c1"></span><span class="n">frankandstein</span> <span class="n">FRANKANDSTEIN_INSTANCE</span> <span class="p">(</span> <span class="p">.</span><span class="n">input_1</span><span class="p">(</span><span class="n">r_input_1</span><span class="p">),</span> <span class="p">.</span><span class="n">input_2</span><span class="p">(</span><span class="n">r_input_2</span><span class="p">),</span> <span class="p">.</span><span class="n">and_result</span><span class="p">(</span><span class="n">w_and_result</span><span class="p">)</span> <span class="p">);</span>
+
+<span class="k">initial</span>
+<span class="k">begin</span>
+		<span class="nb">$monitor</span><span class="p">(</span><span class="n">r_input_1</span><span class="p">,</span> <span class="n">r_input_2</span><span class="p">,</span> <span class="n">w_and_result</span><span class="p">);</span>
+
+		<span class="n">r_input_1</span> <span class="o">=</span> <span class="mh">1</span><span class="mb">&#39;b0</span><span class="p">;</span>
+		<span class="n">r_input_2</span> <span class="o">=</span> <span class="mh">1</span><span class="mb">&#39;b0</span><span class="p">;</span>
+
+		<span class="p">#</span><span class="mh">5</span>
+		<span class="n">r_input_1</span> <span class="o">=</span> <span class="mh">1</span><span class="mb">&#39;b0</span><span class="p">;</span>
+		<span class="n">r_input_2</span> <span class="o">=</span> <span class="mh">1</span><span class="mb">&#39;b1</span><span class="p">;</span>
+
+		<span class="p">#</span><span class="mh">5</span>
+		<span class="n">r_input_1</span> <span class="o">=</span> <span class="mh">1</span><span class="mb">&#39;b1</span><span class="p">;</span>
+		<span class="n">r_input_2</span> <span class="o">=</span> <span class="mh">1</span><span class="mb">&#39;b0</span><span class="p">;</span>
+
+		<span class="p">#</span><span class="mh">5</span>
+		<span class="n">r_input_1</span> <span class="o">=</span> <span class="mh">1</span><span class="mb">&#39;b1</span><span class="p">;</span>
+		<span class="n">r_input_2</span> <span class="o">=</span> <span class="mh">1</span><span class="mb">&#39;b1</span><span class="p">;</span>
+
+		<span class="nb">$finish</span><span class="p">;</span>
+
+<span class="k">end</span>
+
+<span class="k">endmodule</span> <span class="c1">// frankandstein_tb
+</span></code></pre></div><p>This test file instantiates a <code>frankenstein</code> module and then provides it with all the possible inputs: 0 and 0, 0 and 1, 1 and 0 and finally 1 and 1.</p>
+<p>Check that <code>frankandstein.v</code> is marked for Synthesis and Simulation and mark <code>frankandstein_tb.v</code> for Simulation only. In the file tab:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">Right click on frankandstein.v &gt; Include for &gt; Synthesis and Simulation
+Right click on frankandstein_tb.v &gt; Include for &gt; Simulation
+</code></pre></div><p><img src="frankandstein_12_simulation.png" alt=""></p>
+<p>Run the simulation with: <code>Tools &gt; Simulation Wizard Next </code></p>
+<p><img src="frankandstein_13_simulation_wizard.png" alt=""></p>
+<p>You can just click next, next, next, next, finish until a new window with Active HDL opens. Then run the simulation by clicking the <code>play</code> button.</p>
+<p>/!\ You need to add the waveforms <em>before</em> running the simulation. Otherwise you&rsquo;ll need to restart the simulation and run it again.</p>
+<p><img src="frankandstein_14_active_hdl.png" alt=""></p>
+<p>Tadaaa, there is our waveform for the AND gate |o|</p>
+<h1 id="resources">Resources</h1>
+<p><img src="final_cat.gif" alt=""></p>
+<p><a href="http://electrosofts.com/verilog/introduction.html">http://electrosofts.com/verilog/introduction.html</a></p>
+<p><a href="https://www.nandland.com/verilog/tutorials/tutorial-introduction-to-verilog-for-beginners.html">https://www.nandland.com/verilog/tutorials/tutorial-introduction-to-verilog-for-beginners.html</a></p>
+<p><a href="https://github.com/securelyfitz/WTFpga/blob/master/wtfpgamanual.pdf">https://github.com/securelyfitz/WTFpga/blob/master/wtfpgamanual.pdf</a></p>
+
+        </div>
+    </article>
+</div>
+<div class="column" id="toc-column">    <aside>
+        <div id="toc">
+            What's on this page?
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#installation">Installation</a>
+      <ul>
+        <li><a href="#archlinux-installation">Archlinux Installation</a></li>
+        <li><a href="#request-a-free-license">Request a Free License</a></li>
+        <li><a href="#license-troubleshooting">License Troubleshooting</a></li>
+      </ul>
+    </li>
+    <li><a href="#create-a-new-project">Create a New Project</a></li>
+    <li><a href="#write-the-verilog-code">Write the Verilog Code</a>
+      <ul>
+        <li><a href="#step-1-declaring-a-module">Step 1: Declaring a Module!</a></li>
+        <li><a href="#step-2-module-logic">Step 2: Module Logic</a></li>
+      </ul>
+    </li>
+    <li><a href="#synthetization">Synthetization</a></li>
+    <li><a href="#testbench-and-simulation">Testbench and Simulation</a></li>
+    <li><a href="#resources">Resources</a></li>
+  </ul>
+</nav>
+        </div>
+    </aside>
+
+</div>
+</div></div>
+            </div><footer class="footer">
+  <div class="content has-text-centered">
+    <p>
+    Handcrafted with <span style="color: #e25555;">&hearts;</span> by kylma, with lots of
+    
+        <a href="https://shiny-labs.github.io/credits/">awesome tools</a>.
+    
+    </p>
+  </div>
+
+  <div id="to-top">
+    <a href="#logo" class="top-btn no-squiggly">^</a>
+  </div>
+
+</footer>
+</div>
+    </body>
+</html>

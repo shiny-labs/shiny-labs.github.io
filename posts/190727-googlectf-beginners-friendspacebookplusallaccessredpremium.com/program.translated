@@ -1,0 +1,143 @@
+load acc1 0  push acc1
+load acc1 1 7 4 8 8  push acc1
+load acc1 1 6 7 5 8  push acc1
+load acc1 1 6 5 9 9  push acc1
+load acc1 1 6 2 8 5  push acc1
+load acc1 1 6 0 9 4  push acc1
+load acc1 1 5 5 0 5  push acc1
+load acc1 1 5 4 1 7  push acc1
+load acc1 1 4 8 3 2  push acc1
+load acc1 1 4 4 5 0  push acc1
+load acc1 1 3 8 9 3  push acc1
+load acc1 1 3 9 2 6  push acc1
+load acc1 1 3 4 3 7  push acc1
+load acc1 1 2 8 3 3  push acc1
+load acc1 1 2 7 4 1  push acc1
+load acc1 1 2 5 3 3  push acc1
+load acc1 1 1 5 0 4  push acc1
+load acc1 1 1 3 4 2  push acc1
+load acc1 1 0 5 0 3  push acc1
+load acc1 1 0 5 5 0  push acc1
+load acc1 1 0 3 1 9  push acc1
+load acc1 9 7 5  push acc1
+load acc1 1 0 0 7  push acc1
+load acc1 8 9 2  push acc1
+load acc1 8 9 3  push acc1
+load acc1 6 6 0  push acc1
+load acc1 7 4 3  push acc1
+load acc1 2 6 7  push acc1
+load acc1 3 4 4  push acc1
+load acc1 2 6 4  push acc1
+load acc1 3 3 9  push acc1
+load acc1 2 0 8  push acc1
+load acc1 2 1 6  push acc1
+load acc1 2 4 2  push acc1
+load acc1 1 7 2  push acc1
+load acc1 7 4  push acc1
+load acc1 4 9  push acc1
+load acc1 1 1 9  push acc1
+load acc1 1 1 3  push acc1
+load acc1 1 1 9  push acc1
+load acc1 1 0 6  push acc1
+load acc2 1 
+
+label A pop acc1 push acc2 push acc1 load acc1 3 8 9 
+push acc1 push acc2
+jump_to label F
+xor print_top
+load acc1 1  push acc1 add pop acc2
+if_not_zero jump_to label A endif
+
+load acc1 9 8 4 2 6  push acc1
+load acc1 9 7 8 5 0  push acc1
+load acc1 9 7 6 0 4  push acc1
+load acc1 9 7 2 8 0  push acc1
+load acc1 9 6 8 1 5  push acc1
+load acc1 9 6 4 4 3  push acc1
+load acc1 9 6 3 5 4  push acc1
+load acc1 9 5 9 3 4  push acc1
+load acc1 9 4 8 6 5  push acc1
+load acc1 9 4 9 5 2  push acc1
+load acc1 9 4 6 6 9  push acc1
+load acc1 9 4 4 4 0  push acc1
+load acc1 9 3 9 6 9  push acc1
+load acc1 9 3 7 6 6  push acc1
+load acc2 9 9 
+
+label C pop acc1 push acc2 push acc1 load acc1 5 6 8 
+push acc1 push acc2
+jump_to label F
+xor print_top
+load acc1 1  push acc1 add pop acc2
+if_not_zero jump_to label C endif
+
+load acc1 1 0 1 1 4 1 0 5 8  push acc1
+load acc1 1 0 1 0 6 0 2 0 6  push acc1
+load acc1 1 0 1 0 3 0 0 5 5  push acc1
+load acc1 1 0 0 9 9 8 9 6 6  push acc1
+load acc1 1 0 0 8 8 7 9 9 0  push acc1
+load acc1 1 0 0 7 6 7 0 8 5  push acc1
+load acc1 1 0 0 7 0 7 0 3 6  push acc1
+load acc1 1 0 0 6 5 6 1 1 1  push acc1
+load acc1 1 0 0 4 0 4 0 9 4  push acc1
+load acc1 1 0 0 1 6 0 9 2 2  push acc1
+load acc1 1 0 0 1 3 1 0 1 9  push acc1
+load acc1 1 0 0 1 1 1 1 0 0  push acc1
+load acc1 1 0 0 0 5 9 9 2 6  push acc1
+load acc1 1 0 0 0 4 9 9 8 2  push acc1
+load acc1 1 0 0 0 3 0 0 4 5  push acc1
+load acc1 9 9 8 9 9 9 7  push acc1
+load acc1 9 9 8 1 8 5 8  push acc1
+load acc1 9 9 8 0 8 1 5  push acc1
+load acc1 9 9 7 8 8 4 2  push acc1
+load acc1 9 9 6 5 7 9 4  push acc1
+load acc1 9 9 5 7 5 6 4  push acc1
+load acc1 9 9 3 8 3 0 4  push acc1
+load acc1 9 9 3 5 4 2 7  push acc1
+load acc1 9 9 3 2 2 8 9  push acc1
+load acc1 9 9 3 1 4 9 4  push acc1
+load acc1 9 9 2 7 3 8 8  push acc1
+load acc1 9 9 2 6 3 7 6  push acc1
+load acc1 9 9 2 3 2 1 3  push acc1
+load acc1 9 9 2 1 3 9 4  push acc1
+load acc1 9 9 1 9 1 5 4  push acc1
+load acc1 9 9 1 8 0 8 2  push acc1
+load acc1 9 9 1 6 2 3 9  push acc1
+load acc2 7 6 5 
+
+label D pop acc1 push acc2 push acc1 load acc1 1 0 2 3 
+push acc1 push acc2
+jump_to label F
+xor print_top
+load acc1 1  push acc1 add pop acc2
+if_not_zero jump_to label D endif
+exit
+
+label F
+load acc1 2  push acc1 label B
+jump_to label E
+label H if_zero pop_out jump_to label I  endif
+pop_out jump_to label J
+label K if_zero pop_out jump_to label I endif
+pop_out pop acc1 load acc2 1  push acc2 sub
+if_zero pop_out pop acc2 push acc1 push acc2 jump_top endif push acc1
+label I load acc2 1  push acc2 add jump_to label B
+
+label E
+clone load acc1 2  push acc1
+label L sub if_zero pop_out load acc1 1  push acc1
+jump_to label H endif
+pop_out clone push acc1
+modulo if_zero jump_to label H endif
+pop_out clone push acc1 load acc1 1 
+push acc1 add clone pop acc1 jump_to label L
+
+label J
+clone clone load acc2 0  push acc2
+label G load acc1 1 0  push acc1
+multiply pop acc2 push acc1 modulo
+push acc2 add pop acc2 pop acc1 clone push acc2 sub
+if_zero pop_out load acc2 1  push acc2 jump_to label K endif
+pop_out push acc1 load acc1 1 0  push acc1 divide
+if_zero jump_to label K endif
+clone push acc2 jump_to label G

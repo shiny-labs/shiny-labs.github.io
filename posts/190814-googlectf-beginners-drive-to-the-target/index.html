@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="generator" content="Hugo 0.65.0" />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://shiny-labs.github.io/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://shiny-labs.github.io/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://shiny-labs.github.io/favicon-16x16.png">
+    <link rel="manifest" href="https://shiny-labs.github.io/site.webmanifest">
+    <link rel="mask-icon" href="https://shiny-labs.github.io/safari-pinned-tab.svg" color="#000000">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
+
+
+    <link rel="stylesheet" href="https://shiny-labs.github.io/css/bulma.min.css">
+    <link rel="stylesheet" href="https://shiny-labs.github.io/css/main.css">
+    <link rel="stylesheet" href="https://shiny-labs.github.io/css/syntax.css">
+
+    
+    <title>shiny-labs || GoogleCTF Beginner&#39;s Quest 2019 - Drive to the Target</title>
+</head>
+<body><nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item no-squiggly" href="https://shiny-labs.github.io/">
+            <h1 id="logo" class="glitch">shiny-labs</h1>
+        </a>
+    </div>
+
+    <div class="navbar-menu">
+        <div class="navbar-start">
+            
+        </div>
+
+        <div class="navbar-end">
+            
+            <h3 id="subtitle">Exploit, reverse engineering and cats.</h3>
+        </div>
+    </div>
+</nav>
+
+<div id="content">
+
+            <div class="columns is-centered">
+                <div class="column is-10" id="menu-column"><div id="menu" class="tabs is-centered is-medium">
+    <ul>
+            <li><a href="https://shiny-labs.github.io/" class="no-squiggly">Home</a></li>
+            <li><a href="https://shiny-labs.github.io/posts/" class="no-squiggly">Posts</a></li>
+            <li><a href="https://shiny-labs.github.io/tags/" class="no-squiggly">Tags</a></li>
+            <li><a href="https://shiny-labs.github.io/about/" class="no-squiggly">About</a></li>
+            <li><a href="https://shiny-labs.github.io/archives/" class="no-squiggly">Archives</a></li>
+  </ul>
+</div>
+</div>
+            </div>
+
+            <div class="columns is-centered">
+                <div class="column is-10" id="main-column">
+<div class="columns">
+<div class="column is-10" id="main-column">
+    <article class="article">
+        <div >
+            <h1 class="article-title">GoogleCTF Beginner&#39;s Quest 2019 - Drive to the Target</h1>
+            
+<div class="post-meta">
+  <p class="article-meta">
+  <span>Date</span> &#x5b;
+  <time datetime="August 14, 2019">
+      Aug 14
+    </time>
+  &#x5d;
+        
+        
+  <span>Categories</span> &#x5b;
+    <a href="https://shiny-labs.github.io/categories"></a>
+  &#x5d;
+        
+        
+  <span>Series</span> &#x5b;
+    <a href="https://shiny-labs.github.io/series/googlectf-beginners-quest-2019">GoogleCTF Beginner&#39;s Quest 2019</a>
+  &#x5d;
+        
+        
+  <span>Tags</span> &#x5b;
+    <a href="https://shiny-labs.github.io/tags/k0ding">k0ding</a>
+  &#x5d;
+  </p>
+</div>
+
+        </div>
+        <div>
+            <h2 id="description">Description</h2>
+<blockquote>
+<p>Excellent work!  With your fine sleuthing skills, you managed to find a picture of the handsome creature with its pet biped.  At last friends and companionship may be near!</p>
+<p>Like all inhabitants of this world, you spend an inordinate amount of time on the site, stalking and comparing your life to that of others. The first thought that springs to your mind is &ldquo;Why haven&rsquo;t I ever been to Mauritius on holiday?&rdquo; followed swiftly by &ldquo;What is a Mauritius anyway?&rdquo; But after a while and with language successfully deciphered, you&rsquo;ve made contact with the lifeform in the picture, you have a &ldquo;date&rdquo;? You&rsquo;re given the address of where to meet your potential interest. &ldquo;1 Banana way, beware of the glass.&rdquo; An odd address, especially that last part. So how do you get there?  You land your ship and begin to search.</p>
+<p><a href="https://drivetothetarget.web.ctfcompetition.com/">https://drivetothetarget.web.ctfcompetition.com/</a></p>
+</blockquote>
+<h2 id="solving">Solving</h2>
+<p><img src="0_website.png" alt=""></p>
+<p>Clicking on every button available gives the following messages:</p>
+<ul>
+<li><code>You went 6m at a speed of 1km/h. You are getting away…</code></li>
+<li><code>If you want to meet your friends, you should move.</code> (when not changing the direction and hitting go)</li>
+<li><code>You went 22m at a speed of 19km/h. You are getting closer…</code></li>
+<li><code>Woa, were about to move at 181km/h, this is too fast!</code></li>
+<li><code>Please use roads</code> (when using the URL <a href="https://drivetothetarget.web.ctfcompetition.com/?lat=0&amp;lon=0&amp;token=0">https://drivetothetarget.web.ctfcompetition.com/?lat=0&amp;lon=0&amp;token=0</a> )</li>
+</ul>
+<p>And the source code gives some hints:</p>
+<div class="highlight"><pre class="chroma"><code class="language-html" data-lang="html"><span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">&#34;number&#34;</span> <span class="na">name</span><span class="o">=</span><span class="s">&#34;lat&#34;</span> <span class="na">value</span><span class="o">=</span><span class="s">&#34;51.6485&#34;</span> <span class="na">min</span><span class="o">=</span><span class="s">&#34;-90&#34;</span> <span class="na">max</span><span class="o">=</span><span class="s">&#34;90&#34;</span> <span class="na">step</span><span class="o">=</span><span class="s">&#34;0.0001&#34;</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">&#34;number&#34;</span> <span class="na">name</span><span class="o">=</span><span class="s">&#34;lon&#34;</span> <span class="na">value</span><span class="o">=</span><span class="s">&#34;0.0983&#34;</span> <span class="na">min</span><span class="o">=</span><span class="s">&#34;-180&#34;</span> <span class="na">max</span><span class="o">=</span><span class="s">&#34;180&#34;</span> <span class="na">step</span><span class="o">=</span><span class="s">&#34;0.0001&#34;</span><span class="p">&gt;</span>
+</code></pre></div><ul>
+<li>latitude is going from -90 to 90 with a step of 0.0001</li>
+<li>longitude is going from -180 to 180 with a step of 0.0001</li>
+</ul>
+<h3 id="automating-the-http-request">Automating the HTTP request</h3>
+<p>I heard lots of good about the <a href="https://2.python-requests.org/en/master/">requests Python library</a> which is a library to easily create/manipulate HTTP requests/answer. Install it with:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ pip install --user requests
+</code></pre></div><p>Okay, let&rsquo;s start automating this then&hellip; Here&rsquo;s a script making <em>one</em> HTTP get request:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># import the request library https://2.python-requests.org/en/master/</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+
+<span class="c1"># URL of the request</span>
+<span class="n">URL</span> <span class="o">=</span> <span class="s2">&#34;https://drivetothetarget.web.ctfcompetition.com&#34;</span>
+
+<span class="n">TOKEN</span> <span class="o">=</span> <span class="s2">&#34;gAAAAABdUrowbEIynd4-9pp4NadYBx01nyAtv1XEKh800AF0XQlJGqPtefQwRCy8RQnmWFFDQLMspOv4PDAoQDVTjCbBB7did4ZuaZLMAHTcNVMHig3dFKhaWFWmlkGiU8seJ3Q70ZJW&#34;</span>
+
+<span class="k">def</span> <span class="nf">do_get</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="n">TOKEN</span><span class="p">):</span>
+    <span class="c1"># define a parameters dictionary</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&#34;lat&#34;</span><span class="p">:</span> <span class="n">lat</span><span class="p">,</span>
+        <span class="s2">&#34;lon&#34;</span><span class="p">:</span> <span class="n">lon</span><span class="p">,</span>
+        <span class="s2">&#34;token&#34;</span><span class="p">:</span> <span class="n">TOKEN</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="c1"># send the get request</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">URL</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+
+    <span class="c1"># print the answer</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">do_get</span><span class="p">(</span><span class="s2">&#34;51.6485&#34;</span><span class="p">,</span><span class="s2">&#34;0.0983&#34;</span><span class="p">)</span>
+</code></pre></div><p>The result:</p>
+<div class="highlight"><pre class="chroma"><code class="language-html" data-lang="html"><span class="cp">&lt;!doctype html&gt;</span>
+<span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">link</span> <span class="na">href</span><span class="o">=</span><span class="s">&#34;/static/style.css&#34;</span> <span class="na">type</span><span class="o">=</span><span class="s">&#34;text/css&#34;</span> <span class="na">rel</span><span class="o">=</span><span class="s">&#34;stylesheet&#34;</span><span class="p">/&gt;</span>
+    <span class="p">&lt;</span><span class="nt">title</span><span class="p">&gt;</span>Driving to the target<span class="p">&lt;/</span><span class="nt">title</span><span class="p">&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">h1</span><span class="p">&gt;</span>Driving to the target<span class="p">&lt;/</span><span class="nt">h1</span><span class="p">&gt;</span>
+   <span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+     <span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>Hurry up, don&#39;t be late for you rendez-vous!
+      <span class="p">&lt;</span><span class="nt">form</span> <span class="na">method</span><span class="o">=</span><span class="s">&#34;get&#34;</span> <span class="na">action</span><span class="o">=</span><span class="s">&#34;/&#34;</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">fieldset</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">legend</span><span class="p">&gt;</span>Pick your direction<span class="p">&lt;/</span><span class="nt">legend</span><span class="p">&gt;</span>
+         <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">&#34;number&#34;</span> <span class="na">name</span><span class="o">=</span><span class="s">&#34;lat&#34;</span> <span class="na">value</span><span class="o">=</span><span class="s">&#34;51.6485&#34;</span> <span class="na">min</span><span class="o">=</span><span class="s">&#34;-90&#34;</span> <span class="na">max</span><span class="o">=</span><span class="s">&#34;90&#34;</span> <span class="na">step</span><span class="o">=</span><span class="s">&#34;0.0001&#34;</span><span class="p">&gt;</span>
+         <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">&#34;number&#34;</span> <span class="na">name</span><span class="o">=</span><span class="s">&#34;lon&#34;</span> <span class="na">value</span><span class="o">=</span><span class="s">&#34;0.0983&#34;</span> <span class="na">min</span><span class="o">=</span><span class="s">&#34;-180&#34;</span> <span class="na">max</span><span class="o">=</span><span class="s">&#34;180&#34;</span> <span class="na">step</span><span class="o">=</span><span class="s">&#34;0.0001&#34;</span><span class="p">&gt;</span>
+         <span class="p">&lt;</span><span class="nt">input</span> <span class="na">style</span><span class="o">=</span><span class="s">&#34;display: none&#34;</span> <span class="na">name</span><span class="o">=</span><span class="s">&#34;token&#34;</span> <span class="na">value</span><span class="o">=</span><span class="s">&#34;gAAAAABdUtJkSxC9nIFlbt4jDsBYHNc1-jz5IsGlM8yU8OFAQpiJ8q70m3-7a7osUQztM4T5bFGJXsigBF7IopAlREfJuv5G4oH71PGjCYnFIUYAvQBARhikWzvvdczPaSyBMoIIekvH&#34;</span><span class="p">&gt;</span>
+         <span class="p">&lt;</span><span class="nt">button</span> <span class="na">type</span><span class="o">=</span><span class="s">&#34;submit&#34;</span><span class="p">&gt;</span>go<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+        <span class="p">&lt;/</span><span class="nt">fieldset</span><span class="p">&gt;</span>
+      <span class="p">&lt;/</span><span class="nt">form</span><span class="p">&gt;</span>
+      <span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>You went 11m at a speed of 0km/h. You are getting closer…<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+   <span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
+</code></pre></div><p>Note: I was expecting the <code>you should move</code> message when executing the script twice but:</p>
+<div class="highlight"><pre class="chroma"><code class="language-html" data-lang="html"><span class="cp">&lt;!doctype html&gt;</span>
+<span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">link</span> <span class="na">href</span><span class="o">=</span><span class="s">&#34;/static/style.css&#34;</span> <span class="na">type</span><span class="o">=</span><span class="s">&#34;text/css&#34;</span> <span class="na">rel</span><span class="o">=</span><span class="s">&#34;stylesheet&#34;</span><span class="p">/&gt;</span>
+    <span class="p">&lt;</span><span class="nt">title</span><span class="p">&gt;</span>Driving to the target<span class="p">&lt;/</span><span class="nt">title</span><span class="p">&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">h1</span><span class="p">&gt;</span>Driving to the target<span class="p">&lt;/</span><span class="nt">h1</span><span class="p">&gt;</span>
+   <span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+     <span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>Hurry up, don&#39;t be late for you rendez-vous!
+      <span class="p">&lt;</span><span class="nt">form</span> <span class="na">method</span><span class="o">=</span><span class="s">&#34;get&#34;</span> <span class="na">action</span><span class="o">=</span><span class="s">&#34;/&#34;</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">fieldset</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">legend</span><span class="p">&gt;</span>Pick your direction<span class="p">&lt;/</span><span class="nt">legend</span><span class="p">&gt;</span>
+         <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">&#34;number&#34;</span> <span class="na">name</span><span class="o">=</span><span class="s">&#34;lat&#34;</span> <span class="na">value</span><span class="o">=</span><span class="s">&#34;51.6485&#34;</span> <span class="na">min</span><span class="o">=</span><span class="s">&#34;-90&#34;</span> <span class="na">max</span><span class="o">=</span><span class="s">&#34;90&#34;</span> <span class="na">step</span><span class="o">=</span><span class="s">&#34;0.0001&#34;</span><span class="p">&gt;</span>
+         <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">&#34;number&#34;</span> <span class="na">name</span><span class="o">=</span><span class="s">&#34;lon&#34;</span> <span class="na">value</span><span class="o">=</span><span class="s">&#34;0.0983&#34;</span> <span class="na">min</span><span class="o">=</span><span class="s">&#34;-180&#34;</span> <span class="na">max</span><span class="o">=</span><span class="s">&#34;180&#34;</span> <span class="na">step</span><span class="o">=</span><span class="s">&#34;0.0001&#34;</span><span class="p">&gt;</span>
+         <span class="p">&lt;</span><span class="nt">input</span> <span class="na">style</span><span class="o">=</span><span class="s">&#34;display: none&#34;</span> <span class="na">name</span><span class="o">=</span><span class="s">&#34;token&#34;</span> <span class="na">value</span><span class="o">=</span><span class="s">&#34;gAAAAABdUtMHLXxKzhF8oR4_NNFzm0AD8vTZDd_6ezGWLYJ2Qmp8ZD8oIQqjcxSLzUpHOeTVf2OmSrxP-cfDPAa1-rygIhIcvsDZJ_s1_cDQfH3tJCSiHUWNdtUz0XxmVRPgMjE8ijIW&#34;</span><span class="p">&gt;</span>
+         <span class="p">&lt;</span><span class="nt">button</span> <span class="na">type</span><span class="o">=</span><span class="s">&#34;submit&#34;</span><span class="p">&gt;</span>go<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+        <span class="p">&lt;/</span><span class="nt">fieldset</span><span class="p">&gt;</span>
+      <span class="p">&lt;/</span><span class="nt">form</span><span class="p">&gt;</span>
+      <span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>You went 11m at a speed of 0km/h. You are getting closer…<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+   <span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
+</code></pre></div><p>We are just moving at 0km/h :DD</p>
+<p>Way too much text in that answer, let&rsquo;s trim it down!</p>
+<h3 id="parsing-the-http-response">Parsing the HTTP response</h3>
+<p>Parsing HTML by hand is&hellip; complicated. Here&rsquo;s another Python library to the rescue: <a href="https://www.crummy.com/software/BeautifulSoup/bs4/doc/">Beautiful Soup</a></p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ pip install --user beautifulsoup4
+</code></pre></div><p>Now, add the import at the beginning of the file:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># import beautifulsoup library</span>
+<span class="kn">from</span> <span class="nn">bs4</span> <span class="kn">import</span> <span class="n">BeautifulSoup</span>
+</code></pre></div><p>And replace the <code>print(response.text)</code> with:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"> <span class="c1"># create a soup by parsing the HTTP answer</span>
+    <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="s2">&#34;html.parser&#34;</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">soup</span><span class="o">.</span><span class="n">p</span><span class="p">)</span>
+</code></pre></div><p>Which gives weird results&hellip;?!</p>
+<div class="highlight"><pre class="chroma"><code class="language-html" data-lang="html"><span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>Hurry up, don&#39;t be late for you rendez-vous!
+      <span class="p">&lt;</span><span class="nt">form</span> <span class="na">action</span><span class="o">=</span><span class="s">&#34;/&#34;</span> <span class="na">method</span><span class="o">=</span><span class="s">&#34;get&#34;</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">fieldset</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">legend</span><span class="p">&gt;</span>Pick your direction<span class="p">&lt;/</span><span class="nt">legend</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">input</span> <span class="na">max</span><span class="o">=</span><span class="s">&#34;90&#34;</span> <span class="na">min</span><span class="o">=</span><span class="s">&#34;-90&#34;</span> <span class="na">name</span><span class="o">=</span><span class="s">&#34;lat&#34;</span> <span class="na">step</span><span class="o">=</span><span class="s">&#34;0.0001&#34;</span> <span class="na">type</span><span class="o">=</span><span class="s">&#34;number&#34;</span> <span class="na">value</span><span class="o">=</span><span class="s">&#34;51.6485&#34;</span><span class="p">/&gt;</span>
+<span class="p">&lt;</span><span class="nt">input</span> <span class="na">max</span><span class="o">=</span><span class="s">&#34;180&#34;</span> <span class="na">min</span><span class="o">=</span><span class="s">&#34;-180&#34;</span> <span class="na">name</span><span class="o">=</span><span class="s">&#34;lon&#34;</span> <span class="na">step</span><span class="o">=</span><span class="s">&#34;0.0001&#34;</span> <span class="na">type</span><span class="o">=</span><span class="s">&#34;number&#34;</span> <span class="na">value</span><span class="o">=</span><span class="s">&#34;0.0983&#34;</span><span class="p">/&gt;</span>
+<span class="p">&lt;</span><span class="nt">input</span> <span class="na">name</span><span class="o">=</span><span class="s">&#34;token&#34;</span> <span class="na">style</span><span class="o">=</span><span class="s">&#34;display: none&#34;</span> <span class="na">value</span><span class="o">=</span><span class="s">&#34;gAAAAABdUy4mP5vZE9nBWS7KIEt4tprE0n-oRO0NaEYM6HMYV_liDPO34ok39b1RLG5p3H__ZoQG6CIKodZIMv2rSzNjdZt_FSTesJpSLsfkU919LFIuAP2SrGpmi2_CHh69ITzJ4iNt&#34;</span><span class="p">/&gt;</span>
+<span class="p">&lt;</span><span class="nt">button</span> <span class="na">type</span><span class="o">=</span><span class="s">&#34;submit&#34;</span><span class="p">&gt;</span>go<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">fieldset</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">form</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>You went 11m at a speed of 0km/h. You are getting closer…<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+
+</code></pre></div><p>I should only prints the 2 <code>&lt;p&gt;</code> in the HTML&hellip; Why is there a <code>&lt;form&gt;</code> and other misc stuff?!</p>
+<p>Ooooh. That&rsquo;s why. The second <code>&lt;p&gt;</code> is included in the first <code>&lt;p&gt;</code>&hellip; Well, that&rsquo;s easy to fix in beautiful soup, we can just tell it to search for a <code>&lt;p&gt;</code> inside a <code>&lt;p&gt;</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python">    <span class="c1"># create a soup by parsing the HTTP answer</span>
+    <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="s2">&#34;html.parser&#34;</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">soup</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&#34;p &gt; p&#34;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+</code></pre></div><p>Which output:</p>
+<div class="highlight"><pre class="chroma"><code class="language-html" data-lang="html"><span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>You went 11m at a speed of 0km/h. You are getting closer…<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+</code></pre></div><h3 id="the-token-issue">The Token Issue</h3>
+<p>For some mysterious reason, I assumed that the token was a fixed value&hellip; Which is probably why my script was moving at 0km/h&hellip;</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">lat 51.6498 lon 0.0982 &lt;p&gt;You went 133m at a speed of 0km/h. You are getting away…&lt;/p&gt;
+lat 51.6497 lon 0.0982 &lt;p&gt;You went 122m at a speed of 0km/h. You are getting away…&lt;/p&gt;
+lat 51.6496 lon 0.0982 &lt;p&gt;You went 111m at a speed of 0km/h. You are getting away…&lt;/p&gt;
+lat 51.6495 lon 0.0982 &lt;p&gt;You went 100m at a speed of 0km/h. You are getting away…&lt;/p&gt;
+lat 51.6494 lon 0.0982 &lt;p&gt;You went 89m at a speed of 0km/h. You are getting away…&lt;/p&gt;
+lat 51.6493 lon 0.0982 &lt;p&gt;You went 78m at a speed of 0km/h. You are getting away…&lt;/p&gt;
+lat 51.6492 lon 0.0982 &lt;p&gt;You went 67m at a speed of 0km/h. You are getting away…&lt;/p&gt;
+lat 51.6491 lon 0.0982 &lt;p&gt;You went 56m at a speed of 0km/h. You are getting away…&lt;/p&gt;
+lat 51.649 lon 0.0982 &lt;p&gt;You went 45m at a speed of 0km/h. You are getting away…&lt;/p&gt;
+lat 51.6489 lon 0.0982 &lt;p&gt;You went 34m at a speed of 0km/h. You are getting away…&lt;/p&gt;
+lat 51.6488 lon 0.0982 &lt;p&gt;You went 23m at a speed of 0km/h. You are getting away…&lt;/p&gt;
+lat 51.6487 lon 0.0982 &lt;p&gt;You went 13m at a speed of 0km/h. You are getting away…&lt;/p&gt;
+lat 51.6486 lon 0.0982 &lt;p&gt;You went 6m at a speed of 0km/h. You are getting closer…&lt;/p&gt;
+lat 51.6485 lon 0.0982 &lt;p&gt;You went 13m at a speed of 0km/h. You are getting closer…&lt;/p&gt;
+lat 51.6484 lon 0.0982 &lt;p&gt;You went 23m at a speed of 0km/h. You are getting closer…&lt;/p&gt;
+lat 51.6483 lon 0.0982 &lt;p&gt;You went 34m at a speed of 0km/h. You are getting closer…&lt;/p&gt;
+lat 51.6482 lon 0.0982 &lt;p&gt;You went 45m at a speed of 0km/h. You are getting closer…&lt;/p&gt;
+lat 51.6481 lon 0.0982 &lt;p&gt;You went 56m at a speed of 0km/h. You are getting closer…&lt;/p&gt;
+lat 51.648 lon 0.0982 &lt;p&gt;You went 67m at a speed of 0km/h. You are getting closer…&lt;/p&gt;
+lat 51.6479 lon 0.0982 &lt;p&gt;You went 78m at a speed of 0km/h. You are getting closer…&lt;/p&gt;
+lat 51.6478 lon 0.0982 &lt;p&gt;You went 89m at a speed of 0km/h. You are getting closer…&lt;/p&gt;
+</code></pre></div><p>Let&rsquo;s fix the HTTP parser and use the latest token value for the next HTTP request:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">do_get</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="n">token</span><span class="p">):</span>
+    <span class="c1"># define a parameters dictionary</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&#34;lat&#34;</span><span class="p">:</span> <span class="n">position</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="s2">&#34;lon&#34;</span><span class="p">:</span> <span class="n">position</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+        <span class="s2">&#34;token&#34;</span><span class="p">:</span> <span class="n">token</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="c1"># send the get request</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">URL</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+
+    <span class="c1"># create a soup by parsing the HTTP answer</span>
+    <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="s2">&#34;html.parser&#34;</span><span class="p">)</span>
+
+    <span class="n">lat</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">attrs</span><span class="o">=</span><span class="p">{</span><span class="s2">&#34;name&#34;</span><span class="p">:</span> <span class="s2">&#34;lat&#34;</span><span class="p">})[</span><span class="s2">&#34;value&#34;</span><span class="p">])</span>
+    <span class="n">lon</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">attrs</span><span class="o">=</span><span class="p">{</span><span class="s2">&#34;name&#34;</span><span class="p">:</span> <span class="s2">&#34;lon&#34;</span><span class="p">})[</span><span class="s2">&#34;value&#34;</span><span class="p">])</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">attrs</span><span class="o">=</span><span class="p">{</span><span class="s2">&#34;name&#34;</span><span class="p">:</span> <span class="s2">&#34;token&#34;</span><span class="p">})[</span><span class="s2">&#34;value&#34;</span><span class="p">]</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">soup</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&#34;p &gt; p&#34;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="k">print</span><span class="p">(</span><span class="s2">&#34;lat: {:02.04f} | lon {:02.04f} | {}&#34;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">message</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&#34;lat&#34;</span><span class="p">:</span> <span class="n">lat</span><span class="p">,</span> <span class="s2">&#34;lon&#34;</span><span class="p">:</span> <span class="n">lon</span><span class="p">,</span> <span class="s2">&#34;token&#34;</span><span class="p">:</span> <span class="n">token</span><span class="p">,</span> <span class="s2">&#34;msg&#34;</span><span class="p">:</span> <span class="n">message</span><span class="p">}</span>
+</code></pre></div><p>While we are fixing the HTTP parser part&hellip; Why not improve the handling of the response message also? Pure text is not practical at all! Let&rsquo;s define an enum containing all the types of messages:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+
+<span class="k">class</span> <span class="nc">Message</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">CLOSER</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">AWAY</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">TOO_FAST</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">MOVE</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="n">FLAG</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="n">WTF</span> <span class="o">=</span> <span class="mi">10</span>
+</code></pre></div><p>That way, we can use <code>message == Message.CLOSER</code> instead of <code>if &quot;closer&quot; in message</code> which is more practical.</p>
+<p>Use the enum in <code>do_get()</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">do_get</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="n">token</span><span class="p">):</span>
+    <span class="c1"># define a parameters dictionary</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&#34;lat&#34;</span><span class="p">:</span> <span class="n">position</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="s2">&#34;lon&#34;</span><span class="p">:</span> <span class="n">position</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+        <span class="s2">&#34;token&#34;</span><span class="p">:</span> <span class="n">token</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="c1"># send the get request</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">URL</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+
+    <span class="c1"># create a soup by parsing the HTTP answer</span>
+    <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="s2">&#34;html.parser&#34;</span><span class="p">)</span>
+
+    <span class="n">lat</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">attrs</span><span class="o">=</span><span class="p">{</span><span class="s2">&#34;name&#34;</span><span class="p">:</span> <span class="s2">&#34;lat&#34;</span><span class="p">})[</span><span class="s2">&#34;value&#34;</span><span class="p">])</span>
+    <span class="n">lon</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">attrs</span><span class="o">=</span><span class="p">{</span><span class="s2">&#34;name&#34;</span><span class="p">:</span> <span class="s2">&#34;lon&#34;</span><span class="p">})[</span><span class="s2">&#34;value&#34;</span><span class="p">])</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">attrs</span><span class="o">=</span><span class="p">{</span><span class="s2">&#34;name&#34;</span><span class="p">:</span> <span class="s2">&#34;token&#34;</span><span class="p">})[</span><span class="s2">&#34;value&#34;</span><span class="p">]</span>
+
+    <span class="n">message</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">soup</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&#34;p &gt; p&#34;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">if</span> <span class="s2">&#34;away&#34;</span> <span class="ow">in</span> <span class="n">message</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="n">Message</span><span class="o">.</span><span class="n">AWAY</span>
+    <span class="k">elif</span> <span class="s2">&#34;closer&#34;</span> <span class="ow">in</span> <span class="n">message</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="n">Message</span><span class="o">.</span><span class="n">CLOSER</span>
+    <span class="k">elif</span> <span class="s2">&#34;fast&#34;</span> <span class="ow">in</span> <span class="n">message</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="n">Message</span><span class="o">.</span><span class="n">TOO_FAST</span>
+    <span class="k">elif</span> <span class="s2">&#34;move&#34;</span> <span class="ow">in</span> <span class="n">message</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="n">Message</span><span class="o">.</span><span class="n">MOVE</span>
+    <span class="k">elif</span> <span class="s2">&#34;CTF{&#34;</span> <span class="ow">in</span> <span class="n">message</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="n">Message</span><span class="o">.</span><span class="n">FLAG</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="n">Message</span><span class="o">.</span><span class="n">WTF</span>
+
+    <span class="k">print</span><span class="p">(</span><span class="s2">&#34;lat: {:02.04f} | lon {:02.04f} | {}&#34;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">msg</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&#34;lat&#34;</span><span class="p">:</span> <span class="n">lat</span><span class="p">,</span> <span class="s2">&#34;lon&#34;</span><span class="p">:</span> <span class="n">lon</span><span class="p">,</span> <span class="s2">&#34;token&#34;</span><span class="p">:</span> <span class="n">token</span><span class="p">,</span> <span class="s2">&#34;msg&#34;</span><span class="p">:</span> <span class="n">msg</span><span class="p">}</span>
+</code></pre></div><h3 id="the-too-fast-mystery">The Too Fast mystery</h3>
+<p>In spite of my weirdly inefficient algorithm, I keep hitting the &ldquo;too fast&rdquo; limit&hellip; But, what was odd was the pattern, it wasn&rsquo;t random at all:</p>
+<ul>
+<li>away or closer message</li>
+<li>4x &ldquo;too fast&rdquo; messages (sometimes 5)</li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">lat 51.6498 lon 0.0982 Message.AWAY
+lat 51.6498 lon 0.0982 Message.TOO_FAST
+lat 51.6498 lon 0.0982 Message.TOO_FAST
+lat 51.6498 lon 0.0982 Message.TOO_FAST
+lat 51.6498 lon 0.0982 Message.TOO_FAST
+lat 51.6497 lon 0.0981 Message.CLOSER
+lat 51.6497 lon 0.0981 Message.TOO_FAST
+lat 51.6497 lon 0.0981 Message.TOO_FAST
+lat 51.6497 lon 0.0981 Message.TOO_FAST
+lat 51.6497 lon 0.0981 Message.TOO_FAST
+lat 51.6498 lon 0.0982 Message.AWAY
+lat 51.6498 lon 0.0982 Message.TOO_FAST
+lat 51.6498 lon 0.0982 Message.TOO_FAST
+lat 51.6498 lon 0.0982 Message.TOO_FAST
+lat 51.6498 lon 0.0982 Message.TOO_FAST
+lat 51.6498 lon 0.0982 Message.TOO_FAST
+lat 51.6497 lon 0.0981 Message.CLOSER
+</code></pre></div><p>After a few tests, I discovered that the rate of my HTTP requests was too high. Add a <code>sleep(1)</code> after each request to make those pesky &ldquo;too fast&rdquo; messages disappear!</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">lat 51.6498 lon 0.0982 Message.AWAY
+lat 51.6497 lon 0.0981 Message.CLOSER
+lat 51.6498 lon 0.0982 Message.AWAY
+lat 51.6497 lon 0.0981 Message.CLOSER
+lat 51.6498 lon 0.0982 Message.AWAY
+lat 51.6497 lon 0.0981 Message.CLOSER
+lat 51.6498 lon 0.0982 Message.AWAY
+</code></pre></div><p>Also, you <em>might</em> have noticed, my algorithm is stuck in a loop now&hellip;</p>
+<h3 id="getting-out-of-the-loop">Getting Out of the Loop</h3>
+<p><img src="cat_spin.gif" alt=""></p>
+<p>So far, my &ldquo;guess of the direction&rdquo; was pretty limited:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">STEP</span> <span class="o">=</span> <span class="mf">0.0001</span>
+
+<span class="k">def</span> <span class="nf">increment</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="n">lat</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">lon</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">STEP</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">lat</span><span class="p">:</span>
+        <span class="n">position</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">position</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">step</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">lon</span><span class="p">:</span>
+        <span class="n">position</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">position</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">step</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">position</span>
+
+<span class="k">def</span> <span class="nf">decrement</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="n">lat</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">lon</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">STEP</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">lat</span><span class="p">:</span>
+        <span class="n">position</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">position</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">step</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">lon</span><span class="p">:</span>
+        <span class="n">position</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">position</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">step</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">position</span>
+</code></pre></div><p>It was nothing more than &ldquo;go in a diagonal if it&rsquo;s closer else go back in a diagonal if it&rsquo;s away&rdquo;.</p>
+<p><img src="2_directions_old.png" alt=""></p>
+<p>Let&rsquo;s code something a bit more fancy&hellip; We will add a direction vector, which can take 4 values (one for each direction).</p>
+<p><img src="3_directions_new.png" alt=""></p>
+<p>First a function to move! You give it a direction and a position, and it computes the new position:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">move</span><span class="p">(</span><span class="n">direction</span><span class="p">,</span> <span class="n">position</span><span class="p">):</span>
+    <span class="n">position</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">position</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">STEP</span> <span class="o">*</span> <span class="n">direction</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="n">position</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">position</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">STEP</span> <span class="o">*</span> <span class="n">direction</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">4</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">position</span>
+</code></pre></div><p>Next, we will implemented a super clever (or not) function to guess a direction! In case we are going away from the target, let&rsquo;s just pick a random new direction :)))</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">random</span>
+
+<span class="k">def</span> <span class="nf">change_direction</span><span class="p">(</span><span class="n">direction</span><span class="p">):</span>
+    <span class="n">directions</span> <span class="o">=</span> <span class="p">[(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]</span>
+
+    <span class="n">directions</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">direction</span><span class="p">)</span>
+
+    <span class="n">new_direction</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">directions</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&#34;# New direction: {}&#34;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">new_direction</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">new_direction</span>
+</code></pre></div><p>Finally, let&rsquo;s update our main function to use those new shiny functions:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">guess</span><span class="p">():</span>
+    <span class="c1"># initial settings</span>
+    <span class="n">position</span> <span class="o">=</span> <span class="p">[</span><span class="mf">51.6498</span><span class="p">,</span> <span class="mf">0.0982</span><span class="p">]</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="s2">&#34;gAAAAABdUrowbEIynd4-9pp4NadYBx01nyAtv1XEKh800AF0XQlJGqPtefQwRCy8RQnmWFFDQLMspOv4PDAoQDVTjCbBB7did4ZuaZLMAHTcNVMHig3dFKhaWFWmlkGiU8seJ3Q70ZJW&#34;</span>
+    <span class="n">direction</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">while</span><span class="p">(</span><span class="bp">True</span><span class="p">):</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">do_get</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="n">token</span><span class="p">)</span>
+        <span class="n">token</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s2">&#34;token&#34;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">result</span><span class="p">[</span><span class="s2">&#34;msg&#34;</span><span class="p">]</span> <span class="o">==</span> <span class="n">Message</span><span class="o">.</span><span class="n">AWAY</span><span class="p">:</span>
+            <span class="n">direction</span> <span class="o">=</span> <span class="n">change_direction</span><span class="p">(</span><span class="n">direction</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">result</span><span class="p">[</span><span class="s2">&#34;msg&#34;</span><span class="p">]</span> <span class="o">==</span> <span class="n">Message</span><span class="o">.</span><span class="n">FLAG</span><span class="p">:</span>
+            <span class="nb">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="n">position</span> <span class="o">=</span> <span class="n">move</span><span class="p">(</span><span class="n">direction</span><span class="p">,</span> <span class="n">position</span><span class="p">)</span>
+
+        <span class="c1"># don&#39;t move too fast!</span>
+        <span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">guess</span><span class="p">()</span>
+</code></pre></div><p>Sample output:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">[INFO] lat: 51.6498 | lon 0.0982 | Message.AWAY | gAAAAABdVnSopQig1BcgAP9FR9adm0eVhnIMuOGjR6lzS4o_ydraP5TReHPhEMaQ0IPZDOLIpCbpTULT0c1yLHuU5FXB3B7U3HLzNpzPtaC5RqgEtNZ6lWSRzAekDI23gjZh3V3anW8y
+[INFO] # New direction: (-1, 0)
+[INFO] lat: 51.6497 | lon 0.0982 | Message.CLOSER | gAAAAABdVnSp2lqdhrJgpoCsBabSaDfUjkZmkZvdzJGHg03Tt6qGgnyBTtcoy4_q3j61_yeIHsCEx4a5Yn05ThaYDS4a7oXBhfNgEMGDkzYGdiAbfo0g0JEuPa2W8wGoBUsr_dwVoAaC
+[INFO] lat: 51.6496 | lon 0.0982 | Message.CLOSER | gAAAAABdVnSrs3yaidXLcmtqcupcCilI-FXDxAlxmPc7-Kc5l0ESweHjrp-v0nx1jD3cM3Bt15pQ5n6gyYaj5JExKgXVayfp41nej1gQtsK4F7nfHQPL0riL1dt857SKn9ykckq1PCl3
+[INFO] lat: 51.6495 | lon 0.0982 | Message.CLOSER | gAAAAABdVnSsCY_FtXReI6nXDEi50aWOsy1bLLseeiyNGuaA92HdXH9ypgfcFNU94HbmUTS4jWRGUoUrgBy8uuIRFmsUZLP8urxTU7F22JWkXm8XL0EoEqB8IT56xIx8spZBSVSLH5Eq
+[INFO] lat: 51.6494 | lon 0.0982 | Message.CLOSER | gAAAAABdVnStsM6Qr3kXKeUcKRTZpdCfS_Lj8VL1deNdkdfmbwasZd9ihPxRtChLpTdl8huwYC_fYtq5Rgth0-hK9tpViCqGWzdwW11ibt_PghQeZLzMhIhyYTsnwz6ayrFHjmt4Vg9z
+
+</code></pre></div><p>Let&rsquo;s leave it running for now&hellip; We&rsquo;ll come back to it when it&rsquo;s finished!</p>
+<h3 id="looting-the-flag">Looting the Flag</h3>
+<p>Final version of my script:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="ch">#!/usr/bin/env python</span>
+
+<span class="s2">&#34;&#34;&#34;
+</span><span class="s2">Drive to the Target - Google CTF Beginner&#39;s Quest 2019
+</span><span class="s2">&#34;&#34;&#34;</span>
+
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">sleep</span>
+
+<span class="c1"># import the request library https://2.python-requests.org/en/master/</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="c1"># import beautifulsoup library</span>
+<span class="kn">from</span> <span class="nn">bs4</span> <span class="kn">import</span> <span class="n">BeautifulSoup</span>
+
+
+<span class="c1"># URL of the request</span>
+<span class="n">URL</span> <span class="o">=</span> <span class="s2">&#34;https://drivetothetarget.web.ctfcompetition.com&#34;</span>
+<span class="n">STEP</span> <span class="o">=</span> <span class="mf">0.0001</span>
+
+<span class="k">class</span> <span class="nc">Message</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">CLOSER</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">AWAY</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">TOO_FAST</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">MOVE</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="n">FLAG</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="n">WTF</span> <span class="o">=</span> <span class="mi">10</span>
+
+<span class="k">def</span> <span class="nf">do_get</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="n">token</span><span class="p">):</span>
+    <span class="c1"># define a parameters dictionary</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&#34;lat&#34;</span><span class="p">:</span> <span class="n">position</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="s2">&#34;lon&#34;</span><span class="p">:</span> <span class="n">position</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+        <span class="s2">&#34;token&#34;</span><span class="p">:</span> <span class="n">token</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="c1"># send the get request</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">URL</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+
+    <span class="c1"># create a soup by parsing the HTTP answer</span>
+    <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="s2">&#34;html.parser&#34;</span><span class="p">)</span>
+
+    <span class="n">lat</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">attrs</span><span class="o">=</span><span class="p">{</span><span class="s2">&#34;name&#34;</span><span class="p">:</span> <span class="s2">&#34;lat&#34;</span><span class="p">})[</span><span class="s2">&#34;value&#34;</span><span class="p">])</span>
+    <span class="n">lon</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">attrs</span><span class="o">=</span><span class="p">{</span><span class="s2">&#34;name&#34;</span><span class="p">:</span> <span class="s2">&#34;lon&#34;</span><span class="p">})[</span><span class="s2">&#34;value&#34;</span><span class="p">])</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">attrs</span><span class="o">=</span><span class="p">{</span><span class="s2">&#34;name&#34;</span><span class="p">:</span> <span class="s2">&#34;token&#34;</span><span class="p">})[</span><span class="s2">&#34;value&#34;</span><span class="p">]</span>
+
+    <span class="n">message</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">soup</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&#34;p &gt; p&#34;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">if</span> <span class="s2">&#34;away&#34;</span> <span class="ow">in</span> <span class="n">message</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="n">Message</span><span class="o">.</span><span class="n">AWAY</span>
+    <span class="k">elif</span> <span class="s2">&#34;closer&#34;</span> <span class="ow">in</span> <span class="n">message</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="n">Message</span><span class="o">.</span><span class="n">CLOSER</span>
+    <span class="k">elif</span> <span class="s2">&#34;fast&#34;</span> <span class="ow">in</span> <span class="n">message</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="n">Message</span><span class="o">.</span><span class="n">TOO_FAST</span>
+    <span class="k">elif</span> <span class="s2">&#34;move&#34;</span> <span class="ow">in</span> <span class="n">message</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="n">Message</span><span class="o">.</span><span class="n">MOVE</span>
+    <span class="k">elif</span> <span class="s2">&#34;CTF{&#34;</span> <span class="ow">in</span> <span class="n">message</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="n">Message</span><span class="o">.</span><span class="n">FLAG</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&#34;OMG OMG, the flag!! {}&#34;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">message</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="n">Message</span><span class="o">.</span><span class="n">WTF</span>
+
+
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&#34;lat: {:02.04f} | lon {:02.04f} | {} | {}&#34;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">token</span><span class="p">))</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&#34;lat: {:02.04f} | lon {:02.04f} | {}&#34;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">msg</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&#34;lat&#34;</span><span class="p">:</span> <span class="n">lat</span><span class="p">,</span> <span class="s2">&#34;lon&#34;</span><span class="p">:</span> <span class="n">lon</span><span class="p">,</span> <span class="s2">&#34;token&#34;</span><span class="p">:</span> <span class="n">token</span><span class="p">,</span> <span class="s2">&#34;msg&#34;</span><span class="p">:</span> <span class="n">msg</span><span class="p">}</span>
+
+<span class="k">def</span> <span class="nf">change_direction</span><span class="p">(</span><span class="n">direction</span><span class="p">):</span>
+    <span class="n">directions</span> <span class="o">=</span> <span class="p">[(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]</span>
+
+    <span class="n">directions</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">direction</span><span class="p">)</span>
+
+    <span class="n">new_direction</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">directions</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&#34;# New direction: {}&#34;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">new_direction</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">new_direction</span>
+
+<span class="k">def</span> <span class="nf">move</span><span class="p">(</span><span class="n">direction</span><span class="p">,</span> <span class="n">position</span><span class="p">):</span>
+    <span class="n">position</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">position</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">STEP</span> <span class="o">*</span> <span class="n">direction</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="n">position</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">position</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">STEP</span> <span class="o">*</span> <span class="n">direction</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">4</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">position</span>
+
+<span class="k">def</span> <span class="nf">guess</span><span class="p">():</span>
+    <span class="c1"># initial settings</span>
+    <span class="n">position</span> <span class="o">=</span> <span class="p">[</span><span class="mf">51.6498</span><span class="p">,</span> <span class="mf">0.0982</span><span class="p">]</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="s2">&#34;gAAAAABdUrowbEIynd4-9pp4NadYBx01nyAtv1XEKh800AF0XQlJGqPtefQwRCy8RQnmWFFDQLMspOv4PDAoQDVTjCbBB7did4ZuaZLMAHTcNVMHig3dFKhaWFWmlkGiU8seJ3Q70ZJW&#34;</span>
+    <span class="n">direction</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">while</span><span class="p">(</span><span class="bp">True</span><span class="p">):</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">do_get</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="n">token</span><span class="p">)</span>
+        <span class="n">token</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s2">&#34;token&#34;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">result</span><span class="p">[</span><span class="s2">&#34;msg&#34;</span><span class="p">]</span> <span class="o">==</span> <span class="n">Message</span><span class="o">.</span><span class="n">AWAY</span><span class="p">:</span>
+            <span class="n">direction</span> <span class="o">=</span> <span class="n">change_direction</span><span class="p">(</span><span class="n">direction</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">result</span><span class="p">[</span><span class="s2">&#34;msg&#34;</span><span class="p">]</span> <span class="o">==</span> <span class="n">Message</span><span class="o">.</span><span class="n">FLAG</span><span class="p">:</span>
+            <span class="nb">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="n">position</span> <span class="o">=</span> <span class="n">move</span><span class="p">(</span><span class="n">direction</span><span class="p">,</span> <span class="n">position</span><span class="p">)</span>
+
+        <span class="c1"># don&#39;t move too fast!</span>
+        <span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+
+    <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s2">&#34;logs&#34;</span><span class="p">,</span> <span class="n">filemode</span><span class="o">=</span><span class="s2">&#34;w&#34;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s2">&#34;[</span><span class="si">%(levelname)s</span><span class="s2">] </span><span class="si">%(message)s</span><span class="s2">&#34;</span><span class="p">)</span>
+
+    <span class="n">guess</span><span class="p">()</span>
+
+</code></pre></div><p>After 2 hours of running, my wildly inefficient script managed to locate the flag:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">[INFO] # New direction: (0, 1)
+[INFO] lat: 51.4922 | lon -0.1929 | Message.CLOSER | gAAAAABdVomcASmkncaGDgxiVsATLNfdsuZdRMFo-ZY7NTxQDECvhsfDl3F6IKv69jV-FK9j40KaKaaGDBXaUCqTuKri51SHV7CBR29bVNdAY3CvPT7D0kQWJtmao4GQ95tj9GMo3MGp
+[INFO] lat: 51.4922 | lon -0.1928 | Message.AWAY | gAAAAABdVomdSo3I4jksPlQkX1wuweySHZmHv1XfHCq2oGWgDXYXtKN0PhIi5frRGWA-PM0L8mcFacLwbiqpqPVCXPZM4tHjvA3NZUqiBAJNkW9rMxGIJWHjC9yDQdA-Pm0UGCLqftXS
+[INFO] # New direction: (-1, 0)
+[INFO] lat: 51.4921 | lon -0.1928 | Message.FLAG | gAAAAABdVomfQUlRPM0kTAjPNGK6rXe5hMrhsbs9_H0bxAN76VVWbVP1afzVkpXS3eM9PwP1PfAJzivGs9M42a_zCHiS5ajeSTZYRKXWk7VuS1KWJ3d8N7_NUAeEkNVjzy9kNXPhiea3
+</code></pre></div><p>Being a truly exceptional quiche, I managed to <em>forgot</em> to print the flag at the end. Here&rsquo;s how you lose 2 hours for nothing&hellip; Well&hellip; Let&rsquo;s fix the script and run it again then. See you in 2 hours&hellip;</p>
+<p>[2 hours later]</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">lat</span><span class="p">:</span> <span class="mf">51.4927</span> <span class="o">|</span> <span class="n">lon</span> <span class="o">-</span><span class="mf">0.1930</span> <span class="o">|</span> <span class="n">Message</span><span class="o">.</span><span class="n">CLOSER</span>
+<span class="n">lat</span><span class="p">:</span> <span class="mf">51.4926</span> <span class="o">|</span> <span class="n">lon</span> <span class="o">-</span><span class="mf">0.1930</span> <span class="o">|</span> <span class="n">Message</span><span class="o">.</span><span class="n">CLOSER</span>
+<span class="n">lat</span><span class="p">:</span> <span class="mf">51.4925</span> <span class="o">|</span> <span class="n">lon</span> <span class="o">-</span><span class="mf">0.1930</span> <span class="o">|</span> <span class="n">Message</span><span class="o">.</span><span class="n">CLOSER</span>
+<span class="n">lat</span><span class="p">:</span> <span class="mf">51.4924</span> <span class="o">|</span> <span class="n">lon</span> <span class="o">-</span><span class="mf">0.1930</span> <span class="o">|</span> <span class="n">Message</span><span class="o">.</span><span class="n">CLOSER</span>
+<span class="n">lat</span><span class="p">:</span> <span class="mf">51.4923</span> <span class="o">|</span> <span class="n">lon</span> <span class="o">-</span><span class="mf">0.1930</span> <span class="o">|</span> <span class="n">Message</span><span class="o">.</span><span class="n">CLOSER</span>
+<span class="n">lat</span><span class="p">:</span> <span class="mf">51.4922</span> <span class="o">|</span> <span class="n">lon</span> <span class="o">-</span><span class="mf">0.1930</span> <span class="o">|</span> <span class="n">Message</span><span class="o">.</span><span class="n">CLOSER</span>
+<span class="n">OMG</span> <span class="n">OMG</span><span class="p">,</span> <span class="n">the</span> <span class="n">flag</span><span class="err">!!</span> <span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="n">Congratulations</span><span class="p">,</span> <span class="n">you</span> <span class="n">made</span> <span class="n">it</span><span class="p">,</span> <span class="n">here</span> <span class="ow">is</span> <span class="n">the</span> <span class="n">flag</span><span class="p">:</span>  <span class="n">CTF</span><span class="p">{</span><span class="n">Who_is_Tardis_Ormandy</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+<span class="n">lat</span><span class="p">:</span> <span class="mf">51.4921</span> <span class="o">|</span> <span class="n">lon</span> <span class="o">-</span><span class="mf">0.1930</span> <span class="o">|</span> <span class="n">Message</span><span class="o">.</span><span class="n">FLAG</span>
+</code></pre></div><p>Flag: <code>CTF{Who_is_Tardis_Ormandy}</code></p>
+<h2 id="links">Links</h2>
+<p><a href="https://realpython.com/python-requests/">https://realpython.com/python-requests/</a></p>
+<p><a href="https://www.geeksforgeeks.org/get-post-requests-using-python/">https://www.geeksforgeeks.org/get-post-requests-using-python/</a></p>
+<p><a href="https://www.fernandomc.com/posts/using-requests-to-get-and-post/">https://www.fernandomc.com/posts/using-requests-to-get-and-post/</a></p>
+<p><a href="https://realpython.com/python-logging/">https://realpython.com/python-logging/</a></p>
+
+        </div>
+    </article>
+</div>
+<div class="column" id="toc-column">    <aside>
+        <div id="toc">
+            What's on this page?
+            <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#description">Description</a></li>
+        <li><a href="#solving">Solving</a>
+          <ul>
+            <li><a href="#automating-the-http-request">Automating the HTTP request</a></li>
+            <li><a href="#parsing-the-http-response">Parsing the HTTP response</a></li>
+            <li><a href="#the-token-issue">The Token Issue</a></li>
+            <li><a href="#the-too-fast-mystery">The Too Fast mystery</a></li>
+            <li><a href="#getting-out-of-the-loop">Getting Out of the Loop</a></li>
+            <li><a href="#looting-the-flag">Looting the Flag</a></li>
+          </ul>
+        </li>
+        <li><a href="#links">Links</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+        </div>
+    </aside>
+
+</div>
+</div></div>
+            </div><footer class="footer">
+  <div class="content has-text-centered">
+    <p>
+    Handcrafted with <span style="color: #e25555;">&hearts;</span> by kylma, with lots of
+    
+        <a href="https://shiny-labs.github.io/credits/">awesome tools</a>.
+    
+    </p>
+  </div>
+
+  <div id="to-top">
+    <a href="#logo" class="top-btn no-squiggly">^</a>
+  </div>
+
+</footer>
+</div>
+    </body>
+</html>

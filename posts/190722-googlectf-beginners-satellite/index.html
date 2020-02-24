@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="generator" content="Hugo 0.65.0" />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://shiny-labs.github.io/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://shiny-labs.github.io/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://shiny-labs.github.io/favicon-16x16.png">
+    <link rel="manifest" href="https://shiny-labs.github.io/site.webmanifest">
+    <link rel="mask-icon" href="https://shiny-labs.github.io/safari-pinned-tab.svg" color="#000000">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
+
+
+    <link rel="stylesheet" href="https://shiny-labs.github.io/css/bulma.min.css">
+    <link rel="stylesheet" href="https://shiny-labs.github.io/css/main.css">
+    <link rel="stylesheet" href="https://shiny-labs.github.io/css/syntax.css">
+
+    
+    <title>shiny-labs || GoogleCTF Beginner&#39;s Quest 2019 - Satellite // Introduction to Reversing Go Binaries</title>
+</head>
+<body><nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item no-squiggly" href="https://shiny-labs.github.io/">
+            <h1 id="logo" class="glitch">shiny-labs</h1>
+        </a>
+    </div>
+
+    <div class="navbar-menu">
+        <div class="navbar-start">
+            
+        </div>
+
+        <div class="navbar-end">
+            
+            <h3 id="subtitle">Exploit, reverse engineering and cats.</h3>
+        </div>
+    </div>
+</nav>
+
+<div id="content">
+
+            <div class="columns is-centered">
+                <div class="column is-10" id="menu-column"><div id="menu" class="tabs is-centered is-medium">
+    <ul>
+            <li><a href="https://shiny-labs.github.io/" class="no-squiggly">Home</a></li>
+            <li><a href="https://shiny-labs.github.io/posts/" class="no-squiggly">Posts</a></li>
+            <li><a href="https://shiny-labs.github.io/tags/" class="no-squiggly">Tags</a></li>
+            <li><a href="https://shiny-labs.github.io/about/" class="no-squiggly">About</a></li>
+            <li><a href="https://shiny-labs.github.io/archives/" class="no-squiggly">Archives</a></li>
+  </ul>
+</div>
+</div>
+            </div>
+
+            <div class="columns is-centered">
+                <div class="column is-10" id="main-column">
+<div class="columns">
+<div class="column is-10" id="main-column">
+    <article class="article">
+        <div >
+            <h1 class="article-title">GoogleCTF Beginner&#39;s Quest 2019 - Satellite // Introduction to Reversing Go Binaries</h1>
+            
+<div class="post-meta">
+  <p class="article-meta">
+  <span>Date</span> &#x5b;
+  <time datetime="July 22, 2019">
+      Jul 22
+    </time>
+  &#x5d;
+        
+        
+  <span>Categories</span> &#x5b;
+    <a href="https://shiny-labs.github.io/categories"></a>
+  &#x5d;
+        
+        
+  <span>Series</span> &#x5b;
+    <a href="https://shiny-labs.github.io/series/googlectf-beginners-quest-2019">GoogleCTF Beginner&#39;s Quest 2019</a>
+  &#x5d;
+        
+        
+  <span>Tags</span> &#x5b;
+    <a href="https://shiny-labs.github.io/tags/go">go</a>
+  &#x5d;
+  </p>
+</div>
+
+        </div>
+        <div>
+            <p>I picked the binary of the challenge <code>satellite</code> from Google CTF beginner&rsquo;s quest 2019 as a first target to learn go reversing.</p>
+<h2 id="description">Description</h2>
+<blockquote>
+<p>Placing your ship in range of the Osmiums, you begin to receive signals.
+Hoping that you are not detected, because it&rsquo;s too late now, you figure
+that it may be worth finding out what these signals mean and what
+information might be &ldquo;borrowed&rdquo; from them. Can you hear me Captain Tim?
+Floating in your tin can there? Your tin can has a wire to ground
+control?
+Find something to do that isn&rsquo;t staring at the Blue Planet.</p>
+</blockquote>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ file *
+init_sat:   ELF 64-bit LSB executable, x86-64, version <span class="m">1</span> <span class="o">(</span>SYSV<span class="o">)</span>, dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, Go <span class="nv">BuildID</span><span class="o">=</span>YhfyV09rKV_0ewkLiNr1/6ZJO5J8awFQSRgZDzlnA/zvyuoO7Qu3ralSU_Aheb/QK0rATh0jzljJY8j2313, not stripped
+README.pdf: PDF document, version 1.5
+$ strings init_sat &gt; init_sat.strings
+$ ls -lh init_sat
+-rw-r--r-- <span class="m">1</span> kylma users 3.2M Dec <span class="m">31</span>  <span class="m">1979</span> init_sat
+</code></pre></div><p>One noticeable thing about <code>init_sat</code> is its size, 3.2M is really phat. This might be a hint that it&rsquo;s not a classical C binary. I googled some of the strings found in the binary like <code>split stack overflow</code> and I found out these are specific to go binaries&hellip; So now, we know why it&rsquo;s so phat: it&rsquo;s a go binary and they bundle the entire universe in every binary.</p>
+<p>Test run of the binary:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ ./init_sat
+Hello Operator. Ready to connect to a satellite?
+Enter the name of the satellite to connect to or &#39;exit&#39; to quit
+lolilol
+Unrecognized satellite: lolilol
+
+Enter the name of the satellite to connect to or &#39;exit&#39; to quit
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+Unrecognized satellite: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+
+Enter the name of the satellite to connect to or &#39;exit&#39; to quit
+exit
+Exiting, goodbye
+</code></pre></div><p>When loaded in IDA&hellip; the thing has 2807 functions identified&hellip; It&rsquo;s gonna be one hell of a needle in a haystack. But at least, it&rsquo;s not stripped and we have the function names&hellip;</p>
+<h2 id="calling-convention">Calling Convention</h2>
+<p>Before we dig any further, we need to study the go calling convention. I highly recommend <a href="https://science.raphael.poss.name/go-calling-convention-x86-64.html">&ldquo;The Go low-level calling convention on x86-64&rdquo;</a> from <a href="https://science.raphael.poss.name/">Raphael ‘kena’ Poss</a>, which contains everything you ever wanted to know about the go calling convention.</p>
+<p>Key points:</p>
+<ul>
+<li>Return values are not in registers but on stack</li>
+<li>Arguments are passed on the stack</li>
+</ul>
+<h2 id="finding-main">Finding main</h2>
+<p>Searching for the main function in IDA function&rsquo;s list yields:</p>
+<ul>
+<li>runtime_main</li>
+<li>runtime_main_func1</li>
+<li>runtime_main_func2</li>
+<li>net_isDomainName</li>
+<li>net_absDomainName</li>
+<li><strong>main_main</strong> &ndash;&gt; the <em>real</em> main function</li>
+<li><strong>main_connectToSat</strong> &ndash;&gt; sounds interesting</li>
+<li>main_init</li>
+</ul>
+<h2 id="main_main">main_main</h2>
+<p><img src="00_ida0.png" alt=""></p>
+<p>There is a first call to <a href="https://golang.org/pkg/fmt/#Fprint">fmt_fprint</a>, the go equivalent of <code>printf()</code>. One of the argument of <code>fmt_Fprint</code> is that mysterious <code>main_statictmp_0</code>. It seems to be a variable with an address pointing to a string. Note that the string is not recognized as it should be. Click on <code>unk_54C05C</code> and press <!-- raw HTML omitted -->a <!-- raw HTML omitted --> to obtain a proper string.</p>
+<p><img src="01_ida1.png" alt=""></p>
+<p>List of static strings:</p>
+<table>
+<thead>
+<tr>
+<th>Variable name</th>
+<th>Content</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>main_statictmp_0</td>
+<td>Hello Operator. Ready to connect to a satellite?</td>
+</tr>
+<tr>
+<td>main_statictmp_1</td>
+<td>Enter the name of the satellite to connect to or exit to quit</td>
+</tr>
+<tr>
+<td>main_statictmp_2</td>
+<td>Exiting, goodbye</td>
+</tr>
+<tr>
+<td>main_statictmp_3</td>
+<td>Can&rsquo;t connect to the satellite. Please contact the Google CTF team.</td>
+</tr>
+</tbody>
+</table>
+<p>IDA has troubles recognizing correctly all the strings, because most of them are not terminated at all. For example, <code>main_statictmp_2</code> is actually  <code>Exiting, goodbyeGC worker (idle)GODEBUG: value &quot;Imperial_AramaicI (...)</code>.</p>
+<h2 id="satellite-name">Satellite Name</h2>
+<p>Let&rsquo;s follow the cross-references (<!-- raw HTML omitted -->x<!-- raw HTML omitted -->) to <code>main_statictmp_1</code>, which is the string prompting us for a satellite name.</p>
+<p><img src="02_ida2.png" alt=""></p>
+<ol>
+<li>[highlighted in blue] <code>Enter the name of the satellite to connect to or exit to quit</code> is printed.</li>
+<li>[highlighted in purple] User input is retrieved in <code>var_160</code>, while <code>var_158</code> is the length of the input.</li>
+<li>[highlighted in red] If the user input is equal to <code>exit</code>, then print <code>Exiting, goodbye</code> and exit.</li>
+<li>[highlighted in orange] If the user input is equal to <code>osmi</code> followed by <code>um</code>, call <code>main_connectToSat</code>.</li>
+</ol>
+<p>And we found the satellite name,  <code>osmium</code> /o/, let&rsquo;s test it:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ ./init_sat
+Hello Operator. Ready to connect to a satellite?
+Enter the name of the satellite to connect to or <span class="s1">&#39;exit&#39;</span> to quit
+osmium
+Establishing secure connection to osmium
+ satellite...
+Welcome. Enter <span class="o">(</span>a<span class="o">)</span> to display config data, <span class="o">(</span>b<span class="o">)</span> to erase all data or <span class="o">(</span>c<span class="o">)</span> to disconnect
+
+a
+Username: brewtoot password: ********************	166.00 IS-19 2019/05/09 00:00:00	Swath 640km	Revisit capacity twice daily, anywhere Resolution panchromatic: 30cm multispectral: 1.2m	Daily acquisition capacity: 220,000km²	Remaining config data written to: https://docs.google.com/document/d/14eYPluD_pi3824GAFanS29tWdTcKxP_XUxx7e303-3E
+
+b
+Insufficient privileges.
+
+c
+Disconnecting, goodbye.
+
+
+Enter the name of the satellite to connect to or <span class="s1">&#39;exit&#39;</span> to quit
+</code></pre></div><p>That&rsquo;s it for the introduction to go reversing! Next section is the end of the challenge if you&rsquo;re curious.</p>
+<h2 id="satellite-config-data">Satellite Config Data</h2>
+<p>The Google Docs URL contains some base64 data:</p>
+<p><img src="03_satellite_config_data.png" alt=""></p>
+<p>They can be decoded with <code>base64</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ <span class="nb">echo</span> <span class="s2">&#34;VXNlcm5hbWU6IHdpcmVzaGFyay1yb2NrcwpQYXNzd29yZDogc3RhcnQtc25pZmZpbmchCg==&#34;</span> <span class="p">|</span> base64 -d
+Username: wireshark-rocks
+Password: start-sniffing!
+</code></pre></div><p>Ohohoh, let&rsquo;s take out <code>wireshark</code> then, maybe we can catch the hidden password in wireshark.</p>
+<p>To avoid looking for the needle in a haystack in wireshark, it would be great if we knew the port/address used <code>init_sat</code>. You will need two terminals and an open Wireshark. Ready?</p>
+<p>Start capturing on the <code>any</code> interface in Wireshark!</p>
+<p>In a first terminal, run <code>init_sat</code> and display the config data:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ ./init_sat
+Hello Operator. Ready to connect to a satellite?
+Enter the name of the satellite to connect to or &#39;exit&#39; to quit
+osmium
+Establishing secure connection to osmium
+ satellite...
+Welcome. Enter (a) to display config data, (b) to erase all data or (c) to disconnect
+
+a
+Username: brewtoot password: ********************	166.00 IS-19 2019/05/09 00:00:00	Swath 640km	Revisit capacity twice daily, anywhere Resolution panchromatic: 30cm multispectral: 1.2m	Daily acquisition capacity: 220,000km²	Remaining config data written to: https://docs.google.com/document/d/14eYPluD_pi3824GAFanS29tWdTcKxP_XUxx7e303-3E
+</code></pre></div><p>In a second terminal, run <code>netstat</code> to find the port/address used by <code>init_sat</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ netstat -peanut | grep init_sat
+(Not all processes could be identified, non-owned process info
+ will not be shown, you would have to be root to see it all.)
+tcp        0      0 172.30.24.53:37836      34.76.101.29:1337       ESTABLISHED 1000       3294510    3095/./init_sat
+</code></pre></div><p>Use that IP to filter in Wireshark with <code>ip.addr == 34.76.101.29</code>:</p>
+<p><img src="04_wireshark.png" alt=""></p>
+<p>Tadaaa, here&rsquo;s the flag: <code>CTF{4efcc72090af28fd33a2118985541f92e793477f}</code> ! (right click &gt; <code>Follow TCP Stream</code>, it&rsquo;s easier to copy the entire flag).</p>
+<h2 id="takeaways">Takeaways</h2>
+<ul>
+<li>Don&rsquo;t get lost in all the functions of go&rsquo;s runtime.</li>
+<li>The calling convention is definitely weird, get familiar with it as quickly as possible.</li>
+</ul>
+<h2 id="links">Links</h2>
+<ul>
+<li><a href="https://rednaga.io/2016/09/21/reversing_go_binaries_like_a_pro/">Revering Go Binaries like a pro - Tim Strazzere</a></li>
+<li><a href="https://medium.com/@nishanmaharjan17/reversing-golang-binaries-part-1-c273b2ca5333">Reversing Golang Binaries part 1 - Nishan Maharjan</a></li>
+<li><a href="https://2016.zeronights.ru/wp-content/uploads/2016/12/GO_Zaytsev.pdf">Reversing Golang - George Zaytsev</a></li>
+<li><a href="https://science.raphael.poss.name/go-calling-convention-x86-64.html">The Go low-level calling convention on x86-64 - Raphael ‘kena’ Poss</a></li>
+<li><a href="https://blog.altoros.com/golang-internals-part-5-runtime-bootstrap-process.html">Golang Internals, Part 5: the Runtime Bootstrap Process - Siarhei Matsiukevich</a></li>
+</ul>
+
+        </div>
+    </article>
+</div>
+<div class="column" id="toc-column">    <aside>
+        <div id="toc">
+            What's on this page?
+            <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#description">Description</a></li>
+        <li><a href="#calling-convention">Calling Convention</a></li>
+        <li><a href="#finding-main">Finding main</a></li>
+        <li><a href="#main_main">main_main</a></li>
+        <li><a href="#satellite-name">Satellite Name</a></li>
+        <li><a href="#satellite-config-data">Satellite Config Data</a></li>
+        <li><a href="#takeaways">Takeaways</a></li>
+        <li><a href="#links">Links</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+        </div>
+    </aside>
+
+</div>
+</div></div>
+            </div><footer class="footer">
+  <div class="content has-text-centered">
+    <p>
+    Handcrafted with <span style="color: #e25555;">&hearts;</span> by kylma, with lots of
+    
+        <a href="https://shiny-labs.github.io/credits/">awesome tools</a>.
+    
+    </p>
+  </div>
+
+  <div id="to-top">
+    <a href="#logo" class="top-btn no-squiggly">^</a>
+  </div>
+
+</footer>
+</div>
+    </body>
+</html>

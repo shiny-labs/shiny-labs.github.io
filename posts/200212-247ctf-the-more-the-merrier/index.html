@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="generator" content="Hugo 0.65.0" />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://shiny-labs.github.io/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://shiny-labs.github.io/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://shiny-labs.github.io/favicon-16x16.png">
+    <link rel="manifest" href="https://shiny-labs.github.io/site.webmanifest">
+    <link rel="mask-icon" href="https://shiny-labs.github.io/safari-pinned-tab.svg" color="#000000">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
+
+
+    <link rel="stylesheet" href="https://shiny-labs.github.io/css/bulma.min.css">
+    <link rel="stylesheet" href="https://shiny-labs.github.io/css/main.css">
+    <link rel="stylesheet" href="https://shiny-labs.github.io/css/syntax.css">
+
+    
+    <title>shiny-labs || 24/7 CTF - The More The Merrier</title>
+</head>
+<body><nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item no-squiggly" href="https://shiny-labs.github.io/">
+            <h1 id="logo" class="glitch">shiny-labs</h1>
+        </a>
+    </div>
+
+    <div class="navbar-menu">
+        <div class="navbar-start">
+            
+        </div>
+
+        <div class="navbar-end">
+            
+            <h3 id="subtitle">Exploit, reverse engineering and cats.</h3>
+        </div>
+    </div>
+</nav>
+
+<div id="content">
+
+            <div class="columns is-centered">
+                <div class="column is-10" id="menu-column"><div id="menu" class="tabs is-centered is-medium">
+    <ul>
+            <li><a href="https://shiny-labs.github.io/" class="no-squiggly">Home</a></li>
+            <li><a href="https://shiny-labs.github.io/posts/" class="no-squiggly">Posts</a></li>
+            <li><a href="https://shiny-labs.github.io/tags/" class="no-squiggly">Tags</a></li>
+            <li><a href="https://shiny-labs.github.io/about/" class="no-squiggly">About</a></li>
+            <li><a href="https://shiny-labs.github.io/archives/" class="no-squiggly">Archives</a></li>
+  </ul>
+</div>
+</div>
+            </div>
+
+            <div class="columns is-centered">
+                <div class="column is-10" id="main-column">
+<div class="columns">
+<div class="column is-10" id="main-column">
+    <article class="article">
+        <div >
+            <h1 class="article-title">24/7 CTF - The More The Merrier</h1>
+            
+<div class="post-meta">
+  <p class="article-meta">
+  <span>Date</span> &#x5b;
+  <time datetime="February 12, 2020">
+      Feb 12
+    </time>
+  &#x5d;
+        
+        
+  <span>Categories</span> &#x5b;
+    <a href="https://shiny-labs.github.io/categories/ctf">CTF</a>
+  &#x5d;
+        
+        
+  <span>Series</span> &#x5b;
+    <a href="https://shiny-labs.github.io/series"></a>
+  &#x5d;
+        
+        
+  <span>Tags</span> &#x5b;
+    <a href="https://shiny-labs.github.io/tags/x86">x86</a>
+  &#x5d;
+  </p>
+</div>
+
+        </div>
+        <div>
+            <h1 id="description">Description</h1>
+<blockquote>
+<p>One byte is great. But what if you need more? Can you find the flag hidden in this binary?</p>
+</blockquote>
+<h1 id="solution">Solution</h1>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ file the_more_the_merrier
+the_more_the_merrier: ELF 64-bit LSB shared object, x86-64, version <span class="m">1</span> <span class="o">(</span>SYSV<span class="o">)</span>, dynamically linked, interpreter /lib64/l, <span class="k">for</span> GNU/Linux 3.2.0, BuildID<span class="o">[</span>sha1<span class="o">]=</span>0f750d638337391328fa7432dd362189de908c1e, stripped
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ ./the_more_the_merrier
+Nothing to see here..
+</code></pre></div><p>Wow wow, calm down, I can&rsquo;t follow with all the output! So&hellip; Running the binary isn&rsquo;t quite the definition of excitement&hellip;</p>
+<p>Let&rsquo;s disassemble the thinggy in IDA! It&rsquo;s a fairly small binary, with everything in the <code>main()</code> function.</p>
+<p>The waow-so-useful string <code>Nothing to see here...</code> we saw earlier is given as argument to <code>puts()</code>.</p>
+<p><img src="00_main.png" alt=""></p>
+<p>But, before that call to <code>puts()</code> occurs, there&rsquo; s something else weird going on&hellip; that <code>unk_6E8</code> which is stored in <code>var_8</code>.</p>
+<p><img src="01_unk_6E8.png" alt=""></p>
+<p>What a curious blob of data! The first and last byte of each line looks suspiciously like they are in the ASCII range.. .Let&rsquo;s put that theory to the test by manually checking the first ones:</p>
+<ul>
+<li>0x32 =&gt; <code>2</code></li>
+<li>0x34 =&gt; <code>4</code></li>
+<li>0x37 =&gt; <code>7</code></li>
+<li>0x43 =&gt; <code>C</code></li>
+</ul>
+<p>Yep, that sounds like a flag! Let&rsquo;s automate this with a few lines of Python:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="ch">#!/usr/bin/python3</span>
+
+<span class="n">right</span> <span class="o">=</span> <span class="p">[</span><span class="mh">0x32</span><span class="p">,</span> <span class="mh">0x37</span><span class="p">,</span> <span class="mh">0x54</span><span class="p">,</span> <span class="mh">0x7b</span><span class="p">,</span> <span class="mh">0x64</span><span class="p">,</span> <span class="mh">0x32</span><span class="p">,</span> <span class="mh">0x35</span><span class="p">,</span> <span class="mh">0x62</span><span class="p">,</span> <span class="mh">0x63</span><span class="p">,</span> <span class="mh">0x37</span><span class="p">,</span> <span class="mh">0x34</span><span class="p">,</span> <span class="mh">0x37</span><span class="p">,</span> <span class="mh">0x36</span><span class="p">,</span> <span class="mh">0x30</span><span class="p">,</span> <span class="mh">0x31</span><span class="p">,</span> <span class="mh">0x31</span><span class="p">,</span> <span class="mh">0x62</span><span class="p">,</span> <span class="mh">0x61</span><span class="p">,</span> <span class="mh">0x33</span><span class="p">,</span> <span class="mh">0x63</span><span class="p">]</span>
+<span class="n">left</span> <span class="o">=</span> <span class="p">[</span><span class="mh">0x34</span><span class="p">,</span> <span class="mh">0x43</span><span class="p">,</span> <span class="mh">0x46</span><span class="p">,</span> <span class="mh">0x36</span><span class="p">,</span> <span class="mh">0x66</span><span class="p">,</span> <span class="mh">0x31</span><span class="p">,</span> <span class="mh">0x65</span><span class="p">,</span> <span class="mh">0x33</span><span class="p">,</span> <span class="mh">0x63</span><span class="p">,</span> <span class="mh">0x33</span><span class="p">,</span> <span class="mh">0x30</span><span class="p">,</span> <span class="mh">0x32</span><span class="p">,</span> <span class="mh">0x37</span><span class="p">,</span> <span class="mh">0x33</span><span class="p">,</span> <span class="mh">0x61</span><span class="p">,</span> <span class="mh">0x35</span><span class="p">,</span> <span class="mh">0x30</span><span class="p">,</span> <span class="mh">0x62</span><span class="p">,</span> <span class="mh">0x36</span><span class="p">,</span> <span class="mh">0x7D</span><span class="p">]</span>
+
+<span class="n">flag</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">left</span><span class="p">)):</span>
+    <span class="n">flag</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">chr</span><span class="p">(</span><span class="n">right</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+    <span class="n">flag</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">chr</span><span class="p">(</span><span class="n">left</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+</code></pre></div><p>Flag: <em>censored according to the write-ups policy of 24/7</em></p>
+<p><img src="cat_weird.gif" alt=""></p>
+
+        </div>
+    </article>
+</div>
+<div class="column" id="toc-column">    <aside>
+        <div id="toc">
+            What's on this page?
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#description">Description</a></li>
+    <li><a href="#solution">Solution</a></li>
+  </ul>
+</nav>
+        </div>
+    </aside>
+
+</div>
+</div></div>
+            </div><footer class="footer">
+  <div class="content has-text-centered">
+    <p>
+    Handcrafted with <span style="color: #e25555;">&hearts;</span> by kylma, with lots of
+    
+        <a href="https://shiny-labs.github.io/credits/">awesome tools</a>.
+    
+    </p>
+  </div>
+
+  <div id="to-top">
+    <a href="#logo" class="top-btn no-squiggly">^</a>
+  </div>
+
+</footer>
+</div>
+    </body>
+</html>

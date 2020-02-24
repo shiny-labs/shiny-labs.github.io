@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>fpga on shiny-labs</title>
+    <link>https://shiny-labs.github.io/categories/fpga/</link>
+    <description>Recent content in fpga on shiny-labs</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <managingEditor>shiny-labs@kylma.fr (shiny-labs)</managingEditor>
+    <webMaster>shiny-labs@kylma.fr (shiny-labs)</webMaster>
+    <lastBuildDate>Tue, 16 Apr 2019 16:41:27 +0200</lastBuildDate>
+    
+	<atom:link href="https://shiny-labs.github.io/categories/fpga/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Lattice Diamond Tutorial: Project FrankANDstein</title>
+      <link>https://shiny-labs.github.io/posts/190416-lattice-diamond-tutorial/</link>
+      <pubDate>Tue, 16 Apr 2019 16:41:27 +0200</pubDate>
+      <author>shiny-labs@kylma.fr (shiny-labs)</author>
+      <guid>https://shiny-labs.github.io/posts/190416-lattice-diamond-tutorial/</guid>
+      <description>The goal of this mini-project is to create and simulate a full project for Lattice Diamond, from start to end.
+As a test subject, we will use the AND gate. We will create our own frankANDstein gate and give it liiiiiife.
+Installation /!\ I didn&amp;rsquo;t read the fine prints before installing, but short story, the simulator Active HDL is not included on the Linux version of Lattice Diamond. So find yourself a Windows box :(.</description>
+    </item>
+    
+  </channel>
+</rss>

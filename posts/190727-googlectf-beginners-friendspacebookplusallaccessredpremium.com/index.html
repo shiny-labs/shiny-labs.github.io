@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="generator" content="Hugo 0.65.0" />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://shiny-labs.github.io/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://shiny-labs.github.io/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://shiny-labs.github.io/favicon-16x16.png">
+    <link rel="manifest" href="https://shiny-labs.github.io/site.webmanifest">
+    <link rel="mask-icon" href="https://shiny-labs.github.io/safari-pinned-tab.svg" color="#000000">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
+
+
+    <link rel="stylesheet" href="https://shiny-labs.github.io/css/bulma.min.css">
+    <link rel="stylesheet" href="https://shiny-labs.github.io/css/main.css">
+    <link rel="stylesheet" href="https://shiny-labs.github.io/css/syntax.css">
+
+    
+    <title>shiny-labs || GoogleCTF Beginner&#39;s Quest 2019 - FriendSpaceBookPlusAllAccessRedPremium.com</title>
+</head>
+<body><nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item no-squiggly" href="https://shiny-labs.github.io/">
+            <h1 id="logo" class="glitch">shiny-labs</h1>
+        </a>
+    </div>
+
+    <div class="navbar-menu">
+        <div class="navbar-start">
+            
+        </div>
+
+        <div class="navbar-end">
+            
+            <h3 id="subtitle">Exploit, reverse engineering and cats.</h3>
+        </div>
+    </div>
+</nav>
+
+<div id="content">
+
+            <div class="columns is-centered">
+                <div class="column is-10" id="menu-column"><div id="menu" class="tabs is-centered is-medium">
+    <ul>
+            <li><a href="https://shiny-labs.github.io/" class="no-squiggly">Home</a></li>
+            <li><a href="https://shiny-labs.github.io/posts/" class="no-squiggly">Posts</a></li>
+            <li><a href="https://shiny-labs.github.io/tags/" class="no-squiggly">Tags</a></li>
+            <li><a href="https://shiny-labs.github.io/about/" class="no-squiggly">About</a></li>
+            <li><a href="https://shiny-labs.github.io/archives/" class="no-squiggly">Archives</a></li>
+  </ul>
+</div>
+</div>
+            </div>
+
+            <div class="columns is-centered">
+                <div class="column is-10" id="main-column">
+<div class="columns">
+<div class="column is-10" id="main-column">
+    <article class="article">
+        <div >
+            <h1 class="article-title">GoogleCTF Beginner&#39;s Quest 2019 - FriendSpaceBookPlusAllAccessRedPremium.com</h1>
+            
+<div class="post-meta">
+  <p class="article-meta">
+  <span>Date</span> &#x5b;
+  <time datetime="July 27, 2019">
+      Jul 27
+    </time>
+  &#x5d;
+        
+        
+  <span>Categories</span> &#x5b;
+    <a href="https://shiny-labs.github.io/categories"></a>
+  &#x5d;
+        
+        
+  <span>Series</span> &#x5b;
+    <a href="https://shiny-labs.github.io/series/googlectf-beginners-quest-2019">GoogleCTF Beginner&#39;s Quest 2019</a>
+  &#x5d;
+        
+        
+  <span>Tags</span> &#x5b;
+    <a href="https://shiny-labs.github.io/tags/reversing">reversing</a>
+  &#x5d;
+  </p>
+</div>
+
+        </div>
+        <div>
+            <h2 id="description">Description</h2>
+<blockquote>
+<p>Having snooped around like the expert spy you were never trained to be,
+you found something that takes your interest:
+&ldquo;Cookie/www.FriendSpaceBookPlusAllAccessRedPremium.com&rdquo;  But unbeknownst
+to you, it was only the  700nm Wavelength herring rather than a
+delicious cookie that you could have found.   It looks exactly like a
+credential for another system.  You find yourself in search of a
+friendly book to read.
+Having already spent some time trying to find a way to gain more
+intelligence&hellip; and learn about those fluffy creatures, you
+(several)-momentarily divert your attention here.  It&rsquo;s a place of all
+the individuals in the world sharing large amounts of data with one
+another. Strangely enough, all of the inhabitants seem to speak using
+this weird pictorial language. And there is hot disagreement over what
+the meaning of an eggplant is.
+But not much Cauliflower here.  They must be very private creatures.
+SarahH has left open some proprietary tools, surely running this will
+take you to them.  Decipher this language and move forth!</p>
+</blockquote>
+<h2 id="solving">Solving</h2>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">➔ file *
+program: UTF-8 Unicode text
+vm.py: Python script, UTF-8 Unicode text executable
+</code></pre></div><p>So, a program and a Python script. Well, well, well.</p>
+<p><img src="00_cat_program.png" alt=""></p>
+<p>Given how my terminal chokes when displaying it, it&rsquo;s either japanese or emojis.</p>
+<p>Right, let&rsquo;s try to run that program!</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ python vm.py program
+Running ....
+http://emoji-t0anaxn
+</code></pre></div><p>And now it&rsquo;s hanging&hellip; I don&rsquo;t know what it&rsquo;s trying to print, but it&rsquo;s obviously painful :D</p>
+<p>Right. Let&rsquo;s find a font which supports emojis, cause I&rsquo;m not thrilled by the prospect of reversing a bunch of squares. I picked <code>ttf-joypixels</code>, mostly because it was the first when querying &ldquo;emoji&rdquo; in Arch Linux repositories and can be installed with a simple <code>pacman -S ttf-joypixels</code>.</p>
+<p>Take 2, let&rsquo;s open <code>program</code> with a graphical text editor!</p>
+<p><img src="01_program.png" alt=""></p>
+<p>That&rsquo;s better, I guess&hellip;? At least it&rsquo;s not a bunch of squares and it&rsquo;s colorful!</p>
+<p>Okay, now, take a look at <code>vm.py</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="c1"># Implements a simple stack-based VM</span>
+<span class="k">class</span> <span class="nc">VM</span><span class="p">:</span>
+
+  <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rom</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">rom</span> <span class="o">=</span> <span class="n">rom</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">accumulator1</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">accumulator2</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">instruction_pointer</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">stack</span> <span class="o">=</span> <span class="p">[]</span>
+
+  <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">cur_ins</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rom</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">instruction_pointer</span><span class="p">]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">instruction_pointer</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="n">fn</span> <span class="o">=</span> <span class="n">VM</span><span class="o">.</span><span class="n">OPERATIONS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cur_ins</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">cur_ins</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;🖋&#39;</span><span class="p">:</span>
+      <span class="k">return</span>
+    <span class="k">if</span> <span class="n">fn</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+      <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&#34;Unknown instruction &#39;{}&#39; at {}&#34;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+          <span class="nb">repr</span><span class="p">(</span><span class="n">cur_ins</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">instruction_pointer</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="n">fn</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+  <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">pop</span><span class="p">())</span>
+
+  <span class="k">def</span> <span class="nf">sub</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span> <span class="o">-</span> <span class="n">a</span><span class="p">)</span>
+
+  <span class="k">def</span> <span class="nf">if_zero</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+      <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">rom</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">instruction_pointer</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;😐&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rom</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">instruction_pointer</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;🏀&#39;</span><span class="p">,</span> <span class="s1">&#39;⛰&#39;</span><span class="p">]:</span>
+          <span class="k">break</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">find_first_endif</span><span class="p">()</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">instruction_pointer</span> <span class="o">+=</span> <span class="mi">1</span>
+
+  <span class="k">def</span> <span class="nf">if_not_zero</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+      <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">rom</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">instruction_pointer</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;😐&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rom</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">instruction_pointer</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;🏀&#39;</span><span class="p">,</span> <span class="s1">&#39;⛰&#39;</span><span class="p">]:</span>
+          <span class="k">break</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">find_first_endif</span><span class="p">()</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">instruction_pointer</span> <span class="o">+=</span> <span class="mi">1</span>
+
+  <span class="k">def</span> <span class="nf">find_first_endif</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">rom</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">instruction_pointer</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;😐&#39;</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">instruction_pointer</span> <span class="o">+=</span> <span class="mi">1</span>
+
+  <span class="k">def</span> <span class="nf">jump_to</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">marker</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rom</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">instruction_pointer</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">marker</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;💰&#39;</span><span class="p">:</span>
+      <span class="k">print</span><span class="p">(</span><span class="s1">&#39;Incorrect symbol : &#39;</span> <span class="o">+</span> <span class="n">marker</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+      <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">()</span>
+    <span class="n">marker</span> <span class="o">=</span> <span class="s1">&#39;🖋&#39;</span> <span class="o">+</span> <span class="n">marker</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">instruction_pointer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rom</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">marker</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+
+  <span class="k">def</span> <span class="nf">jump_top</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">instruction_pointer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+
+  <span class="k">def</span> <span class="nf">exit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Done.&#39;</span><span class="p">)</span>
+    <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">()</span>
+
+  <span class="k">def</span> <span class="nf">print_top</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">chr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()))</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+
+  <span class="k">def</span> <span class="nf">push</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rom</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">instruction_pointer</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;🥇&#39;</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">accumulator1</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">rom</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">instruction_pointer</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;🥈&#39;</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">accumulator2</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Unknown instruction {} at position {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+          <span class="bp">self</span><span class="o">.</span><span class="n">rom</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">instruction_pointer</span><span class="p">],</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">instruction_pointer</span><span class="p">)))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">instruction_pointer</span> <span class="o">+=</span> <span class="mi">1</span>
+
+  <span class="k">def</span> <span class="nf">pop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rom</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">instruction_pointer</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;🥇&#39;</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">accumulator1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">rom</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">instruction_pointer</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;🥈&#39;</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">accumulator2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Unknown instruction {} at position {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+          <span class="bp">self</span><span class="o">.</span><span class="n">rom</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">instruction_pointer</span><span class="p">],</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">instruction_pointer</span><span class="p">)))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">instruction_pointer</span> <span class="o">+=</span> <span class="mi">1</span>
+
+  <span class="k">def</span> <span class="nf">pop_out</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+
+  <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">num</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rom</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">instruction_pointer</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;🥇&#39;</span><span class="p">:</span>
+      <span class="n">acc</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">rom</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">instruction_pointer</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;🥈&#39;</span><span class="p">:</span>
+      <span class="n">acc</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Unknown instruction {} at position {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+          <span class="bp">self</span><span class="o">.</span><span class="n">rom</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">instruction_pointer</span><span class="p">],</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">instruction_pointer</span><span class="p">)))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">instruction_pointer</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">rom</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">instruction_pointer</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;✋&#39;</span><span class="p">:</span>
+      <span class="n">num</span> <span class="o">=</span> <span class="n">num</span> <span class="o">*</span> <span class="mi">10</span> <span class="o">+</span> <span class="p">(</span><span class="nb">ord</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rom</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">instruction_pointer</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span> <span class="o">-</span> <span class="nb">ord</span><span class="p">(</span><span class="s1">&#39;0&#39;</span><span class="p">))</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">instruction_pointer</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">if</span> <span class="n">acc</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">accumulator1</span> <span class="o">=</span> <span class="n">num</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">accumulator2</span> <span class="o">=</span> <span class="n">num</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">instruction_pointer</span> <span class="o">+=</span> <span class="mi">1</span>
+
+  <span class="k">def</span> <span class="nf">clone</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+  <span class="k">def</span> <span class="nf">multiply</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span> <span class="o">*</span> <span class="n">a</span><span class="p">)</span>
+
+  <span class="k">def</span> <span class="nf">divide</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span> <span class="o">//</span> <span class="n">a</span><span class="p">)</span>
+
+  <span class="k">def</span> <span class="nf">modulo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span> <span class="o">%</span> <span class="n">a</span><span class="p">)</span>
+
+  <span class="k">def</span> <span class="nf">xor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span> <span class="o">^</span> <span class="n">a</span><span class="p">)</span>
+
+  <span class="n">OPERATIONS</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="s1">&#39;🍡&#39;</span><span class="p">:</span> <span class="n">add</span><span class="p">,</span>
+      <span class="s1">&#39;🤡&#39;</span><span class="p">:</span> <span class="n">clone</span><span class="p">,</span>
+      <span class="s1">&#39;📐&#39;</span><span class="p">:</span> <span class="n">divide</span><span class="p">,</span>
+      <span class="s1">&#39;😲&#39;</span><span class="p">:</span> <span class="n">if_zero</span><span class="p">,</span>
+      <span class="s1">&#39;😄&#39;</span><span class="p">:</span> <span class="n">if_not_zero</span><span class="p">,</span>
+      <span class="s1">&#39;🏀&#39;</span><span class="p">:</span> <span class="n">jump_to</span><span class="p">,</span>
+      <span class="s1">&#39;🚛&#39;</span><span class="p">:</span> <span class="n">load</span><span class="p">,</span>
+      <span class="s1">&#39;📬&#39;</span><span class="p">:</span> <span class="n">modulo</span><span class="p">,</span>
+      <span class="s1">&#39;⭐&#39;</span><span class="p">:</span> <span class="n">multiply</span><span class="p">,</span>
+      <span class="s1">&#39;🍿&#39;</span><span class="p">:</span> <span class="n">pop</span><span class="p">,</span>
+      <span class="s1">&#39;📤&#39;</span><span class="p">:</span> <span class="n">pop_out</span><span class="p">,</span>
+      <span class="s1">&#39;🎤&#39;</span><span class="p">:</span> <span class="n">print_top</span><span class="p">,</span>
+      <span class="s1">&#39;📥&#39;</span><span class="p">:</span> <span class="n">push</span><span class="p">,</span>
+      <span class="s1">&#39;🔪&#39;</span><span class="p">:</span> <span class="n">sub</span><span class="p">,</span>
+      <span class="s1">&#39;🌓&#39;</span><span class="p">:</span> <span class="n">xor</span><span class="p">,</span>
+      <span class="s1">&#39;⛰&#39;</span><span class="p">:</span> <span class="n">jump_top</span><span class="p">,</span>
+      <span class="s1">&#39;⌛&#39;</span><span class="p">:</span> <span class="nb">exit</span>
+  <span class="p">}</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+  <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s1">&#39;Missing program&#39;</span><span class="p">)</span>
+    <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">()</span>
+
+  <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s1">&#39;Running ....&#39;</span><span class="p">)</span>
+    <span class="n">all_ins</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">]</span>
+    <span class="n">all_ins</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+    <span class="n">vm</span> <span class="o">=</span> <span class="n">VM</span><span class="p">(</span><span class="n">all_ins</span><span class="p">)</span>
+
+    <span class="k">while</span> <span class="mi">1</span><span class="p">:</span>
+      <span class="n">vm</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+
+</code></pre></div><p>It looks like a lot of code, but let&rsquo;s break it down. <code>vm.py</code> is the implementation of a stack-based virtual machine. It means it can interpret the emoji language just like a real computer can deal with regular assembly.</p>
+<p><img src="02_vm.png" alt=""></p>
+<p>Our VM has 4 components:</p>
+<ul>
+<li>a stack: being stack-based, this is the most central element. It&rsquo;s used for everything, storing stuff, executing stuff and more!</li>
+<li>an instruction pointer: keeps track of the current instruction. It can be modified to jump to other instructions and thus have <code>if/else</code>, <code>for</code> and <code>while</code> constructs.</li>
+<li>accumulator1 and accumulator2: storage space, similar to registers, each of them can hold a value.</li>
+</ul>
+<p>The rest of the functions in <code>vm.py</code> implements the possible operations, and their names are pretty self descriptive. For example, <code>xor()</code> will remove the two values on the top on the stack, compute <code>a xor b</code> and put the result on the stack.</p>
+<h3 id="translator">Translator</h3>
+<p>Okay, emojis are nice but not it&rsquo;s not the most readable thing in the world. It would be more readable if I could translate it to something actually readable ie text.</p>
+<p>And for that, you need to identify the meaning of each symbol! Operations are easy, as they are nicely listed in a dictionary in <code>vm.py</code>. You can get most of the other symbols by reading the rest of <code>vm.py</code>.</p>
+<p><img src="03_symbols.png" alt=""></p>
+<p>Apart from the money bag, the pen emoji and the weird cluster of maybe-address-symbols, they are fairly straight-forward. So I wrote a translator script in Python, leaving the emojis I wasn&rsquo;t sure about untranslated, to see where they would be used in the program.</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="ch">#!/usr/bin/env python</span>
+
+<span class="s2">&#34;&#34;&#34;
+</span><span class="s2">Translate emojis to kinda assembly
+</span><span class="s2">Outputs a file &lt;program&gt;.translated
+</span><span class="s2">    Usage: ./translator.py &lt;program_to_translate&gt;
+</span><span class="s2">&#34;&#34;&#34;</span>
+
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="n">EMOJIS</span> <span class="o">=</span>  <span class="p">{</span>
+      <span class="s1">&#39;🍡&#39;</span><span class="p">:</span> <span class="s2">&#34;add&#34;</span><span class="p">,</span>
+      <span class="s1">&#39;🤡&#39;</span><span class="p">:</span> <span class="s2">&#34;clone&#34;</span><span class="p">,</span>
+      <span class="s1">&#39;📐&#39;</span><span class="p">:</span> <span class="s2">&#34;divide&#34;</span><span class="p">,</span>
+      <span class="s1">&#39;😲&#39;</span><span class="p">:</span> <span class="s2">&#34;if_zero&#34;</span><span class="p">,</span>
+      <span class="s1">&#39;😄&#39;</span><span class="p">:</span> <span class="s2">&#34;if_not_zero&#34;</span><span class="p">,</span>
+      <span class="s1">&#39;🏀&#39;</span><span class="p">:</span> <span class="s2">&#34;jump_to&#34;</span><span class="p">,</span>
+      <span class="s1">&#39;🚛&#39;</span><span class="p">:</span> <span class="s2">&#34;load&#34;</span><span class="p">,</span>
+      <span class="s1">&#39;📬&#39;</span><span class="p">:</span> <span class="s2">&#34;modulo&#34;</span><span class="p">,</span>
+      <span class="s1">&#39;⭐&#39;</span><span class="p">:</span> <span class="s2">&#34;multiply&#34;</span><span class="p">,</span>
+      <span class="s1">&#39;🍿&#39;</span><span class="p">:</span> <span class="s2">&#34;pop&#34;</span><span class="p">,</span>
+      <span class="s1">&#39;📤&#39;</span><span class="p">:</span> <span class="s2">&#34;pop_out&#34;</span><span class="p">,</span>
+      <span class="s1">&#39;🎤&#39;</span><span class="p">:</span> <span class="s2">&#34;print_top&#34;</span><span class="p">,</span>
+      <span class="s1">&#39;📥&#39;</span><span class="p">:</span> <span class="s2">&#34;push&#34;</span><span class="p">,</span>
+      <span class="s1">&#39;🔪&#39;</span><span class="p">:</span> <span class="s2">&#34;sub&#34;</span><span class="p">,</span>
+      <span class="s1">&#39;🌓&#39;</span><span class="p">:</span> <span class="s2">&#34;xor&#34;</span><span class="p">,</span>
+      <span class="s1">&#39;⛰&#39;</span><span class="p">:</span> <span class="s2">&#34;jump_top&#34;</span><span class="p">,</span>
+      <span class="s1">&#39;⌛&#39;</span><span class="p">:</span> <span class="s2">&#34;exit&#34;</span><span class="p">,</span>
+      <span class="s1">&#39;0️⃣&#39;</span><span class="p">:</span> <span class="s2">&#34;0&#34;</span><span class="p">,</span>
+      <span class="s1">&#39;1️⃣&#39;</span><span class="p">:</span> <span class="s2">&#34;1&#34;</span><span class="p">,</span>
+      <span class="s1">&#39;2️⃣&#39;</span><span class="p">:</span> <span class="s2">&#34;2&#34;</span><span class="p">,</span>
+      <span class="s1">&#39;3️⃣&#39;</span><span class="p">:</span> <span class="s2">&#34;3&#34;</span><span class="p">,</span>
+      <span class="s1">&#39;4️⃣&#39;</span><span class="p">:</span> <span class="s2">&#34;4&#34;</span><span class="p">,</span>
+      <span class="s1">&#39;5️⃣&#39;</span><span class="p">:</span> <span class="s2">&#34;5&#34;</span><span class="p">,</span>
+      <span class="s1">&#39;6️⃣&#39;</span><span class="p">:</span> <span class="s2">&#34;6&#34;</span><span class="p">,</span>
+      <span class="s1">&#39;7️⃣&#39;</span><span class="p">:</span> <span class="s2">&#34;7&#34;</span><span class="p">,</span>
+      <span class="s1">&#39;8️⃣&#39;</span><span class="p">:</span> <span class="s2">&#34;8&#34;</span><span class="p">,</span>
+      <span class="s1">&#39;9️⃣&#39;</span><span class="p">:</span> <span class="s2">&#34;9&#34;</span><span class="p">,</span>
+      <span class="s1">&#39;✋&#39;</span><span class="p">:</span> <span class="s2">&#34;&#34;</span><span class="p">,</span> <span class="c1"># end of number</span>
+      <span class="s1">&#39;🥇&#39;</span><span class="p">:</span> <span class="s2">&#34;acc1&#34;</span><span class="p">,</span>
+      <span class="s1">&#39;🥈&#39;</span><span class="p">:</span> <span class="s2">&#34;acc2&#34;</span><span class="p">,</span>
+      <span class="s1">&#39;😐&#39;</span><span class="p">:</span> <span class="s2">&#34;endif&#34;</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="k">def</span> <span class="nf">usage</span><span class="p">():</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&#34;[!] missing argument&#34;</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&#34;Usage: {} &lt;program_to_translate&gt;&#34;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="c1"># check that a program was given as argument</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">usage</span><span class="p">()</span>
+        <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">()</span>
+
+    <span class="c1"># read the content of program</span>
+    <span class="n">content</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">content</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+
+    <span class="c1"># start the translation!</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&#34;{}.translated&#34;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="s2">&#34;w&#34;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">content</span><span class="p">:</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+            <span class="n">line_translation</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="k">for</span> <span class="n">ins</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">ins</span> <span class="ow">is</span> <span class="ow">not</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">line_translation</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">EMOJIS</span><span class="p">[</span><span class="n">ins</span><span class="p">])</span>
+                    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                        <span class="n">line_translation</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&#34;{}&#34;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ins</span><span class="p">))</span>
+
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&#34;{}</span><span class="se">\n</span><span class="s2">&#34;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&#34; &#34;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">line_translation</span><span class="p">)))</span>
+</code></pre></div><p>Let&rsquo;s run it and have a look at the resulting <code>program.translated</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">load acc1 0  push acc1
+load acc1 1 7 4 8 8  push acc1
+load acc1 1 6 7 5 8  push acc1
+load acc1 1 6 5 9 9  push acc1
+load acc1 1 6 2 8 5  push acc1
+load acc1 1 6 0 9 4  push acc1
+load acc1 1 5 5 0 5  push acc1
+load acc1 1 5 4 1 7  push acc1
+load acc1 1 4 8 3 2  push acc1
+load acc1 1 4 4 5 0  push acc1
+load acc1 1 3 8 9 3  push acc1
+load acc1 1 3 9 2 6  push acc1
+load acc1 1 3 4 3 7  push acc1
+load acc1 1 2 8 3 3  push acc1
+load acc1 1 2 7 4 1  push acc1
+load acc1 1 2 5 3 3  push acc1
+load acc1 1 1 5 0 4  push acc1
+load acc1 1 1 3 4 2  push acc1
+load acc1 1 0 5 0 3  push acc1
+load acc1 1 0 5 5 0  push acc1
+load acc1 1 0 3 1 9  push acc1
+load acc1 9 7 5  push acc1
+load acc1 1 0 0 7  push acc1
+load acc1 8 9 2  push acc1
+load acc1 8 9 3  push acc1
+load acc1 6 6 0  push acc1
+load acc1 7 4 3  push acc1
+load acc1 2 6 7  push acc1
+load acc1 3 4 4  push acc1
+load acc1 2 6 4  push acc1
+load acc1 3 3 9  push acc1
+load acc1 2 0 8  push acc1
+load acc1 2 1 6  push acc1
+load acc1 2 4 2  push acc1
+load acc1 1 7 2  push acc1
+load acc1 7 4  push acc1
+load acc1 4 9  push acc1
+load acc1 1 1 9  push acc1
+load acc1 1 1 3  push acc1
+load acc1 1 1 9  push acc1
+load acc1 1 0 6  push acc1
+load acc2 1
+
+🖋💠🔶🎌🚩🏁 pop acc1 push acc2 push acc1 load acc1 3 8 9
+push acc1 push acc2
+jump_to 💰🏁🚩🎌💠🔶
+xor print_top
+load acc1 1  push acc1 add pop acc2
+if_not_zero jump_to 💰💠🔶🎌🚩🏁 endif
+
+load acc1 9 8 4 2 6  push acc1
+load acc1 9 7 8 5 0  push acc1
+load acc1 9 7 6 0 4  push acc1
+load acc1 9 7 2 8 0  push acc1
+load acc1 9 6 8 1 5  push acc1
+load acc1 9 6 4 4 3  push acc1
+load acc1 9 6 3 5 4  push acc1
+load acc1 9 5 9 3 4  push acc1
+load acc1 9 4 8 6 5  push acc1
+load acc1 9 4 9 5 2  push acc1
+load acc1 9 4 6 6 9  push acc1
+load acc1 9 4 4 4 0  push acc1
+load acc1 9 3 9 6 9  push acc1
+load acc1 9 3 7 6 6  push acc1
+load acc2 9 9
+
+🖋💠🏁🎌🔶🚩 pop acc1 push acc2 push acc1 load acc1 5 6 8
+push acc1 push acc2
+jump_to 💰🏁🚩🎌💠🔶
+xor print_top
+load acc1 1  push acc1 add pop acc2
+if_not_zero jump_to 💰💠🏁🎌🔶🚩 endif
+
+load acc1 1 0 1 1 4 1 0 5 8  push acc1
+load acc1 1 0 1 0 6 0 2 0 6  push acc1
+load acc1 1 0 1 0 3 0 0 5 5  push acc1
+load acc1 1 0 0 9 9 8 9 6 6  push acc1
+load acc1 1 0 0 8 8 7 9 9 0  push acc1
+load acc1 1 0 0 7 6 7 0 8 5  push acc1
+load acc1 1 0 0 7 0 7 0 3 6  push acc1
+load acc1 1 0 0 6 5 6 1 1 1  push acc1
+load acc1 1 0 0 4 0 4 0 9 4  push acc1
+load acc1 1 0 0 1 6 0 9 2 2  push acc1
+load acc1 1 0 0 1 3 1 0 1 9  push acc1
+load acc1 1 0 0 1 1 1 1 0 0  push acc1
+load acc1 1 0 0 0 5 9 9 2 6  push acc1
+load acc1 1 0 0 0 4 9 9 8 2  push acc1
+load acc1 1 0 0 0 3 0 0 4 5  push acc1
+load acc1 9 9 8 9 9 9 7  push acc1
+load acc1 9 9 8 1 8 5 8  push acc1
+load acc1 9 9 8 0 8 1 5  push acc1
+load acc1 9 9 7 8 8 4 2  push acc1
+load acc1 9 9 6 5 7 9 4  push acc1
+load acc1 9 9 5 7 5 6 4  push acc1
+load acc1 9 9 3 8 3 0 4  push acc1
+load acc1 9 9 3 5 4 2 7  push acc1
+load acc1 9 9 3 2 2 8 9  push acc1
+load acc1 9 9 3 1 4 9 4  push acc1
+load acc1 9 9 2 7 3 8 8  push acc1
+load acc1 9 9 2 6 3 7 6  push acc1
+load acc1 9 9 2 3 2 1 3  push acc1
+load acc1 9 9 2 1 3 9 4  push acc1
+load acc1 9 9 1 9 1 5 4  push acc1
+load acc1 9 9 1 8 0 8 2  push acc1
+load acc1 9 9 1 6 2 3 9  push acc1
+load acc2 7 6 5
+
+🖋🚩💠🎌🔶🏁 pop acc1 push acc2 push acc1 load acc1 1 0 2 3
+push acc1 push acc2
+jump_to 💰🏁🚩🎌💠🔶
+xor print_top
+load acc1 1  push acc1 add pop acc2
+if_not_zero jump_to 💰🚩💠🎌🔶🏁 endif
+exit
+
+🖋🏁🚩🎌💠🔶
+load acc1 2  push acc1 🖋💠🎌🏁🚩🔶
+jump_to 💰🚩🔶🏁🎌💠
+🖋🔶🎌🚩💠🏁 if_zero pop_out jump_to 💰🔶🚩💠🏁🎌  endif
+pop_out jump_to 💰🎌🏁💠🔶🚩
+🖋🎌🏁🚩🔶💠 if_zero pop_out jump_to 💰🔶🚩💠🏁🎌 endif
+pop_out pop acc1 load acc2 1  push acc2 sub
+if_zero pop_out pop acc2 push acc1 push acc2 jump_top endif push acc1
+🖋🔶🚩💠🏁🎌 load acc2 1  push acc2 add jump_to 💰💠🎌🏁🚩🔶
+
+🖋🚩🔶🏁🎌💠
+clone load acc1 2  push acc1
+🖋🎌🚩💠🔶🏁 sub if_zero pop_out load acc1 1  push acc1
+jump_to 💰🔶🎌🚩💠🏁 endif
+pop_out clone push acc1
+modulo if_zero jump_to 💰🔶🎌🚩💠🏁 endif
+pop_out clone push acc1 load acc1 1
+push acc1 add clone pop acc1 jump_to 💰🎌🚩💠🔶🏁
+
+🖋🎌🏁💠🔶🚩
+clone clone load acc2 0  push acc2
+🖋🏁💠🔶🚩🎌 load acc1 1 0  push acc1
+multiply pop acc2 push acc1 modulo
+push acc2 add pop acc2 pop acc1 clone push acc2 sub
+if_zero pop_out load acc2 1  push acc2 jump_to 💰🎌🏁🚩🔶💠 endif
+pop_out push acc1 load acc1 1 0  push acc1 divide
+if_zero jump_to 💰🎌🏁🚩🔶💠 endif
+clone push acc2 jump_to 💰🏁💠🔶🚩🎌
+</code></pre></div><p>And the meaning of the undecided emojis became evident! They are labels. The pen defines a label on which you can jump, and the money bag to indicate the start of a label when jumping on it. The rest define the &ldquo;name&rdquo; of the label.</p>
+<p>With that new information, let&rsquo;s update <code>translator.py</code> to add labels to the EMOJIS dictionnary:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">      &#39;🖋💠🔶🎌🚩🏁&#39;: &#34;label A&#34;,
+      &#39;💰💠🔶🎌🚩🏁&#39;: &#34;label A&#34;,
+      &#39;🖋💠🎌🏁🚩🔶&#39;: &#34;label B&#34;,
+      &#39;💰💠🎌🏁🚩🔶&#39;: &#34;label B&#34;,
+      &#39;🖋💠🏁🎌🔶🚩&#39;: &#34;label C&#34;,
+      &#39;💰💠🏁🎌🔶🚩&#39;: &#34;label C&#34;,
+      &#39;🖋🚩💠🎌🔶🏁&#39;: &#34;label D&#34;,
+      &#39;💰🚩💠🎌🔶🏁&#39;: &#34;label D&#34;,
+      &#39;🖋🚩🔶🏁🎌💠&#39;: &#34;label E&#34;,
+      &#39;💰🚩🔶🏁🎌💠&#39;: &#34;label E&#34;,
+      &#39;🖋🏁🚩🎌💠🔶&#39;: &#34;label F&#34;,
+      &#39;💰🏁🚩🎌💠🔶&#39;: &#34;label F&#34;,
+      &#39;🖋🏁💠🔶🚩🎌&#39;: &#34;label G&#34;,
+      &#39;💰🏁💠🔶🚩🎌&#39;: &#34;label G&#34;,
+      &#39;🖋🔶🎌🚩💠🏁&#39;: &#34;label H&#34;,
+      &#39;💰🔶🎌🚩💠🏁&#39;: &#34;label H&#34;,
+      &#39;🖋🔶🚩💠🏁🎌&#39;: &#34;label I&#34;,
+      &#39;💰🔶🚩💠🏁🎌&#39;: &#34;label I&#34;,
+      &#39;🖋🎌🏁💠🔶🚩&#39;: &#34;label J&#34;,
+      &#39;💰🎌🏁💠🔶🚩&#39;: &#34;label J&#34;,
+      &#39;🖋🎌🏁🚩🔶💠&#39;: &#34;label K&#34;,
+      &#39;💰🎌🏁🚩🔶💠&#39;: &#34;label K&#34;,
+      &#39;🖋🎌🚩💠🔶🏁&#39;: &#34;label L&#34;,
+      &#39;💰🎌🚩💠🔶🏁&#39;: &#34;label L&#34;,
+</code></pre></div><p>And now, we have a translation free of emojis, at last!</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">load acc1 0  push acc1
+load acc1 1 7 4 8 8  push acc1
+load acc1 1 6 7 5 8  push acc1
+load acc1 1 6 5 9 9  push acc1
+load acc1 1 6 2 8 5  push acc1
+load acc1 1 6 0 9 4  push acc1
+load acc1 1 5 5 0 5  push acc1
+load acc1 1 5 4 1 7  push acc1
+load acc1 1 4 8 3 2  push acc1
+load acc1 1 4 4 5 0  push acc1
+load acc1 1 3 8 9 3  push acc1
+load acc1 1 3 9 2 6  push acc1
+load acc1 1 3 4 3 7  push acc1
+load acc1 1 2 8 3 3  push acc1
+load acc1 1 2 7 4 1  push acc1
+load acc1 1 2 5 3 3  push acc1
+load acc1 1 1 5 0 4  push acc1
+load acc1 1 1 3 4 2  push acc1
+load acc1 1 0 5 0 3  push acc1
+load acc1 1 0 5 5 0  push acc1
+load acc1 1 0 3 1 9  push acc1
+load acc1 9 7 5  push acc1
+load acc1 1 0 0 7  push acc1
+load acc1 8 9 2  push acc1
+load acc1 8 9 3  push acc1
+load acc1 6 6 0  push acc1
+load acc1 7 4 3  push acc1
+load acc1 2 6 7  push acc1
+load acc1 3 4 4  push acc1
+load acc1 2 6 4  push acc1
+load acc1 3 3 9  push acc1
+load acc1 2 0 8  push acc1
+load acc1 2 1 6  push acc1
+load acc1 2 4 2  push acc1
+load acc1 1 7 2  push acc1
+load acc1 7 4  push acc1
+load acc1 4 9  push acc1
+load acc1 1 1 9  push acc1
+load acc1 1 1 3  push acc1
+load acc1 1 1 9  push acc1
+load acc1 1 0 6  push acc1
+load acc2 1
+
+label A pop acc1 push acc2 push acc1 load acc1 3 8 9
+push acc1 push acc2
+jump_to label F
+xor print_top
+load acc1 1  push acc1 add pop acc2
+if_not_zero jump_to label A endif
+
+load acc1 9 8 4 2 6  push acc1
+load acc1 9 7 8 5 0  push acc1
+load acc1 9 7 6 0 4  push acc1
+load acc1 9 7 2 8 0  push acc1
+load acc1 9 6 8 1 5  push acc1
+load acc1 9 6 4 4 3  push acc1
+load acc1 9 6 3 5 4  push acc1
+load acc1 9 5 9 3 4  push acc1
+load acc1 9 4 8 6 5  push acc1
+load acc1 9 4 9 5 2  push acc1
+load acc1 9 4 6 6 9  push acc1
+load acc1 9 4 4 4 0  push acc1
+load acc1 9 3 9 6 9  push acc1
+load acc1 9 3 7 6 6  push acc1
+load acc2 9 9
+
+label C pop acc1 push acc2 push acc1 load acc1 5 6 8
+push acc1 push acc2
+jump_to label F
+xor print_top
+load acc1 1  push acc1 add pop acc2
+if_not_zero jump_to label C endif
+
+load acc1 1 0 1 1 4 1 0 5 8  push acc1
+load acc1 1 0 1 0 6 0 2 0 6  push acc1
+load acc1 1 0 1 0 3 0 0 5 5  push acc1
+load acc1 1 0 0 9 9 8 9 6 6  push acc1
+load acc1 1 0 0 8 8 7 9 9 0  push acc1
+load acc1 1 0 0 7 6 7 0 8 5  push acc1
+load acc1 1 0 0 7 0 7 0 3 6  push acc1
+load acc1 1 0 0 6 5 6 1 1 1  push acc1
+load acc1 1 0 0 4 0 4 0 9 4  push acc1
+load acc1 1 0 0 1 6 0 9 2 2  push acc1
+load acc1 1 0 0 1 3 1 0 1 9  push acc1
+load acc1 1 0 0 1 1 1 1 0 0  push acc1
+load acc1 1 0 0 0 5 9 9 2 6  push acc1
+load acc1 1 0 0 0 4 9 9 8 2  push acc1
+load acc1 1 0 0 0 3 0 0 4 5  push acc1
+load acc1 9 9 8 9 9 9 7  push acc1
+load acc1 9 9 8 1 8 5 8  push acc1
+load acc1 9 9 8 0 8 1 5  push acc1
+load acc1 9 9 7 8 8 4 2  push acc1
+load acc1 9 9 6 5 7 9 4  push acc1
+load acc1 9 9 5 7 5 6 4  push acc1
+load acc1 9 9 3 8 3 0 4  push acc1
+load acc1 9 9 3 5 4 2 7  push acc1
+load acc1 9 9 3 2 2 8 9  push acc1
+load acc1 9 9 3 1 4 9 4  push acc1
+load acc1 9 9 2 7 3 8 8  push acc1
+load acc1 9 9 2 6 3 7 6  push acc1
+load acc1 9 9 2 3 2 1 3  push acc1
+load acc1 9 9 2 1 3 9 4  push acc1
+load acc1 9 9 1 9 1 5 4  push acc1
+load acc1 9 9 1 8 0 8 2  push acc1
+load acc1 9 9 1 6 2 3 9  push acc1
+load acc2 7 6 5
+
+label D pop acc1 push acc2 push acc1 load acc1 1 0 2 3
+push acc1 push acc2
+jump_to label F
+xor print_top
+load acc1 1  push acc1 add pop acc2
+if_not_zero jump_to label D endif
+exit
+
+label F
+load acc1 2  push acc1 label B
+jump_to label E
+label H if_zero pop_out jump_to label I  endif
+pop_out jump_to label J
+label K if_zero pop_out jump_to label I endif
+pop_out pop acc1 load acc2 1  push acc2 sub
+if_zero pop_out pop acc2 push acc1 push acc2 jump_top endif push acc1
+label I load acc2 1  push acc2 add jump_to label B
+
+label E
+clone load acc1 2  push acc1
+label L sub if_zero pop_out load acc1 1  push acc1
+jump_to label H endif
+pop_out clone push acc1
+modulo if_zero jump_to label H endif
+pop_out clone push acc1 load acc1 1
+push acc1 add clone pop acc1 jump_to label L
+
+label J
+clone clone load acc2 0  push acc2
+label G load acc1 1 0  push acc1
+multiply pop acc2 push acc1 modulo
+push acc2 add pop acc2 pop acc1 clone push acc2 sub
+if_zero pop_out load acc2 1  push acc2 jump_to label K endif
+pop_out push acc1 load acc1 1 0  push acc1 divide
+if_zero jump_to label K endif
+clone push acc2 jump_to label G
+</code></pre></div><p>Ok, what now?</p>
+<h3 id="part-1-a-very-crude-debugger">Part 1: A Very Crude Debugger</h3>
+<p>To understand what the program is doing, and how characters are printed, I modified the code of <code>vm.py</code> to add a &ldquo;debugger&rdquo;. The function I target is <code>step()</code> which is called for every instruction:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python">  <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">cur_ins</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rom</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">instruction_pointer</span><span class="p">]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">instruction_pointer</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="n">fn</span> <span class="o">=</span> <span class="n">VM</span><span class="o">.</span><span class="n">OPERATIONS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cur_ins</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">cur_ins</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;🖋&#39;</span><span class="p">:</span>
+      <span class="k">return</span>
+    <span class="k">if</span> <span class="n">fn</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+      <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&#34;Unknown instruction &#39;{}&#39; at {}&#34;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+          <span class="nb">repr</span><span class="p">(</span><span class="n">cur_ins</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">instruction_pointer</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="n">fn</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</code></pre></div><p>It saves the current instruction pointer, increments the instruction_pointer and then fetches the function associated to the instruction pointer. I modified it:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"> <span class="k">def</span> <span class="nf">print_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&#34;IP: {}&#34;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">instruction_pointer</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&#34;  stack: {}&#34;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="p">))</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&#34;  acc1: {}&#34;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">accumulator1</span><span class="p">))</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&#34;  acc2: {}&#34;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">accumulator2</span><span class="p">))</span>
+
+  <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">cur_ins</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rom</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">instruction_pointer</span><span class="p">]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">instruction_pointer</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="n">fn</span> <span class="o">=</span> <span class="n">VM</span><span class="o">.</span><span class="n">OPERATIONS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cur_ins</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">instruction_pointer</span> <span class="o">==</span> <span class="mi">390</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">print_state</span><span class="p">()</span>
+        <span class="k">print</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">fn</span><span class="p">))</span>
+        <span class="nb">input</span><span class="p">(</span><span class="s2">&#34;press &lt;enter&gt; to continue&#34;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">cur_ins</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;🖋&#39;</span><span class="p">:</span>
+      <span class="k">return</span>
+    <span class="k">if</span> <span class="n">fn</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+      <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&#34;Unknown instruction &#39;{}&#39; at {}&#34;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+          <span class="nb">repr</span><span class="p">(</span><span class="n">cur_ins</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">instruction_pointer</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="n">fn</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</code></pre></div><p>Now we have a <code>print_state()</code> function which outputs the content of the stack and of accumulator1 and accumulator2. We also have the name of the function called with <code>str(fn)</code></p>
+<p>And the line that makes those prints qualify as a debugger: <code>input(&quot;press &lt;enter&gt; to continue&quot;)</code>, which will pause the program until we want to continue it.</p>
+<p>There is also a kind-of breakpoint with the <code>if self.instruction_pointer == 390:</code> so we can skip the loading of the stack.</p>
+<p>See if you can spot a pattern in the output of the &ldquo;debugger&rdquo;:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ python vm.py program
+Running ....
+IP: 389
+  stack: [0, 17488, 16758, 16599, 16285, 16094, 15505, 15417, 14832, 14450, 13893, 13926, 13437, 12833, 12741, 12533, 11504, 11342, 10503, 10550, 10319, 975, 1007, 892, 893, 660, 743, 267, 344, 264, 339, 208, 216, 242, 172, 74, 49, 119, 113, 119, 1, 106, 2]
+  acc1: 2
+  acc2: 389
+&lt;function VM.xor at 0x7fec033e6400&gt;
+press &lt;enter&gt; to continue
+hIP: 389
+  stack: [0, 17488, 16758, 16599, 16285, 16094, 15505, 15417, 14832, 14450, 13893, 13926, 13437, 12833, 12741, 12533, 11504, 11342, 10503, 10550, 10319, 975, 1007, 892, 893, 660, 743, 267, 344, 264, 339, 208, 216, 242, 172, 74, 49, 119, 113, 2, 119, 3]
+  acc1: 3
+  acc2: 389
+&lt;function VM.xor at 0x7fec033e6400&gt;
+press &lt;enter&gt; to continue
+tIP: 389
+  stack: [0, 17488, 16758, 16599, 16285, 16094, 15505, 15417, 14832, 14450, 13893, 13926, 13437, 12833, 12741, 12533, 11504, 11342, 10503, 10550, 10319, 975, 1007, 892, 893, 660, 743, 267, 344, 264, 339, 208, 216, 242, 172, 74, 49, 119, 3, 113, 5]
+  acc1: 5
+  acc2: 389
+&lt;function VM.xor at 0x7fec033e6400&gt;
+press &lt;enter&gt; to continue
+tIP: 389
+  stack: [0, 17488, 16758, 16599, 16285, 16094, 15505, 15417, 14832, 14450, 13893, 13926, 13437, 12833, 12741, 12533, 11504, 11342, 10503, 10550, 10319, 975, 1007, 892, 893, 660, 743, 267, 344, 264, 339, 208, 216, 242, 172, 74, 49, 4, 119, 7]
+  acc1: 7
+  acc2: 389
+&lt;function VM.xor at 0x7fec033e6400&gt;
+press &lt;enter&gt; to continue
+pIP: 389
+  stack: [0, 17488, 16758, 16599, 16285, 16094, 15505, 15417, 14832, 14450, 13893, 13926, 13437, 12833, 12741, 12533, 11504, 11342, 10503, 10550, 10319, 975, 1007, 892, 893, 660, 743, 267, 344, 264, 339, 208, 216, 242, 172, 74, 5, 49, 11]
+  acc1: 11
+  acc2: 389
+&lt;function VM.xor at 0x7fec033e6400&gt;
+press &lt;enter&gt; to continue
+:IP: 389
+  stack: [0, 17488, 16758, 16599, 16285, 16094, 15505, 15417, 14832, 14450, 13893, 13926, 13437, 12833, 12741, 12533, 11504, 11342, 10503, 10550, 10319, 975, 1007, 892, 893, 660, 743, 267, 344, 264, 339, 208, 216, 242, 172, 6, 74, 101]
+  acc1: 101
+  acc2: 389
+&lt;function VM.xor at 0x7fec033e6400&gt;
+press &lt;enter&gt; to continue
+/IP: 389
+  stack: [0, 17488, 16758, 16599, 16285, 16094, 15505, 15417, 14832, 14450, 13893, 13926, 13437, 12833, 12741, 12533, 11504, 11342, 10503, 10550, 10319, 975, 1007, 892, 893, 660, 743, 267, 344, 264, 339, 208, 216, 242, 7, 172, 131]
+  acc1: 131
+  acc2: 389
+&lt;function VM.xor at 0x7fec033e6400&gt;
+press &lt;enter&gt; to continue
+/IP: 389
+  stack: [0, 17488, 16758, 16599, 16285, 16094, 15505, 15417, 14832, 14450, 13893, 13926, 13437, 12833, 12741, 12533, 11504, 11342, 10503, 10550, 10319, 975, 1007, 892, 893, 660, 743, 267, 344, 264, 339, 208, 216, 8, 242, 151]
+  acc1: 151
+  acc2: 389
+&lt;function VM.xor at 0x7fec033e6400&gt;
+press &lt;enter&gt; to continue
+eIP: 389
+  stack: [0, 17488, 16758, 16599, 16285, 16094, 15505, 15417, 14832, 14450, 13893, 13926, 13437, 12833, 12741, 12533, 11504, 11342, 10503, 10550, 10319, 975, 1007, 892, 893, 660, 743, 267, 344, 264, 339, 208, 9, 216, 181]
+  acc1: 181
+  acc2: 389
+&lt;function VM.xor at 0x7fec033e6400&gt;
+press &lt;enter&gt; to continue
+mIP: 389
+  stack: [0, 17488, 16758, 16599, 16285, 16094, 15505, 15417, 14832, 14450, 13893, 13926, 13437, 12833, 12741, 12533, 11504, 11342, 10503, 10550, 10319, 975, 1007, 892, 893, 660, 743, 267, 344, 264, 339, 10, 208, 191]
+  acc1: 191
+  acc2: 389
+&lt;function VM.xor at 0x7fec033e6400&gt;
+press &lt;enter&gt; to continue
+oIP: 389
+  stack: [0, 17488, 16758, 16599, 16285, 16094, 15505, 15417, 14832, 14450, 13893, 13926, 13437, 12833, 12741, 12533, 11504, 11342, 10503, 10550, 10319, 975, 1007, 892, 893, 660, 743, 267, 344, 264, 11, 339, 313]
+  acc1: 313
+  acc2: 389
+&lt;function VM.xor at 0x7fec033e6400&gt;
+press &lt;enter&gt; to continue
+jIP: 389
+  stack: [0, 17488, 16758, 16599, 16285, 16094, 15505, 15417, 14832, 14450, 13893, 13926, 13437, 12833, 12741, 12533, 11504, 11342, 10503, 10550, 10319, 975, 1007, 892, 893, 660, 743, 267, 344, 12, 264, 353]
+  acc1: 353
+  acc2: 389
+&lt;function VM.xor at 0x7fec033e6400&gt;
+press &lt;enter&gt; to continue
+iIP: 389
+  stack: [0, 17488, 16758, 16599, 16285, 16094, 15505, 15417, 14832, 14450, 13893, 13926, 13437, 12833, 12741, 12533, 11504, 11342, 10503, 10550, 10319, 975, 1007, 892, 893, 660, 743, 267, 13, 344, 373]
+  acc1: 373
+  acc2: 389
+&lt;function VM.xor at 0x7fec033e6400&gt;
+press &lt;enter&gt; to continue
+-IP: 389
+  stack: [0, 17488, 16758, 16599, 16285, 16094, 15505, 15417, 14832, 14450, 13893, 13926, 13437, 12833, 12741, 12533, 11504, 11342, 10503, 10550, 10319, 975, 1007, 892, 893, 660, 743, 14, 267, 383]
+  acc1: 383
+  acc2: 389
+&lt;function VM.xor at 0x7fec033e6400&gt;
+press &lt;enter&gt; to continue
+IP: 389
+  stack: [0, 17488, 16758, 16599, 16285, 16094, 15505, 15417, 14832, 14450, 13893, 13926, 13437, 12833, 12741, 12533, 11504, 11342, 10503, 10550, 10319, 975, 1007, 892, 893, 660, 15, 743, 727]
+  acc1: 727
+  acc2: 389
+&lt;function VM.xor at 0x7fec033e6400&gt;
+press &lt;enter&gt; to continue0IP: 389
+  stack: [0, 17488, 16758, 16599, 16285, 16094, 15505, 15417, 14832, 14450, 13893, 13926, 13437, 12833, 12741, 12533, 11504, 11342, 10503, 10550, 10319, 975, 1007, 892, 893, 16, 660, 757]
+  acc1: 757
+  acc2: 389
+&lt;function VM.xor at 0x7fec033e6400&gt;
+press &lt;enter&gt; to continue
+</code></pre></div><p>Found the pattern yet? I&rsquo;ll give an hint: look at <code>acc1</code>!</p>
+<p>It follows the sequence: <code>2</code>, <code>3</code>, <code>5</code>, <code>11</code>, <code>101</code>, <code>131</code>, <code>151</code>,  <code>181</code>, <code>191</code>, <code>313</code>, <code>353</code>, <code>373</code>, <code>383</code>, <code>727</code>, <code>757</code>. If you love mathematic sequences, which is not really my case, you can recognize the sequence of palindromic primes! [or Google can in my case]. It also explains why the program prints more and more slowly: since the function is recursive, it&rsquo;s easy and quick to compute the first terms but it becomes harder and harder.</p>
+<p>Have a look at <a href="https://oeis.org/A002385">https://oeis.org/A002385</a> for the first numbers in the sequence.</p>
+<p>The first stack is:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python">
+<span class="n">stack</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">17488</span><span class="p">,</span> <span class="mi">16758</span><span class="p">,</span> <span class="mi">16599</span><span class="p">,</span> <span class="mi">16285</span><span class="p">,</span> <span class="mi">16094</span><span class="p">,</span> <span class="mi">15505</span><span class="p">,</span> <span class="mi">15417</span><span class="p">,</span> <span class="mi">14832</span><span class="p">,</span> <span class="mi">14450</span><span class="p">,</span> <span class="mi">13893</span><span class="p">,</span> <span class="mi">13926</span><span class="p">,</span> <span class="mi">13437</span><span class="p">,</span> <span class="mi">12833</span><span class="p">,</span> <span class="mi">12741</span><span class="p">,</span> <span class="mi">12533</span><span class="p">,</span> <span class="mi">11504</span><span class="p">,</span> <span class="mi">11342</span><span class="p">,</span> <span class="mi">10503</span><span class="p">,</span> <span class="mi">10550</span><span class="p">,</span> <span class="mi">10319</span><span class="p">,</span> <span class="mi">975</span><span class="p">,</span> <span class="mi">1007</span><span class="p">,</span> <span class="mi">892</span><span class="p">,</span> <span class="mi">893</span><span class="p">,</span> <span class="mi">660</span><span class="p">,</span> <span class="mi">743</span><span class="p">,</span> <span class="mi">267</span><span class="p">,</span> <span class="mi">344</span><span class="p">,</span> <span class="mi">264</span><span class="p">,</span> <span class="mi">339</span><span class="p">,</span> <span class="mi">208</span><span class="p">,</span> <span class="mi">216</span><span class="p">,</span> <span class="mi">242</span><span class="p">,</span> <span class="mi">172</span><span class="p">,</span> <span class="mi">74</span><span class="p">,</span> <span class="mi">49</span><span class="p">,</span> <span class="mi">119</span><span class="p">,</span> <span class="mi">113</span><span class="p">,</span> <span class="mi">119</span><span class="p">,</span> <span class="mi">106</span><span class="p">]</span>
+</code></pre></div><p>The terms in the suite of palindromic primes are xored with the values of the stack (in the reverse order): the first term in the suite of palindromic primes: 2 is used to xor the last value of the stack: 106. So, 106 xor 2 = 104 &mdash;&gt; which is the value of the character &lsquo;h&rsquo;  in ascii.</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ python -c &#34;print(106 ^ 2)&#34;
+104
+$ python -c &#34;print(chr(106 ^ 2))&#34;
+h
+</code></pre></div><p>Oh hello, <code>h</code> like in <code>http</code>! We have the key to decode the first stack! We only need to find the 40 first terms in the palindromic primes sequence ( <a href="https://prime-numbers.info/list/palindromic-primes">https://prime-numbers.info/list/palindromic-primes</a> ) and xor them to the values on the stack.</p>
+<p>Quick script because I&rsquo;m not xoring character by character&hellip;</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="ch">#!/usr/bin/python</span>
+
+<span class="c1"># part 1</span>
+<span class="k">def</span> <span class="nf">part_1</span><span class="p">():</span>
+    <span class="n">stack</span> <span class="o">=</span> <span class="p">[</span><span class="mi">17488</span><span class="p">,</span> <span class="mi">16758</span><span class="p">,</span> <span class="mi">16599</span><span class="p">,</span> <span class="mi">16285</span><span class="p">,</span> <span class="mi">16094</span><span class="p">,</span> <span class="mi">15505</span><span class="p">,</span> <span class="mi">15417</span><span class="p">,</span> <span class="mi">14832</span><span class="p">,</span> <span class="mi">14450</span><span class="p">,</span> <span class="mi">13893</span><span class="p">,</span> <span class="mi">13926</span><span class="p">,</span> <span class="mi">13437</span><span class="p">,</span> <span class="mi">12833</span><span class="p">,</span> <span class="mi">12741</span><span class="p">,</span> <span class="mi">12533</span><span class="p">,</span> <span class="mi">11504</span><span class="p">,</span> <span class="mi">11342</span><span class="p">,</span> <span class="mi">10503</span><span class="p">,</span> <span class="mi">10550</span><span class="p">,</span> <span class="mi">10319</span><span class="p">,</span> <span class="mi">975</span><span class="p">,</span> <span class="mi">1007</span><span class="p">,</span> <span class="mi">892</span><span class="p">,</span> <span class="mi">893</span><span class="p">,</span> <span class="mi">660</span><span class="p">,</span> <span class="mi">743</span><span class="p">,</span> <span class="mi">267</span><span class="p">,</span> <span class="mi">344</span><span class="p">,</span> <span class="mi">264</span><span class="p">,</span> <span class="mi">339</span><span class="p">,</span> <span class="mi">208</span><span class="p">,</span> <span class="mi">216</span><span class="p">,</span> <span class="mi">242</span><span class="p">,</span> <span class="mi">172</span><span class="p">,</span> <span class="mi">74</span><span class="p">,</span> <span class="mi">49</span><span class="p">,</span> <span class="mi">119</span><span class="p">,</span> <span class="mi">113</span><span class="p">,</span> <span class="mi">119</span><span class="p">,</span> <span class="mi">106</span><span class="p">]</span>
+    <span class="n">stack</span> <span class="o">=</span> <span class="n">stack</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="n">palprimes</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">101</span><span class="p">,</span> <span class="mi">131</span><span class="p">,</span> <span class="mi">151</span><span class="p">,</span> <span class="mi">181</span><span class="p">,</span> <span class="mi">191</span><span class="p">,</span> <span class="mi">313</span><span class="p">,</span> <span class="mi">353</span><span class="p">,</span> <span class="mi">373</span><span class="p">,</span> <span class="mi">383</span><span class="p">,</span> <span class="mi">727</span><span class="p">,</span> <span class="mi">757</span><span class="p">,</span> <span class="mi">787</span><span class="p">,</span> <span class="mi">797</span><span class="p">,</span> <span class="mi">919</span><span class="p">,</span> <span class="mi">929</span><span class="p">,</span> <span class="mi">10301</span><span class="p">,</span> <span class="mi">10501</span><span class="p">,</span> <span class="mi">10601</span><span class="p">,</span> <span class="mi">11311</span><span class="p">,</span> <span class="mi">11411</span><span class="p">,</span> <span class="mi">12421</span><span class="p">,</span> <span class="mi">12721</span><span class="p">,</span> <span class="mi">12821</span><span class="p">,</span> <span class="mi">13331</span><span class="p">,</span> <span class="mi">13831</span><span class="p">,</span> <span class="mi">13931</span><span class="p">,</span> <span class="mi">14341</span><span class="p">,</span> <span class="mi">14741</span><span class="p">,</span> <span class="mi">15451</span><span class="p">,</span> <span class="mi">15551</span><span class="p">,</span> <span class="mi">16061</span><span class="p">,</span> <span class="mi">16361</span><span class="p">,</span> <span class="mi">16561</span><span class="p">,</span> <span class="mi">16661</span><span class="p">,</span> <span class="mi">17471</span><span class="p">]</span>
+
+	<span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+	<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">stack</span><span class="p">)):</span>
+    	    <span class="n">a</span> <span class="o">=</span> <span class="n">stack</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        	<span class="n">b</span> <span class="o">=</span> <span class="n">palindromic_primes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        	<span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">chr</span><span class="p">(</span><span class="n">a</span> <span class="o">^</span> <span class="n">b</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="s2">&#34;&#34;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&#34;__main__&#34;</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&#34;Full URL: {}&#34;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">part_1</span><span class="p">()))</span>
+</code></pre></div><p>And the result is:  <code>http://emoji-t0anaxnr3nacpt4na.web.ctfco</code>. This is the part where you go &ldquo;yeah, I&rsquo;ve got it&rdquo; to &ldquo;ohno, I don&rsquo;t have the full URL :((&quot;. And since there is 3 loading stack sequences in the program, the URL probably has 3 parts&hellip;</p>
+<h3 id="part-2-the-easiest-one">Part 2: The Easiest One</h3>
+<p>So, we&rsquo;ve got a second stack to deal with:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">stack_2</span> <span class="o">=</span> <span class="p">[</span><span class="mi">98426</span><span class="p">,</span> <span class="mi">97850</span><span class="p">,</span> <span class="mi">97604</span><span class="p">,</span> <span class="mi">97280</span><span class="p">,</span> <span class="mi">96815</span><span class="p">,</span> <span class="mi">96443</span><span class="p">,</span> <span class="mi">96354</span><span class="p">,</span> <span class="mi">95934</span><span class="p">,</span> <span class="mi">94865</span><span class="p">,</span> <span class="mi">94952</span><span class="p">,</span> <span class="mi">94669</span><span class="p">,</span> <span class="mi">94440</span><span class="p">,</span> <span class="mi">93969</span><span class="p">,</span> <span class="mi">93766</span><span class="p">]</span>
+</code></pre></div><p>The numbers are much higher than the previous stack, but still in descending order. What&rsquo;s the pattern for stack_2&hellip;?</p>
+<p>Let&rsquo;s go back at program&hellip; And&hellip; what about accumulator2? At the end of each stack loading, accumulator2 is assigned a value:</p>
+<ul>
+<li><code>load acc2 1</code> for the first stack</li>
+<li><code>load acc2 9 9</code> for the second stack</li>
+<li><code>load acc2 7 6 5 </code> for the third stack</li>
+</ul>
+<p>Could accumulator 2 be the position in the sequence?</p>
+<ul>
+<li>if we xor the first term of the sequence: 93766 with the 40th term of the palindromic primes: 93739, we get a printable character, which is a good sign!</li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ python -c <span class="s2">&#34;print(chr(93766 ^ 93739))&#34;</span>
+m
+</code></pre></div><p>Let&rsquo;s repeat it for the entire stack_2! Again, we can pull the palindromic primes from <a href="https://prime-numbers.info/list/palindromic-primes">https://prime-numbers.info/list/palindromic-primes</a>. The loop xoring the stack and the palindromic primes from part_1 has been moved to a new function: <code>xor_stack_with_palprimes</code>.</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1">## part 2</span>
+<span class="k">def</span> <span class="nf">xor_stack_with_palprimes</span><span class="p">(</span><span class="n">stack</span><span class="p">,</span> <span class="n">palprimes</span><span class="p">):</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">stack</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">palprimes</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&#34;Args must have the same length. Length of stack={}, length of palprimes={}.&#34;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">stack</span><span class="p">)):</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">stack</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">palprimes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="c1">#print(a, &#34;^&#34;, b)</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">chr</span><span class="p">(</span><span class="n">a</span> <span class="o">^</span> <span class="n">b</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="s2">&#34;&#34;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">part_2</span><span class="p">():</span>
+    <span class="n">stack_2</span> <span class="o">=</span> <span class="p">[</span><span class="mi">98426</span><span class="p">,</span> <span class="mi">97850</span><span class="p">,</span> <span class="mi">97604</span><span class="p">,</span> <span class="mi">97280</span><span class="p">,</span> <span class="mi">96815</span><span class="p">,</span> <span class="mi">96443</span><span class="p">,</span> <span class="mi">96354</span><span class="p">,</span> <span class="mi">95934</span><span class="p">,</span> <span class="mi">94865</span><span class="p">,</span> <span class="mi">94952</span><span class="p">,</span> <span class="mi">94669</span><span class="p">,</span> <span class="mi">94440</span><span class="p">,</span> <span class="mi">93969</span><span class="p">,</span> <span class="mi">93766</span><span class="p">]</span>
+    <span class="n">stack_2</span> <span class="o">=</span> <span class="n">stack_2</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="n">palprimes_99</span> <span class="o">=</span> <span class="p">[</span><span class="mi">93739</span><span class="p">,</span> <span class="mi">94049</span><span class="p">,</span> <span class="mi">94349</span><span class="p">,</span> <span class="mi">94649</span><span class="p">,</span> <span class="mi">94849</span><span class="p">,</span> <span class="mi">94949</span><span class="p">,</span> <span class="mi">95959</span><span class="p">,</span> <span class="mi">96269</span><span class="p">,</span> <span class="mi">96469</span><span class="p">,</span> <span class="mi">96769</span><span class="p">,</span> <span class="mi">97379</span><span class="p">,</span> <span class="mi">97579</span><span class="p">,</span> <span class="mi">97879</span><span class="p">,</span> <span class="mi">98389</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">xor_stack_with_palprimes</span><span class="p">(</span><span class="n">stack_2</span><span class="p">,</span> <span class="n">palprimes_99</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&#34;__main__&#34;</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&#34;Full URL: {}{}&#34;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">part_1</span><span class="p">(),</span> <span class="n">part_2</span><span class="p">()))</span>
+</code></pre></div><p>It outputs: <code>mpetition.com/</code>. Awwww, we have a reachable URL, but I don&rsquo;t think it will give us the flag&hellip;</p>
+<p>Let&rsquo;s visit <code>http://emoji-t0anaxnr3nacpt4na.web.ctfcompetition.com/</code> though&hellip;</p>
+<p><img src="04_cat_network.png" alt=""></p>
+<p>A CAT SOCIAL NETWORK!! At this point, I proceeded to loose half an hour looking at cat pictures&hellip; And I did not find any flag&hellip;</p>
+<h3 id="part-3-the-frustrating-one">Part 3: The Frustrating One</h3>
+<p>Okay, we know everything now. The third stack should be a walk in the park right? Right&hellip;</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">stack_3</span> <span class="o">=</span> <span class="p">[</span><span class="mi">101141058</span><span class="p">,</span> <span class="mi">101060206</span><span class="p">,</span> <span class="mi">101030055</span><span class="p">,</span> <span class="mi">100998966</span><span class="p">,</span> <span class="mi">100887990</span><span class="p">,</span> <span class="mi">100767085</span><span class="p">,</span> <span class="mi">100707036</span><span class="p">,</span> <span class="mi">100656111</span><span class="p">,</span> <span class="mi">100404094</span><span class="p">,</span> <span class="mi">100160922</span><span class="p">,</span> <span class="mi">100131019</span><span class="p">,</span> <span class="mi">100111100</span><span class="p">,</span> <span class="mi">100059926</span><span class="p">,</span> <span class="mi">100049982</span><span class="p">,</span> <span class="mi">100030045</span><span class="p">,</span> <span class="mi">9989997</span><span class="p">,</span> <span class="mi">9981858</span><span class="p">,</span> <span class="mi">9980815</span><span class="p">,</span> <span class="mi">9978842</span><span class="p">,</span> <span class="mi">9965794</span><span class="p">,</span> <span class="mi">9957564</span><span class="p">,</span> <span class="mi">9938304</span><span class="p">,</span> <span class="mi">9935427</span><span class="p">,</span> <span class="mi">9932289</span><span class="p">,</span> <span class="mi">9931494</span><span class="p">,</span> <span class="mi">9927388</span><span class="p">,</span> <span class="mi">9926376</span><span class="p">,</span> <span class="mi">9923213</span><span class="p">,</span> <span class="mi">9921394</span><span class="p">,</span> <span class="mi">9919154</span><span class="p">,</span> <span class="mi">9918082</span><span class="p">,</span> <span class="mi">9916239</span><span class="p">]</span>
+
+<span class="n">accumulator_2</span> <span class="o">=</span> <span class="mi">765</span>
+</code></pre></div><p>The trouble is&hellip; the value of accumulator 2 is&hellip; <code>765</code>. And my Google skills are not strong enough to find the 765th value of the palindromic primes&hellip;</p>
+<p>So we have to find a way to generate those palindromic primes&hellip;. Grmbl grmbl.</p>
+<h4 id="odd-length-palindromic-primes">Odd Length Palindromic Primes</h4>
+<p>Generating the sequence recursively is way too long. The easiest way to solve that problem iteratively would be to use a loop and check for each number:</p>
+<ul>
+<li>is it prime?</li>
+<li>is it a palindrome?</li>
+</ul>
+<p>This is also going to take a while&hellip; But! While researching palindromic primes, I found a super cool fact that I had overlooked:</p>
+<blockquote>
+<p>Except for 11, all palindromic primes have an odd number of digits, because the <a href="https://www.wikiwand.com/en/Divisibility_test">divisibility test</a> for 11 tells us that every palindromic number with an even number of digits is a multiple of 11.</p>
+<p>&ndash; <a href="https://en.wikipedia.org/wiki/Palindromic_prime">https://en.wikipedia.org/wiki/Palindromic_prime</a></p>
+</blockquote>
+<p>Therefore, we only need to consider odd length palindromic primes, which we can compute with:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="ch">#!/usr/bin/env python</span>
+
+<span class="k">def</span> <span class="nf">generate_odd_length_palindrome</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">):</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1"># loop on all prefix between start and end</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">):</span>
+         <span class="c1"># convert the number to string</span>
+         <span class="n">s</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+         <span class="c1"># generate the invert of the string</span>
+         <span class="n">inv_s</span> <span class="o">=</span> <span class="n">s</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+         <span class="c1"># concatenate string and the inverted one, minus the first char of the inverted string and convert back to number</span>
+         <span class="n">nb</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">s</span> <span class="o">+</span> <span class="n">inv_s</span><span class="p">[</span><span class="mi">1</span><span class="p">::])</span>
+         <span class="c1"># append the number to the result list</span>
+         <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nb</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">result</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">generate_odd_length_palindrome</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">))</span>
+</code></pre></div><p>Output:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="o">[</span>101, 111, 121, 131, 141, 151, 161, 171, 181, 191<span class="o">]</span>
+</code></pre></div><p>Great, we&rsquo;re only missing the check that these numbers are actually primes! I choose to <em>not</em> recode the wheel here and opted for <a href="https://docs.sympy.org/latest/modules/ntheory.html#sympy.ntheory.primetest.isprime">isprime()</a> provided by sympy:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="ch">#!/usr/bin/env python</span>
+
+<span class="kn">from</span> <span class="nn">sympy</span> <span class="kn">import</span> <span class="n">isprime</span>
+
+<span class="k">def</span> <span class="nf">generate_odd_length_palindrome</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">):</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1"># loop on all prefix between start and end</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">):</span>
+         <span class="c1"># convert the number to string</span>
+         <span class="n">s</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+         <span class="c1"># generate the invert of the string</span>
+         <span class="n">inv_s</span> <span class="o">=</span> <span class="n">s</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+         <span class="c1"># concatenate string and the inverted one, minus the first char of the inverted string and convert back to number</span>
+         <span class="n">nb</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">s</span> <span class="o">+</span> <span class="n">inv_s</span><span class="p">[</span><span class="mi">1</span><span class="p">::])</span>
+         <span class="c1"># check that the number is prime</span>
+         <span class="k">if</span> <span class="n">isprime</span><span class="p">(</span><span class="n">nb</span><span class="p">):</span>
+            <span class="c1"># append to the result list if yes</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nb</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">result</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">generate_odd_length_palindrome</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">))</span>
+</code></pre></div><p>Output:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">[101, 131, 151, 181, 191]
+</code></pre></div><h4 id="finding-the-previousnext-prime">Finding the Previous/Next Prime</h4>
+<p>To find the previous/next prime, we compute an upper and a lower limit and call <code>generate_odd_length_palindrome()</code> on that range until we have a palindromic prime smaller/bigger than our number n. <code>generate_odd_length_palindrome()</code> has been modified to accommodate the ascending and descending order and now uses an iterator instead of returning the whole list.</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="ch">#!/usr/bin/env python</span>
+
+<span class="kn">from</span> <span class="nn">sympy</span> <span class="kn">import</span> <span class="n">isprime</span>
+
+<span class="k">def</span> <span class="nf">generate_odd_length_palindrome</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+    <span class="n">full_range</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">ascending</span><span class="p">:</span>
+        <span class="n">full_range</span> <span class="o">=</span> <span class="nb">reversed</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">end</span><span class="p">,</span> <span class="n">start</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">full_range</span><span class="p">:</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="n">inv_s</span> <span class="o">=</span> <span class="n">s</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">s</span> <span class="o">+</span> <span class="n">inv_s</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+        <span class="k">if</span> <span class="n">isprime</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
+            <span class="k">yield</span> <span class="n">result</span>
+
+<span class="k">def</span> <span class="nf">find_next_palindromic_prime</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="n">n_str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="n">n_len</span> <span class="o">=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">n_str</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+
+    <span class="n">start</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">n_str</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">n_len</span><span class="p">])</span>
+    <span class="n">end</span> <span class="o">=</span> <span class="n">n</span> <span class="o">*</span> <span class="mi">2</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">generate_odd_length_palindrome</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="n">n</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">i</span>
+
+<span class="k">def</span> <span class="nf">find_prev_palindromic_prime</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="n">n_str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="n">n_len</span> <span class="o">=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">n_str</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span> <span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+
+    <span class="n">start</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">n_str</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">n_len</span><span class="p">])</span>
+    <span class="n">end</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">generate_odd_length_palindrome</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">i</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">find_prev_palindromic_prime</span><span class="p">(</span><span class="mi">140</span><span class="p">))</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">find_next_palindromic_prime</span><span class="p">(</span><span class="mi">140</span><span class="p">))</span>
+</code></pre></div><p>Output:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="m">131</span>
+<span class="m">151</span>
+</code></pre></div><h4 id="generating-a-sequence-of-palindromic-primes">Generating a Sequence of Palindromic Primes</h4>
+<p>The only function missing now is the ability to generate a sequence of palindromic prime!</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">generate_sequence</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">max_terms</span><span class="p">):</span>
+    <span class="n">seq</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">current_n</span> <span class="o">=</span> <span class="n">start</span>
+
+    <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">max_terms</span><span class="p">:</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">find_next_palindromic_prime</span><span class="p">(</span><span class="n">current_n</span><span class="p">)</span>
+        <span class="n">seq</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+        <span class="n">current_n</span> <span class="o">=</span> <span class="n">res</span>
+
+    <span class="k">return</span> <span class="n">seq</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+	<span class="n">generate_sequence</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+</code></pre></div><p>Output:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="o">[</span>101, 131, 151, 181, 191<span class="o">]</span>
+</code></pre></div><h4 id="putting-everything-together">Putting Everything Together</h4>
+<p>So, starting from <code>stack_3</code>, we need to find the palindromic prime <em>before</em> the first value of the stack (9916239). Then we append a sequence of palindromic primes until it has the same size as the stack.</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">compute_primes_for_stack_3</span><span class="p">():</span>
+    <span class="n">stack_3</span> <span class="o">=</span> <span class="p">[</span><span class="mi">101141058</span><span class="p">,</span> <span class="mi">101060206</span><span class="p">,</span> <span class="mi">101030055</span><span class="p">,</span> <span class="mi">100998966</span><span class="p">,</span> <span class="mi">100887990</span><span class="p">,</span> <span class="mi">100767085</span><span class="p">,</span> <span class="mi">100707036</span><span class="p">,</span> <span class="mi">100656111</span><span class="p">,</span> <span class="mi">100404094</span><span class="p">,</span> <span class="mi">100160922</span><span class="p">,</span> <span class="mi">100131019</span><span class="p">,</span> <span class="mi">100111100</span><span class="p">,</span> <span class="mi">100059926</span><span class="p">,</span> <span class="mi">100049982</span><span class="p">,</span> <span class="mi">100030045</span><span class="p">,</span> <span class="mi">9989997</span><span class="p">,</span> <span class="mi">9981858</span><span class="p">,</span> <span class="mi">9980815</span><span class="p">,</span> <span class="mi">9978842</span><span class="p">,</span> <span class="mi">9965794</span><span class="p">,</span> <span class="mi">9957564</span><span class="p">,</span> <span class="mi">9938304</span><span class="p">,</span> <span class="mi">9935427</span><span class="p">,</span> <span class="mi">9932289</span><span class="p">,</span> <span class="mi">9931494</span><span class="p">,</span> <span class="mi">9927388</span><span class="p">,</span> <span class="mi">9926376</span><span class="p">,</span> <span class="mi">9923213</span><span class="p">,</span> <span class="mi">9921394</span><span class="p">,</span> <span class="mi">9919154</span><span class="p">,</span> <span class="mi">9918082</span><span class="p">,</span> <span class="mi">9916239</span><span class="p">]</span>
+    <span class="n">stack_3</span> <span class="o">=</span> <span class="n">stack_3</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="n">palindromic_prime_765</span> <span class="o">=</span> <span class="n">find_prev_palindromic_prime</span><span class="p">(</span><span class="n">stack_3</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">palindromic_primes_765</span> <span class="o">=</span> <span class="n">generate_sequence</span><span class="p">(</span><span class="n">palindromic_prime_765</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">stack_3</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">palindromic_primes_765</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">palindromic_prime_765</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">palindromic_primes_765</span>
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="p">[</span><span class="mi">9916199</span><span class="p">,</span> <span class="mi">9918199</span><span class="p">,</span> <span class="mi">9919199</span><span class="p">,</span> <span class="mi">9921299</span><span class="p">,</span> <span class="mi">9923299</span><span class="p">,</span> <span class="mi">9926299</span><span class="p">,</span> <span class="mi">9927299</span><span class="p">,</span> <span class="mi">9931399</span><span class="p">,</span> <span class="mi">9932399</span><span class="p">,</span> <span class="mi">9935399</span><span class="p">,</span> <span class="mi">9938399</span><span class="p">,</span> <span class="mi">9957599</span><span class="p">,</span> <span class="mi">9965699</span><span class="p">,</span> <span class="mi">9978799</span><span class="p">,</span> <span class="mi">9980899</span><span class="p">,</span> <span class="mi">9981899</span><span class="p">,</span> <span class="mi">9989899</span><span class="p">,</span> <span class="mi">100030001</span><span class="p">,</span> <span class="mi">100050001</span><span class="p">,</span> <span class="mi">100060001</span><span class="p">,</span> <span class="mi">100111001</span><span class="p">,</span> <span class="mi">100131001</span><span class="p">,</span> <span class="mi">100161001</span><span class="p">,</span> <span class="mi">100404001</span><span class="p">,</span> <span class="mi">100656001</span><span class="p">,</span> <span class="mi">100707001</span><span class="p">,</span> <span class="mi">100767001</span><span class="p">,</span> <span class="mi">100888001</span><span class="p">,</span> <span class="mi">100999001</span><span class="p">,</span> <span class="mi">101030101</span><span class="p">,</span> <span class="mi">101060101</span><span class="p">,</span> <span class="mi">101141101</span><span class="p">]</span>
+<span class="n">Full</span> <span class="n">URL</span><span class="p">:</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">emoji</span><span class="o">-</span><span class="n">t0anaxnr3nacpt4na</span><span class="o">.</span><span class="n">web</span><span class="o">.</span><span class="n">ctfcompetition</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">humans_and_cauliflowers_network</span><span class="o">/</span>
+</code></pre></div><p>And finally, the complete magic URL: <a href="http://emoji-t0anaxnr3nacpt4na.web.ctfcompetition.com/humans_and_cauliflowers_network/">http://emoji-t0anaxnr3nacpt4na.web.ctfcompetition.com/humans_and_cauliflowers_network/</a></p>
+<p><img src="05_most_active_users.png" alt=""></p>
+<p><img src="06_amber.png" alt=""></p>
+<p>Flag: <code>CTF{Peace_from_Cauli!}</code></p>
+<h2 id="links">Links</h2>
+<ul>
+<li><a href="https://andreabergia.com/stack-based-virtual-machines/">https://andreabergia.com/stack-based-virtual-machines/</a></li>
+<li><a href="https://www.geeksforgeeks.org/find-next-palindrome-prime/">https://www.geeksforgeeks.org/find-next-palindrome-prime/</a></li>
+<li><a href="https://prime-numbers.info/list/palindromic-primes">https://prime-numbers.info/list/palindromic-primes</a></li>
+</ul>
+
+        </div>
+    </article>
+</div>
+<div class="column" id="toc-column">    <aside>
+        <div id="toc">
+            What's on this page?
+            <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#description">Description</a></li>
+        <li><a href="#solving">Solving</a>
+          <ul>
+            <li><a href="#translator">Translator</a></li>
+            <li><a href="#part-1-a-very-crude-debugger">Part 1: A Very Crude Debugger</a></li>
+            <li><a href="#part-2-the-easiest-one">Part 2: The Easiest One</a></li>
+            <li><a href="#part-3-the-frustrating-one">Part 3: The Frustrating One</a></li>
+          </ul>
+        </li>
+        <li><a href="#links">Links</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+        </div>
+    </aside>
+
+</div>
+</div></div>
+            </div><footer class="footer">
+  <div class="content has-text-centered">
+    <p>
+    Handcrafted with <span style="color: #e25555;">&hearts;</span> by kylma, with lots of
+    
+        <a href="https://shiny-labs.github.io/credits/">awesome tools</a>.
+    
+    </p>
+  </div>
+
+  <div id="to-top">
+    <a href="#logo" class="top-btn no-squiggly">^</a>
+  </div>
+
+</footer>
+</div>
+    </body>
+</html>

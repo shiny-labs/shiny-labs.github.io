@@ -1,0 +1,539 @@
+/**** FONTS ****/
+
+@font-face {
+    font-family: 'neucha';
+    src: url('../fonts/neucha.woff') format('woff'), /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+         url('../fonts/neucha.woff2') format('woff2'),
+         url('../fonts/neucha.ttf') format('truetype'); /* Chrome 4+, Firefox 3.5, Opera 10+, Safari 3—5 */
+}
+
+@font-face {
+    font-family: 'patrickhandsc';
+    src: url('../fonts/patrickhandsc.woff') format('woff'), /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+         url('../fonts/patrickhandsc.woff2') format('woff2'),
+         url('../fonts/patrickhandsc.ttf') format('truetype'); /* Chrome 4+, Firefox 3.5, Opera 10+, Safari 3—5 */
+}
+
+/**** COLORS ****/
+/* pale blue: #88c9e0 */
+
+html {
+    scroll-behavior: smooth;
+    font-size: 1.35em;
+}
+
+@media screen and (prefers-reduced-motion: reduce) {
+	html {
+		scroll-behavior: auto;
+	}
+}
+
+.post-meta {
+    margin-bottom: 2em;
+}
+
+#subtitle {
+    color: #FFFFFF;
+    font-size: 1.5em;
+}
+
+#logo {
+    font-family: "patrickhandsc", sans-serif;
+    font-size: 2em;
+    line-height: 1;
+}
+
+#to-top {
+    opacity: 1;
+    display: inline-block;
+    padding: 1em;
+    position: fixed;
+    bottom: 1em;
+    right: 1em;
+}
+
+.top-btn, .top-btn:visited {
+    color: #88c9e0;
+    border: 2px solid #c3e4e0;
+    border-bottom-left-radius: 15px 255px;
+    border-bottom-right-radius: 225px 15px;
+    border-top-left-radius: 255px 15px;
+    border-top-right-radius: 15px 225px;
+    padding: .2em .6em .2em .6em;
+    font-size: 1em;
+    justify-content: center;
+}
+
+.top-btn:hover {
+    border-bottom: 5px solid #88c9e0;
+    border-color: #88c9e0;
+}
+
+.tabs a, .tabs a:visited {
+    color: #66bdbd;
+    border-bottom: 3px solid transparent;
+}
+
+.tabs a:hover {
+    color: #66bdbd;
+    border-bottom: 3px solid #66bdbd;
+}
+
+.navbar {
+    background-image: url("../img/banner.jpg");
+}
+
+
+nav a {
+    border-bottom: none;
+}
+
+nav a:hover {
+    border-bottom: none;
+}
+
+#menu {
+    background: #fff;
+    background-image: none;
+}
+
+#menu-column {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+#toc-column {
+    font-size: 0.7em;
+    padding-top: 0;
+}
+
+#TableOfContents {
+    border-left-color: #dbdbdb;
+    border-left-style: solid;
+    border-left-width: 1px;
+}
+
+body {
+    font-family: "neucha", sans-serif;
+}
+
+#main-column {
+    background: transparent url("../img/tile-graphpaper.jpg") 50% 0;
+}
+
+.list-of-posts-column {
+    padding-top: 0.25em;
+    padding-bottom: 0.25em;
+}
+
+
+h1.article-title  {
+    margin: 0;
+}
+
+.latest-meta {
+    color: #868e96;
+    font-size: 0.8em;
+}
+
+img {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    border-width: 2px;
+    border-bottom-left-radius: 15px 255px;
+    border-bottom-right-radius: 225px 15px;
+    border-top-left-radius: 255px 15px;
+    border-top-right-radius: 15px 225px;
+    border: 2px solid #bbc5c8;
+    display: block;
+    height: auto;
+    max-width: 100%
+}
+
+.highlight {
+    border-width: 2px;
+    border-bottom-left-radius: 15px 255px;
+    border-bottom-right-radius: 225px 15px;
+    border-top-left-radius: 255px 15px;
+    border-top-right-radius: 15px 225px;
+
+}
+
+blockquote {
+    position: relative;
+    padding-left: 1em;
+    border-left: 0.2em solid #9fd3c8;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    font-family: serif;
+    background: #eef6f0;
+}
+
+code {
+  background-color: #dbecf2;
+  color: #000;
+  border-radius: 3px;
+  font-size: 90%;
+  padding: 2px 4px
+}
+
+kbd {
+  background-color: #41403e;
+  border-radius: 3px;
+  color: #fff;
+  font-size: 80%;
+  padding: 2px 4px
+}
+
+pre {
+  background-color: #fafafa;
+  border: 1px solid #c1c0bd;
+  border-radius: 3px;
+  color: #41403e;
+  display: block;
+  font-size: 80%;
+  line-height: 1.5;
+  overflow-x: auto;
+  padding: 1em;
+  white-space: pre;
+  word-break: break-all;
+  word-wrap: break-word
+}
+
+pre code {
+  background: 0 0;
+  color: inherit;
+  display: block;
+  font-size: inherit;
+  padding: initial;
+  white-space: pre
+}
+
+
+p {
+    margin-bottom: 0.8em;
+}
+
+h1 {
+    font-size: 3rem;
+}
+h2 {
+    font-size: 2.5rem;
+}
+h3 {
+    font-size: 2rem;
+}
+h4 {
+    font-size: 1.5rem;
+}
+h5 {
+    font-size: 1rem;
+}
+h6 {
+    font-size: .8rem;
+}
+
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: "patrickhandsc", serif;
+}
+
+a, button, input, option, p, select, table, tbody, td, textarea, th, thead, tr {
+  font-family: "neucha", sans-serif;
+}
+
+table {
+  box-sizing: border-box;
+  max-width: 100%;
+  overflow-x: auto;
+  width: 100%
+}
+@media only screen and (max-width:480px) {
+  table thead tr th {
+    padding: 2%
+  }
+  table tbody tr td {
+    padding: 2%
+  }
+}
+table thead tr th {
+  line-height: 1.5;
+  padding: 8px;
+  text-align: left;
+  vertical-align: bottom
+}
+table tbody tr td {
+  border-top: 1px dashed #d9d9d8;
+  line-height: 1.5;
+  padding: 8px;
+  vertical-align: top
+}
+table.table-hover tbody tr:hover {
+  color: #0071de
+}
+table.table-alternating tbody tr:nth-of-type(even) {
+  color: #82807c
+}
+
+
+/**** PAGINATION ****/
+
+.pagination {
+    margin-top: 4em;
+}
+
+.pagination-link, .pagination-next, .pagination-previous, .pagination-link.is-current {
+    border-color: #dbdbdb;
+    border-width: 2px;
+    border-bottom-left-radius: 15px 255px;
+    border-bottom-right-radius: 225px 15px;
+    border-top-left-radius: 255px 15px;
+    border-top-right-radius: 15px 225px;
+}
+
+.pagination-link:hover, .pagination-next:hover, .pagination-previous:hover, .pagination-link.is-current:hover {
+    border-bottom: 5px solid #88c9e0;
+    border-color: #88c9e0;
+    color: #88c9e0;
+}
+
+.pagination-link:focus, .pagination-next:focus, .pagination-previous:focus, .pagination-link.is-current:focus {
+    border-color: #88c9e0;
+}
+
+.pagination-link:active, .pagination-next:active, .pagination-previous:active, .pagination-link.is-current:active {
+    background: #f1f9fb;
+    box-shadow: none;
+}
+
+.pagination-link:visited, .pagination-next:visited, .pagination-previous:visited, .pagination-link.is-current:visited {
+    color: #88c9e0;
+}
+
+.pagination-link.is-current, .pagination-link.is-current:visited {
+    color: #c3e4e0;
+    border-color: #c3e4e0;
+    background: none;
+    border-bottom: 5px solid #c3e4e0;
+}
+
+/**** PAGINATION END ****/
+
+/**** LINKS ****/
+/* squiggly links from https://codepen.io/geoffgraham/pen/bxEVEN */
+a {
+    background-image: none;
+    color: #88c9e0;
+    text-decoration: none;
+}
+
+a:hover {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg id='squiggle-link' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:ev='http://www.w3.org/2001/xml-events' viewBox='0 0 20 4'%3E%3Cstyle type='text/css'%3E.squiggle{animation:shift .3s linear infinite;}@keyframes shift {from {transform:translateX(0);}to {transform:translateX(-20px);}}%3C/style%3E%3Cpath fill='none' stroke='%2388c9e0' stroke-width='1' class='squiggle' d='M0,3.5 c 5,0,5,-3,10,-3 s 5,3,10,3 c 5,0,5,-3,10,-3 s 5,3,10,3'/%3E%3C/svg%3E");
+    background-position: 0 100%;
+    background-size: auto 6px;
+    background-repeat: repeat-x;
+    text-decoration: none;
+    color: #88c9e0;
+}
+
+a:visited {
+    color: #998bb2;
+}
+
+a.no-squiggly {
+    background: none;
+}
+
+a.no-squiggly:hover {
+   background-image: none;
+}
+
+/**** LINKS END ****/
+
+/**** LIST UL LI OL ****/
+.pagination ul li::before,
+#menu ul li::before {
+ content:"";
+}
+
+p + ul, p + ol {
+    margin-top: -0.8em;
+}
+
+ul {
+    padding-left: 1em;
+}
+
+ol {
+    list-style-type: decimal;
+    padding-left: 1em;
+}
+
+ol ol {
+    list-style-type: upper-alpha;
+}
+
+ol ol ol {
+    list-style-type: upper-roman;
+}
+
+ol ol ol ol {
+    list-style-type: lower-alpha;
+}
+
+ol ol ol ol ol {
+    list-style-type: lower-roman;
+}
+
+ul {
+    list-style: none;
+    margin-left: 0;
+}
+ul li::before {
+    content: "-"
+}
+
+ul li::before {
+  left: -7px;
+  position: relative
+}
+ul ul li::before {
+  content: "+"
+}
+ul ul ul li::before {
+  content: "~"
+}
+ul ul ul ul li::before {
+  content: "⤍"
+}
+ul ul ul ul ul li::before {
+  content: "⁎"
+}
+ul.inline li {
+  display: inline;
+  margin-left: 5px
+}
+
+
+/**** LIST UL LI OL END ****/
+
+
+
+
+/*
+  glitch effect for the logo, inspired by https://avicoder.me/
+  https://codepen.io/nucliweb/pen/QEAZaZ
+*/
+
+h1.glitch {
+  animation: glitch 3s steps(100) infinite;
+  /*color: #151515; */
+  color: #fff;
+}
+
+@keyframes glitch {
+  0% { text-shadow: 3px 0 0 red, -3px 0 0 #0c33f5; filter: blur(0);}
+  1% { text-shadow: 3px 0 0 red, -3px 0 0 #0c33f5; filter: blur(0);}
+  2% { text-shadow: 3px 0 0 red, -3px 0 0 #0c33f5; filter: blur(0);}
+  3% { text-shadow: 3px 0 0 red, -3px 0 0 #0c33f5; filter: blur(0);}
+  4% { text-shadow: 3px 0 0 red, -3px 0 0 #0c33f5; filter: blur(0);}
+  5% { text-shadow: -3px 0 0 red, 3px 0 0 #0c33f5; filter: blur(0);}
+  6% { text-shadow: -3px 0 0 red, 3px 0 0 #0c33f5; filter: blur(0);}
+  7% { text-shadow: -3px 0 0 red, 3px 0 0 #0c33f5; filter: blur(0);}
+  8% { text-shadow: -3px 0 0 red, 3px 0 0 #0c33f5; filter: blur(0);}
+  9% { text-shadow: -3px 0 0 red, 3px 0 0 #0c33f5; filter: blur(0);}
+  10% { text-shadow: -3px 0 0 red, 3px 0 0 #0c33f5; filter: blur(0);}
+  11% { text-shadow: 1px 0 0 red, -1px 0 0 lime; filter: blur(0.5px);}
+  12% { text-shadow: 1px 0 0 red, -1px 0 0 lime; filter: blur(0.5px);}
+  13% { text-shadow: 1px 0 0 red, -1px 0 0 lime; filter: blur(0.5px);}
+  14% { text-shadow: 1px 0 0 red, -1px 0 0 lime; filter: blur(0);}
+  15% { text-shadow: 1px 0 0 red, -1px 0 0 lime; filter: blur(0);}
+  16% { text-shadow: -3px 0 0 red, 3px 0 0 lime; filter: blur(0);}
+  17% { text-shadow: -3px 0 0 red, 3px 0 0 lime; filter: blur(0);}
+  18% { text-shadow: -3px 0 0 red, 3px 0 0 lime; filter: blur(0);}
+  19% { text-shadow: -3px 0 0 red, 3px 0 0 lime; filter: blur(0);}
+  20% { text-shadow: -3px 0 0 red, 3px 0 0 lime; filter: blur(0);}
+  21% { text-shadow: 0.8px 0 0 #0c33f5, -0.8px 0 0 lime; filter: blur(0);}
+  22% { text-shadow: 0.8px 0 0 #0c33f5, -0.8px 0 0 lime; filter: blur(0);}
+  23% { text-shadow: 0.8px 0 0 #0c33f5, -0.8px 0 0 lime; filter: blur(0);}
+  24% { text-shadow: 0.8px 0 0 #0c33f5, -0.8px 0 0 lime; filter: blur(0);}
+  25% { text-shadow: 0.8px 0 0 #0c33f5, -0.8px 0 0 lime; filter: blur(0);}
+  26% { text-shadow: 0.8px 0 0 #0c33f5, -0.8px 0 0 lime; filter: blur(0.5px);}
+  27% { text-shadow: 0.8px 0 0 #0c33f5, -0.8px 0 0 lime; filter: blur(0.5px);}
+  28% { text-shadow: 0.8px 0 0 #0c33f5, -0.8px 0 0 lime; filter: blur(0);}
+  29% { text-shadow: 0.8px 0 0 #0c33f5, -0.8px 0 0 lime; filter: blur(0);}
+  30% { text-shadow: 0.8px 0 0 #0c33f5, -0.8px 0 0 lime; filter: blur(0);}
+  31% { text-shadow: -3px 0 0 #0c33f5, 3px 0 0 lime; filter: blur(0);}
+  32% { text-shadow: -3px 0 0 #0c33f5, 3px 0 0 lime; filter: blur(0);}
+  33% { text-shadow: -3px 0 0 #0c33f5, 3px 0 0 lime; filter: blur(0);}
+  34% { text-shadow: -3px 0 0 #0c33f5, 3px 0 0 lime; filter: blur(0);}
+  35% { text-shadow: -3px 0 0 #0c33f5, 3px 0 0 lime; filter: blur(0.5px);}
+  36% { text-shadow: -3px 0 0 #0c33f5, 3px 0 0 lime; filter: blur(0.5px);}
+  37% { text-shadow: -3px 0 0 #0c33f5, 3px 0 0 lime; filter: blur(0.5px);}
+  38% { text-shadow: -3px 0 0 #0c33f5, 3px 0 0 lime; filter: blur(0);}
+  39% { text-shadow: -3px 0 0 #0c33f5, 3px 0 0 lime; filter: blur(0);}
+  40% { text-shadow: -3px 0 0 #0c33f5, 3px 0 0 lime; filter: blur(0);}
+  41% { text-shadow: 45px 0 0 #0c33f5, -45px 0 0 lime; filter: blur(0);}
+  42% { text-shadow: 0 0 0 #0c33f5, 0 0 0 lime; filter: blur(0);}
+  43% { text-shadow: 1px 0 0 red, -1px 0 0 lime; filter: blur(0);}
+  44% { text-shadow: 1px 0 0 red, -1px 0 0 lime; filter: blur(0);}
+  45% { text-shadow: 1px 0 0 red, -1px 0 0 lime; filter: blur(0);}
+  46% { text-shadow: 1px 0 0 red, -1px 0 0 lime; filter: blur(0.5px);}
+  47% { text-shadow: -3px 0 0 red, 3px 0 0 lime; filter: blur(0.5px);}
+  48% { text-shadow: -3px 0 0 red, 3px 0 0 lime; filter: blur(0);}
+  49% { text-shadow: -3px 0 0 red, 3px 0 0 lime; filter: blur(0);}
+  50% { text-shadow: -3px 0 0 red, 3px 0 0 lime; filter: blur(0);}
+  51% { text-shadow: 3px 0 0 red, -3px 0 0 #0c33f5; filter: blur(0);}
+  52% { text-shadow: 3px 0 0 red, -3px 0 0 #0c33f5; filter: blur(0);}
+  53% { text-shadow: 3px 0 0 red, -3px 0 0 #0c33f5; filter: blur(0);}
+  54% { text-shadow: 3px 0 0 red, -3px 0 0 #0c33f5; filter: blur(0);}
+  55% { text-shadow: 3px 0 0 red, -3px 0 0 #0c33f5; filter: blur(0.5px);}
+  56% { text-shadow: -3px 0 0 red, 3px 0 0 #0c33f5; filter: blur(0.5px);}
+  57% { text-shadow: -3px 0 0 red, 3px 0 0 #0c33f5; filter: blur(0.5px);}
+  58% { text-shadow: -3px 0 0 red, 3px 0 0 #0c33f5; filter: blur(0);}
+  59% { text-shadow: -3px 0 0 red, 3px 0 0 #0c33f5; filter: blur(0);}
+  60% { text-shadow: -3px 0 0 red, 3px 0 0 #0c33f5; filter: blur(0);}
+  61% { text-shadow: 30px 0 0 red, -30px 0 0 lime; filter: blur(0);}
+  62% { text-shadow: 0 0 0 red, 0 0 0 lime; filter: blur(0);}
+  63% { text-shadow: 1px 0 0 red, -1px 0 0 #0c33f5; filter: blur(0);}
+  64% { text-shadow: 1px 0 0 red, -1px 0 0 #0c33f5; filter: blur(0);}
+  65% { text-shadow: 1px 0 0 red, -1px 0 0 #0c33f5; filter: blur(0);}
+  66% { text-shadow: 1px 0 0 red, -1px 0 0 #0c33f5; filter: blur(0.5px);}
+  67% { text-shadow: -3px 0 0 red, 3px 0 0 #0c33f5; filter: blur(0.5px);}
+  68% { text-shadow: -3px 0 0 red, 3px 0 0 #0c33f5; filter: blur(0);}
+  69% { text-shadow: -3px 0 0 red, 3px 0 0 #0c33f5; filter: blur(0);}
+  70% { text-shadow: -3px 0 0 red, 3px 0 0 #0c33f5; filter: blur(0);}
+  71% { text-shadow: 50px 0 0 red, -50px 0 0 #0c33f5; filter: blur(0);}
+  72% { text-shadow: 0 0 0 red, 0 0 0 #0c33f5; filter: blur(0);}
+  73% { text-shadow: 3px 0 0 red, -3px 0 0 #0c33f5; filter: blur(0);}
+  74% { text-shadow: 3px 0 0 red, -3px 0 0 #0c33f5; filter: blur(0);}
+  75% { text-shadow: 3px 0 0 red, -3px 0 0 #0c33f5; filter: blur(0);}
+  76% { text-shadow: 3px 0 0 red, -3px 0 0 #0c33f5; filter: blur(0);}
+  77% { text-shadow: -3px 0 0 red, 3px 0 0 #0c33f5; filter: blur(0);}
+  78% { text-shadow: -3px 0 0 red, 3px 0 0 #0c33f5; filter: blur(0);}
+  79% { text-shadow: -3px 0 0 red, 3px 0 0 #0c33f5; filter: blur(0);}
+  80% { text-shadow: -3px 0 0 red, 3px 0 0 #0c33f5; filter: blur(0);}
+  81% { text-shadow: 1px 0 0 red, -1px 0 0 lime; filter: blur(0);}
+  82% { text-shadow: 1px 0 0 red, -1px 0 0 lime; filter: blur(0);}
+  83% { text-shadow: 1px 0 0 red, -1px 0 0 lime; filter: blur(0.5px);}
+  84% { text-shadow: 1px 0 0 red, -1px 0 0 lime; filter: blur(0.5px);}
+  85% { text-shadow: 1px 0 0 red, -1px 0 0 lime; filter: blur(0.5px);}
+  86% { text-shadow: -3px 0 0 red, 3px 0 0 lime; filter: blur(0.5px);}
+  87% { text-shadow: -3px 0 0 red, 3px 0 0 lime; filter: blur(0.5px);}
+  88% { text-shadow: -3px 0 0 red, 3px 0 0 lime; filter: blur(0);}
+  89% { text-shadow: -3px 0 0 red, 3px 0 0 lime; filter: blur(0);}
+  90% { text-shadow: -3px 0 0 red, 3px 0 0 lime; filter: blur(0);}
+  91% { text-shadow: 60px 0 0 lime, -60px 0 0 #0c33f5; filter: blur(0);}
+  92% { text-shadow: 0 0 0 lime, 0 0 0 #0c33f5; filter: blur(0);}
+  92% { text-shadow: 0.8px 0 0 #0c33f5, -0.8px 0 0 lime; filter: blur(0);}
+  93% { text-shadow: 0.8px 0 0 #0c33f5, -0.8px 0 0 lime; filter: blur(0);}
+  94% { text-shadow: 0.8px 0 0 #0c33f5, -0.8px 0 0 lime; filter: blur(0);}
+  95% { text-shadow: 0.8px 0 0 #0c33f5, -0.8px 0 0 lime; filter: blur(0);}
+  96% { text-shadow: -3px 0 0 #0c33f5, 3px 0 0 lime; filter: blur(0);}
+  97% { text-shadow: -3px 0 0 #0c33f5, 3px 0 0 lime; filter: blur(0);}
+  98% { text-shadow: -3px 0 0 #0c33f5, 3px 0 0 lime; filter: blur(0);}
+  99% { text-shadow: -3px 0 0 #0c33f5, 3px 0 0 lime; filter: blur(0);}
+  100% { text-shadow: -3px 0 0 #0c33f5, 3px 0 0 lime; filter: blur(0);} }
+

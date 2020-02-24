@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <url>
+    <loc>https://shiny-labs.github.io/archives/</loc>
+    <lastmod>2020-02-23T20:19:35+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.github.io/</loc>
+    <lastmod>2020-02-23T20:19:35+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.github.io/categories/</loc>
+    <lastmod>2020-02-23T09:15:49+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.github.io/categories/ctf/</loc>
+    <lastmod>2020-02-23T09:15:49+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.github.io/series/picoctf-2019/</loc>
+    <lastmod>2020-02-23T09:15:49+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.github.io/posts/200223-picoctf-general-skills/</loc>
+    <lastmod>2020-02-23T09:15:49+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.github.io/posts/</loc>
+    <lastmod>2020-02-23T09:15:49+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.github.io/series/</loc>
+    <lastmod>2020-02-23T09:15:49+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.github.io/posts/200212-247ctf-the-more-the-merrier/</loc>
+    <lastmod>2020-02-12T20:49:07+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.github.io/tags/</loc>
+    <lastmod>2020-02-12T20:49:07+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.github.io/tags/x86/</loc>
+    <lastmod>2020-02-12T20:49:07+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.github.io/posts/200201-infosecinstitute-n00bs-ctf-writeup/</loc>
+    <lastmod>2020-02-01T14:42:01+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.github.io/series/googlectf-beginners-quest-2019/</loc>
+    <lastmod>2019-08-14T15:18:44+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.github.io/posts/190814-googlectf-beginners-drive-to-the-target/</loc>
+    <lastmod>2019-08-14T15:18:44+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.github.io/tags/k0ding/</loc>
+    <lastmod>2019-08-14T15:18:44+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.github.io/posts/190813-googlectf-beginners-stop-gan/</loc>
+    <lastmod>2019-08-13T16:34:23+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.github.io/tags/mips32/</loc>
+    <lastmod>2019-08-13T16:34:23+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.github.io/tags/pwn/</loc>
+    <lastmod>2019-08-13T16:34:23+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.github.io/posts/190806-googlectf-beginners-government-agriculture-network/</loc>
+    <lastmod>2019-08-06T15:28:01+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.github.io/tags/web/</loc>
+    <lastmod>2019-08-06T15:28:01+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.github.io/posts/190727-googlectf-beginners-friendspacebookplusallaccessredpremium.com/</loc>
+    <lastmod>2019-07-27T09:10:27+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.github.io/tags/reversing/</loc>
+    <lastmod>2019-07-27T09:10:27+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.github.io/posts/190724-googlectf-beginners-work-computer/</loc>
+    <lastmod>2019-07-24T21:12:06+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.github.io/tags/sandbox/</loc>
+    <lastmod>2019-07-24T21:12:06+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.github.io/tags/forensics/</loc>
+    <lastmod>2019-07-24T11:53:22+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.github.io/posts/190724-googlectf-beginners-home-computer/</loc>
+    <lastmod>2019-07-24T11:53:22+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.github.io/tags/go/</loc>
+    <lastmod>2019-07-22T10:03:43+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.github.io/posts/190722-googlectf-beginners-satellite/</loc>
+    <lastmod>2019-07-22T10:03:43+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.github.io/posts/190720-googlectf-beginners-2019-ad/</loc>
+    <lastmod>2019-07-20T11:56:22+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.github.io/tags/misc/</loc>
+    <lastmod>2019-07-20T11:56:22+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.github.io/posts/190719-googlectf-beginners-2019-enter-space-time-coordinates/</loc>
+    <lastmod>2019-07-19T23:53:22+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.github.io/credits/</loc>
+    <lastmod>2019-07-12T19:16:00+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.github.io/posts/190711-debugging-gdb-ida-linux/</loc>
+    <lastmod>2019-07-11T21:46:12+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.github.io/tags/ida/</loc>
+    <lastmod>2019-07-11T21:46:12+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.github.io/tags/linux/</loc>
+    <lastmod>2019-07-11T21:46:12+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.github.io/categories/reverse/</loc>
+    <lastmod>2019-07-11T21:46:12+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.github.io/posts/190517-disassemble-specific-function/</loc>
+    <lastmod>2019-05-17T10:32:35+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.github.io/tags/gdb/</loc>
+    <lastmod>2019-05-17T10:32:35+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.github.io/tags/objdump/</loc>
+    <lastmod>2019-05-17T10:32:35+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.github.io/categories/fpga/</loc>
+    <lastmod>2019-04-16T16:41:27+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.github.io/posts/190416-lattice-diamond-tutorial/</loc>
+    <lastmod>2019-04-16T16:41:27+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.github.io/tags/latticediamond/</loc>
+    <lastmod>2019-04-16T16:41:27+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.github.io/tags/verilog/</loc>
+    <lastmod>2019-04-16T16:41:27+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.github.io/categories/exploit/</loc>
+    <lastmod>2019-01-29T12:14:31+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.github.io/series/phoenix/</loc>
+    <lastmod>2019-01-29T12:14:31+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.github.io/posts/190129-phoenix-stack-4/</loc>
+    <lastmod>2019-01-29T12:14:31+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.github.io/posts/190129-phoenix-stack-3/</loc>
+    <lastmod>2019-01-29T00:07:59+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.github.io/posts/190128-phoenix-stack-2/</loc>
+    <lastmod>2019-01-28T18:21:05+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.github.io/posts/190128-phoenix-stack-1/</loc>
+    <lastmod>2019-01-28T18:14:41+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.github.io/posts/190128-phoenix-stack-0/</loc>
+    <lastmod>2019-01-28T18:04:45+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.github.io/posts/190128-phoenix-getting-started/</loc>
+    <lastmod>2019-01-28T16:41:16+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.github.io/about/</loc>
+    <lastmod>2019-01-28T14:30:46+01:00</lastmod>
+  </url>
+  
+</urlset>
