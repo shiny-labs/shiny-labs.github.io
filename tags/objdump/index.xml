@@ -2,7 +2,7 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>objdump on shiny-labs</title>
-    <link>https://shiny-labs.github.io/tags/objdump/</link>
+    <link>https://shiny-labs.re/tags/objdump/</link>
     <description>Recent content in objdump on shiny-labs</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
@@ -10,15 +10,15 @@
     <webMaster>shiny-labs@kylma.fr (shiny-labs)</webMaster>
     <lastBuildDate>Fri, 17 May 2019 10:32:35 +0200</lastBuildDate>
     
-	<atom:link href="https://shiny-labs.github.io/tags/objdump/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://shiny-labs.re/tags/objdump/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Disassemble a Specific Function</title>
-      <link>https://shiny-labs.github.io/posts/190517-disassemble-specific-function/</link>
+      <link>https://shiny-labs.re/posts/190517-disassemble-specific-function/</link>
       <pubDate>Fri, 17 May 2019 10:32:35 +0200</pubDate>
       <author>shiny-labs@kylma.fr (shiny-labs)</author>
-      <guid>https://shiny-labs.github.io/posts/190517-disassemble-specific-function/</guid>
+      <guid>https://shiny-labs.re/posts/190517-disassemble-specific-function/</guid>
       <description>Have you ever tried to disassemble only one function with objdump?
 Let&amp;rsquo;s take a tiny code which prints the result of an addition function:
 #include &amp;lt;stdio.h&amp;gt;#include &amp;lt;stdint.h&amp;gt; uint32_t add(uint32_t a, uint32_t b) { return a + b; } int main(int argc, char* argv[]) { uint32_t result = add(1300, 37); printf(&amp;#34;result is %i\n&amp;#34;, result); return 0; } Compile it and run it:

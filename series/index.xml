@@ -2,7 +2,7 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Series on shiny-labs</title>
-    <link>https://shiny-labs.github.io/series/</link>
+    <link>https://shiny-labs.re/series/</link>
     <description>Recent content in Series on shiny-labs</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
@@ -10,33 +10,33 @@
     <webMaster>shiny-labs@kylma.fr (shiny-labs)</webMaster>
     <lastBuildDate>Sun, 23 Feb 2020 09:15:49 +0100</lastBuildDate>
     
-	<atom:link href="https://shiny-labs.github.io/series/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://shiny-labs.re/series/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>picoCTF 2019</title>
-      <link>https://shiny-labs.github.io/series/picoctf-2019/</link>
+      <link>https://shiny-labs.re/series/picoctf-2019/</link>
       <pubDate>Sun, 23 Feb 2020 09:15:49 +0100</pubDate>
       <author>shiny-labs@kylma.fr (shiny-labs)</author>
-      <guid>https://shiny-labs.github.io/series/picoctf-2019/</guid>
+      <guid>https://shiny-labs.re/series/picoctf-2019/</guid>
       <description></description>
     </item>
     
     <item>
       <title>GoogleCTF Beginner&#39;s Quest 2019</title>
-      <link>https://shiny-labs.github.io/series/googlectf-beginners-quest-2019/</link>
+      <link>https://shiny-labs.re/series/googlectf-beginners-quest-2019/</link>
       <pubDate>Wed, 14 Aug 2019 15:18:44 +0200</pubDate>
       <author>shiny-labs@kylma.fr (shiny-labs)</author>
-      <guid>https://shiny-labs.github.io/series/googlectf-beginners-quest-2019/</guid>
+      <guid>https://shiny-labs.re/series/googlectf-beginners-quest-2019/</guid>
       <description></description>
     </item>
     
     <item>
       <title>phoenix</title>
-      <link>https://shiny-labs.github.io/series/phoenix/</link>
+      <link>https://shiny-labs.re/series/phoenix/</link>
       <pubDate>Tue, 29 Jan 2019 12:14:31 +0100</pubDate>
       <author>shiny-labs@kylma.fr (shiny-labs)</author>
-      <guid>https://shiny-labs.github.io/series/phoenix/</guid>
+      <guid>https://shiny-labs.re/series/phoenix/</guid>
       <description></description>
     </item>
     

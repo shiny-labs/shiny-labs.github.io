@@ -2,7 +2,7 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>CTF on shiny-labs</title>
-    <link>https://shiny-labs.github.io/categories/ctf/</link>
+    <link>https://shiny-labs.re/categories/ctf/</link>
     <description>Recent content in CTF on shiny-labs</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
@@ -10,15 +10,15 @@
     <webMaster>shiny-labs@kylma.fr (shiny-labs)</webMaster>
     <lastBuildDate>Sun, 23 Feb 2020 09:15:49 +0100</lastBuildDate>
     
-	<atom:link href="https://shiny-labs.github.io/categories/ctf/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://shiny-labs.re/categories/ctf/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>PicoCTF 2019 - General Skills</title>
-      <link>https://shiny-labs.github.io/posts/200223-picoctf-general-skills/</link>
+      <link>https://shiny-labs.re/posts/200223-picoctf-general-skills/</link>
       <pubDate>Sun, 23 Feb 2020 09:15:49 +0100</pubDate>
       <author>shiny-labs@kylma.fr (shiny-labs)</author>
-      <guid>https://shiny-labs.github.io/posts/200223-picoctf-general-skills/</guid>
+      <guid>https://shiny-labs.re/posts/200223-picoctf-general-skills/</guid>
       <description>Let&amp;rsquo;s Warm Up [50] Description  If I told you a word started with 0x70 in hexadecimal, what would it start with in ASCII?
  Solution A look at the ASCII manual should help!
 $ man ascii Then, it&amp;rsquo;s just a matter of finding the right line, the one that has 70 in the Hex column.
@@ -27,20 +27,20 @@ Oct Dec Hex Char Oct Dec Hex Char ───────────────�
     
     <item>
       <title>24/7 CTF - The More The Merrier</title>
-      <link>https://shiny-labs.github.io/posts/200212-247ctf-the-more-the-merrier/</link>
+      <link>https://shiny-labs.re/posts/200212-247ctf-the-more-the-merrier/</link>
       <pubDate>Wed, 12 Feb 2020 20:49:07 +0100</pubDate>
       <author>shiny-labs@kylma.fr (shiny-labs)</author>
-      <guid>https://shiny-labs.github.io/posts/200212-247ctf-the-more-the-merrier/</guid>
+      <guid>https://shiny-labs.re/posts/200212-247ctf-the-more-the-merrier/</guid>
       <description>Description  One byte is great. But what if you need more? Can you find the flag hidden in this binary?
  Solution $ file the_more_the_merrier the_more_the_merrier: ELF 64-bit LSB shared object, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/l, for GNU/Linux 3.2.0, BuildID[sha1]=0f750d638337391328fa7432dd362189de908c1e, stripped $ ./the_more_the_merrier Nothing to see here.. Wow wow, calm down, I can&amp;rsquo;t follow with all the output! So&amp;hellip; Running the binary isn&amp;rsquo;t quite the definition of excitement&amp;hellip;</description>
     </item>
     
     <item>
       <title>Infosec Institute - n00bs CTF Labs Writeup</title>
-      <link>https://shiny-labs.github.io/posts/200201-infosecinstitute-n00bs-ctf-writeup/</link>
+      <link>https://shiny-labs.re/posts/200201-infosecinstitute-n00bs-ctf-writeup/</link>
       <pubDate>Sat, 01 Feb 2020 14:42:01 +0100</pubDate>
       <author>shiny-labs@kylma.fr (shiny-labs)</author>
-      <guid>https://shiny-labs.github.io/posts/200201-infosecinstitute-n00bs-ctf-writeup/</guid>
+      <guid>https://shiny-labs.re/posts/200201-infosecinstitute-n00bs-ctf-writeup/</guid>
       <description>_____ _____ _ _____ ___________ _ _ | _ || _ | | / __ \_ _| ___| | | | | _ __ | |/&amp;#39; || |/&amp;#39; | |__ ___ | / \/ | | | |_ | | __ _| |__ ___ | &amp;#39;_ \| /| || /| | &amp;#39;_ \/ __| | | | | | _| | | / _` | &amp;#39;_ \/ __| | | | \ |_/ /\ |_/ / |_) \__ \ | \__/\ | | | | | |___| (_| | |_) \__ \ |_| |_|\___/ \___/|_.</description>
     </item>
     

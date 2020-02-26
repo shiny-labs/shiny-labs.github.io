@@ -2,7 +2,7 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>x86 on shiny-labs</title>
-    <link>https://shiny-labs.github.io/tags/x86/</link>
+    <link>https://shiny-labs.re/tags/x86/</link>
     <description>Recent content in x86 on shiny-labs</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
@@ -10,25 +10,25 @@
     <webMaster>shiny-labs@kylma.fr (shiny-labs)</webMaster>
     <lastBuildDate>Wed, 12 Feb 2020 20:49:07 +0100</lastBuildDate>
     
-	<atom:link href="https://shiny-labs.github.io/tags/x86/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://shiny-labs.re/tags/x86/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>24/7 CTF - The More The Merrier</title>
-      <link>https://shiny-labs.github.io/posts/200212-247ctf-the-more-the-merrier/</link>
+      <link>https://shiny-labs.re/posts/200212-247ctf-the-more-the-merrier/</link>
       <pubDate>Wed, 12 Feb 2020 20:49:07 +0100</pubDate>
       <author>shiny-labs@kylma.fr (shiny-labs)</author>
-      <guid>https://shiny-labs.github.io/posts/200212-247ctf-the-more-the-merrier/</guid>
+      <guid>https://shiny-labs.re/posts/200212-247ctf-the-more-the-merrier/</guid>
       <description>Description  One byte is great. But what if you need more? Can you find the flag hidden in this binary?
  Solution $ file the_more_the_merrier the_more_the_merrier: ELF 64-bit LSB shared object, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/l, for GNU/Linux 3.2.0, BuildID[sha1]=0f750d638337391328fa7432dd362189de908c1e, stripped $ ./the_more_the_merrier Nothing to see here.. Wow wow, calm down, I can&amp;rsquo;t follow with all the output! So&amp;hellip; Running the binary isn&amp;rsquo;t quite the definition of excitement&amp;hellip;</description>
     </item>
     
     <item>
       <title>Phoenix: Stack Four</title>
-      <link>https://shiny-labs.github.io/posts/190129-phoenix-stack-4/</link>
+      <link>https://shiny-labs.re/posts/190129-phoenix-stack-4/</link>
       <pubDate>Tue, 29 Jan 2019 12:14:31 +0100</pubDate>
       <author>shiny-labs@kylma.fr (shiny-labs)</author>
-      <guid>https://shiny-labs.github.io/posts/190129-phoenix-stack-4/</guid>
+      <guid>https://shiny-labs.re/posts/190129-phoenix-stack-4/</guid>
       <description>Goal: Execute the function complete_level by modifying the saved return address, and pointing it to the complete_level() function.
 Source code:
 /* * phoenix/stack-four, by https://exploit.education * * The aim is to execute the function complete_level by modifying the * saved return address, and pointing it to the complete_level() function. * * Why were the apple and orange all alone? Because the bananna split. */ #include &amp;lt;err.h&amp;gt;#include &amp;lt;stdio.h&amp;gt;#include &amp;lt;stdlib.h&amp;gt;#include &amp;lt;string.h&amp;gt;#include &amp;lt;unistd.h&amp;gt; #define BANNER \ &amp;#34;Welcome to &amp;#34; LEVELNAME &amp;#34;, brought to you by https://exploit.</description>
@@ -36,10 +36,10 @@ Source code:
     
     <item>
       <title>Phoenix: Stack Three</title>
-      <link>https://shiny-labs.github.io/posts/190129-phoenix-stack-3/</link>
+      <link>https://shiny-labs.re/posts/190129-phoenix-stack-3/</link>
       <pubDate>Tue, 29 Jan 2019 00:07:59 +0100</pubDate>
       <author>shiny-labs@kylma.fr (shiny-labs)</author>
-      <guid>https://shiny-labs.github.io/posts/190129-phoenix-stack-3/</guid>
+      <guid>https://shiny-labs.re/posts/190129-phoenix-stack-3/</guid>
       <description>Goal: execute the complete_level function.
 Source code:
 /* * phoenix/stack-three, by https://exploit.education * * The aim is to change the contents of the changeme variable to 0x0d0a090a * * When does a joke become a dad joke? * When it becomes apparent. * When it&amp;#39;s fully groan up. * */ #include &amp;lt;err.h&amp;gt;#include &amp;lt;stdio.h&amp;gt;#include &amp;lt;stdlib.h&amp;gt;#include &amp;lt;string.h&amp;gt;#include &amp;lt;unistd.h&amp;gt; #define BANNER \ &amp;#34;Welcome to &amp;#34; LEVELNAME &amp;#34;, brought to you by https://exploit.education&amp;#34;  char *gets(char *); void complete_level() { printf(&amp;#34;Congratulations, you&amp;#39;ve finished &amp;#34; LEVELNAME &amp;#34; :-) Well done!</description>
@@ -47,10 +47,10 @@ Source code:
     
     <item>
       <title>Phoenix: Stack Two</title>
-      <link>https://shiny-labs.github.io/posts/190128-phoenix-stack-2/</link>
+      <link>https://shiny-labs.re/posts/190128-phoenix-stack-2/</link>
       <pubDate>Mon, 28 Jan 2019 18:21:05 +0100</pubDate>
       <author>shiny-labs@kylma.fr (shiny-labs)</author>
-      <guid>https://shiny-labs.github.io/posts/190128-phoenix-stack-2/</guid>
+      <guid>https://shiny-labs.re/posts/190128-phoenix-stack-2/</guid>
       <description>Goal: change the contents of the changeme variable to 0x0d0a090a
 Source code:
 /* * phoenix/stack-two, by https://exploit.education * * The aim is to change the contents of the changeme variable to 0x0d0a090a * * If you&amp;#39;re Russian to get to the bath room, and you are Finnish when you get * out, what are you when you are in the bath room? * * European! */ #include &amp;lt;err.h&amp;gt;#include &amp;lt;stdio.h&amp;gt;#include &amp;lt;stdlib.h&amp;gt;#include &amp;lt;string.</description>
@@ -58,10 +58,10 @@ Source code:
     
     <item>
       <title>Phoenix: Stack One</title>
-      <link>https://shiny-labs.github.io/posts/190128-phoenix-stack-1/</link>
+      <link>https://shiny-labs.re/posts/190128-phoenix-stack-1/</link>
       <pubDate>Mon, 28 Jan 2019 18:14:41 +0100</pubDate>
       <author>shiny-labs@kylma.fr (shiny-labs)</author>
-      <guid>https://shiny-labs.github.io/posts/190128-phoenix-stack-1/</guid>
+      <guid>https://shiny-labs.re/posts/190128-phoenix-stack-1/</guid>
       <description>Goal: Modify the value of the changeme variable to 0x496c5962
 Source code:
 /* * phoenix/stack-one, by https://exploit.education * * The aim is to change the contents of the changeme variable to 0x496c5962 * * Did you hear about the kid napping at the local school? * It&amp;#39;s okay, they woke up. * */ #include &amp;lt;err.h&amp;gt;#include &amp;lt;stdio.h&amp;gt;#include &amp;lt;stdlib.h&amp;gt;#include &amp;lt;string.h&amp;gt;#include &amp;lt;unistd.h&amp;gt; #define BANNER \ &amp;#34;Welcome to &amp;#34; LEVELNAME &amp;#34;, brought to you by https://exploit.</description>
@@ -69,10 +69,10 @@ Source code:
     
     <item>
       <title>Phoenix: Stack Zero</title>
-      <link>https://shiny-labs.github.io/posts/190128-phoenix-stack-0/</link>
+      <link>https://shiny-labs.re/posts/190128-phoenix-stack-0/</link>
       <pubDate>Mon, 28 Jan 2019 18:04:45 +0100</pubDate>
       <author>shiny-labs@kylma.fr (shiny-labs)</author>
-      <guid>https://shiny-labs.github.io/posts/190128-phoenix-stack-0/</guid>
+      <guid>https://shiny-labs.re/posts/190128-phoenix-stack-0/</guid>
       <description>Goal: modify the content of the changeme variable.
 Source code:
 /* * phoenix/stack-zero, by https://exploit.education * * The aim is to change the contents of the changeme variable. * * Scientists have recently discovered a previously unknown species of * kangaroos, approximately in the middle of Western Australia. These * kangaroos are remarkable, as their insanely powerful hind legs give them * the ability to jump higher than a one story house (which is approximately * 15 feet, or 4.</description>
@@ -80,10 +80,10 @@ Source code:
     
     <item>
       <title>Phoenix: Getting Started</title>
-      <link>https://shiny-labs.github.io/posts/190128-phoenix-getting-started/</link>
+      <link>https://shiny-labs.re/posts/190128-phoenix-getting-started/</link>
       <pubDate>Mon, 28 Jan 2019 16:41:16 +0100</pubDate>
       <author>shiny-labs@kylma.fr (shiny-labs)</author>
-      <guid>https://shiny-labs.github.io/posts/190128-phoenix-getting-started/</guid>
+      <guid>https://shiny-labs.re/posts/190128-phoenix-getting-started/</guid>
       <description>VM setup I&amp;rsquo;m using a Ubuntu 64-bit VM with VMware.
 Download the AMD64 debian packages from https://exploit.education/downloads/ and install it with:
 # dpkg -i exploit-education-phoenix_1.0.0-_amd64.deb Once the package is installed, the binaries are in /opt/phoenix/&amp;lt;arch&amp;gt;.

@@ -2,7 +2,7 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Blog on shiny-labs</title>
-    <link>https://shiny-labs.github.io/</link>
+    <link>https://shiny-labs.re/</link>
     <description>Recent content in Blog on shiny-labs</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
@@ -10,24 +10,24 @@
     <webMaster>shiny-labs@kylma.fr (shiny-labs)</webMaster>
     <lastBuildDate>Sun, 23 Feb 2020 20:19:35 +0100</lastBuildDate>
     
-	<atom:link href="https://shiny-labs.github.io/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://shiny-labs.re/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Archives</title>
-      <link>https://shiny-labs.github.io/archives/</link>
+      <link>https://shiny-labs.re/archives/</link>
       <pubDate>Sun, 23 Feb 2020 20:19:35 +0100</pubDate>
       <author>shiny-labs@kylma.fr (shiny-labs)</author>
-      <guid>https://shiny-labs.github.io/archives/</guid>
+      <guid>https://shiny-labs.re/archives/</guid>
       <description></description>
     </item>
     
     <item>
       <title>PicoCTF 2019 - General Skills</title>
-      <link>https://shiny-labs.github.io/posts/200223-picoctf-general-skills/</link>
+      <link>https://shiny-labs.re/posts/200223-picoctf-general-skills/</link>
       <pubDate>Sun, 23 Feb 2020 09:15:49 +0100</pubDate>
       <author>shiny-labs@kylma.fr (shiny-labs)</author>
-      <guid>https://shiny-labs.github.io/posts/200223-picoctf-general-skills/</guid>
+      <guid>https://shiny-labs.re/posts/200223-picoctf-general-skills/</guid>
       <description>Let&amp;rsquo;s Warm Up [50] Description  If I told you a word started with 0x70 in hexadecimal, what would it start with in ASCII?
  Solution A look at the ASCII manual should help!
 $ man ascii Then, it&amp;rsquo;s just a matter of finding the right line, the one that has 70 in the Hex column.
@@ -36,95 +36,95 @@ Oct Dec Hex Char Oct Dec Hex Char ───────────────�
     
     <item>
       <title>24/7 CTF - The More The Merrier</title>
-      <link>https://shiny-labs.github.io/posts/200212-247ctf-the-more-the-merrier/</link>
+      <link>https://shiny-labs.re/posts/200212-247ctf-the-more-the-merrier/</link>
       <pubDate>Wed, 12 Feb 2020 20:49:07 +0100</pubDate>
       <author>shiny-labs@kylma.fr (shiny-labs)</author>
-      <guid>https://shiny-labs.github.io/posts/200212-247ctf-the-more-the-merrier/</guid>
+      <guid>https://shiny-labs.re/posts/200212-247ctf-the-more-the-merrier/</guid>
       <description>Description  One byte is great. But what if you need more? Can you find the flag hidden in this binary?
  Solution $ file the_more_the_merrier the_more_the_merrier: ELF 64-bit LSB shared object, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/l, for GNU/Linux 3.2.0, BuildID[sha1]=0f750d638337391328fa7432dd362189de908c1e, stripped $ ./the_more_the_merrier Nothing to see here.. Wow wow, calm down, I can&amp;rsquo;t follow with all the output! So&amp;hellip; Running the binary isn&amp;rsquo;t quite the definition of excitement&amp;hellip;</description>
     </item>
     
     <item>
       <title>Infosec Institute - n00bs CTF Labs Writeup</title>
-      <link>https://shiny-labs.github.io/posts/200201-infosecinstitute-n00bs-ctf-writeup/</link>
+      <link>https://shiny-labs.re/posts/200201-infosecinstitute-n00bs-ctf-writeup/</link>
       <pubDate>Sat, 01 Feb 2020 14:42:01 +0100</pubDate>
       <author>shiny-labs@kylma.fr (shiny-labs)</author>
-      <guid>https://shiny-labs.github.io/posts/200201-infosecinstitute-n00bs-ctf-writeup/</guid>
+      <guid>https://shiny-labs.re/posts/200201-infosecinstitute-n00bs-ctf-writeup/</guid>
       <description>_____ _____ _ _____ ___________ _ _ | _ || _ | | / __ \_ _| ___| | | | | _ __ | |/&amp;#39; || |/&amp;#39; | |__ ___ | / \/ | | | |_ | | __ _| |__ ___ | &amp;#39;_ \| /| || /| | &amp;#39;_ \/ __| | | | | | _| | | / _` | &amp;#39;_ \/ __| | | | \ |_/ /\ |_/ / |_) \__ \ | \__/\ | | | | | |___| (_| | |_) \__ \ |_| |_|\___/ \___/|_.</description>
     </item>
     
     <item>
       <title>GoogleCTF Beginner&#39;s Quest 2019 - Drive to the Target</title>
-      <link>https://shiny-labs.github.io/posts/190814-googlectf-beginners-drive-to-the-target/</link>
+      <link>https://shiny-labs.re/posts/190814-googlectf-beginners-drive-to-the-target/</link>
       <pubDate>Wed, 14 Aug 2019 15:18:44 +0200</pubDate>
       <author>shiny-labs@kylma.fr (shiny-labs)</author>
-      <guid>https://shiny-labs.github.io/posts/190814-googlectf-beginners-drive-to-the-target/</guid>
+      <guid>https://shiny-labs.re/posts/190814-googlectf-beginners-drive-to-the-target/</guid>
       <description>Description  Excellent work! With your fine sleuthing skills, you managed to find a picture of the handsome creature with its pet biped. At last friends and companionship may be near!
 Like all inhabitants of this world, you spend an inordinate amount of time on the site, stalking and comparing your life to that of others. The first thought that springs to your mind is &amp;ldquo;Why haven&amp;rsquo;t I ever been to Mauritius on holiday?</description>
     </item>
     
     <item>
       <title>GoogleCTF Beginner&#39;s Quest 2019 - Stop GAN</title>
-      <link>https://shiny-labs.github.io/posts/190813-googlectf-beginners-stop-gan/</link>
+      <link>https://shiny-labs.re/posts/190813-googlectf-beginners-stop-gan/</link>
       <pubDate>Tue, 13 Aug 2019 16:34:23 +0200</pubDate>
       <author>shiny-labs@kylma.fr (shiny-labs)</author>
-      <guid>https://shiny-labs.github.io/posts/190813-googlectf-beginners-stop-gan/</guid>
+      <guid>https://shiny-labs.re/posts/190813-googlectf-beginners-stop-gan/</guid>
       <description>Description  Success, you&amp;rsquo;ve gotten the picture of your lost love, not knowing that pictures and the things you take pictures of are generally two separate things, you think you&amp;rsquo;ve rescue them and their brethren by downloading them all to your ships hard drive. They&amp;rsquo;re still being eaten, but this is a fact that has escaped you entirely. Your thoughts swiftly shift to revenge. It&amp;rsquo;s important now to stop this program from destroying these &amp;ldquo;Cauliflowers&amp;rdquo; as they&amp;rsquo;re referred to, ever again.</description>
     </item>
     
     <item>
       <title>GoogleCTF Beginner&#39;s Quest 2019 - Government Agriculture Network</title>
-      <link>https://shiny-labs.github.io/posts/190806-googlectf-beginners-government-agriculture-network/</link>
+      <link>https://shiny-labs.re/posts/190806-googlectf-beginners-government-agriculture-network/</link>
       <pubDate>Tue, 06 Aug 2019 15:28:01 +0200</pubDate>
       <author>shiny-labs@kylma.fr (shiny-labs)</author>
-      <guid>https://shiny-labs.github.io/posts/190806-googlectf-beginners-government-agriculture-network/</guid>
+      <guid>https://shiny-labs.re/posts/190806-googlectf-beginners-government-agriculture-network/</guid>
       <description>Description  Well it seems someone can&amp;rsquo;t keep their work life and their home life separate. You vaguely recall on your home planet, posters put up everywhere that said &amp;ldquo;Loose Zips sink large commercial properties with a responsibility to the shareholders.&amp;rdquo; You wonder if there is a similar concept here.
 Using the credentials to access this so-called Agricultural network, you realize that SarahH was just hired as a vendor or contract worker and given access that was equivalent.</description>
     </item>
     
     <item>
       <title>GoogleCTF Beginner&#39;s Quest 2019 - FriendSpaceBookPlusAllAccessRedPremium.com</title>
-      <link>https://shiny-labs.github.io/posts/190727-googlectf-beginners-friendspacebookplusallaccessredpremium.com/</link>
+      <link>https://shiny-labs.re/posts/190727-googlectf-beginners-friendspacebookplusallaccessredpremium.com/</link>
       <pubDate>Sat, 27 Jul 2019 09:10:27 +0200</pubDate>
       <author>shiny-labs@kylma.fr (shiny-labs)</author>
-      <guid>https://shiny-labs.github.io/posts/190727-googlectf-beginners-friendspacebookplusallaccessredpremium.com/</guid>
+      <guid>https://shiny-labs.re/posts/190727-googlectf-beginners-friendspacebookplusallaccessredpremium.com/</guid>
       <description>Description  Having snooped around like the expert spy you were never trained to be, you found something that takes your interest: &amp;ldquo;Cookie/www.FriendSpaceBookPlusAllAccessRedPremium.com&amp;rdquo; But unbeknownst to you, it was only the 700nm Wavelength herring rather than a delicious cookie that you could have found. It looks exactly like a credential for another system. You find yourself in search of a friendly book to read. Having already spent some time trying to find a way to gain more intelligence&amp;hellip; and learn about those fluffy creatures, you (several)-momentarily divert your attention here.</description>
     </item>
     
     <item>
       <title>GoogleCTF Beginner&#39;s Quest 2019 - Work Computer</title>
-      <link>https://shiny-labs.github.io/posts/190724-googlectf-beginners-work-computer/</link>
+      <link>https://shiny-labs.re/posts/190724-googlectf-beginners-work-computer/</link>
       <pubDate>Wed, 24 Jul 2019 21:12:06 +0200</pubDate>
       <author>shiny-labs@kylma.fr (shiny-labs)</author>
-      <guid>https://shiny-labs.github.io/posts/190724-googlectf-beginners-work-computer/</guid>
+      <guid>https://shiny-labs.re/posts/190724-googlectf-beginners-work-computer/</guid>
       <description>Description  With the confidence of conviction and decision making skills that made you a contender for Xenon&amp;rsquo;s Universal takeover council, now disbanded, you forge ahead to the work computer. This machine announces itself to you, surprisingly with a detailed description of all its hardware and peripherals. Your first thought is &amp;ldquo;Why does the display stand need to announce its price? And exactly how much does 999 dollars convert to in Xenonivian Bucklets?</description>
     </item>
     
     <item>
       <title>GoogleCTF Beginner&#39;s Quest 2019 - Home Computer</title>
-      <link>https://shiny-labs.github.io/posts/190724-googlectf-beginners-home-computer/</link>
+      <link>https://shiny-labs.re/posts/190724-googlectf-beginners-home-computer/</link>
       <pubDate>Wed, 24 Jul 2019 11:53:22 +0200</pubDate>
       <author>shiny-labs@kylma.fr (shiny-labs)</author>
-      <guid>https://shiny-labs.github.io/posts/190724-googlectf-beginners-home-computer/</guid>
+      <guid>https://shiny-labs.re/posts/190724-googlectf-beginners-home-computer/</guid>
       <description>Description  Blunderbussing your way through the decision making process, you figure that one is as good as the other and that further research into the importance of Work Life balance is of little interest to you. You&amp;rsquo;re the decider after all. You confidently use the credentials to access the &amp;ldquo;Home Computer.&amp;rdquo; Something called &amp;ldquo;desktop&amp;rdquo; presents itself, displaying a fascinating round and bumpy creature (much like yourself) labeled &amp;ldquo;cauliflower 4 work - GAN post.</description>
     </item>
     
     <item>
       <title>GoogleCTF Beginner&#39;s Quest 2019 - Satellite // Introduction to Reversing Go Binaries</title>
-      <link>https://shiny-labs.github.io/posts/190722-googlectf-beginners-satellite/</link>
+      <link>https://shiny-labs.re/posts/190722-googlectf-beginners-satellite/</link>
       <pubDate>Mon, 22 Jul 2019 10:03:43 +0200</pubDate>
       <author>shiny-labs@kylma.fr (shiny-labs)</author>
-      <guid>https://shiny-labs.github.io/posts/190722-googlectf-beginners-satellite/</guid>
+      <guid>https://shiny-labs.re/posts/190722-googlectf-beginners-satellite/</guid>
       <description>I picked the binary of the challenge satellite from Google CTF beginner&amp;rsquo;s quest 2019 as a first target to learn go reversing.
 Description  Placing your ship in range of the Osmiums, you begin to receive signals. Hoping that you are not detected, because it&amp;rsquo;s too late now, you figure that it may be worth finding out what these signals mean and what information might be &amp;ldquo;borrowed&amp;rdquo; from them. Can you hear me Captain Tim?</description>
     </item>
     
     <item>
       <title>GoogleCTF Beginner&#39;s Quest 2019 - Ad</title>
-      <link>https://shiny-labs.github.io/posts/190720-googlectf-beginners-2019-ad/</link>
+      <link>https://shiny-labs.re/posts/190720-googlectf-beginners-2019-ad/</link>
       <pubDate>Sat, 20 Jul 2019 11:56:22 +0200</pubDate>
       <author>shiny-labs@kylma.fr (shiny-labs)</author>
-      <guid>https://shiny-labs.github.io/posts/190720-googlectf-beginners-2019-ad/</guid>
+      <guid>https://shiny-labs.re/posts/190720-googlectf-beginners-2019-ad/</guid>
       <description>Description of the challenge:  We interrupt this program for a commercial break
 https://www.youtube.com/watch?v=QzFuwljOj8Y
  Solving A flag is hidden in the youtube video:
@@ -133,10 +133,10 @@ Flag: CTF{9e796ca74932912c216a1cd00c25c84fae00e139}</description>
     
     <item>
       <title>GoogleCTF Beginner&#39;s Quest 2019 - Enter Space-Time Coordinates</title>
-      <link>https://shiny-labs.github.io/posts/190719-googlectf-beginners-2019-enter-space-time-coordinates/</link>
+      <link>https://shiny-labs.re/posts/190719-googlectf-beginners-2019-enter-space-time-coordinates/</link>
       <pubDate>Fri, 19 Jul 2019 23:53:22 +0200</pubDate>
       <author>shiny-labs@kylma.fr (shiny-labs)</author>
-      <guid>https://shiny-labs.github.io/posts/190719-googlectf-beginners-2019-enter-space-time-coordinates/</guid>
+      <guid>https://shiny-labs.re/posts/190719-googlectf-beginners-2019-enter-space-time-coordinates/</guid>
       <description>Description  Ok well done. The console is on. It&amp;rsquo;s asking for coordinates. Beating heavily on the console yields little results, but the only time anything changes on your display is when you put in numbers.. So what numbers are you going to go for? You see the starship&amp;rsquo;s logs, but is there a manual? Or should you just keep beating the console?
  Solving Here we go!
 $ file 00c2a73eec8abb4afb9c3ef3a161b64b451446910535bfc0cc81c2b04aa132ed 00c2a73eec8abb4afb9c3ef3a161b64b451446910535bfc0cc81c2b04aa132ed: Zip archive data, at least v2.</description>
@@ -144,10 +144,10 @@ $ file 00c2a73eec8abb4afb9c3ef3a161b64b451446910535bfc0cc81c2b04aa132ed 00c2a73e
     
     <item>
       <title>Creditz</title>
-      <link>https://shiny-labs.github.io/credits/</link>
+      <link>https://shiny-labs.re/credits/</link>
       <pubDate>Fri, 12 Jul 2019 19:16:00 +0200</pubDate>
       <author>shiny-labs@kylma.fr (shiny-labs)</author>
-      <guid>https://shiny-labs.github.io/credits/</guid>
+      <guid>https://shiny-labs.re/credits/</guid>
       <description>This blog runs on Hugo, a fantastic open-source static site generator in -you guessed it- go.
 Articles which helped me:
  How to Build Custom Hugo Pagination Howto limit the number of posts on the homepage CSS Smooth Scroll Demo Table of Contents Create an archive page  CSS The theme of this blog is built using two CSS frameworks:
@@ -156,10 +156,10 @@ Articles which helped me:
     
     <item>
       <title>Debugging with GDB in IDA Linux</title>
-      <link>https://shiny-labs.github.io/posts/190711-debugging-gdb-ida-linux/</link>
+      <link>https://shiny-labs.re/posts/190711-debugging-gdb-ida-linux/</link>
       <pubDate>Thu, 11 Jul 2019 21:46:12 +0200</pubDate>
       <author>shiny-labs@kylma.fr (shiny-labs)</author>
-      <guid>https://shiny-labs.github.io/posts/190711-debugging-gdb-ida-linux/</guid>
+      <guid>https://shiny-labs.re/posts/190711-debugging-gdb-ida-linux/</guid>
       <description>There are tons of tutorial telling you how to debug with gdb and IDA Windows, but what about IDA Linux eh?
 How does debugging work? IDALinux doesn&amp;rsquo;t have real local debugging :(( A debug server stub is used to relay information between IDA and the debugger.
 And Breakpoints?
@@ -169,10 +169,10 @@ More precisely, they are implemented by the trap int 3, ie trap to debugger.</de
     
     <item>
       <title>Disassemble a Specific Function</title>
-      <link>https://shiny-labs.github.io/posts/190517-disassemble-specific-function/</link>
+      <link>https://shiny-labs.re/posts/190517-disassemble-specific-function/</link>
       <pubDate>Fri, 17 May 2019 10:32:35 +0200</pubDate>
       <author>shiny-labs@kylma.fr (shiny-labs)</author>
-      <guid>https://shiny-labs.github.io/posts/190517-disassemble-specific-function/</guid>
+      <guid>https://shiny-labs.re/posts/190517-disassemble-specific-function/</guid>
       <description>Have you ever tried to disassemble only one function with objdump?
 Let&amp;rsquo;s take a tiny code which prints the result of an addition function:
 #include &amp;lt;stdio.h&amp;gt;#include &amp;lt;stdint.h&amp;gt; uint32_t add(uint32_t a, uint32_t b) { return a + b; } int main(int argc, char* argv[]) { uint32_t result = add(1300, 37); printf(&amp;#34;result is %i\n&amp;#34;, result); return 0; } Compile it and run it:
@@ -181,10 +181,10 @@ $ gcc add.c -g -o add $ ./add result is 1337 Let&amp;rsquo;s now try to dump onl
     
     <item>
       <title>Lattice Diamond Tutorial: Project FrankANDstein</title>
-      <link>https://shiny-labs.github.io/posts/190416-lattice-diamond-tutorial/</link>
+      <link>https://shiny-labs.re/posts/190416-lattice-diamond-tutorial/</link>
       <pubDate>Tue, 16 Apr 2019 16:41:27 +0200</pubDate>
       <author>shiny-labs@kylma.fr (shiny-labs)</author>
-      <guid>https://shiny-labs.github.io/posts/190416-lattice-diamond-tutorial/</guid>
+      <guid>https://shiny-labs.re/posts/190416-lattice-diamond-tutorial/</guid>
       <description>The goal of this mini-project is to create and simulate a full project for Lattice Diamond, from start to end.
 As a test subject, we will use the AND gate. We will create our own frankANDstein gate and give it liiiiiife.
 Installation /!\ I didn&amp;rsquo;t read the fine prints before installing, but short story, the simulator Active HDL is not included on the Linux version of Lattice Diamond. So find yourself a Windows box :(.</description>
@@ -192,10 +192,10 @@ Installation /!\ I didn&amp;rsquo;t read the fine prints before installing, but 
     
     <item>
       <title>Phoenix: Stack Four</title>
-      <link>https://shiny-labs.github.io/posts/190129-phoenix-stack-4/</link>
+      <link>https://shiny-labs.re/posts/190129-phoenix-stack-4/</link>
       <pubDate>Tue, 29 Jan 2019 12:14:31 +0100</pubDate>
       <author>shiny-labs@kylma.fr (shiny-labs)</author>
-      <guid>https://shiny-labs.github.io/posts/190129-phoenix-stack-4/</guid>
+      <guid>https://shiny-labs.re/posts/190129-phoenix-stack-4/</guid>
       <description>Goal: Execute the function complete_level by modifying the saved return address, and pointing it to the complete_level() function.
 Source code:
 /* * phoenix/stack-four, by https://exploit.education * * The aim is to execute the function complete_level by modifying the * saved return address, and pointing it to the complete_level() function. * * Why were the apple and orange all alone? Because the bananna split. */ #include &amp;lt;err.h&amp;gt;#include &amp;lt;stdio.h&amp;gt;#include &amp;lt;stdlib.h&amp;gt;#include &amp;lt;string.h&amp;gt;#include &amp;lt;unistd.h&amp;gt; #define BANNER \ &amp;#34;Welcome to &amp;#34; LEVELNAME &amp;#34;, brought to you by https://exploit.</description>
@@ -203,10 +203,10 @@ Source code:
     
     <item>
       <title>Phoenix: Stack Three</title>
-      <link>https://shiny-labs.github.io/posts/190129-phoenix-stack-3/</link>
+      <link>https://shiny-labs.re/posts/190129-phoenix-stack-3/</link>
       <pubDate>Tue, 29 Jan 2019 00:07:59 +0100</pubDate>
       <author>shiny-labs@kylma.fr (shiny-labs)</author>
-      <guid>https://shiny-labs.github.io/posts/190129-phoenix-stack-3/</guid>
+      <guid>https://shiny-labs.re/posts/190129-phoenix-stack-3/</guid>
       <description>Goal: execute the complete_level function.
 Source code:
 /* * phoenix/stack-three, by https://exploit.education * * The aim is to change the contents of the changeme variable to 0x0d0a090a * * When does a joke become a dad joke? * When it becomes apparent. * When it&amp;#39;s fully groan up. * */ #include &amp;lt;err.h&amp;gt;#include &amp;lt;stdio.h&amp;gt;#include &amp;lt;stdlib.h&amp;gt;#include &amp;lt;string.h&amp;gt;#include &amp;lt;unistd.h&amp;gt; #define BANNER \ &amp;#34;Welcome to &amp;#34; LEVELNAME &amp;#34;, brought to you by https://exploit.education&amp;#34;  char *gets(char *); void complete_level() { printf(&amp;#34;Congratulations, you&amp;#39;ve finished &amp;#34; LEVELNAME &amp;#34; :-) Well done!</description>
@@ -214,10 +214,10 @@ Source code:
     
     <item>
       <title>Phoenix: Stack Two</title>
-      <link>https://shiny-labs.github.io/posts/190128-phoenix-stack-2/</link>
+      <link>https://shiny-labs.re/posts/190128-phoenix-stack-2/</link>
       <pubDate>Mon, 28 Jan 2019 18:21:05 +0100</pubDate>
       <author>shiny-labs@kylma.fr (shiny-labs)</author>
-      <guid>https://shiny-labs.github.io/posts/190128-phoenix-stack-2/</guid>
+      <guid>https://shiny-labs.re/posts/190128-phoenix-stack-2/</guid>
       <description>Goal: change the contents of the changeme variable to 0x0d0a090a
 Source code:
 /* * phoenix/stack-two, by https://exploit.education * * The aim is to change the contents of the changeme variable to 0x0d0a090a * * If you&amp;#39;re Russian to get to the bath room, and you are Finnish when you get * out, what are you when you are in the bath room? * * European! */ #include &amp;lt;err.h&amp;gt;#include &amp;lt;stdio.h&amp;gt;#include &amp;lt;stdlib.h&amp;gt;#include &amp;lt;string.</description>
@@ -225,10 +225,10 @@ Source code:
     
     <item>
       <title>Phoenix: Stack One</title>
-      <link>https://shiny-labs.github.io/posts/190128-phoenix-stack-1/</link>
+      <link>https://shiny-labs.re/posts/190128-phoenix-stack-1/</link>
       <pubDate>Mon, 28 Jan 2019 18:14:41 +0100</pubDate>
       <author>shiny-labs@kylma.fr (shiny-labs)</author>
-      <guid>https://shiny-labs.github.io/posts/190128-phoenix-stack-1/</guid>
+      <guid>https://shiny-labs.re/posts/190128-phoenix-stack-1/</guid>
       <description>Goal: Modify the value of the changeme variable to 0x496c5962
 Source code:
 /* * phoenix/stack-one, by https://exploit.education * * The aim is to change the contents of the changeme variable to 0x496c5962 * * Did you hear about the kid napping at the local school? * It&amp;#39;s okay, they woke up. * */ #include &amp;lt;err.h&amp;gt;#include &amp;lt;stdio.h&amp;gt;#include &amp;lt;stdlib.h&amp;gt;#include &amp;lt;string.h&amp;gt;#include &amp;lt;unistd.h&amp;gt; #define BANNER \ &amp;#34;Welcome to &amp;#34; LEVELNAME &amp;#34;, brought to you by https://exploit.</description>
@@ -236,10 +236,10 @@ Source code:
     
     <item>
       <title>Phoenix: Stack Zero</title>
-      <link>https://shiny-labs.github.io/posts/190128-phoenix-stack-0/</link>
+      <link>https://shiny-labs.re/posts/190128-phoenix-stack-0/</link>
       <pubDate>Mon, 28 Jan 2019 18:04:45 +0100</pubDate>
       <author>shiny-labs@kylma.fr (shiny-labs)</author>
-      <guid>https://shiny-labs.github.io/posts/190128-phoenix-stack-0/</guid>
+      <guid>https://shiny-labs.re/posts/190128-phoenix-stack-0/</guid>
       <description>Goal: modify the content of the changeme variable.
 Source code:
 /* * phoenix/stack-zero, by https://exploit.education * * The aim is to change the contents of the changeme variable. * * Scientists have recently discovered a previously unknown species of * kangaroos, approximately in the middle of Western Australia. These * kangaroos are remarkable, as their insanely powerful hind legs give them * the ability to jump higher than a one story house (which is approximately * 15 feet, or 4.</description>
@@ -247,10 +247,10 @@ Source code:
     
     <item>
       <title>Phoenix: Getting Started</title>
-      <link>https://shiny-labs.github.io/posts/190128-phoenix-getting-started/</link>
+      <link>https://shiny-labs.re/posts/190128-phoenix-getting-started/</link>
       <pubDate>Mon, 28 Jan 2019 16:41:16 +0100</pubDate>
       <author>shiny-labs@kylma.fr (shiny-labs)</author>
-      <guid>https://shiny-labs.github.io/posts/190128-phoenix-getting-started/</guid>
+      <guid>https://shiny-labs.re/posts/190128-phoenix-getting-started/</guid>
       <description>VM setup I&amp;rsquo;m using a Ubuntu 64-bit VM with VMware.
 Download the AMD64 debian packages from https://exploit.education/downloads/ and install it with:
 # dpkg -i exploit-education-phoenix_1.0.0-_amd64.deb Once the package is installed, the binaries are in /opt/phoenix/&amp;lt;arch&amp;gt;.
@@ -260,10 +260,10 @@ $ wget -O ~/.gdbinit-gef.py -q https://github.com/hugsy/gef/raw/master/gef.py $ 
     
     <item>
       <title>About</title>
-      <link>https://shiny-labs.github.io/about/</link>
+      <link>https://shiny-labs.re/about/</link>
       <pubDate>Mon, 28 Jan 2019 14:30:46 +0100</pubDate>
       <author>shiny-labs@kylma.fr (shiny-labs)</author>
-      <guid>https://shiny-labs.github.io/about/</guid>
+      <guid>https://shiny-labs.re/about/</guid>
       <description>Huh, hello I guess?
 Questions, suggestions, you-wrote-something-wrong, shoot me a DM on twitter.
 Stuff I can&amp;rsquo;t shut up about:

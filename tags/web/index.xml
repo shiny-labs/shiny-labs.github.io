@@ -2,7 +2,7 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>web on shiny-labs</title>
-    <link>https://shiny-labs.github.io/tags/web/</link>
+    <link>https://shiny-labs.re/tags/web/</link>
     <description>Recent content in web on shiny-labs</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
@@ -10,15 +10,15 @@
     <webMaster>shiny-labs@kylma.fr (shiny-labs)</webMaster>
     <lastBuildDate>Tue, 06 Aug 2019 15:28:01 +0200</lastBuildDate>
     
-	<atom:link href="https://shiny-labs.github.io/tags/web/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://shiny-labs.re/tags/web/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>GoogleCTF Beginner&#39;s Quest 2019 - Government Agriculture Network</title>
-      <link>https://shiny-labs.github.io/posts/190806-googlectf-beginners-government-agriculture-network/</link>
+      <link>https://shiny-labs.re/posts/190806-googlectf-beginners-government-agriculture-network/</link>
       <pubDate>Tue, 06 Aug 2019 15:28:01 +0200</pubDate>
       <author>shiny-labs@kylma.fr (shiny-labs)</author>
-      <guid>https://shiny-labs.github.io/posts/190806-googlectf-beginners-government-agriculture-network/</guid>
+      <guid>https://shiny-labs.re/posts/190806-googlectf-beginners-government-agriculture-network/</guid>
       <description>Description  Well it seems someone can&amp;rsquo;t keep their work life and their home life separate. You vaguely recall on your home planet, posters put up everywhere that said &amp;ldquo;Loose Zips sink large commercial properties with a responsibility to the shareholders.&amp;rdquo; You wonder if there is a similar concept here.
 Using the credentials to access this so-called Agricultural network, you realize that SarahH was just hired as a vendor or contract worker and given access that was equivalent.</description>
     </item>
