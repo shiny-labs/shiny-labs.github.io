@@ -8,10 +8,23 @@
     <language>en</language>
     <managingEditor>shiny-labs@kylma.fr (shiny-labs)</managingEditor>
     <webMaster>shiny-labs@kylma.fr (shiny-labs)</webMaster>
-    <lastBuildDate>Sun, 23 Feb 2020 09:15:49 +0100</lastBuildDate>
+    <lastBuildDate>Sat, 29 Feb 2020 21:44:37 +0100</lastBuildDate>
     
 	<atom:link href="https://shiny-labs.re/categories/ctf/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>247/CTF - The Secret Lock</title>
+      <link>https://shiny-labs.re/posts/200229-247ctf-the-secret-lock/</link>
+      <pubDate>Sat, 29 Feb 2020 21:44:37 +0100</pubDate>
+      <author>shiny-labs@kylma.fr (shiny-labs)</author>
+      <guid>https://shiny-labs.re/posts/200229-247ctf-the-secret-lock/</guid>
+      <description>Description  Can you reverse the secret combination to open the lock and recover the flag?
+ Solution The archive contains only one file named The Secret Lock.html&amp;hellip; Oh dear, a web page! Where&amp;rsquo;s my binary? :(((
+On the HTML page, we are greeted by a impressive lock with a blinking &amp;ldquo;locked&amp;rdquo; message.
+That&amp;rsquo;s some hardcore combination lock. Hope you don&amp;rsquo;t have one of those on your luggage&amp;hellip;
+class Lock { constructor() { this.</description>
+    </item>
     
     <item>
       <title>PicoCTF 2019 - General Skills</title>
