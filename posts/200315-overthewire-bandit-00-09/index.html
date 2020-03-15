@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="generator" content="Hugo 0.67.0" />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://shiny-labs.re/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://shiny-labs.re/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://shiny-labs.re/favicon-16x16.png">
+    <link rel="manifest" href="https://shiny-labs.re/site.webmanifest">
+    <link rel="mask-icon" href="https://shiny-labs.re/safari-pinned-tab.svg" color="#000000">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
+
+
+    <link rel="stylesheet" href="https://shiny-labs.re/css/bulma.min.css">
+    <link rel="stylesheet" href="https://shiny-labs.re/css/main.css">
+    <link rel="stylesheet" href="https://shiny-labs.re/css/syntax.css">
+
+    
+    <title>shiny-labs || OverTheWire - Bandit Levels 00 to 09</title>
+</head>
+<body><nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item no-squiggly" href="https://shiny-labs.re/">
+            <h1 id="logo" class="glitch">shiny-labs</h1>
+        </a>
+    </div>
+
+    <div class="navbar-menu">
+        <div class="navbar-start">
+            
+        </div>
+
+        <div class="navbar-end">
+            
+            <h3 id="subtitle">Exploit, reverse engineering and cats.</h3>
+        </div>
+    </div>
+</nav>
+
+<div id="content">
+
+            <div class="columns is-centered">
+                <div class="column is-10" id="menu-column"><div id="menu" class="tabs is-centered is-medium">
+    <ul>
+            <li><a href="https://shiny-labs.re/" class="no-squiggly">Home</a></li>
+            <li><a href="https://shiny-labs.re/archives/" class="no-squiggly">Archives</a></li>
+            <li><a href="https://shiny-labs.re/tags/" class="no-squiggly">Tags</a></li>
+            <li><a href="https://shiny-labs.re/about/" class="no-squiggly">About</a></li>
+  </ul>
+</div>
+</div>
+            </div>
+
+            <div class="columns is-centered">
+                <div class="column is-10" id="main-column">
+<div class="columns">
+<div class="column is-10" id="main-column">
+    <article class="article">
+        <div >
+            <h1 class="article-title">OverTheWire - Bandit Levels 00 to 09</h1>
+            
+<div class="post-meta">
+  <p class="article-meta">
+  <span>Date</span> &#x5b;
+  <time datetime="March 15, 2020">
+      Mar 15
+    </time>
+  &#x5d;
+        
+        
+  <span>Categories</span> &#x5b;
+    <a href="https://shiny-labs.re/categories/ctf">ctf</a>
+  &#x5d;
+        
+        
+  <span>Series</span> &#x5b;
+    <a href="https://shiny-labs.re/series/bandit">bandit</a>
+  &#x5d;
+        
+        
+  <span>Tags</span> &#x5b;
+    <a href="https://shiny-labs.re/tags"></a>
+  &#x5d;
+  </p>
+</div>
+
+        </div>
+        <div>
+            <p>This week-end, I tried <a href="https://overthewire.org/wargames/bandit/">https://overthewire.org/wargames/bandit/</a> which is aimed
+at absolute beginners and teach the basics.</p>
+<h1 id="bandit-level-0">Bandit Level 0</h1>
+<h2 id="level-goal">Level Goal</h2>
+<p>The goal of this level is for you to log into the game using SSH. The host to which you need to connect is <strong>bandit.labs.overthewire.org</strong>, on port 2220. The username is <strong>bandit0</strong> and the password is <strong>bandit0</strong>. Once logged in, go to the <a href="https://overthewire.org/wargames/bandit/bandit1.html">Level 1</a> page to find out how to beat Level 1.</p>
+<h2 id="commands-you-may-need-to-solve-this-level">Commands you may need to solve this level</h2>
+<p>ssh</p>
+<h2 id="helpful-reading-material">Helpful Reading Material</h2>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Secure_Shell">Secure Shell (SSH) on Wikipedia</a></li>
+<li><a href="https://www.wikihow.com/Use-SSH">How to use SSH on wikiHow</a></li>
+</ul>
+<h2 id="solution">Solution</h2>
+<p>One of the possible SSH syntax is: <code>&lt;username&gt;@&lt;host&gt;</code>. To specify a different port than the usual <code>22</code>, use the option <code>-p</code>.</p>
+<p>Filling the blanks with information from the level goal:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ ssh bandit0@bandit.labs.overthewire.org -p <span class="m">2220</span>
+The authenticity of host <span class="s1">&#39;[bandit.labs.overthewire.org]:2220 ([176.9.9.172]:2220)&#39;</span> can<span class="s1">&#39;t be established.
+</span><span class="s1">ECDSA key fingerprint is SHA256:98UL0ZWr85496EtCRkKlo20X3OPnyPSB5tB5RPbhczc.
+</span><span class="s1">Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+</span><span class="s1">Warning: Permanently added &#39;</span><span class="o">[</span>bandit.labs.overthewire.org<span class="o">]</span>:2220,<span class="o">[</span>176.9.9.172<span class="o">]</span>:2220<span class="s1">&#39; (ECDSA) to the list of known hosts.
+</span><span class="s1">This is a OverTheWire game server. More information on http://www.overthewire.org/wargames
+</span><span class="s1">
+</span><span class="s1">bandit0@bandit.labs.overthewire.org&#39;</span>s password:
+</code></pre></div><p>Enter <code>bandit0</code> as password.</p>
+<h1 id="bandit-level-0--level-1">Bandit Level 0 → Level 1</h1>
+<h2 id="level-goal-1">Level Goal</h2>
+<p>The password for the next level is stored in a file called <strong>readme</strong> located in the home directory. Use this password to log into bandit1 using SSH. Whenever you find a password for a level, use SSH (on port 2220) to log into that level and continue the game.</p>
+<h2 id="commands-you-may-need-to-solve-this-level-1">Commands you may need to solve this level</h2>
+<p>ls, cd, cat, file, du, find</p>
+<h2 id="solution-1">Solution</h2>
+<p>Let&rsquo;s use <code>ls</code> to list the files in the current directory:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bandit0@bandit:~$ ls
+readme
+</code></pre></div><p>As described in the level goal, there is a <code>readme</code> file which contains the password for the next level. Use <code>cat</code> to display the content of the file:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bandit0@bandit:~$ cat readme
+boJ9jbbUNNfktd78OOpsqOltutMc3MY1
+</code></pre></div><p>Creds:</p>
+<ul>
+<li><code>ssh bandit1@bandit.labs.overthewire.org -p 2220</code></li>
+<li><code>boJ9jbbUNNfktd78OOpsqOltutMc3MY1</code></li>
+</ul>
+<h1 id="bandit-level-1--level-2">Bandit Level 1 → Level 2</h1>
+<h2 id="level-goal-2">Level Goal</h2>
+<p>The password for the next level is stored in a file called <strong>-</strong> located in the home directory</p>
+<h2 id="commands-you-may-need-to-solve-this-level-2">Commands you may need to solve this level</h2>
+<p>ls, cd, cat, file, du, find</p>
+<h2 id="helpful-reading-material-1">Helpful Reading Material</h2>
+<ul>
+<li><a href="https://www.google.com/search?q=dashed+filename">Google Search for “dashed filename”</a></li>
+<li><a href="http://tldp.org/LDP/abs/html/special-chars.html">Advanced Bash-scripting Guide - Chapter 3 - Special Characters</a></li>
+</ul>
+<h2 id="solution-2">Solution</h2>
+<p><code>-</code> is a special character, it just won&rsquo;t work to simply type <code>cat -</code>, cat will just wait for you to type something</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bandit1@bandit:~$ cat -
+hello
+hello
+</code></pre></div><blockquote>
+<p>Using <code>-</code> as a filename to mean stdin/stdout is a  convention that a lot of programs use. It is not a special property of  the filename. The kernel does not recognise <code>-</code> as special so any system calls referring to <code>-</code> as a filename will use <code>-</code> literally as the filename.</p>
+<p>With bash redirection, <code>-</code> is not recognised as a special filename, so bash will use that as the literal filename.</p>
+<p>When <code>cat</code> sees the string <code>-</code> as a filename, it treats it as a synonym for stdin. To get around this, you need to alter the string that <code>cat</code> sees in such a way that it still refers to a file called <code>-</code>. The usual way of doing this is to prefix the filename with a path - <code>./-</code>, or <code>/home/Tim/-</code>. This technique is also used to get around similar issues where command  line options clash with filenames, so a file referred to as <code>./-e</code> does not appear as the <code>-e</code> command line option to a program, for example.</p>
+<p>&ndash; <a href="https://unix.stackexchange.com/questions/16357/usage-of-dash-in-place-of-a-filename">https://unix.stackexchange.com/questions/16357/usage-of-dash-in-place-of-a-filename</a></p>
+</blockquote>
+<p>So, let&rsquo;s try that <code>cat ./-</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bandit1@bandit:~$ cat ./-
+CV1DtqXWVFXTvM2F0k09SHz0YwRINYA9
+</code></pre></div><p>Creds:</p>
+<ul>
+<li><code>ssh bandit2@bandit.labs.overthewire.org -p 2220</code></li>
+<li><code>CV1DtqXWVFXTvM2F0k09SHz0YwRINYA9</code></li>
+</ul>
+<h1 id="bandit-level-2--level-3">Bandit Level 2 → Level 3</h1>
+<h2 id="level-goal-3">Level Goal</h2>
+<p>The password for the next level is stored in a file called spaces in this filename located in the home directory</p>
+<h2 id="commands-you-may-need-to-solve-this-level-3">Commands you may need to solve this level</h2>
+<p>ls, cd, cat, file, du, find</p>
+<h2 id="helpful-reading-material-2">Helpful Reading Material</h2>
+<p><a href="https://www.google.com/search?q=spaces+in+filename">Google Search for “spaces in filename”</a></p>
+<h2 id="solution-3">Solution</h2>
+<blockquote>
+<p>To to use files with spaces you can either use the escape character or youse the double quotes.</p>
+<p>example:
+cd new\ dir/</p>
+<p>\ is called escape character, used to not expansion of space, so now bash read the space as part of file name.</p>
+<p>Or you can use:
+cd &ldquo;new dir&rdquo;</p>
+<p>&ndash; <a href="https://askubuntu.com/questions/516772/how-to-access-files-directories-with-spaces-in-the-name">https://askubuntu.com/questions/516772/how-to-access-files-directories-with-spaces-in-the-name</a></p>
+</blockquote>
+<p>Let&rsquo;s try the &ldquo;new dir&rdquo; technique, less messy than all those <code>\</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bandit2@bandit:~$ ls
+spaces in this filename
+bandit2@bandit:~$ cat &#34;spaces in this filename&#34;
+UmHadQclWmgdLOKQ3YNgjWxGoRMb5luK
+</code></pre></div><p>Creds:</p>
+<ul>
+<li><code>ssh bandit3@bandit.labs.overthewire.org -p 2220</code></li>
+<li><code>UmHadQclWmgdLOKQ3YNgjWxGoRMb5luK</code></li>
+</ul>
+<h1 id="bandit-level-3--level-4">Bandit Level 3 → Level 4</h1>
+<h2 id="level-goal-4">Level Goal</h2>
+<p>The password for the next level is stored in a hidden file in the <strong>inhere</strong> directory.</p>
+<h2 id="commands-you-may-need-to-solve-this-level-4">Commands you may need to solve this level</h2>
+<p>ls, cd, cat, file, du, find</p>
+<h2 id="solution-4">Solution</h2>
+<p>This time, the file is in a directory:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bandit3@bandit:~$ ls
+inhere
+</code></pre></div><p>The occasion to try a new command! <code>cd</code> to change directories!</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bandit3@bandit:~$ cd inhere/
+bandit3@bandit:~/inhere$ ls
+bandit3@bandit:~/inhere$
+</code></pre></div><p>Ah. But that directory is empty :( If we read the level goal again, the password is stored in a hidden file! And <code>ls</code> without any options doesn&rsquo;t display hidden files.</p>
+<p><code>man ls</code> to the rescue:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">       -a, --all
+              do not ignore entries starting with .
+</code></pre></div><p>Let&rsquo;s add that to our usual <code>ls</code> command</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bandit3@bandit:~/inhere$ ls -a
+.  ..  .hidden
+</code></pre></div><p>And voilà, that directory is not that empty after all ~~</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bandit3@bandit:~/inhere$ cat .hidden
+pIwrPrtPN36QITSp3EQaw936yaFoFgAB
+</code></pre></div><p>Creds:</p>
+<ul>
+<li><code>ssh bandit4@bandit.labs.overthewire.org -p 2220</code></li>
+<li><code>pIwrPrtPN36QITSp3EQaw936yaFoFgAB</code></li>
+</ul>
+<h1 id="bandit-level-4--level-5">Bandit Level 4 → Level 5</h1>
+<h2 id="level-goal-5">Level Goal</h2>
+<p>The password for the next level is stored in the only human-readable file in the <strong>inhere</strong> directory. Tip: if your terminal is messed up, try the “reset” command.</p>
+<h2 id="commands-you-may-need-to-solve-this-level-5">Commands you may need to solve this level</h2>
+<p>ls, cd, cat, file, du, find</p>
+<h2 id="solution-5">Solution</h2>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bandit4@bandit:~$ ls
+inhere
+bandit4@bandit:~$ cd inhere/
+bandit4@bandit:~/inhere$ ls
+-file00  -file02  -file04  -file06  -file08
+-file01  -file03  -file05  -file07  -file09
+</code></pre></div><p>That&rsquo;s a bunch of files&hellip;</p>
+<p>Let&rsquo;s try to print them all ~~ <code>*</code> can be used as a kinda of joker to mean &ldquo;any character&rdquo; and don&rsquo;t forget the <code>./</code> trick for filenames beginning with a dash!.</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bandit4@bandit:~/inhere$ cat ./*
+����������~%	C[�걱&gt;��| ����U&#34;7�w���H��ê�Q��(���#����T�v��(�ִ�����A*�
+2J�Ş؇_�y7�.A��u��#���w$N?c�-��Db3��=���=&lt;�W�����ht�Z��!��{�U
+                                                            �+��pm���;��:D��^��@�gl�Q��@�%@���ZP*E��1�V���̫*����koReBOKuIDDepwhWk7jZC0RTdopnAYKh
+FPn�
+    &#39;�U���M��/u
+               XS
+�mu�z���хN�{��Y�d4�����]3�����9(�
+
+</code></pre></div><p>Creds:</p>
+<ul>
+<li><code>ssh bandit5@bandit.labs.overthewire.org -p 2220</code></li>
+<li><code>koReBOKuIDDepwhWk7jZC0RTdopnAYKh</code></li>
+</ul>
+<h1 id="bandit-level-5--level-6">Bandit Level 5 → Level 6</h1>
+<h2 id="level-goal-6">Level Goal</h2>
+<p>The password for the next level is stored in a file somewhere under the inhere directory and has all of the following properties:</p>
+<pre><code>human-readable
+1033 bytes in size
+not executable
+</code></pre>
+<h2 id="commands-you-may-need-to-solve-this-level-6">Commands you may need to solve this level</h2>
+<p>ls, cd, cat, file, du, find</p>
+<h2 id="solution-6">Solution</h2>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bandit5@bandit:~$ ls
+inhere
+bandit5@bandit:~$ ls inhere/
+maybehere00  maybehere04  maybehere08  maybehere12  maybehere16
+maybehere01  maybehere05  maybehere09  maybehere13  maybehere17
+maybehere02  maybehere06  maybehere10  maybehere14  maybehere18
+maybehere03  maybehere07  maybehere11  maybehere15  maybehere19
+</code></pre></div><p>Sounds like a perfect job for the find command, let&rsquo;s dig around in <code>man find</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">       -size n[cwbkMG]
+              File  uses  n units of space, rounding up.  The following suf‐
+              fixes can be used:
+
+              `b&#39;    for 512-byte blocks (this is the default if  no  suffix
+                     is used)
+
+              `c&#39;    for bytes
+
+              `w&#39;    for two-byte words
+
+              `k&#39;    for kibibytes (KiB, units of 1024 bytes)
+
+              `M&#39;    for  mebibytes  (MiB,  units  of  1024 * 1024 = 1048576
+                     bytes)
+
+              `G&#39;    for gibibytes (GiB, units of  1024  *  1024  *  1024  =
+                     1073741824 bytes)
+</code></pre></div><p>Okay, so 1033 bytes would translate to <code>-size 1033c</code>, let&rsquo;s try that! The find command is a weird one, the syntax is all wrong, you cannot put the argument at the end, after the option:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bandit5@bandit:~$ find -size 1033c .
+find: paths must precede expression: .
+Try &#39;find --help&#39; for more information.
+
+</code></pre></div><p>You have to specify where you searching and then the arguments</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bandit5@bandit:~$ find . -size 1033c
+</code></pre></div><p>Note that <code>.</code> is a shortcut for current directory.</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bandit5@bandit:~$ find . -size 1033c                                           ./inhere/maybehere07/.file2
+bandit5@bandit:~$ cat ./inhere/maybehere07/.file2
+DXjZPULLxYr17uwoI01bNLQbtFemEgo7
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        bandit5@bandit:~$
+
+</code></pre></div><p>Creds:</p>
+<ul>
+<li><code>ssh bandit6@bandit.labs.overthewire.org -p 2220</code></li>
+<li><code>DXjZPULLxYr17uwoI01bNLQbtFemEgo7</code></li>
+</ul>
+<h1 id="bandit-level-6--level-7">Bandit Level 6 → Level 7</h1>
+<h2 id="level-goal-7">Level Goal</h2>
+<p>The password for the next level is stored <strong>somewhere on the server</strong> and has all of the following properties:</p>
+<ul>
+<li>owned by user bandit7</li>
+<li>owned by group bandit6</li>
+<li>33 bytes in size</li>
+</ul>
+<h2 id="commands-you-may-need-to-solve-this-level-7">Commands you may need to solve this level</h2>
+<p>ls, cd, cat, file, du, find, grep</p>
+<h2 id="solution-7">Solution</h2>
+<p>So the file is no longer in the current directory but somewhere on the server, we can modify the find command to search in <code>/</code> which is the root of the filesystem. Let&rsquo;s dig around <code>man find</code> again to find out how to target a speficic user and a specific group</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">       -group gname
+              File belongs to group gname (numeric group ID allowed).
+
+       -user uname
+              File is owned by user uname (numeric user ID allowed).
+
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bandit6@bandit:~$ find / -size 33c -user bandit7 -group bandit6
+find: ‘/run/lvm’: Permission denied
+find: ‘/run/screen/S-bandit17’: Permission denied
+find: ‘/run/screen/S-bandit7’: Permission denied
+find: ‘/run/screen/S-bandit0’: Permission denied
+find: ‘/run/screen/S-bandit3’: Permission denied
+</code></pre></div><p>This produces way too much <code>Permission denied</code>, let&rsquo;s add something to ignore all errors:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bandit6@bandit:~$ find / -size 33c -user bandit7 -group bandit6 2&gt;/dev/null
+/var/lib/dpkg/info/bandit7.password
+bandit6@bandit:~$ cat /var/lib/dpkg/info/bandit7.password
+HKBPTKQnIay4Fw76bEy8PVxKEDQRKTzs
+</code></pre></div><p>Creds:</p>
+<ul>
+<li><code>ssh bandit7@bandit.labs.overthewire.org -p 2220</code></li>
+<li><code>HKBPTKQnIay4Fw76bEy8PVxKEDQRKTzs</code></li>
+</ul>
+<h1 id="bandit-level-7--level-8">Bandit Level 7 → Level 8</h1>
+<h2 id="level-goal-8">Level Goal</h2>
+<p>The password for the next level is stored in the file <strong>data.txt</strong> next to the word <strong>millionth</strong></p>
+<h2 id="commands-you-may-need-to-solve-this-level-8">Commands you may need to solve this level</h2>
+<p>grep, sort, uniq, strings, base64, tr, tar, gzip, bzip2, xxd</p>
+<h2 id="solution-8">Solution</h2>
+<p>This time, we need to search <em>inside</em> a file, so <code>find</code> is out of the game here.</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bandit7@bandit:~$ ls
+data.txt
+</code></pre></div><p>But, browsing the recommended command for this level, you might notice grep.</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bandit7@bandit:~$ grep --help
+Usage: grep [OPTION]... PATTERN [FILE]...
+Search for PATTERN in each FILE or standard input.
+
+</code></pre></div><p>grep uses the following syntax: <code>grep &lt;pattern&gt; &lt;file&gt;</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bandit7@bandit:~$ grep &#34;millionth&#34; data.txt
+millionth	cvX2JJa4CFALtqS87jk27qwqGhBM9plV
+</code></pre></div><p>Creds:</p>
+<ul>
+<li><code>ssh bandit8@bandit.labs.overthewire.org -p 2220</code></li>
+<li><code>cvX2JJa4CFALtqS87jk27qwqGhBM9plV</code></li>
+</ul>
+<h1 id="bandit-level-8--level-9">Bandit Level 8 → Level 9</h1>
+<h2 id="level-goal-9">Level Goal</h2>
+<p>The password for the next level is stored in the file <strong>data.txt</strong> and is the only line of text that occurs only once</p>
+<h2 id="commands-you-may-need-to-solve-this-level-9">Commands you may need to solve this level</h2>
+<p>grep, sort, uniq, strings, base64, tr, tar, gzip, bzip2, xxd</p>
+<h2 id="helpful-reading-material-3">Helpful Reading Material</h2>
+<ul>
+<li><a href="http://www.westwind.com/reference/os-x/commandline/pipes.html">The unix commandline: pipes and redirects</a></li>
+</ul>
+<h2 id="solution-9">Solution</h2>
+<p>I was going to just use <code>uniq</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">uniq - report or omit repeated lines
+
+
+       -u, --unique
+              only print unique lines
+
+</code></pre></div><p>Like so:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bandit8@bandit:~$ uniq -u data.txt
+KerqNiDbY0zV2VxnOCmWX5XWxumldlAe
+MsxcvOe3PGrt78wpZG2bBNF5wfXpZhET
+L0nxAwlfV9V3J5onKIT8KYQ9InTcQ7yE
+4c7EsUtqLnLR9hiepV5EQVhdMgyi8onL
+1drBmDT7PYS7hVgoTWkJSjUZUK7ZAIAa
+L0nxAwlfV9V3J5onKIT8KYQ9InTcQ7yE
+78rgduVcLZjLzZmooObdaN541MKV6IfQ
+x0bga8Oxz5lgM8k52HrYy4ez7XJI0lM0
+[...]
+</code></pre></div><p>Well, it&rsquo;s far from being a success isn&rsquo;t it?</p>
+<p>I missed a <em>very</em> important detail in the man page of <code>uniq</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">DESCRIPTION
+       Filter  adjacent matching lines from INPUT (or standard input), writ‐
+       ing to OUTPUT (or standard output).
+</code></pre></div><p>Ìt only filters <em>adjacent</em> lines, which means we need to sort the file first! Incidentally, there&rsquo;s a command named <code>sort</code> that does exactly that huhu.</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bandit8@bandit:~$ sort data.txt
+07iR6PwHwihvQ3av1fqoRjICCulpoyms
+07iR6PwHwihvQ3av1fqoRjICCulpoyms
+07iR6PwHwihvQ3av1fqoRjICCulpoyms
+07iR6PwHwihvQ3av1fqoRjICCulpoyms
+07iR6PwHwihvQ3av1fqoRjICCulpoyms
+07iR6PwHwihvQ3av1fqoRjICCulpoyms
+07iR6PwHwihvQ3av1fqoRjICCulpoyms
+07iR6PwHwihvQ3av1fqoRjICCulpoyms
+07iR6PwHwihvQ3av1fqoRjICCulpoyms
+07iR6PwHwihvQ3av1fqoRjICCulpoyms
+0ob6rCn4D4jQ6KCiaT5hmOdWFrm2quR1
+0ob6rCn4D4jQ6KCiaT5hmOdWFrm2quR1
+0ob6rCn4D4jQ6KCiaT5hmOdWFrm2quR1
+0ob6rCn4D4jQ6KCiaT5hmOdWFrm2quR1
+0ob6rCn4D4jQ6KCiaT5hmOdWFrm2quR1
+0ob6rCn4D4jQ6KCiaT5hmOdWFrm2quR1
+0ob6rCn4D4jQ6KCiaT5hmOdWFrm2quR1
+[...]
+</code></pre></div><p>So now, we just need something to feed the output of <code>sort</code> to <code>uniq</code>, that something would be a pipe, or <code>|</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bandit8@bandit:~$ sort data.txt | uniq -u
+UsvVyFSfZZWbi6wgC7dAFyFuR6jQQUhR
+</code></pre></div><p>Creds:</p>
+<ul>
+<li><code>ssh bandit9@bandit.labs.overthewire.org -p 2220</code></li>
+<li><code>UsvVyFSfZZWbi6wgC7dAFyFuR6jQQUhR</code></li>
+</ul>
+<h1 id="bandit-level-9--level-10">Bandit Level 9 → Level 10</h1>
+<h2 id="level-goal-10">Level Goal</h2>
+<p>The password for the next level is stored in the file <strong>data.txt</strong> in one of the few human-readable strings, beginning with several ‘=’ characters.</p>
+<h2 id="commands-you-may-need-to-solve-this-level-10">Commands you may need to solve this level</h2>
+<p>grep, sort, uniq, strings, base64, tr, tar, gzip, bzip2, xxd</p>
+<h2 id="solution-10">Solution</h2>
+<p>Ahah, so now we need to find a line beginning with a couple of <code>=</code>!</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bandit9@bandit:~$ ls
+data.txt
+</code></pre></div><p>Let&rsquo;s use grep to look for <code>===</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bandit9@bandit:~$ grep &#34;===&#34; data.txt
+Binary file data.txt matches
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bandit9@bandit:~$ head data.txt
+ʿ�|g�{Li&amp;��G�[�W�K��z
+Ђ�`B6haѩW��T2�*D�&#34;��i�EJ�MPC�n鮝��O�{Ov��q�lk�.MBB��I&gt;�[�dW�V�t�8s��m���Bt��{
+           �e�c%F����T�nK)U2u��L;��[ۙ0i�y�-��&amp;y@@2v/���%Z����}����8�X�.��y_!}��H��ɝ�5Lo%��e4��R@�J�@�(�D�?۟�۳?�ߎ�uv���޷9�ٱ�ि�`a��|�Ӓ�����CW�����y�$��|�s�L��8���x÷2�E�֯QS�]�&#39;�C`������ru@n���:�`�98���D}U&#39;�!,�n�P�x�?�/�
+�|�/~�r՝T���T��,|
+&#34;*J�j߀hW�X��E����e#s.	�o���BNZ�`|{�ߡ�̞ł!Gr�_�	���oH�D{��!:/%p�����!��K�5��~�aX��������&#34;P����N�� D͜��*&#39;dZ�!!iv�p�*���bgM&gt;H����wx
+G@?&gt;�|wٝ�c��N���̷X�`��Uy�H%u��L/��^�5�h�M0d&gt;uG��^�\��
+</code></pre></div><p>Lots of garbage huh? We can use strings to extract the readable strings from the file and then filter the output with grep to print only the lines starting with several <code>===</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bandit9@bandit:~$ strings data.txt | grep &#34;^===&#34;
+========== password
+========== isa
+========== truKLdjsbJ5g7yyJ2X2R0o3a5HQJFuLk
+</code></pre></div><p>Put your best detective hat on, and guess that the password is probably the last one, because it matches the format of the previous ones.</p>
+<p>Creds:</p>
+<ul>
+<li><code>ssh bandit10@bandit.labs.overthewire.org -p 2220</code></li>
+<li><code>truKLdjsbJ5g7yyJ2X2R0o3a5HQJFuLk</code></li>
+</ul>
+<h1 id="conclusion">Conclusion</h1>
+<p>That&rsquo;s all folks for today, see you next time for part 2 ~</p>
+<p><img src="cat_shark.gif" alt=""></p>
+
+        </div>
+    </article>
+</div>
+<div class="column" id="toc-column">    <aside>
+        <div id="toc">
+            What's on this page?
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#bandit-level-0">Bandit Level 0</a>
+      <ul>
+        <li><a href="#level-goal">Level Goal</a></li>
+        <li><a href="#commands-you-may-need-to-solve-this-level">Commands you may need to solve this level</a></li>
+        <li><a href="#helpful-reading-material">Helpful Reading Material</a></li>
+        <li><a href="#solution">Solution</a></li>
+      </ul>
+    </li>
+    <li><a href="#bandit-level-0--level-1">Bandit Level 0 → Level 1</a>
+      <ul>
+        <li><a href="#level-goal-1">Level Goal</a></li>
+        <li><a href="#commands-you-may-need-to-solve-this-level-1">Commands you may need to solve this level</a></li>
+        <li><a href="#solution-1">Solution</a></li>
+      </ul>
+    </li>
+    <li><a href="#bandit-level-1--level-2">Bandit Level 1 → Level 2</a>
+      <ul>
+        <li><a href="#level-goal-2">Level Goal</a></li>
+        <li><a href="#commands-you-may-need-to-solve-this-level-2">Commands you may need to solve this level</a></li>
+        <li><a href="#helpful-reading-material-1">Helpful Reading Material</a></li>
+        <li><a href="#solution-2">Solution</a></li>
+      </ul>
+    </li>
+    <li><a href="#bandit-level-2--level-3">Bandit Level 2 → Level 3</a>
+      <ul>
+        <li><a href="#level-goal-3">Level Goal</a></li>
+        <li><a href="#commands-you-may-need-to-solve-this-level-3">Commands you may need to solve this level</a></li>
+        <li><a href="#helpful-reading-material-2">Helpful Reading Material</a></li>
+        <li><a href="#solution-3">Solution</a></li>
+      </ul>
+    </li>
+    <li><a href="#bandit-level-3--level-4">Bandit Level 3 → Level 4</a>
+      <ul>
+        <li><a href="#level-goal-4">Level Goal</a></li>
+        <li><a href="#commands-you-may-need-to-solve-this-level-4">Commands you may need to solve this level</a></li>
+        <li><a href="#solution-4">Solution</a></li>
+      </ul>
+    </li>
+    <li><a href="#bandit-level-4--level-5">Bandit Level 4 → Level 5</a>
+      <ul>
+        <li><a href="#level-goal-5">Level Goal</a></li>
+        <li><a href="#commands-you-may-need-to-solve-this-level-5">Commands you may need to solve this level</a></li>
+        <li><a href="#solution-5">Solution</a></li>
+      </ul>
+    </li>
+    <li><a href="#bandit-level-5--level-6">Bandit Level 5 → Level 6</a>
+      <ul>
+        <li><a href="#level-goal-6">Level Goal</a></li>
+        <li><a href="#commands-you-may-need-to-solve-this-level-6">Commands you may need to solve this level</a></li>
+        <li><a href="#solution-6">Solution</a></li>
+      </ul>
+    </li>
+    <li><a href="#bandit-level-6--level-7">Bandit Level 6 → Level 7</a>
+      <ul>
+        <li><a href="#level-goal-7">Level Goal</a></li>
+        <li><a href="#commands-you-may-need-to-solve-this-level-7">Commands you may need to solve this level</a></li>
+        <li><a href="#solution-7">Solution</a></li>
+      </ul>
+    </li>
+    <li><a href="#bandit-level-7--level-8">Bandit Level 7 → Level 8</a>
+      <ul>
+        <li><a href="#level-goal-8">Level Goal</a></li>
+        <li><a href="#commands-you-may-need-to-solve-this-level-8">Commands you may need to solve this level</a></li>
+        <li><a href="#solution-8">Solution</a></li>
+      </ul>
+    </li>
+    <li><a href="#bandit-level-8--level-9">Bandit Level 8 → Level 9</a>
+      <ul>
+        <li><a href="#level-goal-9">Level Goal</a></li>
+        <li><a href="#commands-you-may-need-to-solve-this-level-9">Commands you may need to solve this level</a></li>
+        <li><a href="#helpful-reading-material-3">Helpful Reading Material</a></li>
+        <li><a href="#solution-9">Solution</a></li>
+      </ul>
+    </li>
+    <li><a href="#bandit-level-9--level-10">Bandit Level 9 → Level 10</a>
+      <ul>
+        <li><a href="#level-goal-10">Level Goal</a></li>
+        <li><a href="#commands-you-may-need-to-solve-this-level-10">Commands you may need to solve this level</a></li>
+        <li><a href="#solution-10">Solution</a></li>
+      </ul>
+    </li>
+    <li><a href="#conclusion">Conclusion</a></li>
+  </ul>
+</nav>
+        </div>
+    </aside>
+
+</div>
+</div></div>
+            </div><footer class="footer">
+  <div class="content has-text-centered">
+    <p>
+    Handcrafted with <span style="color: #e25555;">&hearts;</span> by kylma, with lots of
+    
+        <a href="https://shiny-labs.re/credits/">awesome tools</a>.
+    
+    </p>
+  </div>
+
+  <div id="to-top">
+    <a href="#logo" class="top-btn no-squiggly">^</a>
+  </div>
+
+</footer>
+</div>
+    </body>
+</html>

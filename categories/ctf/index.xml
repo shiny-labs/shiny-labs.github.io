@@ -8,13 +8,23 @@
     <language>en</language>
     <managingEditor>shiny-labs@kylma.fr (shiny-labs)</managingEditor>
     <webMaster>shiny-labs@kylma.fr (shiny-labs)</webMaster>
-    <lastBuildDate>Sat, 29 Feb 2020 21:44:37 +0100</lastBuildDate>
+    <lastBuildDate>Sun, 15 Mar 2020 11:08:54 +0100</lastBuildDate>
     
 	<atom:link href="https://shiny-labs.re/categories/ctf/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>247/CTF - The Secret Lock</title>
+      <title>OverTheWire - Bandit Levels 00 to 09</title>
+      <link>https://shiny-labs.re/posts/200315-overthewire-bandit-00-09/</link>
+      <pubDate>Sun, 15 Mar 2020 11:08:54 +0100</pubDate>
+      <author>shiny-labs@kylma.fr (shiny-labs)</author>
+      <guid>https://shiny-labs.re/posts/200315-overthewire-bandit-00-09/</guid>
+      <description>This week-end, I tried https://overthewire.org/wargames/bandit/ which is aimed at absolute beginners and teach the basics.
+Bandit Level 0 Level Goal The goal of this level is for you to log into the game using SSH. The host to which you need to connect is bandit.labs.overthewire.org, on port 2220. The username is bandit0 and the password is bandit0. Once logged in, go to the Level 1 page to find out how to beat Level 1.</description>
+    </item>
+    
+    <item>
+      <title>24/7 CTF - The Secret Lock</title>
       <link>https://shiny-labs.re/posts/200229-247ctf-the-secret-lock/</link>
       <pubDate>Sat, 29 Feb 2020 21:44:37 +0100</pubDate>
       <author>shiny-labs@kylma.fr (shiny-labs)</author>

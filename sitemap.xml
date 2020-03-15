@@ -3,27 +3,42 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://shiny-labs.re/series/bandit/</loc>
+    <lastmod>2020-03-15T11:08:54+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.re/categories/</loc>
+    <lastmod>2020-03-15T11:08:54+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.re/categories/ctf/</loc>
+    <lastmod>2020-03-15T11:08:54+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.re/posts/200315-overthewire-bandit-00-09/</loc>
+    <lastmod>2020-03-15T11:08:54+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.re/posts/</loc>
+    <lastmod>2020-03-15T11:08:54+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.re/series/</loc>
+    <lastmod>2020-03-15T11:08:54+01:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://shiny-labs.re/posts/200229-247ctf-the-secret-lock/</loc>
     <lastmod>2020-02-29T21:44:37+01:00</lastmod>
   </url>
   
   <url>
-    <loc>https://shiny-labs.re/categories/</loc>
-    <lastmod>2020-02-29T21:44:37+01:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://shiny-labs.re/categories/ctf/</loc>
-    <lastmod>2020-02-29T21:44:37+01:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://shiny-labs.re/tags/javascript/</loc>
-    <lastmod>2020-02-29T21:44:37+01:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://shiny-labs.re/posts/</loc>
     <lastmod>2020-02-29T21:44:37+01:00</lastmod>
   </url>
   
@@ -54,11 +69,6 @@
   
   <url>
     <loc>https://shiny-labs.re/posts/200223-picoctf-general-skills/</loc>
-    <lastmod>2020-02-23T09:15:49+01:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://shiny-labs.re/series/</loc>
     <lastmod>2020-02-23T09:15:49+01:00</lastmod>
   </url>
   
