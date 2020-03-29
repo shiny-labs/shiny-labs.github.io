@@ -8,10 +8,22 @@
     <language>en</language>
     <managingEditor>shiny-labs@kylma.fr (shiny-labs)</managingEditor>
     <webMaster>shiny-labs@kylma.fr (shiny-labs)</webMaster>
-    <lastBuildDate>Sun, 15 Mar 2020 11:08:54 +0100</lastBuildDate>
+    <lastBuildDate>Sun, 15 Mar 2020 11:17:31 +0100</lastBuildDate>
     
 	<atom:link href="https://shiny-labs.re/posts/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>OverTheWire - Bandit Levels 10 to 19</title>
+      <link>https://shiny-labs.re/posts/200315-overthewire-bandit-09-19/</link>
+      <pubDate>Sun, 15 Mar 2020 11:17:31 +0100</pubDate>
+      <author>shiny-labs@kylma.fr (shiny-labs)</author>
+      <guid>https://shiny-labs.re/posts/200315-overthewire-bandit-09-19/</guid>
+      <description>Bandit Level 10 → Level 11 Level Goal The password for the next level is stored in the file data.txt, which contains base64 encoded data
+Commands you may need to solve this level grep, sort, uniq, strings, base64, tr, tar, gzip, bzip2, xxd
+Helpful Reading Material  Base64 on Wikipedia  Solution So the password is encoded using base64? Let&amp;rsquo;s checkout the command with the same name ~~
+bandit10@bandit:~$ cat data.</description>
+    </item>
     
     <item>
       <title>OverTheWire - Bandit Levels 00 to 09</title>

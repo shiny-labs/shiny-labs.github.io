@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="generator" content="Hugo 0.68.2" />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://shiny-labs.re/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://shiny-labs.re/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://shiny-labs.re/favicon-16x16.png">
+    <link rel="manifest" href="https://shiny-labs.re/site.webmanifest">
+    <link rel="mask-icon" href="https://shiny-labs.re/safari-pinned-tab.svg" color="#000000">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
+
+
+    <link rel="stylesheet" href="https://shiny-labs.re/css/bulma.min.css">
+    <link rel="stylesheet" href="https://shiny-labs.re/css/main.css">
+    <link rel="stylesheet" href="https://shiny-labs.re/css/syntax.css">
+
+    
+    <title>shiny-labs || OverTheWire - Bandit Levels 10 to 19</title>
+</head>
+<body><nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item no-squiggly" href="https://shiny-labs.re/">
+            <h1 id="logo" class="glitch">shiny-labs</h1>
+        </a>
+    </div>
+
+    <div class="navbar-menu">
+        <div class="navbar-start">
+            
+        </div>
+
+        <div class="navbar-end">
+            
+            <h3 id="subtitle">Exploit, reverse engineering and cats.</h3>
+        </div>
+    </div>
+</nav>
+
+<div id="content">
+
+            <div class="columns is-centered">
+                <div class="column is-10" id="menu-column"><div id="menu" class="tabs is-centered is-medium">
+    <ul>
+            <li><a href="https://shiny-labs.re/" class="no-squiggly">Home</a></li>
+            <li><a href="https://shiny-labs.re/archives/" class="no-squiggly">Archives</a></li>
+            <li><a href="https://shiny-labs.re/tags/" class="no-squiggly">Tags</a></li>
+            <li><a href="https://shiny-labs.re/about/" class="no-squiggly">About</a></li>
+  </ul>
+</div>
+</div>
+            </div>
+
+            <div class="columns is-centered">
+                <div class="column is-10" id="main-column">
+<div class="columns">
+<div class="column is-10" id="main-column">
+    <article class="article">
+        <div >
+            <h1 class="article-title">OverTheWire - Bandit Levels 10 to 19</h1>
+            
+<div class="post-meta">
+  <p class="article-meta">
+  <span>Date</span> &#x5b;
+  <time datetime="March 15, 2020">
+      Mar 15
+    </time>
+  &#x5d;
+        
+        
+  <span>Categories</span> &#x5b;
+    <a href="https://shiny-labs.re/categories/ctf">ctf</a>
+  &#x5d;
+        
+        
+  <span>Series</span> &#x5b;
+    <a href="https://shiny-labs.re/series/bandit">bandit</a>
+  &#x5d;
+        
+        
+  <span>Tags</span> &#x5b;
+    <a href="https://shiny-labs.re/tags"></a>
+  &#x5d;
+  </p>
+</div>
+
+        </div>
+        <div>
+            <h1 id="bandit-level-10--level-11">Bandit Level 10 → Level 11</h1>
+<h2 id="level-goal">Level Goal</h2>
+<p>The password for the next level is stored in the file <strong>data.txt</strong>, which contains base64 encoded data</p>
+<h2 id="commands-you-may-need-to-solve-this-level">Commands you may need to solve this level</h2>
+<p>grep, sort, uniq, strings, base64, tr, tar, gzip, bzip2, xxd</p>
+<h2 id="helpful-reading-material">Helpful Reading Material</h2>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Base64">Base64 on Wikipedia</a></li>
+</ul>
+<h2 id="solution">Solution</h2>
+<p>So the password is encoded using base64? Let&rsquo;s checkout the command with the same name ~~</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bandit10@bandit:~$ cat data.txt
+VGhlIHBhc3N3b3JkIGlzIElGdWt3S0dzRlc4TU9xM0lSRnFyeEUxaHhUTkViVVBSCg==
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bandit10@bandit:~$ base64 --help
+Usage: base64 [OPTION]... [FILE]
+Base64 encode or decode FILE, or standard input, to standard output.
+
+[...]
+Mandatory arguments to long options are mandatory for short options too.
+  -d, --decode          decode data
+
+</code></pre></div><p>The <code>-d</code> option will allow us to decode the file ~~</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bandit10@bandit:~$ base64 -d data.txt
+The password is IFukwKGsFW8MOq3IRFqrxE1hxTNEbUPR
+</code></pre></div><p>Creds:</p>
+<ul>
+<li><code>ssh bandit11@bandit.labs.overthewire.org -p 2220</code></li>
+<li><code>IFukwKGsFW8MOq3IRFqrxE1hxTNEbUPR</code></li>
+</ul>
+<h1 id="bandit-level-11--level-12">Bandit Level 11 → Level 12</h1>
+<h2 id="level-goal-1">Level Goal</h2>
+<p>The password for the next level is stored in the file <strong>data.txt</strong>, where all lowercase (a-z) and uppercase (A-Z) letters have been rotated by 13 positions</p>
+<h2 id="commands-you-may-need-to-solve-this-level-1">Commands you may need to solve this level</h2>
+<p>grep, sort, uniq, strings, base64, tr, tar, gzip, bzip2, xxd</p>
+<h2 id="helpful-reading-material-1">Helpful Reading Material</h2>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Rot13">Rot13 on Wikipedia</a></li>
+</ul>
+<h2 id="solution-1">Solution</h2>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bandit11@bandit:~$ ls
+data.txt
+</code></pre></div><p>The password has been all mish-mashed, letters have been rotated by 13 positions! That type of transformation is commonly called <code>rot13</code>.  A little poking around about rot13 and bash yields the following:</p>
+<blockquote>
+<p>echo &lsquo;<a href="mailto:fooman@example.com">fooman@example.com</a>&rsquo; | tr &lsquo;A-Za-z&rsquo; &lsquo;N-ZA-Mn-za-m&rsquo;</p>
+<p><a href="https://stackoverflow.com/questions/5442436/using-rot13-and-tr-command-for-having-an-encrypted-email-address">https://stackoverflow.com/questions/5442436/using-rot13-and-tr-command-for-having-an-encrypted-email-address</a></p>
+</blockquote>
+<p>Great, let&rsquo;s try that on <code>data.txt</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bandit11@bandit:~$ cat data.txt | tr &#39;A-Za-z&#39; &#39;N-ZA-Mn-za-m&#39;
+The password is 5Te8Y4drgCRfCx8ugdwuEX8KFC6k2EUu
+</code></pre></div><p>Creds:</p>
+<ul>
+<li><code>ssh bandit12@bandit.labs.overthewire.org -p 2220</code></li>
+<li><code>5Te8Y4drgCRfCx8ugdwuEX8KFC6k2EUu</code></li>
+</ul>
+<h1 id="bandit-level-12--level-13">Bandit Level 12 → Level 13</h1>
+<h2 id="level-goal-2">Level Goal</h2>
+<p>The password for the next level is stored in the file <strong>data.txt</strong>, which is a hexdump of a file that has been repeatedly compressed. For this level it may be useful to create a directory under /tmp in which you can work using mkdir. For example: mkdir /tmp/myname123. Then copy the datafile using cp, and rename it using mv (read the manpages!)</p>
+<h2 id="commands-you-may-need-to-solve-this-level-2">Commands you may need to solve this level</h2>
+<p>grep, sort, uniq, strings, base64, tr, tar, gzip, bzip2, xxd, mkdir, cp, mv, file</p>
+<h2 id="helpful-reading-material-2">Helpful Reading Material</h2>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Hex_dump">Hex dump on Wikipedia</a></li>
+</ul>
+<h2 id="solution-2">Solution</h2>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bandit12@bandit:~$ cat data.txt
+00000000: 1f8b 0808 d7d2 c55b 0203 6461 7461 322e  .......[..data2.
+00000010: 6269 6e00 013c 02c3 fd42 5a68 3931 4159  bin..&lt;...BZh91AY
+00000020: 2653 591d aae5 9800 001b ffff de7f 7fff  &amp;SY.............
+00000030: bfb7 dfcf 9fff febf f5ad efbf bbdf 7fdb  ................
+00000040: f2fd ffdf effa 7fff fbd7 bdff b001 398c  ..............9.
+00000050: 1006 8000 0000 0d06 9900 0000 6834 000d  ............h4..
+00000060: 01a1 a000 007a 8000 0d00 0006 9a00 d034  .....z.........4
+</code></pre></div><p>Hum, the <code>BZh91AY&amp;SY</code> part of the hexdump is specific to bz2 archives&hellip;</p>
+<p>Anyway, let&rsquo;s create a working directory in <code>/tmp</code> and work there:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bandit12@bandit:~$ mkdir /tmp/mimipotato
+bandit12@bandit:~$ cp data.txt /tmp/mimipotato
+bandit12@bandit:~$ cd /tmp/mimipotato
+</code></pre></div><p>So the file contains a hexdump, let&rsquo;s turn that hexdump back into a file, and use the <code>file</code> command to guess it&rsquo;s type:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bandit12@bandit:/tmp/mimipotato$ cat data.txt | xxd -r &gt; data.bin
+bandit12@bandit:/tmp/mimipotato$ file data.bin
+data.bin: gzip compressed data, was &#34;data2.bin&#34;, last modified: Tue Oct 16 12:00:23 2018, max compression, from Unix
+</code></pre></div><p>It&rsquo;s a gzip archive, that can be extracted with tar, with these options:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">       -z, --gzip, --gunzip, --ungzip
+              Filter the archive through gzip(1).
+
+
+       -x, --extract, --get
+              Extract  files from an archive.  Arguments are optional.  When
+              given, they specify names of the archive  members  to  be  ex‐
+              tracted.
+
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bandit12@bandit:/tmp/mimipotato$ mv data.bin data.tar.gz
+</code></pre></div><p>For some reason, extracting with tar didn&rsquo;t work:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bandit12@bandit:/tmp/mimipotato$ tar zxvf data.tar.gz
+tar: This does not look like a tar archive
+tar: Skipping to next header
+tar: Exiting with failure status due to previous errors
+</code></pre></div><p>Let&rsquo;s try to uncompress with <code>gunzip</code> instead:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bandit12@bandit:/tmp/mimipotato$ gunzip data.tar.gz
+bandit12@bandit:/tmp/mimipotato$ ls
+data.tar  data.txt
+bandit12@bandit:/tmp/mimipotato$ file data.tar
+data.tar: bzip2 compressed data, block size = 900k
+bandit12@bandit:/tmp/mimipotato$ mv data.tar data.bz2
+</code></pre></div><p>Let&rsquo;s try the <code>-d</code> for decompress option of the <code>bzip2</code> command then:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bandit12@bandit:/tmp/mimipotato$ bzip2 -d data.bz2
+bandit12@bandit:/tmp/mimipotato$ ls
+data  data.tar.gz  data.txt
+bandit12@bandit:/tmp/mimipotato$ file data
+data: gzip compressed data, was &#34;data4.bin&#34;, last modified: Tue Oct 16 12:00:23 2018, max compression, from Unix
+bandit12@bandit:/tmp/mimipotato$ mv data data4.gz
+</code></pre></div><p>Let&rsquo;s have another round of <code>gunzip</code> then:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bandit12@bandit:/tmp/mimipotato$ gunzip data4.gz
+bandit12@bandit:/tmp/mimipotato$ ls
+data4  data.tar.gz  data.txt
+bandit12@bandit:/tmp/mimipotato$ file data4
+data4: POSIX tar archive (GNU)
+</code></pre></div><p>Ah finally a <code>tar</code> archive!</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bandit12@bandit:/tmp/mimipotato$ tar xf data4
+bandit12@bandit:/tmp/mimipotato$ ls
+data4  data5.bin  data.tar.gz  data.txt
+bandit12@bandit:/tmp/mimipotato$ file data5.bin
+data5.bin: POSIX tar archive (GNU)
+</code></pre></div><p>Which contains another tar archive:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bandit12@bandit:/tmp/mimipotato$ tar xf data5.bin
+bandit12@bandit:/tmp/mimipotato$ ls
+data4  data5.bin  data6.bin  data.tar.gz  data.txt
+bandit12@bandit:/tmp/mimipotato$ file data6.bin
+data6.bin: bzip2 compressed data, block size = 900k
+</code></pre></div><p>And another bzip2 archive:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bandit12@bandit:/tmp/mimipotato$ bzip2 -d data6.bin
+bzip2: Can&#39;t guess original name for data6.bin -- using data6.bin.out
+bandit12@bandit:/tmp/mimipotato$ file data6.bin.out
+data6.bin.out: POSIX tar archive (GNU)
+</code></pre></div><p>Containing another tar archive:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">
+bandit12@bandit:/tmp/mimipotato$ tar xf data6.bin.out
+bandit12@bandit:/tmp/mimipotato$ ls
+data4  data5.bin  data6.bin.out  data8.bin  data.tar.gz  data.txt
+bandit12@bandit:/tmp/mimipotato$ file data8.bin
+data8.bin: gzip compressed data, was &#34;data9.bin&#34;, last modified: Tue Oct 16 12:00:23 2018, max compression, from Unix
+</code></pre></div><p>With another gzip archive:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bandit12@bandit:/tmp/mimipotato$ mv data8.bin data8.gz
+bandit12@bandit:/tmp/mimipotato$ gunzip data8.tar.gz
+bandit12@bandit:/tmp/mimipotato$ file data8.tar
+data8.tar: ASCII text
+</code></pre></div><p>And finally a text file!</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bandit12@bandit:/tmp/mimipotato$ mv data8.tar data8.txt
+bandit12@bandit:/tmp/mimipotato$ cat data8.txt
+The password is 8ZjyCRiBWFYkneahHwxCv3wb2a1ORpYL
+</code></pre></div><p>Creds:</p>
+<ul>
+<li><code>ssh bandit13@bandit.labs.overthewire.org -p 2220</code></li>
+<li><code>8ZjyCRiBWFYkneahHwxCv3wb2a1ORpYL</code></li>
+</ul>
+<h1 id="bandit-level-13--level-14">Bandit Level 13 → Level 14</h1>
+<h2 id="level-goal-3">Level Goal</h2>
+<p>The password for the next level is stored in <strong>/etc/bandit_pass/bandit14 and can only be read by user bandit14</strong>. For this level, you don’t get the next password, but you get a private SSH key that can be used to log into the next level. <strong>Note:</strong> <strong>localhost</strong> is a hostname that refers to the machine you are working on</p>
+<h2 id="commands-you-may-need-to-solve-this-level-3">Commands you may need to solve this level</h2>
+<p>ssh, telnet, nc, openssl, s_client, nmap</p>
+<h2 id="helpful-reading-material-3">Helpful Reading Material</h2>
+<ul>
+<li><a href="https://help.ubuntu.com/community/SSH/OpenSSH/Keys">SSH/OpenSSH/Keys</a></li>
+</ul>
+<h2 id="solution-3">Solution</h2>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bandit13@bandit:~$ ls
+sshkey.private
+bandit13@bandit:~$ cat sshkey.private
+-----BEGIN RSA PRIVATE KEY-----
+MIIEpAIBAAKCAQEAxkkOE83W2cOT7IWhFc9aPaaQmQDdgzuXCv+ppZHa++buSkN+
+gg0tcr7Fw8NLGa5+Uzec2rEg0WmeevB13AIoYp0MZyETq46t+jk9puNwZwIt9XgB
+ZufGtZEwWbFWw/vVLNwOXBe4UWStGRWzgPpEeSv5Tb1VjLZIBdGphTIK22Amz6Zb
+ThMsiMnyJafEwJ/T8PQO3myS91vUHEuoOMAzoUID4kN0MEZ3+XahyK0HJVq68KsV
+ObefXG1vvA3GAJ29kxJaqvRfgYnqZryWN7w3CHjNU4c/2Jkp+n8L0SnxaNA+WYA7
+jiPyTF0is8uzMlYQ4l1Lzh/8/MpvhCQF8r22dwIDAQABAoIBAQC6dWBjhyEOzjeA
+J3j/RWmap9M5zfJ/wb2bfidNpwbB8rsJ4sZIDZQ7XuIh4LfygoAQSS+bBw3RXvzE
+pvJt3SmU8hIDuLsCjL1VnBY5pY7Bju8g8aR/3FyjyNAqx/TLfzlLYfOu7i9Jet67
+xAh0tONG/u8FB5I3LAI2Vp6OviwvdWeC4nOxCthldpuPKNLA8rmMMVRTKQ+7T2VS
+nXmwYckKUcUgzoVSpiNZaS0zUDypdpy2+tRH3MQa5kqN1YKjvF8RC47woOYCktsD
+o3FFpGNFec9Taa3Msy+DfQQhHKZFKIL3bJDONtmrVvtYK40/yeU4aZ/HA2DQzwhe
+ol1AfiEhAoGBAOnVjosBkm7sblK+n4IEwPxs8sOmhPnTDUy5WGrpSCrXOmsVIBUf
+laL3ZGLx3xCIwtCnEucB9DvN2HZkupc/h6hTKUYLqXuyLD8njTrbRhLgbC9QrKrS
+M1F2fSTxVqPtZDlDMwjNR04xHA/fKh8bXXyTMqOHNJTHHNhbh3McdURjAoGBANkU
+1hqfnw7+aXncJ9bjysr1ZWbqOE5Nd8AFgfwaKuGTTVX2NsUQnCMWdOp+wFak40JH
+PKWkJNdBG+ex0H9JNQsTK3X5PBMAS8AfX0GrKeuwKWA6erytVTqjOfLYcdp5+z9s
+8DtVCxDuVsM+i4X8UqIGOlvGbtKEVokHPFXP1q/dAoGAcHg5YX7WEehCgCYTzpO+
+xysX8ScM2qS6xuZ3MqUWAxUWkh7NGZvhe0sGy9iOdANzwKw7mUUFViaCMR/t54W1
+GC83sOs3D7n5Mj8x3NdO8xFit7dT9a245TvaoYQ7KgmqpSg/ScKCw4c3eiLava+J
+3btnJeSIU+8ZXq9XjPRpKwUCgYA7z6LiOQKxNeXH3qHXcnHok855maUj5fJNpPbY
+iDkyZ8ySF8GlcFsky8Yw6fWCqfG3zDrohJ5l9JmEsBh7SadkwsZhvecQcS9t4vby
+9/8X4jS0P8ibfcKS4nBP+dT81kkkg5Z5MohXBORA7VWx+ACohcDEkprsQ+w32xeD
+qT1EvQKBgQDKm8ws2ByvSUVs9GjTilCajFqLJ0eVYzRPaY6f++Gv/UVfAPV4c+S0
+kAWpXbv5tbkkzbS0eaLPTKgLzavXtQoTtKwrjpolHKIHUz6Wu+n4abfAIRFubOdN
+/+aLoRQ0yBDRbdXMsZN/jvY44eM+xRLdRVyMmdPtP8belRi2E2aEzA==
+-----END RSA PRIVATE KEY-----
+</code></pre></div><p>So, we have a private RSA key file! How do we tell ssh to use it though?</p>
+<blockquote>
+<p>-i identity_file
+Selects a file from which the identity (private key) for public
+key authentication is read.  The default is ~/.ssh/id_dsa,
+~/.ssh/id_ecdsa, ~/.ssh/id_ecdsa_sk, ~/.ssh/id_ed25519,
+~/.ssh/id_ed25519_sk and ~/.ssh/id_rsa.  Identity files may also
+be specified on a per-host basis in the configuration file.  It
+is possible to have multiple -i options (and multiple identities
+specified in configuration files).  If no certificates have been
+explicitly specified by the CertificateFile directive, ssh will
+also try to load certificate information from the filename ob‐
+tained by appending -cert.pub to identity filenames.</p>
+<p>&ndash; man ssh</p>
+</blockquote>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bandit13@bandit:~$ ssh -i sshkey.private bandit14@localhost
+Could not create directory &#39;/home/bandit13/.ssh&#39;.
+The authenticity of host &#39;localhost (127.0.0.1)&#39; can&#39;t be established.
+ECDSA key fingerprint is SHA256:98UL0ZWr85496EtCRkKlo20X3OPnyPSB5tB5RPbhczc.
+Are you sure you want to continue connecting (yes/no)? yes
+Failed to add the host to the list of known hosts (/home/bandit13/.ssh/known_hosts).
+This is a OverTheWire game server. More information on http://www.overthewire.org/wargames
+[...]
+</code></pre></div><p>And we&rsquo;re in! Now, we just need to print the password:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bandit14@bandit:~$ cat /etc/bandit_pass/bandit14
+4wcYUJFw0k0XLShlDzztnTBHiqxU3b3e
+</code></pre></div><p>Creds:</p>
+<ul>
+<li><code>ssh bandit14@bandit.labs.overthewire.org -p 2220</code></li>
+<li><code>4wcYUJFw0k0XLShlDzztnTBHiqxU3b3e</code></li>
+</ul>
+<h1 id="bandit-level-14--level-15">Bandit Level 14 → Level 15</h1>
+<h2 id="level-goal-4">Level Goal</h2>
+<p>The password for the next level can be retrieved by submitting the password of the current level to <strong>port 30000 on localhost</strong>.</p>
+<h2 id="commands-you-may-need-to-solve-this-level-4">Commands you may need to solve this level</h2>
+<p>ssh, telnet, nc, openssl, s_client, nmap</p>
+<h2 id="helpful-reading-material-4">Helpful Reading Material</h2>
+<ul>
+<li><a href="https://www.youtube.com/watch?v=7_LPdttKXPc">How the Internet works in 5 minutes (YouTube)</a> (Not completely accurate, but good enough for beginners)</li>
+<li><a href="http://computer.howstuffworks.com/web-server5.htm">IP Addresses</a></li>
+<li><a href="https://en.wikipedia.org/wiki/IP_address">IP Address on Wikipedia</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Localhost">Localhost on Wikipedia</a></li>
+<li><a href="http://computer.howstuffworks.com/web-server8.htm">Ports</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Port_(computer_networking)">Port (computer networking) on Wikipedia</a></li>
+</ul>
+<h2 id="solution-4">Solution</h2>
+<p>Nothing too fancy here, the syntax for netcat is <code>nc &lt;hostname&gt; &lt;port&gt;</code>, so fill in the blanks. And add an <code>echo &lt;password&gt;</code> and a pipe to feed the password to netcat.</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bandit14@bandit:~$ echo &#34;4wcYUJFw0k0XLShlDzztnTBHiqxU3b3e&#34; | nc localhost 3000
+Correct!
+BfMYroe26WYalil77FoDi9qh59eK5xNr
+</code></pre></div><p>Creds:</p>
+<ul>
+<li><code>ssh bandit15@bandit.labs.overthewire.org -p 2220</code></li>
+<li><code>BfMYroe26WYalil77FoDi9qh59eK5xNr</code></li>
+</ul>
+<h1 id="bandit-level-15--level-16">Bandit Level 15 → Level 16</h1>
+<h2 id="level-goal-5">Level Goal</h2>
+<p>The password for the next level can be retrieved by submitting the password of the current level to <strong>port 30001 on localhost</strong> using SSL encryption.</p>
+<p><strong>Helpful note: Getting “HEARTBEATING” and “Read R BLOCK”? Use -ign_eof and read the “CONNECTED COMMANDS” section in the manpage. Next to ‘R’ and ‘Q’, the ‘B’ command also works in this version of that command…</strong></p>
+<h2 id="commands-you-may-need-to-solve-this-level-5">Commands you may need to solve this level</h2>
+<p>ssh, telnet, nc, openssl, s_client, nmap</p>
+<h2 id="helpful-reading-material-5">Helpful Reading Material</h2>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Secure_Socket_Layer">Secure Socket Layer/Transport Layer Security on Wikipedia</a></li>
+<li><a href="https://www.feistyduck.com/library/openssl-cookbook/online/ch-testing-with-openssl.html">OpenSSL Cookbook - Testing with OpenSSL</a></li>
+</ul>
+<h2 id="solution-5">Solution</h2>
+<p>SSL connection huh? What does the manual of openssl says about that?</p>
+<blockquote>
+<p>s_client
+This implements a generic SSL/TLS client which can establish a
+transparent connection to a remote server speaking SSL/TLS. It&rsquo;s
+intended for testing purposes only and provides only rudimentary
+interface functionality but internally uses mostly all
+functionality of the OpenSSL ssl library.</p>
+<p>&ndash; man openssl</p>
+</blockquote>
+<p>More information about <code>s_client</code></p>
+<blockquote>
+<p>-connect host:port
+This specifies the host and optional port to connect to. It is
+possible to select the host and port using the optional target
+positional argument instead.  If neither this nor the target
+positional argument are specified then an attempt is made to
+connect to the local host on port 4433.</p>
+<p>&ndash; man s_client</p>
+</blockquote>
+<p>Okay, let&rsquo;s put all these information together ~~</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bandit15@bandit:~$ openssl s_client -connect localhost:30001
+CONNECTED(00000003)
+depth=0 CN = localhost
+verify error:num=18:self signed certificate
+verify return:1
+depth=0 CN = localhost
+verify return:1
+---
+Certificate chain
+ 0 s:/CN=localhost
+   i:/CN=localhost
+---
+Server certificate
+-----BEGIN CERTIFICATE-----
+MIICBjCCAW+gAwIBAgIEYo1NxTANBgkqhkiG9w0BAQUFADAUMRIwEAYDVQQDDAls
+b2NhbGhvc3QwHhcNMjAwMTA1MTQzNTU4WhcNMjEwMTA0MTQzNTU4WjAUMRIwEAYD
+VQQDDAlsb2NhbGhvc3QwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAKF4u2eu
+a8VipZPviX0hfNiCnaD2ojAffdBhKTy1bmZSNRuHPBDnU7z8rblNSknSjCITda1C
+GEAI8ZktRbtLpBTbYeTgqPN/EiN5UIRMKbU6P2O93zNFPBsmyfQLrgt+DSLnsxlB
+i/yYyT7WLdtNVBpgwRwkqi9K7dk9vf9waswLAgMBAAGjZTBjMBQGA1UdEQQNMAuC
+CWxvY2FsaG9zdDBLBglghkgBhvhCAQ0EPhY8QXV0b21hdGljYWxseSBnZW5lcmF0
+ZWQgYnkgTmNhdC4gU2VlIGh0dHBzOi8vbm1hcC5vcmcvbmNhdC8uMA0GCSqGSIb3
+DQEBBQUAA4GBAJECW6IB3Ria4xG002BqD3zEbtmrDlK6nmJq+uQ4eJ6cT18o9REb
+npy/lFzlv2LfcrYAnuAp6Fh89MKaYjNzJURjRQ9RkmcYgQJa1n+OBkATb7V+84/a
+k9PDRkscxdNFMGBSvzFD33XZ5lbaGdrwCPyoxenoYghV/753wffN7J6H
+-----END CERTIFICATE-----
+subject=/CN=localhost
+issuer=/CN=localhost
+---
+No client certificate CA names sent
+Peer signing digest: SHA512
+Server Temp Key: X25519, 253 bits
+---
+SSL handshake has read 1019 bytes and written 269 bytes
+Verification error: self signed certificate
+---
+New, TLSv1.2, Cipher is ECDHE-RSA-AES256-GCM-SHA384
+Server public key is 1024 bit
+Secure Renegotiation IS supported
+Compression: NONE
+Expansion: NONE
+No ALPN negotiated
+SSL-Session:
+    Protocol  : TLSv1.2
+    Cipher    : ECDHE-RSA-AES256-GCM-SHA384
+    Session-ID: 08C10D3E63523726C9ECD8753EE7A0737DE0CE2E94F443D5B5669EE05D27CAB3
+    Session-ID-ctx:
+    Master-Key: C782359E52443C06C1F5D47B35671B9AA929600D8D763D4751D9DB9F39FC3EAC8D12FC15739E77B82479D259B94CB8F6
+    PSK identity: None
+    PSK identity hint: None
+    SRP username: None
+    TLS session ticket lifetime hint: 7200 (seconds)
+    TLS session ticket:
+    0000 - 56 e9 4e 87 6a 28 48 d0-13 42 5f b9 61 b0 dd d0   V.N.j(H..B_.a...
+    0010 - 6b 78 27 dc 9d 91 45 42-d5 db e8 49 70 f3 a2 7c   kx&#39;...EB...Ip..|
+    0020 - 5d c1 32 11 d5 9a c8 38-8b d3 c6 f9 f1 11 5f 1a   ].2....8......_.
+    0030 - 3a c1 6c 69 92 83 25 a8-ea fb 97 d9 11 03 bd 0c   :.li..%.........
+    0040 - 26 2a a7 8d 37 92 c8 2f-f1 c3 bf 04 08 4b 60 2d   &amp;*..7../.....K`-
+    0050 - e7 48 12 46 b0 c3 18 50-c4 d4 55 70 14 39 97 1b   .H.F...P..Up.9..
+    0060 - 47 cb 2a af b3 4d 03 ea-28 7e 70 ba 3f 5b d5 58   G.*..M..(~p.?[.X
+    0070 - 5e c1 eb 98 83 1c bb 3a-68 af e4 8e 93 c5 13 27   ^......:h......&#39;
+    0080 - d5 d9 8f 5d 86 aa a6 76-d2 14 fd 7a 21 3f d2 58   ...]...v...z!?.X
+    0090 - a2 6b ca 92 63 89 86 55-6e cc a2 72 41 04 33 ed   .k..c..Un..rA.3.
+
+    Start Time: 1584283986
+    Timeout   : 7200 (sec)
+    Verify return code: 18 (self signed certificate)
+    Extended master secret: yes
+---
+^C
+bandit15@bandit:~$ echo &#34;BfMYroe26WYalil77FoDi9qh59eK5xNr&#34; |openssl s_client &gt;
+CONNECTED(00000003)
+depth=0 CN = localhost
+verify error:num=18:self signed certificate
+verify return:1
+depth=0 CN = localhost
+verify return:1
+---
+Certificate chain
+ 0 s:/CN=localhost
+   i:/CN=localhost
+---
+Server certificate
+-----BEGIN CERTIFICATE-----
+MIICBjCCAW+gAwIBAgIEYo1NxTANBgkqhkiG9w0BAQUFADAUMRIwEAYDVQQDDAls
+b2NhbGhvc3QwHhcNMjAwMTA1MTQzNTU4WhcNMjEwMTA0MTQzNTU4WjAUMRIwEAYD
+VQQDDAlsb2NhbGhvc3QwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAKF4u2eu
+a8VipZPviX0hfNiCnaD2ojAffdBhKTy1bmZSNRuHPBDnU7z8rblNSknSjCITda1C
+GEAI8ZktRbtLpBTbYeTgqPN/EiN5UIRMKbU6P2O93zNFPBsmyfQLrgt+DSLnsxlB
+i/yYyT7WLdtNVBpgwRwkqi9K7dk9vf9waswLAgMBAAGjZTBjMBQGA1UdEQQNMAuC
+CWxvY2FsaG9zdDBLBglghkgBhvhCAQ0EPhY8QXV0b21hdGljYWxseSBnZW5lcmF0
+ZWQgYnkgTmNhdC4gU2VlIGh0dHBzOi8vbm1hcC5vcmcvbmNhdC8uMA0GCSqGSIb3
+DQEBBQUAA4GBAJECW6IB3Ria4xG002BqD3zEbtmrDlK6nmJq+uQ4eJ6cT18o9REb
+npy/lFzlv2LfcrYAnuAp6Fh89MKaYjNzJURjRQ9RkmcYgQJa1n+OBkATb7V+84/a
+k9PDRkscxdNFMGBSvzFD33XZ5lbaGdrwCPyoxenoYghV/753wffN7J6H
+-----END CERTIFICATE-----
+subject=/CN=localhost
+issuer=/CN=localhost
+---
+No client certificate CA names sent
+Peer signing digest: SHA512
+Server Temp Key: X25519, 253 bits
+---
+SSL handshake has read 1019 bytes and written 269 bytes
+Verification error: self signed certificate
+---
+New, TLSv1.2, Cipher is ECDHE-RSA-AES256-GCM-SHA384
+Server public key is 1024 bit
+Secure Renegotiation IS supported
+Compression: NONE
+Expansion: NONE
+No ALPN negotiated
+SSL-Session:
+    Protocol  : TLSv1.2
+    Cipher    : ECDHE-RSA-AES256-GCM-SHA384
+    Session-ID: B4185845AE13126255EFC925DE2256864C2894581629C9B14F99F14D3F02A95F
+    Session-ID-ctx:
+    Master-Key: 8B8749D2BBEE219B96A2692D686FA465EBBEACC2BC9EC670D6FA686789DD05C70AB401F4A1C5E0B8A5BB06E5B42A25EA
+    PSK identity: None
+    PSK identity hint: None
+    SRP username: None
+    TLS session ticket lifetime hint: 7200 (seconds)
+    TLS session ticket:
+    0000 - 56 e9 4e 87 6a 28 48 d0-13 42 5f b9 61 b0 dd d0   V.N.j(H..B_.a...
+    0010 - 9f 2b 06 3c 2e fb 9c ee-60 a5 24 b5 c3 36 9c 88   .+.&lt;....`.$..6..
+    0020 - 42 92 6a 73 02 15 4d 06-b8 a6 87 0c f0 ca 90 bb   B.js..M.........
+    0030 - ee 22 56 d9 36 85 18 e3-7d 66 f8 2b 05 96 24 65   .&#34;V.6...}f.+..$e
+    0040 - fe 12 77 91 f1 2f 5e c8-0b 29 0e 58 db a0 50 fe   ..w../^..).X..P.
+    0050 - 01 a9 73 4d 42 22 56 0c-63 ee d5 a6 7e aa 05 78   ..sMB&#34;V.c...~..x
+    0060 - 27 18 81 74 a0 40 51 4a-cb 9d eb 52 48 f7 6b ce   &#39;..t.@QJ...RH.k.
+    0070 - 1f 2e 4b ac f0 61 66 2d-3d 6e cf a5 c2 0c 3a a7   ..K..af-=n....:.
+    0080 - f0 f3 aa 1f d8 e6 1a 20-b9 90 bf 0a d6 5d 49 ec   ....... .....]I.
+    0090 - d0 97 45 9f d8 96 0d 72-19 91 c8 cf fa c6 32 54   ..E....r......2T
+
+    Start Time: 1584284009
+    Timeout   : 7200 (sec)
+    Verify return code: 18 (self signed certificate)
+    Extended master secret: yes
+---
+DONE
+bandit15@bandit:~$ openssl s_client -connect localhost:30001
+CONNECTED(00000003)
+depth=0 CN = localhost
+verify error:num=18:self signed certificate
+verify return:1
+depth=0 CN = localhost
+verify return:1
+---
+Certificate chain
+ 0 s:/CN=localhost
+   i:/CN=localhost
+---
+Server certificate
+-----BEGIN CERTIFICATE-----
+MIICBjCCAW+gAwIBAgIEYo1NxTANBgkqhkiG9w0BAQUFADAUMRIwEAYDVQQDDAls
+b2NhbGhvc3QwHhcNMjAwMTA1MTQzNTU4WhcNMjEwMTA0MTQzNTU4WjAUMRIwEAYD
+VQQDDAlsb2NhbGhvc3QwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAKF4u2eu
+a8VipZPviX0hfNiCnaD2ojAffdBhKTy1bmZSNRuHPBDnU7z8rblNSknSjCITda1C
+GEAI8ZktRbtLpBTbYeTgqPN/EiN5UIRMKbU6P2O93zNFPBsmyfQLrgt+DSLnsxlB
+i/yYyT7WLdtNVBpgwRwkqi9K7dk9vf9waswLAgMBAAGjZTBjMBQGA1UdEQQNMAuC
+CWxvY2FsaG9zdDBLBglghkgBhvhCAQ0EPhY8QXV0b21hdGljYWxseSBnZW5lcmF0
+ZWQgYnkgTmNhdC4gU2VlIGh0dHBzOi8vbm1hcC5vcmcvbmNhdC8uMA0GCSqGSIb3
+DQEBBQUAA4GBAJECW6IB3Ria4xG002BqD3zEbtmrDlK6nmJq+uQ4eJ6cT18o9REb
+npy/lFzlv2LfcrYAnuAp6Fh89MKaYjNzJURjRQ9RkmcYgQJa1n+OBkATb7V+84/a
+k9PDRkscxdNFMGBSvzFD33XZ5lbaGdrwCPyoxenoYghV/753wffN7J6H
+-----END CERTIFICATE-----
+subject=/CN=localhost
+issuer=/CN=localhost
+---
+No client certificate CA names sent
+Peer signing digest: SHA512
+Server Temp Key: X25519, 253 bits
+---
+SSL handshake has read 1019 bytes and written 269 bytes
+Verification error: self signed certificate
+---
+New, TLSv1.2, Cipher is ECDHE-RSA-AES256-GCM-SHA384
+Server public key is 1024 bit
+Secure Renegotiation IS supported
+Compression: NONE
+Expansion: NONE
+No ALPN negotiated
+SSL-Session:
+    Protocol  : TLSv1.2
+    Cipher    : ECDHE-RSA-AES256-GCM-SHA384
+    Session-ID: C36A88704650F317590B0C933E6B0818DE62799FE13ABAD1D4101CBD31D945E0
+    Session-ID-ctx:
+    Master-Key: 8F972E40AD1E240F74A102FA1915B9ECD1115812FFDCBB1F2D0ED80DB98A28FCCA388EACAECC96154992126A1B47146F
+    PSK identity: None
+    PSK identity hint: None
+    SRP username: None
+    TLS session ticket lifetime hint: 7200 (seconds)
+    TLS session ticket:
+    0000 - 56 e9 4e 87 6a 28 48 d0-13 42 5f b9 61 b0 dd d0   V.N.j(H..B_.a...
+    0010 - 85 c5 46 8e 80 9b 30 d6-3f 90 16 44 ba bf 85 a1   ..F...0.?..D....
+    0020 - ff 22 01 e9 8e 7e c5 bd-67 c9 6a 3a e1 66 86 05   .&#34;...~..g.j:.f..
+    0030 - db e0 b4 d5 3f d8 46 aa-0b 97 de ac 6d 0f a3 b9   ....?.F.....m...
+    0040 - a0 de f0 87 1b 0e e7 2a-e4 b3 bf 4a e9 97 52 67   .......*...J..Rg
+    0050 - 67 67 91 03 7c 22 74 13-42 ef ba 23 0a cb 75 dd   gg..|&#34;t.B..#..u.
+    0060 - e5 c7 b1 12 79 84 c9 e4-1e e6 87 a7 6f 13 22 a0   ....y.......o.&#34;.
+    0070 - 76 7f 24 73 1f 30 72 3f-da 35 8d 18 0d 60 20 e7   v.$s.0r?.5...` .
+    0080 - 12 b6 2c 75 85 80 7d 85-7e 37 6d db bc f4 a2 9b   ..,u..}.~7m.....
+    0090 - e4 23 b2 32 33 96 af e9-c0 0c 49 24 75 a6 6d 80   .#.23.....I$u.m.
+
+    Start Time: 1584284104
+    Timeout   : 7200 (sec)
+    Verify return code: 18 (self signed certificate)
+    Extended master secret: yes
+---
+BfMYroe26WYalil77FoDi9qh59eK5xNr
+Correct!
+cluFn7wTiGryunymYOu4RcffSxQluehd
+
+closed
+</code></pre></div><p>Creds:</p>
+<ul>
+<li><code>ssh bandit16@bandit.labs.overthewire.org -p 2220</code></li>
+<li><code>cluFn7wTiGryunymYOu4RcffSxQluehd</code></li>
+</ul>
+<h1 id="bandit-level-16--level-17">Bandit Level 16 → Level 17</h1>
+<h2 id="level-goal-6">Level Goal</h2>
+<p>The credentials for the next level can be retrieved by submitting the password of the current level to <strong>a port on localhost in the range 31000 to 32000</strong>. First find out which of these ports have a server listening on them. Then find out which of those speak SSL and which don’t. There is only 1 server that will give the next credentials, the others will simply send back to you whatever you send to it.</p>
+<h2 id="commands-you-may-need-to-solve-this-level-6">Commands you may need to solve this level</h2>
+<p>ssh, telnet, nc, openssl, s_client, nmap</p>
+<h2 id="helpful-reading-material-6">Helpful Reading Material</h2>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Port_scanner">Port scanner on Wikipedia</a></li>
+</ul>
+<h2 id="solution-6">Solution</h2>
+<p>Let&rsquo;s run the most famous of the port scanner around here, nmap!</p>
+<p>The option <code>-p</code> with a <code>-</code> between two values allows to specify a range of ports to scan:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bandit16@bandit:~$ nmap -p31000:32000 localhost
+
+Starting Nmap 7.40 ( https://nmap.org ) at 2020-03-15 15:57 CET
+Error #487: Your port specifications are illegal.  Example of proper form: &#34;-100,200-1024,T:3000-4000,U:60000-&#34;
+QUITTING!
+bandit16@bandit:~$ nmap -p31000-32000 localhost
+
+Starting Nmap 7.40 ( https://nmap.org ) at 2020-03-15 15:58 CET
+Nmap scan report for localhost (127.0.0.1)
+Host is up (0.00036s latency).
+Not shown: 998 closed ports
+PORT      STATE    SERVICE
+31518/tcp filtered unknown
+31790/tcp open     unknown
+31960/tcp open     unknown
+
+Nmap done: 1 IP address (1 host up) scanned in 1.26 seconds
+bandit16@bandit:~$ nmap -p31000-32000 localhost -O
+TCP/IP fingerprinting (for OS scan) requires root privileges.
+QUITTING!
+
+</code></pre></div><p>So we found 3 potential ports to try out, but we don&rsquo;t know which has SSL or not&hellip; Fortunately, Nmap has another sexy feature in stock, it can do service detection with the option <code>-sV</code>:</p>
+<p>Let&rsquo;s run the scan again:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bandit16@bandit:~$ nmap -p31000-32000 localhost -sV
+
+Starting Nmap 7.40 ( https://nmap.org ) at 2020-03-15 15:59 CET
+Stats: 0:01:09 elapsed; 0 hosts completed (1 up), 1 undergoing Service Scan
+Service scan Timing: About 50.00% done; ETC: 16:01 (0:01:08 remaining)
+Nmap scan report for localhost (127.0.0.1)
+Host is up (0.00026s latency).
+Not shown: 998 closed ports
+PORT      STATE    SERVICE     VERSION
+31518/tcp filtered unknown
+31790/tcp open     ssl/unknown
+31960/tcp open     echo
+</code></pre></div><p>And voilà, our target port is <code>31790</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bandit16@bandit:~$ openssl s_client -connect localhost:31790
+[...]
+cluFn7wTiGryunymYOu4RcffSxQluehd
+Correct!
+-----BEGIN RSA PRIVATE KEY-----
+MIIEogIBAAKCAQEAvmOkuifmMg6HL2YPIOjon6iWfbp7c3jx34YkYWqUH57SUdyJ
+imZzeyGC0gtZPGujUSxiJSWI/oTqexh+cAMTSMlOJf7+BrJObArnxd9Y7YT2bRPQ
+Ja6Lzb558YW3FZl87ORiO+rW4LCDCNd2lUvLE/GL2GWyuKN0K5iCd5TbtJzEkQTu
+DSt2mcNn4rhAL+JFr56o4T6z8WWAW18BR6yGrMq7Q/kALHYW3OekePQAzL0VUYbW
+JGTi65CxbCnzc/w4+mqQyvmzpWtMAzJTzAzQxNbkR2MBGySxDLrjg0LWN6sK7wNX
+x0YVztz/zbIkPjfkU1jHS+9EbVNj+D1XFOJuaQIDAQABAoIBABagpxpM1aoLWfvD
+KHcj10nqcoBc4oE11aFYQwik7xfW+24pRNuDE6SFthOar69jp5RlLwD1NhPx3iBl
+J9nOM8OJ0VToum43UOS8YxF8WwhXriYGnc1sskbwpXOUDc9uX4+UESzH22P29ovd
+d8WErY0gPxun8pbJLmxkAtWNhpMvfe0050vk9TL5wqbu9AlbssgTcCXkMQnPw9nC
+YNN6DDP2lbcBrvgT9YCNL6C+ZKufD52yOQ9qOkwFTEQpjtF4uNtJom+asvlpmS8A
+vLY9r60wYSvmZhNqBUrj7lyCtXMIu1kkd4w7F77k+DjHoAXyxcUp1DGL51sOmama
++TOWWgECgYEA8JtPxP0GRJ+IQkX262jM3dEIkza8ky5moIwUqYdsx0NxHgRRhORT
+8c8hAuRBb2G82so8vUHk/fur85OEfc9TncnCY2crpoqsghifKLxrLgtT+qDpfZnx
+SatLdt8GfQ85yA7hnWWJ2MxF3NaeSDm75Lsm+tBbAiyc9P2jGRNtMSkCgYEAypHd
+HCctNi/FwjulhttFx/rHYKhLidZDFYeiE/v45bN4yFm8x7R/b0iE7KaszX+Exdvt
+SghaTdcG0Knyw1bpJVyusavPzpaJMjdJ6tcFhVAbAjm7enCIvGCSx+X3l5SiWg0A
+R57hJglezIiVjv3aGwHwvlZvtszK6zV6oXFAu0ECgYAbjo46T4hyP5tJi93V5HDi
+Ttiek7xRVxUl+iU7rWkGAXFpMLFteQEsRr7PJ/lemmEY5eTDAFMLy9FL2m9oQWCg
+R8VdwSk8r9FGLS+9aKcV5PI/WEKlwgXinB3OhYimtiG2Cg5JCqIZFHxD6MjEGOiu
+L8ktHMPvodBwNsSBULpG0QKBgBAplTfC1HOnWiMGOU3KPwYWt0O6CdTkmJOmL8Ni
+blh9elyZ9FsGxsgtRBXRsqXuz7wtsQAgLHxbdLq/ZJQ7YfzOKU4ZxEnabvXnvWkU
+YOdjHdSOoKvDQNWu6ucyLRAWFuISeXw9a/9p7ftpxm0TSgyvmfLF2MIAEwyzRqaM
+77pBAoGAMmjmIJdjp+Ez8duyn3ieo36yrttF5NSsJLAbxFpdlc1gvtGCWW+9Cq0b
+dxviW8+TFVEBl1O4f7HVm6EpTscdDxU+bCXWkfjuRb7Dy9GOtt9JPsX8MBTakzh3
+vBgsyi/sN3RqRBcGU40fOoZyfAMT8s1m/uYv52O6IgeuZ/ujbjY=
+-----END RSA PRIVATE KEY-----
+
+closed
+
+</code></pre></div><p>Creds:</p>
+<ul>
+<li>RSA private key</li>
+</ul>
+<h1 id="bandit-level-17--level-18">Bandit Level 17 → Level 18</h1>
+<h2 id="level-goal-7">Level Goal</h2>
+<p>There are 2 files in the homedirectory: <strong>passwords.old and passwords.new</strong>. The password for the next level is in <strong>passwords.new</strong> and is the only line that has been changed between <strong>passwords.old and passwords.new</strong></p>
+<p><strong>NOTE: if you have solved this level and see ‘Byebye!’ when trying to log into bandit18, this is related to the next level, bandit19</strong></p>
+<h2 id="commands-you-may-need-to-solve-this-level-7">Commands you may need to solve this level</h2>
+<p>cat, grep, ls, diff</p>
+<h2 id="solution-7">Solution</h2>
+<p>First, let&rsquo;s retrieve the private RSA key from the previous level and use it to connect to the next level:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bandit16@bandit:~$ cd /tmp
+bandit16@bandit:/tmp$ mkdir screamingwatermelon
+bandit16@bandit:/tmp$ cd screamingwatermelon
+bandit16@bandit:/tmp/screamingwatermelon$ ls
+bandit16@bandit:/tmp/screamingwatermelon$ echo &#34;-----BEGIN RSA PRIVATE KEY-----
+MIIEogIBAAKCAQEAvmOkuifmMg6HL2YPIOjon6iWfbp7c3jx34YkYWqUH57SUdyJ[...]&#34; &gt; id_rsa
+bandit16@bandit:/tmp/screamingwatermelon$ chmod 600 id_rsa
+bandit16@bandit:/tmp/screamingwatermelon$ ssh -i id_rsa bandit17@localhost
+</code></pre></div><p>For this challenge, the only new command in the recommended commands is <code>diff</code>, let&rsquo;s check it out:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bandit17@bandit:~$ diff --help    
+Usage: diff [OPTION]... FILES
+Compare FILES line by line.
+</code></pre></div><p>Right, so we just need to invoke it with several files:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bandit17@bandit:~$ diff passwords.old passwords.new
+42c42
+&lt; hlbSBPAWJmL6WFDb06gpTx1pPButblOA
+---
+&gt; kfBf3eYk5BPBRzwjqutbbfE887SVc5Yd
+</code></pre></div><p>Creds:</p>
+<ul>
+<li><code>ssh bandit18@bandit.labs.overthewire.org -p 2220</code></li>
+<li><code>kfBf3eYk5BPBRzwjqutbbfE887SVc5Yd</code></li>
+</ul>
+<h1 id="bandit-level-18--level-19">Bandit Level 18 → Level 19</h1>
+<h2 id="level-goal-8">Level Goal</h2>
+<p>The password for the next level is stored in a file <strong>readme</strong> in the homedirectory. Unfortunately, someone has modified <strong>.bashrc</strong> to log you out when you log in with SSH.</p>
+<h2 id="commands-you-may-need-to-solve-this-level-8">Commands you may need to solve this level</h2>
+<p>ssh, ls, cat</p>
+<h2 id="solution-8">Solution</h2>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ ssh bandit18@bandit.labs.overthewire.org -p 2220
+Byebye !
+Connection to bandit.labs.overthewire.org closed.
+</code></pre></div><p>!!! How rude, I haven&rsquo;t even got time to do anything on the server!</p>
+<p>So, someone is messing around with .bashrc huh? Let&rsquo;s spawn plain old <code>/bin/sh</code> instead of the default <code>/bin/bash</code> then:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bandit ❯ ssh bandit18@bandit.labs.overthewire.org -p 2220 /bin/sh
+This is a OverTheWire game server. More information on http://www.overthewire.org/wargames
+
+bandit18@bandit.labs.overthewire.org&#39;s password:
+ls
+readme
+cat readme
+IueksS7Ubh8G3DCwVzrTd8rAVOwq3M5x
+</code></pre></div><p>Creds:</p>
+<ul>
+<li><code>ssh bandit19@bandit.labs.overthewire.org -p 2220</code></li>
+<li><code>IueksS7Ubh8G3DCwVzrTd8rAVOwq3M5x</code></li>
+</ul>
+<h1 id="bandit-level-19--level-20">Bandit Level 19 → Level 20</h1>
+<h2 id="level-goal-9">Level Goal</h2>
+<p>To gain access to the next level, you should use the setuid binary in the homedirectory. Execute it without arguments to find out how to use it. The password for this level can be found in the usual place (/etc/bandit_pass), after you have used the setuid binary.</p>
+<h2 id="helpful-reading-material-7">Helpful Reading Material</h2>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Setuid">setuid on Wikipedia</a></li>
+</ul>
+<h2 id="solution-9">Solution</h2>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bandit19@bandit:~$ ls
+bandit20-do
+bandit19@bandit:~$ ./bandit20-do
+Run a command as another user.
+  Example: ./bandit20-do id
+bandit19@bandit:~$ ./bandit20-do id
+uid=11019(bandit19) gid=11019(bandit19) euid=11020(bandit20) groups=11019(bandit19)
+</code></pre></div><p>By using the setuid binary, we can run a command as another user!</p>
+<p>We are not authorized to read <code>/etc/bandit_pass/bandit20</code> but we can use <code>bandit20-do</code> to do it for us!</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bandit19@bandit:~$ ./bandit20-do cat /etc/bandit_pass/bandit20
+GbKksEFF4yrVs6il55v6gwY5aVje5f0j
+</code></pre></div><p>Creds:</p>
+<ul>
+<li><code>ssh bandit20@bandit.labs.overthewire.org -p 2220</code></li>
+<li><code>GbKksEFF4yrVs6il55v6gwY5aVje5f0j</code></li>
+</ul>
+<h1 id="conclusion">Conclusion</h1>
+<p>That&rsquo;s it folks, stay cool ~</p>
+<p><img src="cat_snow.gif" alt=""></p>
+
+        </div>
+    </article>
+</div>
+<div class="column" id="toc-column">    <aside>
+        <div id="toc">
+            What's on this page?
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#bandit-level-10--level-11">Bandit Level 10 → Level 11</a>
+      <ul>
+        <li><a href="#level-goal">Level Goal</a></li>
+        <li><a href="#commands-you-may-need-to-solve-this-level">Commands you may need to solve this level</a></li>
+        <li><a href="#helpful-reading-material">Helpful Reading Material</a></li>
+        <li><a href="#solution">Solution</a></li>
+      </ul>
+    </li>
+    <li><a href="#bandit-level-11--level-12">Bandit Level 11 → Level 12</a>
+      <ul>
+        <li><a href="#level-goal-1">Level Goal</a></li>
+        <li><a href="#commands-you-may-need-to-solve-this-level-1">Commands you may need to solve this level</a></li>
+        <li><a href="#helpful-reading-material-1">Helpful Reading Material</a></li>
+        <li><a href="#solution-1">Solution</a></li>
+      </ul>
+    </li>
+    <li><a href="#bandit-level-12--level-13">Bandit Level 12 → Level 13</a>
+      <ul>
+        <li><a href="#level-goal-2">Level Goal</a></li>
+        <li><a href="#commands-you-may-need-to-solve-this-level-2">Commands you may need to solve this level</a></li>
+        <li><a href="#helpful-reading-material-2">Helpful Reading Material</a></li>
+        <li><a href="#solution-2">Solution</a></li>
+      </ul>
+    </li>
+    <li><a href="#bandit-level-13--level-14">Bandit Level 13 → Level 14</a>
+      <ul>
+        <li><a href="#level-goal-3">Level Goal</a></li>
+        <li><a href="#commands-you-may-need-to-solve-this-level-3">Commands you may need to solve this level</a></li>
+        <li><a href="#helpful-reading-material-3">Helpful Reading Material</a></li>
+        <li><a href="#solution-3">Solution</a></li>
+      </ul>
+    </li>
+    <li><a href="#bandit-level-14--level-15">Bandit Level 14 → Level 15</a>
+      <ul>
+        <li><a href="#level-goal-4">Level Goal</a></li>
+        <li><a href="#commands-you-may-need-to-solve-this-level-4">Commands you may need to solve this level</a></li>
+        <li><a href="#helpful-reading-material-4">Helpful Reading Material</a></li>
+        <li><a href="#solution-4">Solution</a></li>
+      </ul>
+    </li>
+    <li><a href="#bandit-level-15--level-16">Bandit Level 15 → Level 16</a>
+      <ul>
+        <li><a href="#level-goal-5">Level Goal</a></li>
+        <li><a href="#commands-you-may-need-to-solve-this-level-5">Commands you may need to solve this level</a></li>
+        <li><a href="#helpful-reading-material-5">Helpful Reading Material</a></li>
+        <li><a href="#solution-5">Solution</a></li>
+      </ul>
+    </li>
+    <li><a href="#bandit-level-16--level-17">Bandit Level 16 → Level 17</a>
+      <ul>
+        <li><a href="#level-goal-6">Level Goal</a></li>
+        <li><a href="#commands-you-may-need-to-solve-this-level-6">Commands you may need to solve this level</a></li>
+        <li><a href="#helpful-reading-material-6">Helpful Reading Material</a></li>
+        <li><a href="#solution-6">Solution</a></li>
+      </ul>
+    </li>
+    <li><a href="#bandit-level-17--level-18">Bandit Level 17 → Level 18</a>
+      <ul>
+        <li><a href="#level-goal-7">Level Goal</a></li>
+        <li><a href="#commands-you-may-need-to-solve-this-level-7">Commands you may need to solve this level</a></li>
+        <li><a href="#solution-7">Solution</a></li>
+      </ul>
+    </li>
+    <li><a href="#bandit-level-18--level-19">Bandit Level 18 → Level 19</a>
+      <ul>
+        <li><a href="#level-goal-8">Level Goal</a></li>
+        <li><a href="#commands-you-may-need-to-solve-this-level-8">Commands you may need to solve this level</a></li>
+        <li><a href="#solution-8">Solution</a></li>
+      </ul>
+    </li>
+    <li><a href="#bandit-level-19--level-20">Bandit Level 19 → Level 20</a>
+      <ul>
+        <li><a href="#level-goal-9">Level Goal</a></li>
+        <li><a href="#helpful-reading-material-7">Helpful Reading Material</a></li>
+        <li><a href="#solution-9">Solution</a></li>
+      </ul>
+    </li>
+    <li><a href="#conclusion">Conclusion</a></li>
+  </ul>
+</nav>
+        </div>
+    </aside>
+
+</div>
+</div></div>
+            </div><footer class="footer">
+  <div class="content has-text-centered">
+    <p>
+    Handcrafted with <span style="color: #e25555;">&hearts;</span> by kylma, with lots of
+    
+        <a href="https://shiny-labs.re/credits/">awesome tools</a>.
+    
+    </p>
+  </div>
+
+  <div id="to-top">
+    <a href="#logo" class="top-btn no-squiggly">^</a>
+  </div>
+
+</footer>
+</div>
+    </body>
+</html>
