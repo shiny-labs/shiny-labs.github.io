@@ -4,7 +4,22 @@
   
   <url>
     <loc>https://shiny-labs.re/categories/</loc>
-    <lastmod>2020-03-29T22:13:58+02:00</lastmod>
+    <lastmod>2020-04-11T14:27:27+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.re/categories/pentest/</loc>
+    <lastmod>2020-04-11T14:27:27+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.re/posts/</loc>
+    <lastmod>2020-04-11T14:27:27+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.re/posts/200411-vulnhub-kioptrix-1/</loc>
+    <lastmod>2020-04-11T14:27:27+02:00</lastmod>
   </url>
   
   <url>
@@ -24,11 +39,6 @@
   
   <url>
     <loc>https://shiny-labs.re/posts/200229-picoctf-stringzz/</loc>
-    <lastmod>2020-03-29T22:13:58+02:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://shiny-labs.re/posts/</loc>
     <lastmod>2020-03-29T22:13:58+02:00</lastmod>
   </url>
   
