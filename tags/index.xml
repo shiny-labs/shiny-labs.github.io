@@ -8,10 +8,19 @@
     <language>en</language>
     <managingEditor>shiny-labs@kylma.fr (shiny-labs)</managingEditor>
     <webMaster>shiny-labs@kylma.fr (shiny-labs)</webMaster>
-    <lastBuildDate>Sun, 29 Mar 2020 22:13:58 +0200</lastBuildDate>
+    <lastBuildDate>Mon, 13 Apr 2020 11:21:09 +0200</lastBuildDate>
     
 	<atom:link href="https://shiny-labs.re/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>OSINT</title>
+      <link>https://shiny-labs.re/tags/osint/</link>
+      <pubDate>Mon, 13 Apr 2020 11:21:09 +0200</pubDate>
+      <author>shiny-labs@kylma.fr (shiny-labs)</author>
+      <guid>https://shiny-labs.re/tags/osint/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>exploit</title>

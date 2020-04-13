@@ -3,17 +3,32 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://shiny-labs.re/tags/osint/</loc>
+    <lastmod>2020-04-13T11:21:09+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.re/posts/</loc>
+    <lastmod>2020-04-13T11:21:09+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.re/tags/</loc>
+    <lastmod>2020-04-13T11:21:09+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.re/posts/200413-tryhackme-oshint/</loc>
+    <lastmod>2020-04-13T11:21:09+02:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://shiny-labs.re/categories/</loc>
     <lastmod>2020-04-11T14:27:27+02:00</lastmod>
   </url>
   
   <url>
     <loc>https://shiny-labs.re/categories/pentest/</loc>
-    <lastmod>2020-04-11T14:27:27+02:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://shiny-labs.re/posts/</loc>
     <lastmod>2020-04-11T14:27:27+02:00</lastmod>
   </url>
   
@@ -39,11 +54,6 @@
   
   <url>
     <loc>https://shiny-labs.re/posts/200229-picoctf-stringzz/</loc>
-    <lastmod>2020-03-29T22:13:58+02:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://shiny-labs.re/tags/</loc>
     <lastmod>2020-03-29T22:13:58+02:00</lastmod>
   </url>
   
