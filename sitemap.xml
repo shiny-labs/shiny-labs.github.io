@@ -3,12 +3,27 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>https://shiny-labs.re/tags/osint/</loc>
-    <lastmod>2020-04-13T11:21:09+02:00</lastmod>
+    <loc>https://shiny-labs.re/categories/</loc>
+    <lastmod>2020-04-18T09:20:52+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.re/categories/pentest/</loc>
+    <lastmod>2020-04-18T09:20:52+02:00</lastmod>
   </url>
   
   <url>
     <loc>https://shiny-labs.re/posts/</loc>
+    <lastmod>2020-04-18T09:20:52+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.re/posts/200411-vulnhub-kioptrix-2/</loc>
+    <lastmod>2020-04-18T09:20:52+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.re/tags/osint/</loc>
     <lastmod>2020-04-13T11:21:09+02:00</lastmod>
   </url>
   
@@ -20,16 +35,6 @@
   <url>
     <loc>https://shiny-labs.re/posts/200413-tryhackme-oshint/</loc>
     <lastmod>2020-04-13T11:21:09+02:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://shiny-labs.re/categories/</loc>
-    <lastmod>2020-04-11T14:27:27+02:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://shiny-labs.re/categories/pentest/</loc>
-    <lastmod>2020-04-11T14:27:27+02:00</lastmod>
   </url>
   
   <url>

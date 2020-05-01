@@ -14,6 +14,18 @@
     
     
     <item>
+      <title>Vulnhub - Kioptrix 1.1 (#2)</title>
+      <link>https://shiny-labs.re/posts/200411-vulnhub-kioptrix-2/</link>
+      <pubDate>Sat, 18 Apr 2020 09:20:52 +0200</pubDate>
+      <author>shiny-labs@kylma.fr (shiny-labs)</author>
+      <guid>https://shiny-labs.re/posts/200411-vulnhub-kioptrix-2/</guid>
+      <description>Kioptrix level 2, here we go! Follow along by grabbing the VM on https://www.vulnhub.com/entry/kioptrix-level-11-2,23/. Make sure to download the level 2 - updated version as the first release had a bug in the web application.
+The goal is the same than the previous one: get root by any possible mean.
+Fixing the network As the previous Kioptrix, the network wasn&amp;rsquo;t working out of the box for me.
+  Shut down the VM</description>
+    </item>
+    
+    <item>
       <title>TryHackMe - OhSINT</title>
       <link>https://shiny-labs.re/posts/200413-tryhackme-oshint/</link>
       <pubDate>Mon, 13 Apr 2020 11:21:09 +0200</pubDate>
