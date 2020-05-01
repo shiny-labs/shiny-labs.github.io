@@ -14,6 +14,16 @@
     
     
     <item>
+      <title>Vulnhub - Kioptrix 1.2 (#3)</title>
+      <link>https://shiny-labs.re/posts/200423-vulnhub-kioptrix-3/</link>
+      <pubDate>Thu, 23 Apr 2020 11:50:52 +0200</pubDate>
+      <author>shiny-labs@kylma.fr (shiny-labs)</author>
+      <guid>https://shiny-labs.re/posts/200423-vulnhub-kioptrix-3/</guid>
+      <description>Finding the IP of the VM Huh, this time I didn&amp;rsquo;t have to do weird stuff to fix the network! Just changed the network adapter from bridged to NAT!
+kali@kali:~$ sudo arp-scan 172.16.149.0/24 Interface: eth0, type: EN10MB, MAC: 00:0c:29:fd:2b:71, IPv4: 172.16.149.129 Starting arp-scan 1.9.7 with 256 hosts (https://github.com/royhills/arp-scan) 172.16.149.1	00:50:56:c0:00:08	VMware, Inc. 172.16.149.2	00:50:56:fd:11:d0	VMware, Inc. 172.16.149.132	00:0c:29:3e:dd:2b	VMware, Inc. 172.16.149.254	00:50:56:fe:b1:9f	VMware, Inc. IP of the target is: 172.16.149.132 !</description>
+    </item>
+    
+    <item>
       <title>Vulnhub - Kioptrix 1.1 (#2)</title>
       <link>https://shiny-labs.re/posts/200411-vulnhub-kioptrix-2/</link>
       <pubDate>Sat, 18 Apr 2020 09:20:52 +0200</pubDate>

