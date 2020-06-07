@@ -4,7 +4,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <meta name="generator" content="Hugo 0.68.3" />
+    <meta name="generator" content="Hugo 0.72.0" />
 
     <link rel="apple-touch-icon" sizes="180x180" href="https://shiny-labs.re/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="https://shiny-labs.re/favicon-32x32.png">
@@ -883,7 +883,7 @@ h
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&#34;__main__&#34;</span><span class="p">:</span>
     <span class="k">print</span><span class="p">(</span><span class="s2">&#34;Full URL: {}&#34;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">part_1</span><span class="p">()))</span>
-</code></pre></div><p>And the result is:  <code>http://emoji-t0anaxnr3nacpt4na.web.ctfco</code>. This is the part where you go &ldquo;yeah, I&rsquo;ve got it&rdquo; to &ldquo;ohno, I don&rsquo;t have the full URL :((&quot;. And since there is 3 loading stack sequences in the program, the URL probably has 3 parts&hellip;</p>
+</code></pre></div><p>And the result is:  <code>http://emoji-t0anaxnr3nacpt4na.web.ctfco</code>. This is the part where you go &ldquo;yeah, I&rsquo;ve got it&rdquo; to &ldquo;ohno, I don&rsquo;t have the full URL :((&rdquo;. And since there is 3 loading stack sequences in the program, the URL probably has 3 parts&hellip;</p>
 <h3 id="part-2-the-easiest-one">Part 2: The Easiest One</h3>
 <p>So, we&rsquo;ve got a second stack to deal with:</p>
 <div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">stack_2</span> <span class="o">=</span> <span class="p">[</span><span class="mi">98426</span><span class="p">,</span> <span class="mi">97850</span><span class="p">,</span> <span class="mi">97604</span><span class="p">,</span> <span class="mi">97280</span><span class="p">,</span> <span class="mi">96815</span><span class="p">,</span> <span class="mi">96443</span><span class="p">,</span> <span class="mi">96354</span><span class="p">,</span> <span class="mi">95934</span><span class="p">,</span> <span class="mi">94865</span><span class="p">,</span> <span class="mi">94952</span><span class="p">,</span> <span class="mi">94669</span><span class="p">,</span> <span class="mi">94440</span><span class="p">,</span> <span class="mi">93969</span><span class="p">,</span> <span class="mi">93766</span><span class="p">]</span>

@@ -3,13 +3,38 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://shiny-labs.re/</loc>
+    <lastmod>2020-06-07T12:40:07+02:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://shiny-labs.re/categories/</loc>
-    <lastmod>2020-05-17T21:56:41+02:00</lastmod>
+    <lastmod>2020-06-07T12:40:07+02:00</lastmod>
   </url>
   
   <url>
     <loc>https://shiny-labs.re/categories/ctf/</loc>
-    <lastmod>2020-05-17T21:56:41+02:00</lastmod>
+    <lastmod>2020-06-07T12:40:07+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.re/posts/200607-picoctf-2019-empire-1/</loc>
+    <lastmod>2020-06-07T12:40:07+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.re/posts/</loc>
+    <lastmod>2020-06-07T12:40:07+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.re/tags/</loc>
+    <lastmod>2020-06-07T12:40:07+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.re/tags/web/</loc>
+    <lastmod>2020-06-07T12:40:07+02:00</lastmod>
   </url>
   
   <url>
@@ -19,16 +44,6 @@
   
   <url>
     <loc>https://shiny-labs.re/posts/200517-picoctf-2019-seed-spring/</loc>
-    <lastmod>2020-05-17T21:56:41+02:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://shiny-labs.re/posts/</loc>
-    <lastmod>2020-05-17T21:56:41+02:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://shiny-labs.re/tags/</loc>
     <lastmod>2020-05-17T21:56:41+02:00</lastmod>
   </url>
   
@@ -113,11 +128,6 @@
   </url>
   
   <url>
-    <loc>https://shiny-labs.re/</loc>
-    <lastmod>2020-02-23T20:19:35+01:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://shiny-labs.re/series/picoctf-2019/</loc>
     <lastmod>2020-02-23T09:15:49+01:00</lastmod>
   </url>
@@ -174,11 +184,6 @@
   
   <url>
     <loc>https://shiny-labs.re/posts/190806-googlectf-beginners-government-agriculture-network/</loc>
-    <lastmod>2019-08-06T15:28:01+02:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://shiny-labs.re/tags/web/</loc>
     <lastmod>2019-08-06T15:28:01+02:00</lastmod>
   </url>
   

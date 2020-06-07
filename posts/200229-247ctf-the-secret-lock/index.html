@@ -4,7 +4,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <meta name="generator" content="Hugo 0.68.3" />
+    <meta name="generator" content="Hugo 0.72.0" />
 
     <link rel="apple-touch-icon" sizes="180x180" href="https://shiny-labs.re/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="https://shiny-labs.re/favicon-32x32.png">
@@ -223,7 +223,7 @@
 <span class="k">for</span> <span class="n">constraint</span> <span class="ow">in</span> <span class="n">constraints</span><span class="p">:</span>
     <span class="c1">#print(constraint)</span>
     <span class="n">s</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">And</span><span class="p">(</span><span class="nb">eval</span><span class="p">(</span><span class="n">constraint</span><span class="p">)))</span>
-</code></pre></div><p>Since we are parsing the constraints and splitting on &ldquo;&amp;&amp;&quot;, the constraints list will contain elements like <code>(flag[37] - flag[37]) * flag[15] == 0)</code>.  Each item of the constraints list is added to the solver, specifying that the logical operation should be an <code>AND</code>.</p>
+</code></pre></div><p>Since we are parsing the constraints and splitting on &ldquo;&amp;&amp;&rdquo;, the constraints list will contain elements like <code>(flag[37] - flag[37]) * flag[15] == 0)</code>.  Each item of the constraints list is added to the solver, specifying that the logical operation should be an <code>AND</code>.</p>
 <p>Finally, we ask the solver if there&rsquo;s a solution to this bunch of constraints. We make the hypothesis that the solution for each character is going to be unique, and that&rsquo;s it&rsquo;s going to be a int. Then, mash everything so it looks like a flag at the end.</p>
 <div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">check</span><span class="p">()</span> <span class="o">==</span> <span class="n">sat</span><span class="p">:</span>
     <span class="k">print</span><span class="p">(</span><span class="s2">&#34;[-] yay, got a solution&#34;</span><span class="p">)</span>
