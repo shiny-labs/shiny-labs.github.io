@@ -4,31 +4,41 @@
   
   <url>
     <loc>https://shiny-labs.re/</loc>
-    <lastmod>2020-06-07T12:40:07+02:00</lastmod>
+    <lastmod>2020-06-17T23:44:45+02:00</lastmod>
   </url>
   
   <url>
     <loc>https://shiny-labs.re/categories/</loc>
-    <lastmod>2020-06-07T12:40:07+02:00</lastmod>
+    <lastmod>2020-06-17T23:44:45+02:00</lastmod>
   </url>
   
   <url>
     <loc>https://shiny-labs.re/categories/ctf/</loc>
-    <lastmod>2020-06-07T12:40:07+02:00</lastmod>
+    <lastmod>2020-06-17T23:44:45+02:00</lastmod>
   </url>
   
   <url>
-    <loc>https://shiny-labs.re/posts/200607-picoctf-2019-empire-1/</loc>
-    <lastmod>2020-06-07T12:40:07+02:00</lastmod>
+    <loc>https://shiny-labs.re/posts/200617-picoctf-2019-rop32/</loc>
+    <lastmod>2020-06-17T23:44:45+02:00</lastmod>
   </url>
   
   <url>
     <loc>https://shiny-labs.re/posts/</loc>
-    <lastmod>2020-06-07T12:40:07+02:00</lastmod>
+    <lastmod>2020-06-17T23:44:45+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.re/tags/rop/</loc>
+    <lastmod>2020-06-17T23:44:45+02:00</lastmod>
   </url>
   
   <url>
     <loc>https://shiny-labs.re/tags/</loc>
+    <lastmod>2020-06-17T23:44:45+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.re/posts/200607-picoctf-2019-empire-1/</loc>
     <lastmod>2020-06-07T12:40:07+02:00</lastmod>
   </url>
   
