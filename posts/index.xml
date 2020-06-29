@@ -364,5 +364,17 @@ GDB setup Install the gef plugin from https://github.com/hugsy/gef (you need a G
 $ wget -O ~/.gdbinit-gef.py -q https://github.com/hugsy/gef/raw/master/gef.py $ echo source ~/.gdbinit-gef.py &amp;gt;&amp;gt; ~/.gdbinit On first-time install, it should spew:</description>
     </item>
     
+    <item>
+      <title></title>
+      <link>https://shiny-labs.re/posts/00_drafts/linux_packer/linux_packer/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <author>shiny-labs@kylma.fr (shiny-labs)</author>
+      <guid>https://shiny-labs.re/posts/00_drafts/linux_packer/linux_packer/</guid>
+      <description>Writing a Packer for Linux
+Standard attacks:
+ ltrace: library calls tracing strace: syscalls tracing strings (lol) fenris ==&amp;gt; never heard of that one, execution path tracing gdb: application debugging /proc: memory dumping  Defense:
+ encrypting the binary will scramble the strings ltrace, strace, fenris and gdb are all based on the ptrace API ==&amp;gt; disabling that API would be a huge step /proc:  only portions of the binary are decrypted at any given time can&amp;rsquo;t dump fully decrypted image via /proc filesystem   apart from static analysis, the vast majority of attacks against the binary can be detected and prevented  layers: like an onion, each layer of encryption makes it harder for the attacker because he has to defeat one layer after the other</description>
+    </item>
+    
   </channel>
 </rss>

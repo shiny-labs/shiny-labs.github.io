@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="generator" content="Hugo 0.73.0" />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://shiny-labs.re/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://shiny-labs.re/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://shiny-labs.re/favicon-16x16.png">
+    <link rel="manifest" href="https://shiny-labs.re/site.webmanifest">
+    <link rel="mask-icon" href="https://shiny-labs.re/safari-pinned-tab.svg" color="#000000">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
+
+
+    <link rel="stylesheet" href="https://shiny-labs.re/css/bulma.min.css">
+    <link rel="stylesheet" href="https://shiny-labs.re/css/main.css">
+    <link rel="stylesheet" href="https://shiny-labs.re/css/syntax.css">
+
+    
+    <title>shiny-labs || </title>
+</head>
+<body><nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item no-squiggly" href="https://shiny-labs.re/">
+            <h1 id="logo" class="glitch">shiny-labs</h1>
+        </a>
+    </div>
+
+    <div class="navbar-menu">
+        <div class="navbar-start">
+            
+        </div>
+
+        <div class="navbar-end">
+            
+            <h3 id="subtitle">Exploit, reverse engineering and cats.</h3>
+        </div>
+    </div>
+</nav>
+
+<div id="content">
+
+            <div class="columns is-centered">
+                <div class="column is-10" id="menu-column"><div id="menu" class="tabs is-centered is-medium">
+    <ul>
+            <li><a href="https://shiny-labs.re/" class="no-squiggly">Home</a></li>
+            <li><a href="https://shiny-labs.re/archives/" class="no-squiggly">Archives</a></li>
+            <li><a href="https://shiny-labs.re/tags/" class="no-squiggly">Tags</a></li>
+            <li><a href="https://shiny-labs.re/about/" class="no-squiggly">About</a></li>
+  </ul>
+</div>
+</div>
+            </div>
+
+            <div class="columns is-centered">
+                <div class="column is-10" id="main-column">
+<div class="columns">
+<div class="column is-10" id="main-column">
+    <article class="article">
+        <div >
+            <h1 class="article-title"></h1>
+            
+<div class="post-meta">
+  <p class="article-meta">
+  <span>Date</span> &#x5b;
+  <time datetime="January 1, 0001">
+      Jan 1
+    </time>
+  &#x5d;
+  </p>
+</div>
+
+        </div>
+        <div>
+            <p>Writing a Packer for Linux</p>
+<p>Standard attacks:</p>
+<ul>
+<li>ltrace: library calls tracing</li>
+<li>strace: syscalls tracing</li>
+<li>strings (lol)</li>
+<li>fenris ==&gt; never heard of that one, execution path tracing</li>
+<li>gdb: application debugging</li>
+<li>/proc: memory dumping</li>
+</ul>
+<p>Defense:</p>
+<ul>
+<li>encrypting the binary will scramble the strings</li>
+<li>ltrace, strace, fenris and gdb are all based on the ptrace API ==&gt; disabling that API would be a huge step</li>
+<li>/proc:
+<ul>
+<li>only portions of the binary are decrypted at any given time</li>
+<li>can&rsquo;t dump fully decrypted image via /proc filesystem</li>
+</ul>
+</li>
+<li>apart from static analysis, the vast majority of attacks against the binary can be detected and prevented</li>
+</ul>
+<p>layers: like an onion, each layer of encryption makes it harder for the attacker because he has to defeat one layer after the other</p>
+<p>having a different behavior at each run = more difficult to write a generic unwrapper</p>
+<p>anti-debug/disas:</p>
+<ul>
+<li>
+<p>dual ptrace</p>
+<ul>
+<li>exit if ptrace is active</li>
+<li>clone itself and the two processes ptrace each other</li>
+</ul>
+</li>
+<li>
+<p>check eflags</p>
+</li>
+<li>
+<p>/proc</p>
+<ul>
+<li>check /proc/self/stat</li>
+<li>only portions of the binary are decrypted at any given time</li>
+<li>can&rsquo;t dump fully decrypted image via /proc filesystem</li>
+</ul>
+</li>
+<li>
+<p>timing</p>
+</li>
+<li>
+<p>simple SIGTRAP catch &ndash;&gt; catch single-stepping</p>
+</li>
+<li>
+<p>&ldquo;checkme&rdquo; data check</p>
+</li>
+<li>
+<p>INT3</p>
+<ul>
+<li>some instructions are replaced with INT3</li>
+<li>packer will emulate the instruction</li>
+<li>even if you capture a decrypted code block, some instructions might be missing</li>
+</ul>
+</li>
+<li>
+<p>strings:</p>
+<ul>
+<li>strip and sstrip</li>
+</ul>
+</li>
+<li>
+<p>against static disass:</p>
+<ul>
+<li>jump in the middle of function</li>
+<li>polymorphic code generation</li>
+</ul>
+</li>
+</ul>
+<p>existing ELF encryptors:</p>
+<ul>
+<li>shiva</li>
+<li>burneye
+<ul>
+<li>multi-layer encryption</li>
+<li>strong password encryption</li>
+<li>entire exec decrypted to memory</li>
+</ul>
+</li>
+<li>elfcrypt
+<ul>
+<li>executable wrapper and obfuscator</li>
+</ul>
+</li>
+</ul>
+<p><a href="http://phrack.org/issues/58/5.html#article">http://phrack.org/issues/58/5.html#article</a></p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">Armouring the ELF: Binary encryption on the UNIX platform
+</code></pre></div><p><a href="https://www.blackhat.com/presentations/bh-federal-03/bh-federal-03-eagle/bh-fed-03-eagle.pdf">https://www.blackhat.com/presentations/bh-federal-03/bh-federal-03-eagle/bh-fed-03-eagle.pdf</a> Strike/Counter-Strike:Reverse Engineering Shiva - Chris Eagle</p>
+<p><a href="https://web.archive.org/web/20170116153028/http://www.hackintherandom2600nldatabox.nl/archive/slides/2012/antidebugging.tgz">https://web.archive.org/web/20170116153028/http://www.hackintherandom2600nldatabox.nl/archive/slides/2012/antidebugging.tgz</a></p>
+<p><a href="http://asm.sourceforge.net/articles/smc.html">http://asm.sourceforge.net/articles/smc.html</a> Using self modifying code under Linux</p>
+<p><a href="https://grugq.github.io/docs/subversiveld.pdf">https://grugq.github.io/docs/subversiveld.pdf</a></p>
+<p><a href="https://www.x86sec.com/2018-03-05/anti-reverse-engineering.html">https://www.x86sec.com/2018-03-05/anti-reverse-engineering.html</a></p>
+
+        </div>
+    </article>
+</div>
+<div class="column" id="toc-column">    <aside>
+        <div id="toc">
+            What's on this page?
+            <nav id="TableOfContents"></nav>
+        </div>
+    </aside>
+
+</div>
+</div></div>
+            </div><footer class="footer">
+  <div class="content has-text-centered">
+    <p>
+    Handcrafted with <span style="color: #e25555;">&hearts;</span> by kylma, with lots of
+    
+        <a href="https://shiny-labs.re/credits/">awesome tools</a>.
+    
+    </p>
+  </div>
+
+  <div id="to-top">
+    <a href="#logo" class="top-btn no-squiggly">^</a>
+  </div>
+
+</footer>
+</div>
+    </body>
+</html>
