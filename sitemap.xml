@@ -4,36 +4,56 @@
   
   <url>
     <loc>https://shiny-labs.re/</loc>
-    <lastmod>2020-06-17T23:44:45+02:00</lastmod>
+    <lastmod>2020-07-11T12:20:30+02:00</lastmod>
   </url>
   
   <url>
     <loc>https://shiny-labs.re/categories/</loc>
-    <lastmod>2020-06-17T23:44:45+02:00</lastmod>
+    <lastmod>2020-07-11T12:20:30+02:00</lastmod>
   </url>
   
   <url>
-    <loc>https://shiny-labs.re/categories/ctf/</loc>
-    <lastmod>2020-06-17T23:44:45+02:00</lastmod>
+    <loc>https://shiny-labs.re/categories/embedded/</loc>
+    <lastmod>2020-07-11T12:20:30+02:00</lastmod>
   </url>
   
   <url>
-    <loc>https://shiny-labs.re/posts/200617-picoctf-2019-rop32/</loc>
-    <lastmod>2020-06-17T23:44:45+02:00</lastmod>
+    <loc>https://shiny-labs.re/posts/200711-getting-started-stm32f4discovery/</loc>
+    <lastmod>2020-07-11T12:20:30+02:00</lastmod>
   </url>
   
   <url>
     <loc>https://shiny-labs.re/posts/</loc>
-    <lastmod>2020-06-17T23:44:45+02:00</lastmod>
+    <lastmod>2020-07-11T12:20:30+02:00</lastmod>
   </url>
   
   <url>
-    <loc>https://shiny-labs.re/tags/rop/</loc>
-    <lastmod>2020-06-17T23:44:45+02:00</lastmod>
+    <loc>https://shiny-labs.re/tags/stm32/</loc>
+    <lastmod>2020-07-11T12:20:30+02:00</lastmod>
   </url>
   
   <url>
     <loc>https://shiny-labs.re/tags/</loc>
+    <lastmod>2020-07-11T12:20:30+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.re/categories/ctf/</loc>
+    <lastmod>2020-06-29T21:05:40+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.re/posts/200629-picoctf-2019-leap-frog/</loc>
+    <lastmod>2020-06-29T21:05:40+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.re/tags/rop/</loc>
+    <lastmod>2020-06-29T21:05:40+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.re/posts/200617-picoctf-2019-rop32/</loc>
     <lastmod>2020-06-17T23:44:45+02:00</lastmod>
   </url>
   

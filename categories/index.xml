@@ -8,15 +8,24 @@
     <language>en</language>
     <managingEditor>shiny-labs@kylma.fr (shiny-labs)</managingEditor>
     <webMaster>shiny-labs@kylma.fr (shiny-labs)</webMaster>
-    <lastBuildDate>Wed, 17 Jun 2020 23:44:45 +0200</lastBuildDate>
+    <lastBuildDate>Sat, 11 Jul 2020 12:20:30 +0200</lastBuildDate>
     
 	<atom:link href="https://shiny-labs.re/categories/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
+      <title>embedded</title>
+      <link>https://shiny-labs.re/categories/embedded/</link>
+      <pubDate>Sat, 11 Jul 2020 12:20:30 +0200</pubDate>
+      <author>shiny-labs@kylma.fr (shiny-labs)</author>
+      <guid>https://shiny-labs.re/categories/embedded/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>CTF</title>
       <link>https://shiny-labs.re/categories/ctf/</link>
-      <pubDate>Wed, 17 Jun 2020 23:44:45 +0200</pubDate>
+      <pubDate>Mon, 29 Jun 2020 21:05:40 +0200</pubDate>
       <author>shiny-labs@kylma.fr (shiny-labs)</author>
       <guid>https://shiny-labs.re/categories/ctf/</guid>
       <description></description>

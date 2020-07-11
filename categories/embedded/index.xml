@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>embedded on shiny-labs</title>
+    <link>https://shiny-labs.re/categories/embedded/</link>
+    <description>Recent content in embedded on shiny-labs</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <managingEditor>shiny-labs@kylma.fr (shiny-labs)</managingEditor>
+    <webMaster>shiny-labs@kylma.fr (shiny-labs)</webMaster>
+    <lastBuildDate>Sat, 11 Jul 2020 12:20:30 +0200</lastBuildDate>
+    
+	<atom:link href="https://shiny-labs.re/categories/embedded/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Getting Started With The STM32F4Discovery</title>
+      <link>https://shiny-labs.re/posts/200711-getting-started-stm32f4discovery/</link>
+      <pubDate>Sat, 11 Jul 2020 12:20:30 +0200</pubDate>
+      <author>shiny-labs@kylma.fr (shiny-labs)</author>
+      <guid>https://shiny-labs.re/posts/200711-getting-started-stm32f4discovery/</guid>
+      <description>These are my notes on how to setup a development environment for this board, mostly based on these resources:
+ How to compile and burn the code to STM32 chip on Linux Mastering STM32 by Carmine Noviello How to build a “Blink LED” project from STM32CubeMX for ST/Atollic TrueSTUDIO® for STM32™  We&amp;rsquo;ll talk about how to setup the environment and write the Hello World! of the embedded world: a program that blinks a LED (or several).</description>
+    </item>
+    
+  </channel>
+</rss>
