@@ -32,6 +32,30 @@ html {
     margin-bottom: 2em;
 }
 
+p.post-year {
+    font-family: "patrickhandsc", serif;
+    margin-bottom: 0;
+    font-size: 1.5em;
+}
+
+.post-item p {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.3em 0;
+    margin-bottom: 0;
+    align-items: baseline;
+    border-bottom: 1px #dbdbdb dashed;
+}
+
+ul.post-item {
+    padding-left: 0;
+}
+
+li.post-item::before {
+    content: none;
+}
+
+
 #subtitle {
     color: #FFFFFF;
     font-size: 1.5em;
@@ -102,11 +126,6 @@ nav a:hover {
     padding-right: 0;
 }
 
-#toc-column {
-    font-size: 0.7em;
-    padding-top: 0;
-}
-
 #TableOfContents {
     border-left-color: #dbdbdb;
     border-left-style: solid;
@@ -116,16 +135,6 @@ nav a:hover {
 body {
     font-family: "neucha", sans-serif;
 }
-
-#main-column {
-    background: transparent url("../img/tile-graphpaper.jpg") 50% 0;
-}
-
-.list-of-posts-column {
-    padding-top: 0.25em;
-    padding-bottom: 0.25em;
-}
-
 
 h1.article-title  {
     margin: 0;
@@ -217,22 +226,22 @@ p {
 }
 
 h1 {
-    font-size: 3rem;
-}
-h2 {
-    font-size: 2.5rem;
-}
-h3 {
     font-size: 2rem;
 }
+h2 {
+    font-size: 1.8rem;
+}
+h3 {
+    font-size: 1.6rem;
+}
 h4 {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
 }
 h5 {
-    font-size: 1rem;
+    font-size: 1.2rem;
 }
 h6 {
-    font-size: .8rem;
+    font-size: 1.0rem;
 }
 
 
