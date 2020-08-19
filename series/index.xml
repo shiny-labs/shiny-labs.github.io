@@ -8,10 +8,19 @@
     <language>en-us</language>
     <managingEditor>shiny-labs@kylma.fr (shiny-labs)</managingEditor>
     <webMaster>shiny-labs@kylma.fr (shiny-labs)</webMaster>
-    <lastBuildDate>Sun, 15 Mar 2020 11:17:31 +0100</lastBuildDate>
+    <lastBuildDate>Wed, 19 Aug 2020 18:41:01 +0200</lastBuildDate>
     
 	<atom:link href="https://shiny-labs.re/series/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>picoCTF2019</title>
+      <link>https://shiny-labs.re/series/picoctf2019/</link>
+      <pubDate>Wed, 19 Aug 2020 18:41:01 +0200</pubDate>
+      <author>shiny-labs@kylma.fr (shiny-labs)</author>
+      <guid>https://shiny-labs.re/series/picoctf2019/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>bandit</title>

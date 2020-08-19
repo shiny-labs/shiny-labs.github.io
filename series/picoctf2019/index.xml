@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>picoCTF2019 on shiny-labs</title>
+    <link>https://shiny-labs.re/series/picoctf2019/</link>
+    <description>Recent content in picoCTF2019 on shiny-labs</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <managingEditor>shiny-labs@kylma.fr (shiny-labs)</managingEditor>
+    <webMaster>shiny-labs@kylma.fr (shiny-labs)</webMaster>
+    <lastBuildDate>Wed, 19 Aug 2020 18:41:01 +0200</lastBuildDate>
+    
+	<atom:link href="https://shiny-labs.re/series/picoctf2019/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>PicoCTF 2019 - L1im1tL355</title>
+      <link>https://shiny-labs.re/posts/200819-picoctf-l1im1tl355/</link>
+      <pubDate>Wed, 19 Aug 2020 18:41:01 +0200</pubDate>
+      <author>shiny-labs@kylma.fr (shiny-labs)</author>
+      <guid>https://shiny-labs.re/posts/200819-picoctf-l1im1tl355/</guid>
+      <description>Description  Just pwn this program and get a flag. Its also found in /problems/l1im1tl355_4_b2111fe5737c985221bac06a80d6d6c7 on the shell server. Source.
+ Hint: An unbounded index can point anywhere!
+Solution Okay, what does that binary do?
+$ ./vuln Input the integer value you want to put in the array 1 Input the index in which you want to put the value 1 Mokay, pretty straight forward, we give a value and it&amp;rsquo;s put in array[index].</description>
+    </item>
+    
+  </channel>
+</rss>
