@@ -8,11 +8,7 @@
     <language>en-us</language>
     <managingEditor>shiny-labs@kylma.fr (shiny-labs)</managingEditor>
     <webMaster>shiny-labs@kylma.fr (shiny-labs)</webMaster>
-    <lastBuildDate>Wed, 12 Feb 2020 20:49:07 +0100</lastBuildDate>
-    
-	<atom:link href="https://shiny-labs.re/tags/x86/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Wed, 12 Feb 2020 20:49:07 +0100</lastBuildDate><atom:link href="https://shiny-labs.re/tags/x86/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>24/7 CTF - The More The Merrier</title>
       <link>https://shiny-labs.re/posts/200212-247ctf-the-more-the-merrier/</link>

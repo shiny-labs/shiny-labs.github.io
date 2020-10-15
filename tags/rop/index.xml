@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>rop on shiny-labs</title>
+    <link>https://shiny-labs.re/tags/rop/</link>
+    <description>Recent content in rop on shiny-labs</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <managingEditor>shiny-labs@kylma.fr (shiny-labs)</managingEditor>
+    <webMaster>shiny-labs@kylma.fr (shiny-labs)</webMaster>
+    <lastBuildDate>Mon, 29 Jun 2020 21:05:40 +0200</lastBuildDate><atom:link href="https://shiny-labs.re/tags/rop/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>PicoCTF 2019 - Leap Frog</title>
+      <link>https://shiny-labs.re/posts/200629-picoctf-2019-leap-frog/</link>
+      <pubDate>Mon, 29 Jun 2020 21:05:40 +0200</pubDate>
+      <author>shiny-labs@kylma.fr (shiny-labs)</author>
+      <guid>https://shiny-labs.re/posts/200629-picoctf-2019-leap-frog/</guid>
+      <description>Description  Can you jump your way to win in the following program and get the flag? You can find the program in /problems/leap-frog_4_32907c7b6e253bd5d9422083e7243619 on the shell server? Source.
+  Try and call the functions in the correct order! Remember, you can always call main() again!  Solution Let&amp;rsquo;s first have a look at the source code:
+#include &amp;lt;stdio.h&amp;gt;#include &amp;lt;stdlib.h&amp;gt;#include &amp;lt;string.h&amp;gt;#include &amp;lt;unistd.h&amp;gt;#include &amp;lt;sys/types.h&amp;gt;#include &amp;lt;stdbool.h&amp;gt; #define FLAG_SIZE 64  bool win1 = false; bool win2 = false; bool win3 = false; void leapA() { win1 = true; } void leap2(unsigned int arg_check) { if (win3 &amp;amp;&amp;amp; arg_check == 0xDEADBEEF) { win2 = true; } else if (win3) { printf(&amp;#34;Wrong Argument.</description>
+    </item>
+    
+    <item>
+      <title>PicoCTF 2019 - rop32</title>
+      <link>https://shiny-labs.re/posts/200617-picoctf-2019-rop32/</link>
+      <pubDate>Wed, 17 Jun 2020 23:44:45 +0200</pubDate>
+      <author>shiny-labs@kylma.fr (shiny-labs)</author>
+      <guid>https://shiny-labs.re/posts/200617-picoctf-2019-rop32/</guid>
+      <description>Description  Can you exploit the following program to get a flag? You can find the program in /problems/rop32_0_b4142d4df31cb73e170c77dac234a79a on the shell server. Source.
+ Hint: This is a classic ROP to get a shell
+Solution Let&amp;rsquo;s start with the source code:
+#include &amp;lt;stdio.h&amp;gt;#include &amp;lt;stdlib.h&amp;gt;#include &amp;lt;string.h&amp;gt;#include &amp;lt;unistd.h&amp;gt;#include &amp;lt;sys/types.h&amp;gt; #define BUFSIZE 16  void vuln() { char buf[16]; printf(&amp;#34;Can you ROP your way out of this?\n&amp;#34;); return gets(buf); } int main(int argc, char **argv){ setvbuf(stdout, NULL, _IONBF, 0); // Set the gid to the effective gid  // this prevents /bin/sh from dropping the privileges  gid_t gid = getegid(); setresgid(gid, gid, gid); vuln(); } The vulnerability here is due to the usage of the gets() function.</description>
+    </item>
+    
+  </channel>
+</rss>

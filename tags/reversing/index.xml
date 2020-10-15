@@ -8,11 +8,7 @@
     <language>en-us</language>
     <managingEditor>shiny-labs@kylma.fr (shiny-labs)</managingEditor>
     <webMaster>shiny-labs@kylma.fr (shiny-labs)</webMaster>
-    <lastBuildDate>Sat, 27 Jul 2019 09:10:27 +0200</lastBuildDate>
-    
-	<atom:link href="https://shiny-labs.re/tags/reversing/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Sat, 27 Jul 2019 09:10:27 +0200</lastBuildDate><atom:link href="https://shiny-labs.re/tags/reversing/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>GoogleCTF Beginner&#39;s Quest 2019 - FriendSpaceBookPlusAllAccessRedPremium.com</title>
       <link>https://shiny-labs.re/posts/190727-googlectf-beginners-friendspacebookplusallaccessredpremium.com/</link>

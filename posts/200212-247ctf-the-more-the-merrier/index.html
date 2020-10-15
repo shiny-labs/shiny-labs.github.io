@@ -4,7 +4,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <meta name="generator" content="Hugo 0.74.3" />
+    <meta name="generator" content="Hugo 0.76.4" />
 
     <link rel="apple-touch-icon" sizes="180x180" href="https://shiny-labs.re/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="https://shiny-labs.re/favicon-32x32.png">
@@ -99,7 +99,7 @@ Nothing to see here..
 <p>Let&rsquo;s disassemble the thinggy in IDA! It&rsquo;s a fairly small binary, with everything in the <code>main()</code> function.</p>
 <p>The waow-so-useful string <code>Nothing to see here...</code> we saw earlier is given as argument to <code>puts()</code>.</p>
 <p><img src="00_main.png" alt=""></p>
-<p>But, before that call to <code>puts()</code> occurs, there&rsquo; s something else weird going on&hellip; that <code>unk_6E8</code> which is stored in <code>var_8</code>.</p>
+<p>But, before that call to <code>puts()</code> occurs, there' s something else weird going on&hellip; that <code>unk_6E8</code> which is stored in <code>var_8</code>.</p>
 <p><img src="01_unk_6E8.png" alt=""></p>
 <p>What a curious blob of data! The first and last byte of each line looks suspiciously like they are in the ASCII range.. .Let&rsquo;s put that theory to the test by manually checking the first ones:</p>
 <ul>

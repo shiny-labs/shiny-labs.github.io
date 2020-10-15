@@ -8,11 +8,7 @@
     <language>en-us</language>
     <managingEditor>shiny-labs@kylma.fr (shiny-labs)</managingEditor>
     <webMaster>shiny-labs@kylma.fr (shiny-labs)</webMaster>
-    <lastBuildDate>Mon, 22 Jul 2019 10:03:43 +0200</lastBuildDate>
-    
-	<atom:link href="https://shiny-labs.re/tags/go/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Mon, 22 Jul 2019 10:03:43 +0200</lastBuildDate><atom:link href="https://shiny-labs.re/tags/go/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>GoogleCTF Beginner&#39;s Quest 2019 - Satellite // Introduction to Reversing Go Binaries</title>
       <link>https://shiny-labs.re/posts/190722-googlectf-beginners-satellite/</link>

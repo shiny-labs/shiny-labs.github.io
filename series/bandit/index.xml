@@ -8,11 +8,7 @@
     <language>en-us</language>
     <managingEditor>shiny-labs@kylma.fr (shiny-labs)</managingEditor>
     <webMaster>shiny-labs@kylma.fr (shiny-labs)</webMaster>
-    <lastBuildDate>Sun, 15 Mar 2020 11:17:31 +0100</lastBuildDate>
-    
-	<atom:link href="https://shiny-labs.re/series/bandit/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Sun, 15 Mar 2020 11:17:31 +0100</lastBuildDate><atom:link href="https://shiny-labs.re/series/bandit/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>OverTheWire - Bandit Levels 10 to 19</title>
       <link>https://shiny-labs.re/posts/200315-overthewire-bandit-09-19/</link>

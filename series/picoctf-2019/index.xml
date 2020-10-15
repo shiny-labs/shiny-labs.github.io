@@ -8,11 +8,7 @@
     <language>en-us</language>
     <managingEditor>shiny-labs@kylma.fr (shiny-labs)</managingEditor>
     <webMaster>shiny-labs@kylma.fr (shiny-labs)</webMaster>
-    <lastBuildDate>Sun, 23 Feb 2020 09:15:49 +0100</lastBuildDate>
-    
-	<atom:link href="https://shiny-labs.re/series/picoctf-2019/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Sun, 23 Feb 2020 09:15:49 +0100</lastBuildDate><atom:link href="https://shiny-labs.re/series/picoctf-2019/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>PicoCTF 2019 - General Skills</title>
       <link>https://shiny-labs.re/posts/200223-picoctf-general-skills/</link>

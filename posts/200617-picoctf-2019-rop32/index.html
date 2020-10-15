@@ -4,7 +4,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <meta name="generator" content="Hugo 0.74.3" />
+    <meta name="generator" content="Hugo 0.76.4" />
 
     <link rel="apple-touch-icon" sizes="180x180" href="https://shiny-labs.re/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="https://shiny-labs.re/favicon-32x32.png">
@@ -348,7 +348,7 @@ gef➤  pattern search haaa
 <div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">POP_EAX          = 0x080a8e36
 </code></pre></div><p>It looks a lot like the address of the <code>pop eax</code> gadget, except with the 0x0A is missing! What the hell happened here&hellip; Courtesy of the <code>gets()</code> function ~~ Remember that part of the man?</p>
 <blockquote>
-<p>gets()  reads  a  line from stdin into the buffer pointed to by s until either a terminating newline or EOF, which it replaces with a null byte ('\0&rsquo;)</p>
+<p>gets()  reads  a  line from stdin into the buffer pointed to by s until either a terminating newline or EOF, which it replaces with a null byte ('\0')</p>
 </blockquote>
 <p>It took me a while to join these two pieces of information, that my newline, ie 0x0A, was replaced by a null byte&hellip;</p>
 <h3 id="the-quest-for-a-new-pop-eax">The Quest For A New <code>pop eax</code></h3>

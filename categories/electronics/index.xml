@@ -8,11 +8,7 @@
     <language>en-us</language>
     <managingEditor>shiny-labs@kylma.fr (shiny-labs)</managingEditor>
     <webMaster>shiny-labs@kylma.fr (shiny-labs)</webMaster>
-    <lastBuildDate>Tue, 21 Jul 2020 22:27:57 +0200</lastBuildDate>
-    
-	<atom:link href="https://shiny-labs.re/categories/electronics/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Tue, 21 Jul 2020 22:27:57 +0200</lastBuildDate><atom:link href="https://shiny-labs.re/categories/electronics/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>My First Circuit</title>
       <link>https://shiny-labs.re/posts/200721-my-first-circuit/</link>

