@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>windows on shiny-labs</title>
-    <link>https://shiny-labs.re/tags/windows/</link>
-    <description>Recent content in windows on shiny-labs</description>
+    <title>ftp on shiny-labs</title>
+    <link>https://shiny-labs.re/tags/ftp/</link>
+    <description>Recent content in ftp on shiny-labs</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <managingEditor>shiny-labs@kylma.fr (shiny-labs)</managingEditor>
     <webMaster>shiny-labs@kylma.fr (shiny-labs)</webMaster>
-    <lastBuildDate>Thu, 22 Oct 2020 18:47:05 +0200</lastBuildDate><atom:link href="https://shiny-labs.re/tags/windows/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 22 Oct 2020 18:47:05 +0200</lastBuildDate><atom:link href="https://shiny-labs.re/tags/ftp/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>HackTheBox - devel [no Metasploit]</title>
       <link>https://shiny-labs.re/posts/201022-hackthebox-devel/</link>
@@ -18,16 +18,6 @@
       <description>Reconnaissance Reconnaissance is everything in this game ~~ Let&amp;rsquo;s run a Nmap scan and see what&amp;rsquo;s exposed:
 kali@kali:~$ export TARGET=10.10.10.5 kali@kali:~$ sudo nmap -sC -sV -oA nmap_tcp -p- $TARGET Usual set of options:
  -sC runs defaults Nmap scripts -sV tries to identify the software versions -oA will output the results in files prefixed by nmap_tcp and using the formats xml, nmap and gnmap -p- will scan all ports and not the 1000 usual ones  PORT STATE SERVICE VERSION 21/tcp open ftp Microsoft ftpd | ftp-anon: Anonymous FTP login allowed (FTP code 230) | 03-18-17 02:06AM &amp;lt;DIR&amp;gt; aspnet_client | 03-17-17 05:37PM 689 iisstart.</description>
-    </item>
-    
-    <item>
-      <title>HackTheBox - legacy</title>
-      <link>https://shiny-labs.re/posts/201015-hackthebox-legacy/</link>
-      <pubDate>Thu, 15 Oct 2020 09:06:36 +0200</pubDate>
-      <author>shiny-labs@kylma.fr (shiny-labs)</author>
-      <guid>https://shiny-labs.re/posts/201015-hackthebox-legacy/</guid>
-      <description>Recon Let&amp;rsquo;s fire Nmap and see if it can find any fun service running on the host! I use an environment variable to store the IP of the machine so I don&amp;rsquo;t have to type it all the time and I don&amp;rsquo;t fat finger and scan the wrong machine (that definitely didn&amp;rsquo;t happen in real life):
-$ export TARGET=10.10.10.4 $ sudo nmap -T4 -p- -oA nmap_tcp $TARGET Nmap scan report for 10.</description>
     </item>
     
   </channel>

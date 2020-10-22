@@ -8,7 +8,18 @@
     <language>en-us</language>
     <managingEditor>shiny-labs@kylma.fr (shiny-labs)</managingEditor>
     <webMaster>shiny-labs@kylma.fr (shiny-labs)</webMaster>
-    <lastBuildDate>Thu, 15 Oct 2020 09:06:36 +0200</lastBuildDate><atom:link href="https://shiny-labs.re/tags/cve/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 15 Oct 2020 20:59:46 +0200</lastBuildDate><atom:link href="https://shiny-labs.re/tags/cve/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>HackTheBox - lame</title>
+      <link>https://shiny-labs.re/posts/201016-hackthebox-lame/</link>
+      <pubDate>Thu, 15 Oct 2020 20:59:46 +0200</pubDate>
+      <author>shiny-labs@kylma.fr (shiny-labs)</author>
+      <guid>https://shiny-labs.re/posts/201016-hackthebox-lame/</guid>
+      <description>Recon As usual, let&amp;rsquo;s run nmap to see what we are up against ~~
+export TARGET=10.10.10.3 sudo nmap -T4 -p- -A -oA nmap_tcp $TARGET Here&amp;rsquo;s a summary of nmaps&#39; results (only open ports are included, the last column is completed when I have results):
+   Port Service Version Vulnerable?     21/tcp ftp vsftpd 2.3.4 no   22/tcp ssh OpenSSH 4.7p1 Debian 8ubuntu1 (protocol 2.0) maybe?</description>
+    </item>
+    
     <item>
       <title>HackTheBox - legacy</title>
       <link>https://shiny-labs.re/posts/201015-hackthebox-legacy/</link>
