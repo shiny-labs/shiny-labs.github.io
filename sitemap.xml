@@ -4,12 +4,52 @@
   
   <url>
     <loc>https://shiny-labs.re/</loc>
-    <lastmod>2020-10-22T18:47:05+02:00</lastmod>
+    <lastmod>2020-10-26T21:16:57+01:00</lastmod>
   </url>
   
   <url>
     <loc>https://shiny-labs.re/categories/</loc>
-    <lastmod>2020-10-22T18:47:05+02:00</lastmod>
+    <lastmod>2020-10-26T21:16:57+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.re/series/hackthebox/</loc>
+    <lastmod>2020-10-26T21:16:57+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.re/posts/201026-hackthebox-jerry/</loc>
+    <lastmod>2020-10-26T21:16:57+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.re/categories/pentest/</loc>
+    <lastmod>2020-10-26T21:16:57+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.re/posts/</loc>
+    <lastmod>2020-10-26T21:16:57+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.re/series/</loc>
+    <lastmod>2020-10-26T21:16:57+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.re/tags/</loc>
+    <lastmod>2020-10-26T21:16:57+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.re/tags/tomcat/</loc>
+    <lastmod>2020-10-26T21:16:57+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.re/tags/windows/</loc>
+    <lastmod>2020-10-26T21:16:57+01:00</lastmod>
   </url>
   
   <url>
@@ -18,37 +58,7 @@
   </url>
   
   <url>
-    <loc>https://shiny-labs.re/series/hackthebox/</loc>
-    <lastmod>2020-10-22T18:47:05+02:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://shiny-labs.re/posts/201022-hackthebox-devel/</loc>
-    <lastmod>2020-10-22T18:47:05+02:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://shiny-labs.re/categories/pentest/</loc>
-    <lastmod>2020-10-22T18:47:05+02:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://shiny-labs.re/posts/</loc>
-    <lastmod>2020-10-22T18:47:05+02:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://shiny-labs.re/series/</loc>
-    <lastmod>2020-10-22T18:47:05+02:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://shiny-labs.re/tags/</loc>
-    <lastmod>2020-10-22T18:47:05+02:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://shiny-labs.re/tags/windows/</loc>
     <lastmod>2020-10-22T18:47:05+02:00</lastmod>
   </url>
   
