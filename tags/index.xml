@@ -8,7 +8,25 @@
     <language>en-us</language>
     <managingEditor>shiny-labs@kylma.fr (shiny-labs)</managingEditor>
     <webMaster>shiny-labs@kylma.fr (shiny-labs)</webMaster>
-    <lastBuildDate>Mon, 26 Oct 2020 21:16:57 +0100</lastBuildDate><atom:link href="https://shiny-labs.re/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 29 Oct 2020 22:39:47 +0100</lastBuildDate><atom:link href="https://shiny-labs.re/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>cve</title>
+      <link>https://shiny-labs.re/tags/cve/</link>
+      <pubDate>Thu, 29 Oct 2020 22:39:47 +0100</pubDate>
+      <author>shiny-labs@kylma.fr (shiny-labs)</author>
+      <guid>https://shiny-labs.re/tags/cve/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>windows</title>
+      <link>https://shiny-labs.re/tags/windows/</link>
+      <pubDate>Thu, 29 Oct 2020 22:39:47 +0100</pubDate>
+      <author>shiny-labs@kylma.fr (shiny-labs)</author>
+      <guid>https://shiny-labs.re/tags/windows/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>tomcat</title>
       <link>https://shiny-labs.re/tags/tomcat/</link>
@@ -19,29 +37,11 @@
     </item>
     
     <item>
-      <title>windows</title>
-      <link>https://shiny-labs.re/tags/windows/</link>
-      <pubDate>Mon, 26 Oct 2020 21:16:57 +0100</pubDate>
-      <author>shiny-labs@kylma.fr (shiny-labs)</author>
-      <guid>https://shiny-labs.re/tags/windows/</guid>
-      <description></description>
-    </item>
-    
-    <item>
       <title>ftp</title>
       <link>https://shiny-labs.re/tags/ftp/</link>
       <pubDate>Thu, 22 Oct 2020 18:47:05 +0200</pubDate>
       <author>shiny-labs@kylma.fr (shiny-labs)</author>
       <guid>https://shiny-labs.re/tags/ftp/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>cve</title>
-      <link>https://shiny-labs.re/tags/cve/</link>
-      <pubDate>Thu, 15 Oct 2020 20:59:46 +0200</pubDate>
-      <author>shiny-labs@kylma.fr (shiny-labs)</author>
-      <guid>https://shiny-labs.re/tags/cve/</guid>
       <description></description>
     </item>
     

@@ -8,7 +8,17 @@
     <language>en-us</language>
     <managingEditor>shiny-labs@kylma.fr (shiny-labs)</managingEditor>
     <webMaster>shiny-labs@kylma.fr (shiny-labs)</webMaster>
-    <lastBuildDate>Mon, 26 Oct 2020 21:16:57 +0100</lastBuildDate><atom:link href="https://shiny-labs.re/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 29 Oct 2020 22:39:47 +0100</lastBuildDate><atom:link href="https://shiny-labs.re/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>HackTheBox - Optimum</title>
+      <link>https://shiny-labs.re/posts/201029-hackthebox-optimum/</link>
+      <pubDate>Thu, 29 Oct 2020 22:39:47 +0100</pubDate>
+      <author>shiny-labs@kylma.fr (shiny-labs)</author>
+      <guid>https://shiny-labs.re/posts/201029-hackthebox-optimum/</guid>
+      <description>Reconnaissance Starting with a Nmap scan to discover used ports and services behind, with our usual options:
+ -sC runs defaults Nmap scripts -sV tries to identify the software versions -oA will output the results in files prefixed by nmap_tcp and using the formats xml, nmap and gnmap -p- will scan all ports and not the 1000 usual ones  $ sudo nmap -sC -sV -O -oA nmap_tcp -p- $ip Nmap scan report for 10.</description>
+    </item>
+    
     <item>
       <title>HackTheBox - jerry [no Metasploit]</title>
       <link>https://shiny-labs.re/posts/201026-hackthebox-jerry/</link>
