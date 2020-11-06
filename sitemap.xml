@@ -4,17 +4,52 @@
   
   <url>
     <loc>https://shiny-labs.re/</loc>
-    <lastmod>2020-10-29T23:00:02+01:00</lastmod>
+    <lastmod>2020-11-06T22:40:40+01:00</lastmod>
   </url>
   
   <url>
     <loc>https://shiny-labs.re/categories/</loc>
-    <lastmod>2020-10-29T23:00:02+01:00</lastmod>
+    <lastmod>2020-11-06T22:40:40+01:00</lastmod>
   </url>
   
   <url>
     <loc>https://shiny-labs.re/series/hackthebox/</loc>
-    <lastmod>2020-10-29T23:00:02+01:00</lastmod>
+    <lastmod>2020-11-06T22:40:40+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.re/posts/201106-hackthebox-granny/</loc>
+    <lastmod>2020-11-06T22:40:40+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.re/categories/pentest/</loc>
+    <lastmod>2020-11-06T22:40:40+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.re/posts/</loc>
+    <lastmod>2020-11-06T22:40:40+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.re/series/</loc>
+    <lastmod>2020-11-06T22:40:40+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.re/tags/</loc>
+    <lastmod>2020-11-06T22:40:40+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.re/tags/webdav/</loc>
+    <lastmod>2020-11-06T22:40:40+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.re/tags/windows/</loc>
+    <lastmod>2020-11-06T22:40:40+01:00</lastmod>
   </url>
   
   <url>
@@ -28,37 +63,12 @@
   </url>
   
   <url>
-    <loc>https://shiny-labs.re/categories/pentest/</loc>
-    <lastmod>2020-10-29T23:00:02+01:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://shiny-labs.re/posts/</loc>
-    <lastmod>2020-10-29T23:00:02+01:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://shiny-labs.re/series/</loc>
-    <lastmod>2020-10-29T23:00:02+01:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://shiny-labs.re/tags/</loc>
-    <lastmod>2020-10-29T23:00:02+01:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://shiny-labs.re/tags/cve/</loc>
     <lastmod>2020-10-29T22:39:47+01:00</lastmod>
   </url>
   
   <url>
     <loc>https://shiny-labs.re/posts/201029-hackthebox-optimum/</loc>
-    <lastmod>2020-10-29T22:39:47+01:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://shiny-labs.re/tags/windows/</loc>
     <lastmod>2020-10-29T22:39:47+01:00</lastmod>
   </url>
   
