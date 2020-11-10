@@ -4,41 +4,61 @@
   
   <url>
     <loc>https://shiny-labs.re/</loc>
-    <lastmod>2020-11-09T08:47:15+01:00</lastmod>
+    <lastmod>2020-11-10T09:42:41+01:00</lastmod>
   </url>
   
   <url>
     <loc>https://shiny-labs.re/categories/</loc>
-    <lastmod>2020-11-09T08:47:15+01:00</lastmod>
+    <lastmod>2020-11-10T09:42:41+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.re/tags/cron/</loc>
+    <lastmod>2020-11-10T09:42:41+01:00</lastmod>
   </url>
   
   <url>
     <loc>https://shiny-labs.re/series/hackthebox/</loc>
-    <lastmod>2020-11-09T08:47:15+01:00</lastmod>
+    <lastmod>2020-11-10T09:42:41+01:00</lastmod>
   </url>
   
   <url>
-    <loc>https://shiny-labs.re/posts/201109-hackthebox-grandpa/</loc>
-    <lastmod>2020-11-09T08:47:15+01:00</lastmod>
+    <loc>https://shiny-labs.re/posts/201110-hackthebox-bashed/</loc>
+    <lastmod>2020-11-10T09:42:41+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.re/tags/linux/</loc>
+    <lastmod>2020-11-10T09:42:41+01:00</lastmod>
   </url>
   
   <url>
     <loc>https://shiny-labs.re/categories/pentest/</loc>
-    <lastmod>2020-11-09T08:47:15+01:00</lastmod>
+    <lastmod>2020-11-10T09:42:41+01:00</lastmod>
   </url>
   
   <url>
     <loc>https://shiny-labs.re/posts/</loc>
-    <lastmod>2020-11-09T08:47:15+01:00</lastmod>
+    <lastmod>2020-11-10T09:42:41+01:00</lastmod>
   </url>
   
   <url>
     <loc>https://shiny-labs.re/series/</loc>
-    <lastmod>2020-11-09T08:47:15+01:00</lastmod>
+    <lastmod>2020-11-10T09:42:41+01:00</lastmod>
   </url>
   
   <url>
     <loc>https://shiny-labs.re/tags/</loc>
+    <lastmod>2020-11-10T09:42:41+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.re/tags/webshell/</loc>
+    <lastmod>2020-11-10T09:42:41+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.re/posts/201109-hackthebox-grandpa/</loc>
     <lastmod>2020-11-09T08:47:15+01:00</lastmod>
   </url>
   
@@ -59,11 +79,6 @@
   
   <url>
     <loc>https://shiny-labs.re/posts/201029-hackthebox-nibbles/</loc>
-    <lastmod>2020-10-29T23:00:02+01:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://shiny-labs.re/tags/linux/</loc>
     <lastmod>2020-10-29T23:00:02+01:00</lastmod>
   </url>
   

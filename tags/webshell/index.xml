@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>webshell on shiny-labs</title>
+    <link>https://shiny-labs.re/tags/webshell/</link>
+    <description>Recent content in webshell on shiny-labs</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <managingEditor>shiny-labs@kylma.fr (shiny-labs)</managingEditor>
+    <webMaster>shiny-labs@kylma.fr (shiny-labs)</webMaster>
+    <lastBuildDate>Tue, 10 Nov 2020 09:42:41 +0100</lastBuildDate><atom:link href="https://shiny-labs.re/tags/webshell/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>HackTheBox - Bashed [no metasploit]</title>
+      <link>https://shiny-labs.re/posts/201110-hackthebox-bashed/</link>
+      <pubDate>Tue, 10 Nov 2020 09:42:41 +0100</pubDate>
+      <author>shiny-labs@kylma.fr (shiny-labs)</author>
+      <guid>https://shiny-labs.re/posts/201110-hackthebox-bashed/</guid>
+      <description>Reconnaissance export ip=10.10.10.68 Starting with a Nmap TCP scan to discover used ports and services behind, with our usual options:
+ -sC runs defaults Nmap scripts -sV tries to identify the software versions -oA will output the results in files prefixed by nmap_tcp and using the formats xml, nmap and gnmap -p- will scan all ports and not the 1000 usual ones  $ sudo nmap -O -sV -sC -oA nmap_tcp -p- $ip Starting Nmap 7.</description>
+    </item>
+    
+  </channel>
+</rss>
