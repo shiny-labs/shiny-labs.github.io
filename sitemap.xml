@@ -3,13 +3,88 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://shiny-labs.re/tags/blockchain/</loc>
+    <lastmod>2021-01-14T19:56:49+01:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://shiny-labs.re/</loc>
-    <lastmod>2020-11-21T09:49:04+01:00</lastmod>
+    <lastmod>2021-01-14T19:56:49+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.re/tags/canbus/</loc>
+    <lastmod>2021-01-14T19:56:49+01:00</lastmod>
   </url>
   
   <url>
     <loc>https://shiny-labs.re/categories/</loc>
-    <lastmod>2020-11-21T09:49:04+01:00</lastmod>
+    <lastmod>2021-01-14T19:56:49+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.re/categories/ctf/</loc>
+    <lastmod>2021-01-14T19:56:49+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.re/posts/210114-kringlecon-3-hhc-2020/</loc>
+    <lastmod>2021-01-14T19:56:49+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.re/posts/</loc>
+    <lastmod>2021-01-14T19:56:49+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.re/tags/prng/</loc>
+    <lastmod>2021-01-14T19:56:49+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.re/tags/redis/</loc>
+    <lastmod>2021-01-14T19:56:49+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.re/tags/regexp/</loc>
+    <lastmod>2021-01-14T19:56:49+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.re/tags/scapy/</loc>
+    <lastmod>2021-01-14T19:56:49+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.re/tags/</loc>
+    <lastmod>2021-01-14T19:56:49+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.re/categories/forensics/</loc>
+    <lastmod>2020-12-19T08:22:42+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.re/posts/2020/201219-hackthebox-took-the-byte/201219-hackthebox-took-the-byte/</loc>
+    <lastmod>2020-12-19T08:22:42+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.re/series/hackthebox-challenges/</loc>
+    <lastmod>2020-12-19T08:22:42+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.re/series/</loc>
+    <lastmod>2020-12-19T08:22:42+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://shiny-labs.re/tags/xor/</loc>
+    <lastmod>2020-12-19T08:22:42+01:00</lastmod>
   </url>
   
   <url>
@@ -23,27 +98,12 @@
   </url>
   
   <url>
-    <loc>https://shiny-labs.re/posts/</loc>
-    <lastmod>2020-11-21T09:49:04+01:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://shiny-labs.re/series/</loc>
-    <lastmod>2020-11-21T09:49:04+01:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://shiny-labs.re/tags/</loc>
-    <lastmod>2020-11-21T09:49:04+01:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://shiny-labs.re/series/tryhackme/</loc>
     <lastmod>2020-11-21T09:49:04+01:00</lastmod>
   </url>
   
   <url>
-    <loc>https://shiny-labs.re/posts/201121-tryhackme-blue/</loc>
+    <loc>https://shiny-labs.re/posts/2020/201121-tryhackme-blue/</loc>
     <lastmod>2020-11-21T09:49:04+01:00</lastmod>
   </url>
   
@@ -68,7 +128,7 @@
   </url>
   
   <url>
-    <loc>https://shiny-labs.re/posts/201111-hackthebox-netmon/</loc>
+    <loc>https://shiny-labs.re/posts/2020/201111-hackthebox-netmon/</loc>
     <lastmod>2020-11-11T09:27:51+01:00</lastmod>
   </url>
   
@@ -78,7 +138,7 @@
   </url>
   
   <url>
-    <loc>https://shiny-labs.re/posts/201110-hackthebox-bashed/</loc>
+    <loc>https://shiny-labs.re/posts/2020/201110-hackthebox-bashed/</loc>
     <lastmod>2020-11-10T09:42:41+01:00</lastmod>
   </url>
   
@@ -93,7 +153,7 @@
   </url>
   
   <url>
-    <loc>https://shiny-labs.re/posts/201109-hackthebox-grandpa/</loc>
+    <loc>https://shiny-labs.re/posts/2020/201109-hackthebox-grandpa/</loc>
     <lastmod>2020-11-09T08:47:15+01:00</lastmod>
   </url>
   
@@ -103,22 +163,22 @@
   </url>
   
   <url>
-    <loc>https://shiny-labs.re/posts/201106-hackthebox-granny/</loc>
+    <loc>https://shiny-labs.re/posts/2020/201106-hackthebox-granny/</loc>
     <lastmod>2020-11-06T22:40:40+01:00</lastmod>
   </url>
   
   <url>
-    <loc>https://shiny-labs.re/posts/201029-hackthebox-nibbles/</loc>
+    <loc>https://shiny-labs.re/posts/2020/201029-hackthebox-nibbles/</loc>
     <lastmod>2020-10-29T23:00:02+01:00</lastmod>
   </url>
   
   <url>
-    <loc>https://shiny-labs.re/posts/201029-hackthebox-optimum/</loc>
+    <loc>https://shiny-labs.re/posts/2020/201029-hackthebox-optimum/</loc>
     <lastmod>2020-10-29T22:39:47+01:00</lastmod>
   </url>
   
   <url>
-    <loc>https://shiny-labs.re/posts/201026-hackthebox-jerry/</loc>
+    <loc>https://shiny-labs.re/posts/2020/201026-hackthebox-jerry/</loc>
     <lastmod>2020-10-26T21:16:57+01:00</lastmod>
   </url>
   
@@ -128,12 +188,12 @@
   </url>
   
   <url>
-    <loc>https://shiny-labs.re/posts/201022-hackthebox-devel/</loc>
+    <loc>https://shiny-labs.re/posts/2020/201022-hackthebox-devel/</loc>
     <lastmod>2020-10-22T18:47:05+02:00</lastmod>
   </url>
   
   <url>
-    <loc>https://shiny-labs.re/posts/201016-hackthebox-lame/</loc>
+    <loc>https://shiny-labs.re/posts/2020/201016-hackthebox-lame/</loc>
     <lastmod>2020-10-15T20:59:46+02:00</lastmod>
   </url>
   
@@ -143,13 +203,8 @@
   </url>
   
   <url>
-    <loc>https://shiny-labs.re/posts/201015-hackthebox-legacy/</loc>
+    <loc>https://shiny-labs.re/posts/2020/201015-hackthebox-legacy/</loc>
     <lastmod>2020-10-15T09:06:36+02:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://shiny-labs.re/categories/ctf/</loc>
-    <lastmod>2020-08-19T18:41:01+02:00</lastmod>
   </url>
   
   <url>
@@ -158,7 +213,7 @@
   </url>
   
   <url>
-    <loc>https://shiny-labs.re/posts/200819-picoctf-l1im1tl355/</loc>
+    <loc>https://shiny-labs.re/posts/2020/200819-picoctf-l1im1tl355/</loc>
     <lastmod>2020-08-19T18:41:01+02:00</lastmod>
   </url>
   
@@ -168,7 +223,7 @@
   </url>
   
   <url>
-    <loc>https://shiny-labs.re/posts/200817-247-hidden-painting/</loc>
+    <loc>https://shiny-labs.re/posts/2020/200817-247-hidden-painting/</loc>
     <lastmod>2020-08-17T20:51:05+02:00</lastmod>
   </url>
   
@@ -183,7 +238,7 @@
   </url>
   
   <url>
-    <loc>https://shiny-labs.re/posts/200721-my-first-circuit/</loc>
+    <loc>https://shiny-labs.re/posts/2020/200721-my-first-circuit/</loc>
     <lastmod>2020-07-21T22:27:57+02:00</lastmod>
   </url>
   
@@ -193,7 +248,7 @@
   </url>
   
   <url>
-    <loc>https://shiny-labs.re/posts/200711-getting-started-stm32f4discovery/</loc>
+    <loc>https://shiny-labs.re/posts/2020/200711-getting-started-stm32f4discovery/</loc>
     <lastmod>2020-07-11T12:20:30+02:00</lastmod>
   </url>
   
@@ -203,7 +258,7 @@
   </url>
   
   <url>
-    <loc>https://shiny-labs.re/posts/200629-picoctf-2019-leap-frog/</loc>
+    <loc>https://shiny-labs.re/posts/2020/200629-picoctf-2019-leap-frog/</loc>
     <lastmod>2020-06-29T21:05:40+02:00</lastmod>
   </url>
   
@@ -213,12 +268,12 @@
   </url>
   
   <url>
-    <loc>https://shiny-labs.re/posts/200617-picoctf-2019-rop32/</loc>
+    <loc>https://shiny-labs.re/posts/2020/200617-picoctf-2019-rop32/</loc>
     <lastmod>2020-06-17T23:44:45+02:00</lastmod>
   </url>
   
   <url>
-    <loc>https://shiny-labs.re/posts/200607-picoctf-2019-empire-1/</loc>
+    <loc>https://shiny-labs.re/posts/2020/200607-picoctf-2019-empire-1/</loc>
     <lastmod>2020-06-07T12:40:07+02:00</lastmod>
   </url>
   
@@ -228,17 +283,17 @@
   </url>
   
   <url>
-    <loc>https://shiny-labs.re/posts/200517-picoctf-2019-seed-spring/</loc>
+    <loc>https://shiny-labs.re/posts/2020/200517-picoctf-2019-seed-spring/</loc>
     <lastmod>2020-05-17T21:56:41+02:00</lastmod>
   </url>
   
   <url>
-    <loc>https://shiny-labs.re/posts/200423-vulnhub-kioptrix-3/</loc>
+    <loc>https://shiny-labs.re/posts/2020/200423-vulnhub-kioptrix-3/</loc>
     <lastmod>2020-04-23T11:50:52+02:00</lastmod>
   </url>
   
   <url>
-    <loc>https://shiny-labs.re/posts/200411-vulnhub-kioptrix-2/</loc>
+    <loc>https://shiny-labs.re/posts/2020/200411-vulnhub-kioptrix-2/</loc>
     <lastmod>2020-04-18T09:20:52+02:00</lastmod>
   </url>
   
@@ -248,12 +303,12 @@
   </url>
   
   <url>
-    <loc>https://shiny-labs.re/posts/200413-tryhackme-oshint/</loc>
+    <loc>https://shiny-labs.re/posts/2020/200413-tryhackme-oshint/</loc>
     <lastmod>2020-04-13T11:21:09+02:00</lastmod>
   </url>
   
   <url>
-    <loc>https://shiny-labs.re/posts/200411-vulnhub-kioptrix-1/</loc>
+    <loc>https://shiny-labs.re/posts/2020/200411-vulnhub-kioptrix-1/</loc>
     <lastmod>2020-04-11T14:27:27+02:00</lastmod>
   </url>
   
@@ -263,7 +318,7 @@
   </url>
   
   <url>
-    <loc>https://shiny-labs.re/posts/200229-picoctf-stringzz/</loc>
+    <loc>https://shiny-labs.re/posts/2020/200229-picoctf-stringzz/</loc>
     <lastmod>2020-03-29T22:13:58+02:00</lastmod>
   </url>
   
@@ -273,17 +328,17 @@
   </url>
   
   <url>
-    <loc>https://shiny-labs.re/posts/200315-overthewire-bandit-09-19/</loc>
+    <loc>https://shiny-labs.re/posts/2020/200315-overthewire-bandit-09-19/</loc>
     <lastmod>2020-03-15T11:17:31+01:00</lastmod>
   </url>
   
   <url>
-    <loc>https://shiny-labs.re/posts/200315-overthewire-bandit-00-09/</loc>
+    <loc>https://shiny-labs.re/posts/2020/200315-overthewire-bandit-00-09/</loc>
     <lastmod>2020-03-15T11:08:54+01:00</lastmod>
   </url>
   
   <url>
-    <loc>https://shiny-labs.re/posts/200229-247ctf-the-secret-lock/</loc>
+    <loc>https://shiny-labs.re/posts/2020/200229-247ctf-the-secret-lock/</loc>
     <lastmod>2020-02-29T21:44:37+01:00</lastmod>
   </url>
   
@@ -308,12 +363,12 @@
   </url>
   
   <url>
-    <loc>https://shiny-labs.re/posts/200223-picoctf-general-skills/</loc>
+    <loc>https://shiny-labs.re/posts/2020/200223-picoctf-general-skills/</loc>
     <lastmod>2020-02-23T09:15:49+01:00</lastmod>
   </url>
   
   <url>
-    <loc>https://shiny-labs.re/posts/200212-247ctf-the-more-the-merrier/</loc>
+    <loc>https://shiny-labs.re/posts/2020/200212-247ctf-the-more-the-merrier/</loc>
     <lastmod>2020-02-12T20:49:07+01:00</lastmod>
   </url>
   
@@ -323,7 +378,7 @@
   </url>
   
   <url>
-    <loc>https://shiny-labs.re/posts/200201-infosecinstitute-n00bs-ctf-writeup/</loc>
+    <loc>https://shiny-labs.re/posts/2020/200201-infosecinstitute-n00bs-ctf-writeup/</loc>
     <lastmod>2020-02-01T14:42:01+01:00</lastmod>
   </url>
   
@@ -333,7 +388,7 @@
   </url>
   
   <url>
-    <loc>https://shiny-labs.re/posts/190814-googlectf-beginners-drive-to-the-target/</loc>
+    <loc>https://shiny-labs.re/posts/2019/190814-googlectf-beginners-drive-to-the-target/</loc>
     <lastmod>2019-08-14T15:18:44+02:00</lastmod>
   </url>
   
@@ -343,7 +398,7 @@
   </url>
   
   <url>
-    <loc>https://shiny-labs.re/posts/190813-googlectf-beginners-stop-gan/</loc>
+    <loc>https://shiny-labs.re/posts/2019/190813-googlectf-beginners-stop-gan/</loc>
     <lastmod>2019-08-13T16:34:23+02:00</lastmod>
   </url>
   
@@ -358,12 +413,12 @@
   </url>
   
   <url>
-    <loc>https://shiny-labs.re/posts/190806-googlectf-beginners-government-agriculture-network/</loc>
+    <loc>https://shiny-labs.re/posts/2019/190806-googlectf-beginners-government-agriculture-network/</loc>
     <lastmod>2019-08-06T15:28:01+02:00</lastmod>
   </url>
   
   <url>
-    <loc>https://shiny-labs.re/posts/190727-googlectf-beginners-friendspacebookplusallaccessredpremium.com/</loc>
+    <loc>https://shiny-labs.re/posts/2019/190727-googlectf-beginners-friendspacebookplusallaccessredpremium.com/</loc>
     <lastmod>2019-07-27T09:10:27+02:00</lastmod>
   </url>
   
@@ -373,7 +428,7 @@
   </url>
   
   <url>
-    <loc>https://shiny-labs.re/posts/190724-googlectf-beginners-work-computer/</loc>
+    <loc>https://shiny-labs.re/posts/2019/190724-googlectf-beginners-work-computer/</loc>
     <lastmod>2019-07-24T21:12:06+02:00</lastmod>
   </url>
   
@@ -388,7 +443,7 @@
   </url>
   
   <url>
-    <loc>https://shiny-labs.re/posts/190724-googlectf-beginners-home-computer/</loc>
+    <loc>https://shiny-labs.re/posts/2019/190724-googlectf-beginners-home-computer/</loc>
     <lastmod>2019-07-24T11:53:22+02:00</lastmod>
   </url>
   
@@ -398,12 +453,12 @@
   </url>
   
   <url>
-    <loc>https://shiny-labs.re/posts/190722-googlectf-beginners-satellite/</loc>
+    <loc>https://shiny-labs.re/posts/2019/190722-googlectf-beginners-satellite/</loc>
     <lastmod>2019-07-22T10:03:43+02:00</lastmod>
   </url>
   
   <url>
-    <loc>https://shiny-labs.re/posts/190720-googlectf-beginners-2019-ad/</loc>
+    <loc>https://shiny-labs.re/posts/2019/190720-googlectf-beginners-2019-ad/</loc>
     <lastmod>2019-07-20T11:56:22+02:00</lastmod>
   </url>
   
@@ -413,7 +468,7 @@
   </url>
   
   <url>
-    <loc>https://shiny-labs.re/posts/190719-googlectf-beginners-2019-enter-space-time-coordinates/</loc>
+    <loc>https://shiny-labs.re/posts/2019/190719-googlectf-beginners-2019-enter-space-time-coordinates/</loc>
     <lastmod>2019-07-19T23:53:22+02:00</lastmod>
   </url>
   
@@ -423,7 +478,7 @@
   </url>
   
   <url>
-    <loc>https://shiny-labs.re/posts/190711-debugging-gdb-ida-linux/</loc>
+    <loc>https://shiny-labs.re/posts/2019/190711-debugging-gdb-ida-linux/</loc>
     <lastmod>2019-07-11T21:46:12+02:00</lastmod>
   </url>
   
@@ -438,7 +493,7 @@
   </url>
   
   <url>
-    <loc>https://shiny-labs.re/posts/190517-disassemble-specific-function/</loc>
+    <loc>https://shiny-labs.re/posts/2019/190517-disassemble-specific-function/</loc>
     <lastmod>2019-05-17T10:32:35+02:00</lastmod>
   </url>
   
@@ -458,7 +513,7 @@
   </url>
   
   <url>
-    <loc>https://shiny-labs.re/posts/190416-lattice-diamond-tutorial/</loc>
+    <loc>https://shiny-labs.re/posts/2019/190416-lattice-diamond-tutorial/</loc>
     <lastmod>2019-04-16T16:41:27+02:00</lastmod>
   </url>
   
@@ -483,32 +538,32 @@
   </url>
   
   <url>
-    <loc>https://shiny-labs.re/posts/190129-phoenix-stack-4/</loc>
+    <loc>https://shiny-labs.re/posts/2019/190129-phoenix-stack-4/</loc>
     <lastmod>2019-01-29T12:14:31+01:00</lastmod>
   </url>
   
   <url>
-    <loc>https://shiny-labs.re/posts/190129-phoenix-stack-3/</loc>
+    <loc>https://shiny-labs.re/posts/2019/190129-phoenix-stack-3/</loc>
     <lastmod>2019-01-29T00:07:59+01:00</lastmod>
   </url>
   
   <url>
-    <loc>https://shiny-labs.re/posts/190128-phoenix-stack-2/</loc>
+    <loc>https://shiny-labs.re/posts/2019/190128-phoenix-stack-2/</loc>
     <lastmod>2019-01-28T18:21:05+01:00</lastmod>
   </url>
   
   <url>
-    <loc>https://shiny-labs.re/posts/190128-phoenix-stack-1/</loc>
+    <loc>https://shiny-labs.re/posts/2019/190128-phoenix-stack-1/</loc>
     <lastmod>2019-01-28T18:14:41+01:00</lastmod>
   </url>
   
   <url>
-    <loc>https://shiny-labs.re/posts/190128-phoenix-stack-0/</loc>
+    <loc>https://shiny-labs.re/posts/2019/190128-phoenix-stack-0/</loc>
     <lastmod>2019-01-28T18:04:45+01:00</lastmod>
   </url>
   
   <url>
-    <loc>https://shiny-labs.re/posts/190128-phoenix-getting-started/</loc>
+    <loc>https://shiny-labs.re/posts/2019/190128-phoenix-getting-started/</loc>
     <lastmod>2019-01-28T16:41:16+01:00</lastmod>
   </url>
   

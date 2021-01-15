@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en-us"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="generator" content="Hugo 0.80.0" />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://shiny-labs.re/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://shiny-labs.re/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://shiny-labs.re/favicon-16x16.png">
+    <link rel="manifest" href="https://shiny-labs.re/site.webmanifest">
+    <link rel="mask-icon" href="https://shiny-labs.re/safari-pinned-tab.svg" color="#000000">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
+
+
+    <link rel="stylesheet" href="https://shiny-labs.re/css/bulma.min.css">
+    <link rel="stylesheet" href="https://shiny-labs.re/css/main.css">
+    <link rel="stylesheet" href="https://shiny-labs.re/css/syntax.css">
+
+    
+    <title>shiny-labs || PicoCTF 2019 - General Skills</title>
+</head>
+<body><nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item no-squiggly" href="https://shiny-labs.re/">
+            <h1 id="logo" class="glitch">shiny-labs</h1>
+        </a>
+    </div>
+
+    <div class="navbar-menu">
+        <div class="navbar-start">
+            
+        </div>
+
+        <div class="navbar-end">
+            
+            <h3 id="subtitle">Exploit, reverse engineering and cats.</h3>
+        </div>
+    </div>
+</nav>
+
+<div id="content">
+
+            <div class="columns is-centered">
+                <div class="column is-three-fifths" id="menu-column"><div id="menu" class="tabs is-centered is-medium">
+    <ul>
+            <li><a href="https://shiny-labs.re/" class="no-squiggly">Home</a></li>
+            <li><a href="https://shiny-labs.re/archives/" class="no-squiggly">Archives</a></li>
+            <li><a href="https://shiny-labs.re/tags/" class="no-squiggly">Tags</a></li>
+            <li><a href="https://shiny-labs.re/about/" class="no-squiggly">About</a></li>
+  </ul>
+</div>
+
+<div class="columns">
+<div class="column is-10" id="main-column">
+    <article class="article">
+        <div >
+            <h1 class="article-title">PicoCTF 2019 - General Skills</h1>
+            
+<div class="post-meta">
+  <p class="article-meta">
+  <span>Date</span> &#x5b;
+  <time datetime="February 23, 2020">
+      Feb 23
+    </time>
+  &#x5d;
+        
+        
+  <span>Categories</span> &#x5b;
+    <a href="https://shiny-labs.re/categories/ctf">CTF</a>
+  &#x5d;
+        
+        
+  <span>Series</span> &#x5b;
+    <a href="https://shiny-labs.re/series/picoctf-2019">picoCTF 2019</a>
+  &#x5d;
+        
+        
+  <span>Tags</span> &#x5b;
+    <a href="https://shiny-labs.re/tags"></a>
+  &#x5d;
+  </p>
+</div>
+
+        </div>
+        <div>
+            <h1 id="lets-warm-up-50">Let&rsquo;s Warm Up [50]</h1>
+<h2 id="description">Description</h2>
+<blockquote>
+<p>If I told you a word started with 0x70 in hexadecimal, what would it start with in ASCII?</p>
+</blockquote>
+<h2 id="solution">Solution</h2>
+<p>A look at the ASCII manual should help!</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ man ascii
+</code></pre></div><p>Then, it&rsquo;s just a matter of finding the right line, the one that has <code>70</code> in the <code>Hex</code> column.</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">       Oct   Dec   Hex   Char                        Oct   Dec   Hex   Char
+       ────────────────────────────────────────────────────────────────────────
+       [...]
+       060   48    30    0                           160   112   70    p
+
+</code></pre></div><p>Flag: <code>picoCTF{p}</code></p>
+<h1 id="2warm-50">2Warm [50]</h1>
+<h2 id="description-1">Description</h2>
+<blockquote>
+<p>Can you convert the number 42 (base 10) to binary (base 2)?</p>
+</blockquote>
+<h2 id="solution-1">Solution</h2>
+<p>Sure thing! Python can easily do that with its <a href="https://docs.python.org/3.9/library/functions.html#bin">bin built-in</a>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ python -c <span class="s2">&#34;print(bin(42))&#34;</span>
+0b101010
+</code></pre></div><p>Flag: <code>picoCTF{101010}</code></p>
+<h1 id="warmed-up-50">Warmed Up [50]</h1>
+<h2 id="description-2">Description</h2>
+<blockquote>
+<p>What is 0x3D (base 16) in decimal (base 10).</p>
+</blockquote>
+<h2 id="solution-2">Solution</h2>
+<p>Python prints anything in base 10 by default.</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ python -c <span class="s2">&#34;print(0x3D)&#34;</span>
+<span class="m">61</span>
+</code></pre></div><p>Flag: <code>picoCTF{61}</code></p>
+<h1 id="bases-100">Bases [100]</h1>
+<h2 id="description-3">Description</h2>
+<blockquote>
+<p>What does this bDNhcm5fdGgzX3IwcDM1 mean? I think it has something to do with bases.</p>
+</blockquote>
+<p>Hint: Submit your answer in our competition&rsquo;s flag format. For example, if you answer was &lsquo;hello&rsquo;, you would submit &lsquo;picoCTF{hello}&rsquo; as the flag.</p>
+<h2 id="solution-3">Solution</h2>
+<p>The mysterious text is encoded using <a href="https://en.wikipedia.org/wiki/Base64">base64</a>. You can usually spot it because it uses characters from a-z, A-Z, 0-9, <code>+</code>, <code>/</code> and ends with one or more <code>=</code> for padding. The <code>base64</code> program, called with the option will try to decode any base64 input:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ <span class="nb">echo</span> <span class="s2">&#34;bDNhcm5fdGgzX3IwcDM1&#34;</span> <span class="p">|</span> base64 -d
+l3arn_th3_r0p35
+</code></pre></div><p>Flag: <code>picoCTF{l3arn_th3_r0p35}</code></p>
+<h1 id="first-grep-100">First Grep [100]</h1>
+<h2 id="description-4">Description</h2>
+<blockquote>
+<p>Can you find the flag in file? This would be really tedious to look through manually, something tells me there is a better way. You can also find the file in /problems/first-grep_6_c2319e8af66fa6bec197edc733dd52dd on the shell server.</p>
+</blockquote>
+<p>Hint: grep <a href="https://ryanstutorials.net/linuxtutorial/grep.php">tutorial</a></p>
+<h2 id="solution-4">Solution</h2>
+<p>grep is a program to find something in a file (or a bunch of files). It needs the following arguments: <code>grep &lt;stuff-I'm-looking-for&gt; &lt;file-in-which-to-search&gt;</code>. Look for the beginning of the flag with:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ grep <span class="s2">&#34;picoCTF&#34;</span> file
+picoCTF<span class="o">{</span>grep_is_good_to_find_things_fce80031<span class="o">}</span>
+</code></pre></div><p>Flag: <code>picoCTF{grep_is_good_to_find_things_fce80031}</code></p>
+<h1 id="resources-100">Resources [100]</h1>
+<h2 id="description-5">Description</h2>
+<blockquote>
+<p>We put together a bunch of resources to help you out on our website! If you go over there, you might even find a flag! <a href="https://picoctf.com/resources">https://picoctf.com/resources</a> (link)</p>
+</blockquote>
+<h2 id="solution-5">Solution</h2>
+<p>Visit the resources pages to find the flag :)</p>
+<p>Flag: <code>picoCTF{r3source_pag3_f1ag}</code></p>
+<h1 id="strings-it-100">Strings It [100]</h1>
+<h2 id="description-6">Description</h2>
+<blockquote>
+<p>Can you find the flag in file without running it? You can also find the file in /problems/strings-it_6_f71e1644786ed3c019c38d961f6e29de on the shell server.</p>
+</blockquote>
+<p>Hint: <a href="https://linux.die.net/man/1/strings">strings</a></p>
+<h2 id="solution-6">Solution</h2>
+<p><code>strings</code> will print all the strings found in a file. Combined with <code>grep</code> to filter the output:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ strings strings | grep picoCTF
+picoCTF{5tRIng5_1T_976fbd5c}
+</code></pre></div><p>Flag: <code>picoCTF{5tRIng5_1T_976fbd5c}</code></p>
+<h1 id="whats--a-net-cat-100">What&rsquo;s  a Net Cat? [100]</h1>
+<h2 id="description-7">Description</h2>
+<blockquote>
+<p>Using netcat (nc) is going to be pretty important. Can you connect to 2019shell1.picoctf.com at port 47229 to get the flag?</p>
+</blockquote>
+<p>Hint: nc <a href="https://linux.die.net/man/1/nc">tutorial</a></p>
+<h2 id="solution-7">Solution</h2>
+<p>From the man page:</p>
+<blockquote>
+<p>Netcat is a simple Unix utility which reads and writes data across network connections, using TCP or UDP protocol.</p>
+</blockquote>
+<p>Note that the actual command to run netcat is nc though:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ nc 2019shell1.picoctf.com <span class="m">47229</span>
+You<span class="err">&#39;</span>re on your way to becoming the net cat master
+picoCTF<span class="o">{</span>nEtCat_Mast3ry_bfae0e4c<span class="o">}</span>
+</code></pre></div><h1 id="first-grep-part-ii-200">First Grep: Part II [200]</h1>
+<h2 id="description-8">Description</h2>
+<blockquote>
+<p>Can you find the flag in /problems/first-grep&ndash;part-ii_4_ca16fbcd16c92f0cb1e376a6c188d58f/files on the shell server? Remember to use grep.</p>
+</blockquote>
+<p>Hint: grep <a href="https://ryanstutorials.net/linuxtutorial/grep.php">tutorial</a></p>
+<h2 id="solution-8">Solution</h2>
+<p>Similar to the first challenge, we should use grep to find the flag. Except we have a bunch of files instead of just one.</p>
+<p><code>man grep</code> has a good option to help in that case:</p>
+<blockquote>
+<p>-r, &ndash;recursive
+Read  all  files under each directory, recursively, following symbolic links only if they are on the command       line.  Note that if no file operand is given, grep searches the working directory.  This is equivalent to the -d recurse option.</p>
+</blockquote>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">kylma@pico-2019-shell1:~$ cd /problems/first-grep--part-ii_4_ca16fbcd16c92f0cb1e376a6c188d58f/files
+kylma@pico-2019-shell1:/problems/first-grep--part-ii_4_ca16fbcd16c92f0cb1e376a6c188d58f/files$ ls
+files0  files1  files10  files2  files3  files4  files5  files6  files7  files8  files9
+kylma@pico-2019-shell1:/problems/first-grep--part-ii_4_ca16fbcd16c92f0cb1e376a6c188d58f/files$ grep -nr picoCTF
+files6/file5:2:picoCTF{grep_r_to_find_this_0e28f3ee}
+</code></pre></div><p>Flag: <code>picoCTF{grep_r_to_find_this_0e28f3ee}</code></p>
+<h1 id="plumbing-200">Plumbing [200]</h1>
+<h2 id="description-9">Description</h2>
+<blockquote>
+<p>Sometimes you need to handle process data outside of a file. Can you find a way to keep the output from this program and search for the flag? Connect to 2019shell1.picoctf.com 18944.</p>
+</blockquote>
+<p>Hints:</p>
+<ul>
+<li>Remember the flag format is picoCTF{XXXX}</li>
+<li>What&rsquo;s a pipe? No not that kind of pipe&hellip; This <a href="http://www.linfo.org/pipes.html">kind</a></li>
+</ul>
+<h2 id="solution-9">Solution</h2>
+<p>If we connect to the given address, a big phat bunch of text greets us:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ nc 2019shell1.picoctf.com 18944
+[...]
+I don&#39;t think this is a flag either
+This is defintely not a flag
+This is defintely not a flag
+Not a flag either
+I don&#39;t think this is a flag either
+Again, I really don&#39;t think this is a flag
+This is defintely not a flag
+</code></pre></div><p>A pipe, represented by <code>|</code> can redirect the output of one command to another command. For example, if we take this as first command:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ echo &#34;on the internet, nobody knows you&#39;re a cat&#34;
+on the internet, nobody knows you&#39;re a cat
+</code></pre></div><p>Let&rsquo;s say you want to know if the sentence written with <code>echo</code> contains the word dog. Drawing inspirations from previous challenges, <code>grep</code> is super skilled at finding stuff! To search for the word dog, <code>grep dog</code> would do the trick. Now, all that&rsquo;s left is to combine the two, and this is precisely why <code>|</code> exists:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback"> $ echo &#34;on the internet, nobody knows you&#39;re a cat&#34; | grep dog
+ &lt; will not output anything since dog is not in the sentence, I know, what a surprise huh &gt;
+</code></pre></div><p>If you really want to output something, look for the word cat instead:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ echo &#34;on the internet, nobody knows you&#39;re a cat&#34; | grep cat
+on the internet, nobody knows you&#39;re a cat
+</code></pre></div><p>Back to our flag now, redirect the input of <code>nc</code> to grep so that it can filter lines that start like a flag, with <code>picoCTF</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ nc 2019shell1.picoctf.com 18944 | grep picoCTF
+picoCTF{digital_plumb3r_1d5b7de7}
+</code></pre></div><p>Flag: <code>picoCTF{digital_plumb3r_1d5b7de7}</code></p>
+<h1 id="where-is-the-file-200">Where Is the File [200]</h1>
+<h2 id="description-10">Description</h2>
+<blockquote>
+<p>I&rsquo;ve used a super secret mind trick to hide this file. Maybe something lies in /problems/where-is-the-file_4_f26b413d005c16c61f127740ab242b35.</p>
+</blockquote>
+<p>Hints:</p>
+<ul>
+<li>What command can see/read files?</li>
+<li>What&rsquo;s in the manual page of ls?</li>
+</ul>
+<h2 id="solution-10">Solution</h2>
+<p>The command <code>ls</code> can list files:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">kylma@pico-2019-shell1:~$ cd /problems/where-is-the-file_4_f26b413d005c16c61f127740ab242b35
+kylma@pico-2019-shell1:/problems/where-is-the-file_4_f26b413d005c16c61f127740ab242b35$ ls
+kylma@pico-2019-shell1:/problems/where-is-the-file_4_f26b413d005c16c61f127740ab242b35$
+</code></pre></div><p>Lies! There are no files here! Actually, reading the man page of ls, there&rsquo;s a trick:</p>
+<blockquote>
+<p>-a, &ndash;all
+do not ignore entries starting with .</p>
+</blockquote>
+<p>On Unix, files with a name starting with a <code>.</code> are hidden files and will not appear by default. Unless you tell <code>ls</code> to list them by using the option <code>-a</code>.</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">kylma@pico-2019-shell1:/problems/where-is-the-file_4_f26b413d005c16c61f127740ab242b35$ ls -la
+total 80
+drwxr-xr-x   2 root       root        4096 Sep 28 22:05 .
+drwxr-x--x 684 root       root       69632 Sep 29 03:37 ..
+-rw-rw-r--   1 hacksports hacksports    39 Sep 28 22:05 .cant_see_me
+</code></pre></div><p>See, that directory wasn&rsquo;t empty after all! Now, to print the content of the file, <code>cat</code> can do so:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">kylma@pico-2019-shell1:/problems/where-is-the-file_4_f26b413d005c16c61f127740ab242b35$ cat .cant_see_me
+picoCTF{w3ll_that_d1dnt_w0RK_cb4a5081}
+</code></pre></div><p>Flag: <code>picoCTF{w3ll_that_d1dnt_w0RK_cb4a5081}</code></p>
+<h1 id="whats-the-difference-200">What&rsquo;s the difference [200]</h1>
+<h2 id="description-11">Description</h2>
+<blockquote>
+<p>Can you spot the difference? kitters cattos. They are also available at /problems/whats-the-difference_0_00862749a2aeb45993f36cc9cf98a47a on the shell server</p>
+</blockquote>
+<p>Hints:</p>
+<ul>
+<li>How do you find the difference between two files?</li>
+<li>Dumping the data from a hex editor may make it easier to compare.</li>
+</ul>
+<h2 id="solution-11">Solution</h2>
+<p>Two files are given, kitters.jpg and cattos.jpg. <code>kitters.jpg</code> is a regular picture of 2 cats, <code>cattos.jpg</code> is the glitchy version of the same picture.</p>
+<p><code>diff</code> can compare 2 files and list the differences lines per line:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ diff kitters.jpg cattos.jpg
+Binary files kitters.jpg and cattos.jpg differ
+</code></pre></div><p>Except that it doesn&rsquo;t do well with binary files&hellip; <code>xxd</code> can make the hexdump of a file though, it will probably be easier to compare. The <code>-p</code>  option enables the plaintext hexdump style.</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ xxd -p kitters.jpg kitters.xxd
+$ xxd -p cattos.jpg cattos.xxd
+</code></pre></div><p>Now we can call diff again on the two hexdumps, and use <code>&gt; results.diff</code> to store the results in a new file.</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ diff kitters.xxd cattos.xxd &gt; results.diff
+</code></pre></div><p>We can manually get the flag from results.diff by taking only the differences:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">-0000c240: 21d3 6da6 4b70 6963 6f60 1b95 41e8 b93d  !.m.Kpico`..A..=
++0000c240: 21d3 6da6 4b99 9d98 c860 1b95 41e8 b93d  !.m.K....`..A..=
+</code></pre></div><p>But I got bored of doing it manually and I wasn&rsquo;t even past picoCTF :DD</p>
+<p>Instead, I wrote a Python script to compare each byte in the two images:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="ch">#!/usr/bin/env python3</span>
+
+<span class="n">kitters</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&#34;kitters.jpg&#34;</span><span class="p">,</span> <span class="s2">&#34;rb&#34;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="n">cattos</span>  <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&#34;cattos.jpg&#34;</span><span class="p">,</span> <span class="s2">&#34;rb&#34;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+<span class="n">flag</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">kitters</span><span class="p">)):</span>
+    <span class="k">if</span> <span class="n">kitters</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="n">cattos</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+        <span class="n">flag</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">chr</span><span class="p">(</span><span class="n">cattos</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s2">&#34;&#34;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">flag</span><span class="p">))</span>
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ ./solve.py
+picoCTF<span class="o">{</span>th3yr3_a5_d1ff3r3nt_4s_bu773r_4nd_j311y_aslkjfdsalkfslkflkjdsfdszmz10548<span class="o">}</span>
+</code></pre></div><p>Flag: <code>picoCTF{th3yr3_a5_d1ff3r3nt_4s_bu773r_4nd_j311y_aslkjfdsalkfslkflkjdsfdszmz10548}</code></p>
+<h1 id="based-200">Based [200]</h1>
+<h2 id="description-12">Description</h2>
+<blockquote>
+<p>To get truly 1337, you must understand different data encodings, such as hexadecimal or binary. Can you get the flag from this program to prove you are on the way to becoming 1337? Connect with nc 2019shell1.picoctf.com 28758.</p>
+</blockquote>
+<p>Hints:</p>
+<ul>
+<li>I hear python can convert things.</li>
+<li>It might help to have multiple windows open</li>
+</ul>
+<h2 id="solution-12">Solution</h2>
+<p>Let&rsquo;s connect and see what the conversions look like:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ nc 2019shell1.picoctf.com 28758
+Let us see how data is stored
+oven
+Please give the 01101111 01110110 01100101 01101110 as a word.
+</code></pre></div><p>First challenge uses the binary representation</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">Please give me the  156 165 162 163 145 as a word
+</code></pre></div><p>Second challenge probably uses the octal representation as there is no digit &gt; 7</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">Please give me the 6f76656e as a word
+</code></pre></div><p>Third challenge is probably good old hexadecimal.</p>
+<p>I ended up writing a Python script to do the conversions and send them back automatically. It was totally overkill, but I didn&rsquo;t know there would be only 3 conversions to do, did I?</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="ch">#!/usr/bin/env python</span>
+
+<span class="s2">&#34;&#34;&#34;
+</span><span class="s2">nc 2019shell1.picoctf.com 28758
+</span><span class="s2">&#34;&#34;&#34;</span>
+
+<span class="kn">import</span> <span class="nn">socket</span>
+<span class="kn">import</span> <span class="nn">binascii</span>
+
+<span class="n">PORT</span> <span class="o">=</span> <span class="mi">28758</span>
+<span class="n">HOSTNAME</span> <span class="o">=</span> <span class="s2">&#34;2019shell1.picoctf.com&#34;</span>
+
+<span class="n">s</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="n">connect</span><span class="p">((</span> <span class="n">HOSTNAME</span><span class="p">,</span> <span class="n">PORT</span> <span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">receive</span><span class="p">():</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="mi">1024</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&#34;utf-8&#34;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&#34;</span><span class="se">\n</span><span class="s2">&#34;</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">data</span>
+
+<span class="k">def</span> <span class="nf">send</span><span class="p">(</span><span class="n">answer</span><span class="p">):</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&#34;SENDING&#34;</span><span class="p">,</span> <span class="n">answer</span><span class="p">)</span>
+    <span class="n">s</span><span class="o">.</span><span class="n">sendall</span><span class="p">(</span><span class="nb">bytes</span><span class="p">(</span><span class="n">answer</span> <span class="o">+</span> <span class="s2">&#34;</span><span class="se">\n</span><span class="s2">&#34;</span><span class="p">,</span> <span class="s2">&#34;utf-8&#34;</span><span class="p">))</span>
+
+<span class="c1"># Please give the 01101111 01110110 01100101 01101110 as a word</span>
+<span class="k">def</span> <span class="nf">level_1</span><span class="p">():</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">receive</span><span class="p">()</span>
+    <span class="n">send</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+<span class="c1"># Please give me the  156 165 162 163 145 as a word</span>
+<span class="k">def</span> <span class="nf">level_2</span><span class="p">():</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">receive</span><span class="p">()</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&#34; &#34;</span><span class="p">)</span>
+    <span class="n">new_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">d</span><span class="o">.</span><span class="n">isdigit</span><span class="p">():</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="nb">chr</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+            <span class="n">new_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+    <span class="n">send</span><span class="p">(</span><span class="s2">&#34;&#34;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">new_list</span><span class="p">))</span>
+
+<span class="c1"># Please give me the 6f76656e as a word</span>
+<span class="k">def</span> <span class="nf">level_3</span><span class="p">():</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">receive</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&#34; &#34;</span><span class="p">)[</span><span class="mi">4</span><span class="p">]</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">binascii</span><span class="o">.</span><span class="n">unhexlify</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&#34;utf-8&#34;</span><span class="p">)</span>
+    <span class="n">send</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">level_4</span><span class="p">():</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">receive</span><span class="p">()</span>
+
+
+<span class="n">level_1</span><span class="p">()</span>
+<span class="n">level_2</span><span class="p">()</span>
+<span class="n">level_3</span><span class="p">()</span>
+<span class="n">level_4</span><span class="p">()</span>
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ ./solve.py
+<span class="o">[</span><span class="s1">&#39;Let us see how data is stored&#39;</span>, <span class="s1">&#39;light&#39;</span>, <span class="s1">&#39;Please give the 01101100 01101001 01100111 01101000 01110100 as a word.&#39;</span>, <span class="s1">&#39;...&#39;</span>, <span class="s1">&#39;you have 45 seconds.....&#39;</span>, <span class="s1">&#39;&#39;</span>, <span class="s1">&#39;Input:&#39;</span>, <span class="s1">&#39;&#39;</span><span class="o">]</span>
+SENDING light
+<span class="o">[</span><span class="s1">&#39;Please give me the  143 157 154 157 162 141 144 157 as a word.&#39;</span>, <span class="s1">&#39;Input:&#39;</span>, <span class="s1">&#39;&#39;</span><span class="o">]</span>
+SENDING colorado
+<span class="o">[</span><span class="s1">&#39;Please give me the 6368616972 as a word.&#39;</span>, <span class="s1">&#39;Input:&#39;</span>, <span class="s1">&#39;&#39;</span><span class="o">]</span>
+SENDING chair
+<span class="o">[</span><span class="s2">&#34;You&#39;ve beaten the challenge&#34;</span>, <span class="s1">&#39;Flag: picoCTF{learning_about_converting_values_4b4e293e}&#39;</span>, <span class="s1">&#39;&#39;</span><span class="o">]</span>
+</code></pre></div><p>Flag: <code>picoCTF{learning_about_converting_values_4b4e293e}</code></p>
+<h1 id="flag_shop-300">flag_shop [300]</h1>
+<h2 id="description-13">Description</h2>
+<blockquote>
+<p>There&rsquo;s a flag shop selling stuff, can you buy a flag? Source. Connect with nc 2019shell1.picoctf.com 3967.</p>
+</blockquote>
+<p>Hint: Two&rsquo;s compliment can do some weird things when numbers get really big!</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp">
+</span><span class="cp"></span><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="n">setbuf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+    <span class="kt">int</span> <span class="n">con</span><span class="p">;</span>
+    <span class="n">con</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">account_balance</span> <span class="o">=</span> <span class="mi">1100</span><span class="p">;</span>
+    <span class="k">while</span><span class="p">(</span><span class="n">con</span> <span class="o">==</span> <span class="mi">0</span><span class="p">){</span>
+
+        <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Welcome to the flag exchange</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">&#34;We sell flags</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+
+        <span class="n">printf</span><span class="p">(</span><span class="s">&#34;</span><span class="se">\n</span><span class="s">1. Check Account Balance</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">&#34;</span><span class="se">\n</span><span class="s">2. Buy Flags</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">&#34;</span><span class="se">\n</span><span class="s">3. Exit</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+        <span class="kt">int</span> <span class="n">menu</span><span class="p">;</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">&#34;</span><span class="se">\n</span><span class="s"> Enter a menu selection</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+        <span class="n">fflush</span><span class="p">(</span><span class="n">stdin</span><span class="p">);</span>
+        <span class="n">scanf</span><span class="p">(</span><span class="s">&#34;%d&#34;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">menu</span><span class="p">);</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">menu</span> <span class="o">==</span> <span class="mi">1</span><span class="p">){</span>
+            <span class="n">printf</span><span class="p">(</span><span class="s">&#34;</span><span class="se">\n\n\n</span><span class="s"> Balance: %d </span><span class="se">\n\n\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">account_balance</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">menu</span> <span class="o">==</span> <span class="mi">2</span><span class="p">){</span>
+            <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Currently for sale</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+            <span class="n">printf</span><span class="p">(</span><span class="s">&#34;1. Defintely not the flag Flag</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+            <span class="n">printf</span><span class="p">(</span><span class="s">&#34;2. 1337 Flag</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+            <span class="kt">int</span> <span class="n">auction_choice</span><span class="p">;</span>
+            <span class="n">fflush</span><span class="p">(</span><span class="n">stdin</span><span class="p">);</span>
+            <span class="n">scanf</span><span class="p">(</span><span class="s">&#34;%d&#34;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">auction_choice</span><span class="p">);</span>
+            <span class="k">if</span><span class="p">(</span><span class="n">auction_choice</span> <span class="o">==</span> <span class="mi">1</span><span class="p">){</span>
+                <span class="n">printf</span><span class="p">(</span><span class="s">&#34;These knockoff Flags cost 900 each, enter desired quantity</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+
+                <span class="kt">int</span> <span class="n">number_flags</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+                <span class="n">fflush</span><span class="p">(</span><span class="n">stdin</span><span class="p">);</span>
+                <span class="n">scanf</span><span class="p">(</span><span class="s">&#34;%d&#34;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">number_flags</span><span class="p">);</span>
+                <span class="k">if</span><span class="p">(</span><span class="n">number_flags</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">){</span>
+                    <span class="kt">int</span> <span class="n">total_cost</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+                    <span class="n">total_cost</span> <span class="o">=</span> <span class="mi">900</span><span class="o">*</span><span class="n">number_flags</span><span class="p">;</span>
+                    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;</span><span class="se">\n</span><span class="s">The final cost is: %d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">total_cost</span><span class="p">);</span>
+                    <span class="k">if</span><span class="p">(</span><span class="n">total_cost</span> <span class="o">&lt;=</span> <span class="n">account_balance</span><span class="p">){</span>
+                        <span class="n">account_balance</span> <span class="o">=</span> <span class="n">account_balance</span> <span class="o">-</span> <span class="n">total_cost</span><span class="p">;</span>
+                        <span class="n">printf</span><span class="p">(</span><span class="s">&#34;</span><span class="se">\n</span><span class="s">Your current balance after transaction: %d</span><span class="se">\n\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">account_balance</span><span class="p">);</span>
+                    <span class="p">}</span>
+                    <span class="k">else</span><span class="p">{</span>
+                        <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Not enough funds to complete purchase</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+                    <span class="p">}</span>
+
+
+                <span class="p">}</span>
+
+
+
+
+            <span class="p">}</span>
+            <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">auction_choice</span> <span class="o">==</span> <span class="mi">2</span><span class="p">){</span>
+                <span class="n">printf</span><span class="p">(</span><span class="s">&#34;1337 flags cost 100000 dollars, and we only have 1 in stock</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+                <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Enter 1 to buy one&#34;</span><span class="p">);</span>
+                <span class="kt">int</span> <span class="n">bid</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+                <span class="n">fflush</span><span class="p">(</span><span class="n">stdin</span><span class="p">);</span>
+                <span class="n">scanf</span><span class="p">(</span><span class="s">&#34;%d&#34;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">bid</span><span class="p">);</span>
+
+                <span class="k">if</span><span class="p">(</span><span class="n">bid</span> <span class="o">==</span> <span class="mi">1</span><span class="p">){</span>
+
+                    <span class="k">if</span><span class="p">(</span><span class="n">account_balance</span> <span class="o">&gt;</span> <span class="mi">100000</span><span class="p">){</span>
+                        <span class="n">FILE</span> <span class="o">*</span><span class="n">f</span> <span class="o">=</span> <span class="n">fopen</span><span class="p">(</span><span class="s">&#34;flag.txt&#34;</span><span class="p">,</span> <span class="s">&#34;r&#34;</span><span class="p">);</span>
+                        <span class="k">if</span><span class="p">(</span><span class="n">f</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">){</span>
+
+                            <span class="n">printf</span><span class="p">(</span><span class="s">&#34;flag not found: please run this on the server</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+                            <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+                        <span class="p">}</span>
+                        <span class="kt">char</span> <span class="n">buf</span><span class="p">[</span><span class="mi">64</span><span class="p">];</span>
+                        <span class="n">fgets</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="mi">63</span><span class="p">,</span> <span class="n">f</span><span class="p">);</span>
+                        <span class="n">printf</span><span class="p">(</span><span class="s">&#34;YOUR FLAG IS: %s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">buf</span><span class="p">);</span>
+                        <span class="p">}</span>
+
+                    <span class="k">else</span><span class="p">{</span>
+                        <span class="n">printf</span><span class="p">(</span><span class="s">&#34;</span><span class="se">\n</span><span class="s">Not enough funds for transaction</span><span class="se">\n\n\n</span><span class="s">&#34;</span><span class="p">);</span>
+                    <span class="p">}}</span>
+
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="k">else</span><span class="p">{</span>
+            <span class="n">con</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+        <span class="p">}</span>
+
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div><h2 id="solution-13">Solution</h2>
+<p>So, flagshop is a tiny program which sells flag (I bet you didn&rsquo;t guess from the name right?). Let&rsquo;s poke it a bit to see how it works:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ gcc store.c -o flagshop
+$ ./flagshop
+Welcome to the flag exchange
+We sell flags
+
+1. Check Account Balance
+
+2. Buy Flags
+
+3. Exit
+
+ Enter a menu selection
+<span class="m">2</span>
+Currently <span class="k">for</span> sale
+1. Defintely not the flag Flag
+2. <span class="m">1337</span> Flag
+<span class="m">1</span>
+These knockoff Flags cost <span class="m">900</span> each, enter desired quantity
+<span class="m">1</span>
+
+The final cost is: <span class="m">900</span>
+
+Your current balance after transaction: <span class="m">200</span>
+
+Welcome to the flag exchange
+We sell flags
+1. Check Account Balance
+2. Buy Flags
+3. Exit
+
+ Enter a menu selection
+<span class="m">2</span>
+Currently <span class="k">for</span> sale
+1. Defintely not the flag Flag
+2. <span class="m">1337</span> Flag
+<span class="m">2</span>
+<span class="m">1337</span> flags cost <span class="m">100000</span> dollars, and we only have <span class="m">1</span> in stock
+Enter <span class="m">1</span> to buy one
+
+Not enough funds <span class="k">for</span> transaction
+</code></pre></div><p>You can buy two types of flags:</p>
+<ul>
+<li>&ldquo;not the flag&rdquo; flag for 900$</li>
+<li>1337 flag for 100000$</li>
+</ul>
+<p>Obviously, we want the 1337 flag :D It&rsquo;s the only one we cannot buy with our starting balance of 1100$ :((</p>
+<p>Since the code for 1337 flag is straight-forward (have enough money &gt; get the flag), let&rsquo;s have a look at the code handling the &ldquo;not the flag&rdquo; flags:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="kt">int</span> <span class="n">account_balance</span> <span class="o">=</span> <span class="mi">1100</span><span class="p">;</span>
+
+<span class="p">[...]</span>
+
+<span class="k">if</span><span class="p">(</span><span class="n">auction_choice</span> <span class="o">==</span> <span class="mi">1</span><span class="p">){</span>
+                <span class="n">printf</span><span class="p">(</span><span class="s">&#34;These knockoff Flags cost 900 each, enter desired quantity</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+
+                <span class="kt">int</span> <span class="n">number_flags</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+                <span class="n">fflush</span><span class="p">(</span><span class="n">stdin</span><span class="p">);</span>
+                <span class="n">scanf</span><span class="p">(</span><span class="s">&#34;%d&#34;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">number_flags</span><span class="p">);</span>
+                <span class="k">if</span><span class="p">(</span><span class="n">number_flags</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">){</span>
+                    <span class="kt">int</span> <span class="n">total_cost</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+                    <span class="n">total_cost</span> <span class="o">=</span> <span class="mi">900</span><span class="o">*</span><span class="n">number_flags</span><span class="p">;</span>
+                    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;</span><span class="se">\n</span><span class="s">The final cost is: %d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">total_cost</span><span class="p">);</span>
+                    <span class="k">if</span><span class="p">(</span><span class="n">total_cost</span> <span class="o">&lt;=</span> <span class="n">account_balance</span><span class="p">){</span>
+                        <span class="n">account_balance</span> <span class="o">=</span> <span class="n">account_balance</span> <span class="o">-</span> <span class="n">total_cost</span><span class="p">;</span>
+                        <span class="n">printf</span><span class="p">(</span><span class="s">&#34;</span><span class="se">\n</span><span class="s">Your current balance after transaction: %d</span><span class="se">\n\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">account_balance</span><span class="p">);</span>
+                    <span class="p">}</span>
+                    <span class="k">else</span><span class="p">{</span>
+                        <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Not enough funds to complete purchase</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+                    <span class="p">}</span>
+</code></pre></div><p>There is one important thing to notice here: all the numbers handling the money amounts are signed integers. Which means that we can probably trigger an integer overflow. So, if we order a large amount of flags, <code>total_cost</code> should hit the limit of INT_MAX and wrap around and become a negative number:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="n">total_cost</span> <span class="o">=</span> <span class="mi">900</span><span class="o">*</span><span class="n">number_flags</span><span class="p">;</span>
+</code></pre></div><p>We can verify it using the <code>numpy.int32</code> type in Python, let&rsquo;s buy 200000000 flags:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">numpy</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">total_cost</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">int32</span><span class="p">(</span><span class="mi">900</span><span class="o">*</span><span class="mi">200000000</span><span class="p">)</span>
+<span class="o">-</span><span class="mi">388626432</span>
+</code></pre></div><p>It means that we will actually <em>gain</em> money if we buy a large amount of flags:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="n">account_balance</span> <span class="o">=</span> <span class="n">account_balance</span> <span class="o">-</span> <span class="n">total_cost</span><span class="p">;</span>
+</code></pre></div><p>Test with Python:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">&gt;&gt;&gt; account_balance = 1100 - numpy.int32(900*200000000)
+388627532
+</code></pre></div><p>We now have enough $$$ to buy the 1337 flag ~~</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ nc 2019shell1.picoctf.com <span class="m">3967</span>
+Welcome to the flag exchange
+We sell flags
+
+1. Check Account Balance
+
+2. Buy Flags
+
+3. Exit
+
+ Enter a menu selection
+<span class="m">2</span>
+Currently <span class="k">for</span> sale
+1. Defintely not the flag Flag
+2. <span class="m">1337</span> Flag
+<span class="m">1</span>
+These knockoff Flags cost <span class="m">900</span> each, enter desired quantity
+<span class="m">200000000</span>
+
+The final cost is: -388626432
+
+Your current balance after transaction: <span class="m">388627532</span>
+
+Welcome to the flag exchange
+We sell flags
+
+1. Check Account Balance
+
+2. Buy Flags
+
+3. Exit
+
+ Enter a menu selection
+<span class="m">2</span>
+Currently <span class="k">for</span> sale
+1. Defintely not the flag Flag
+2. <span class="m">1337</span> Flag
+<span class="m">2</span>
+<span class="m">1337</span> flags cost <span class="m">100000</span> dollars, and we only have <span class="m">1</span> in stock
+Enter <span class="m">1</span> to buy one1
+YOUR FLAG IS: picoCTF<span class="o">{</span>m0n3y_bag5_cd0ead78<span class="o">}</span>
+</code></pre></div><p>Flag: <code>picoCTF{m0n3y_bag5_cd0ead78}</code></p>
+<h1 id="mus1c-300">Mus1c [300]</h1>
+<h2 id="description-14">Description</h2>
+<blockquote>
+<p>I wrote you a song. Put it in the picoCTF{} flag format</p>
+</blockquote>
+<p>Hint: Do you think you can master rockstar?</p>
+<h2 id="solution-14">Solution</h2>
+<p>It does look like some esoteric programming language, lots of  <code>shout</code>, <code>put</code>, <code>knock &lt;var&gt; down</code>, <code>build &lt;var&gt; down</code>&hellip; Let&rsquo;s ask the Internet! It&rsquo;s a programming language called rockstar and it even has <a href="https://codewithrockstar.com/online">an online interpreter</a>!</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">114
+114
+114
+111
+99
+107
+110
+114
+110
+48
+49
+49
+51
+114
+Program completed in 125 ms
+</code></pre></div><p>The output looks like ASCII, let&rsquo;s convert it to a flag:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="ch">#!/usr/bin/python3</span>
+
+<span class="n">DECODER_OUTPUT</span> <span class="o">=</span> <span class="p">[</span><span class="mi">114</span><span class="p">,</span> <span class="mi">114</span><span class="p">,</span> <span class="mi">114</span><span class="p">,</span> <span class="mi">111</span><span class="p">,</span> <span class="mi">99</span><span class="p">,</span> <span class="mi">107</span><span class="p">,</span> <span class="mi">110</span><span class="p">,</span> <span class="mi">114</span><span class="p">,</span> <span class="mi">110</span><span class="p">,</span> <span class="mi">48</span><span class="p">,</span> <span class="mi">49</span><span class="p">,</span> <span class="mi">49</span><span class="p">,</span> <span class="mi">51</span><span class="p">,</span> <span class="mi">114</span><span class="p">]</span>
+<span class="n">DECODED</span> <span class="o">=</span> <span class="p">[</span><span class="nb">chr</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">DECODER_OUTPUT</span><span class="p">]</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s2">&#34;&#34;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">DECODED</span><span class="p">))</span>
+</code></pre></div><p>Flag: <code>picoCTF{rrrocknrn0113r}</code></p>
+<h1 id="1_wanna_b3_a_r0ck5tar-350">1_wanna_b3_a_r0ck5tar [350]</h1>
+<h2 id="description-15">Description</h2>
+<blockquote>
+<p>I wrote you another song. Put the flag in the picoCTF{} flag format</p>
+</blockquote>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">Rocknroll is right
+Silence is wrong
+A guitar is a six-string // guitar = 10
+Tommy&#39;s been down
+Music is a billboard-burning razzmatazz! // music = 170
+Listen to the music // get input
+If the music is a guitar // if input == a guitar
+Say &#34;Keep on rocking!&#34;
+Listen to the rhythm
+If the rhythm without Music is nothing
+Tommy is rockin guitar
+Shout Tommy!
+Music is amazing sensation
+Jamming is awesome presence
+Scream Music!
+Scream Jamming!
+Tommy is playing rock
+Scream Tommy!
+They are dazzled audiences
+Shout it!
+Rock is electric heaven
+Scream it!
+Tommy is jukebox god
+Say it!
+Break it down
+Shout &#34;Bring on the rock!&#34;
+Else Whisper &#34;That ain&#39;t it, Chief&#34;
+Break it downs
+</code></pre></div><h2 id="solution-15">Solution</h2>
+<p>This challenge is a follow-up to the challenge Mus1c. Let&rsquo;s try the same trick: run the program in the <a href="https://codewithrockstar.com/online">online intepreter</a> :</p>
+<p><img src="00_rockstar_19.png" alt=""></p>
+<p>Meh. Where&rsquo;s the flag .__.</p>
+<p>Since I&rsquo;m not planning on really learning to code some rockstar, I asked the internet for a way to convert rockstar to something I understand&hellip; like&hellip; Python :D The godz of the Internet nudged me to the following project:  <a href="https://github.com/yyyyyyyan/rockstar-py">https://github.com/yyyyyyyan/rockstar-py</a></p>
+<p>Let&rsquo;s run it:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ python3 -W ignore -m rockstarpy --input ../lyrics.txt --output lyrics.py
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">Rocknroll</span> <span class="o">=</span> <span class="n">true</span>
+<span class="n">Silence</span> <span class="o">=</span> <span class="mi">5</span> <span class="o">//</span> <span class="n">Silence</span> <span class="o">=</span> <span class="n">false</span>
+<span class="n">a_guitar</span> <span class="o">=</span> <span class="mi">19</span>
+<span class="n">Tommy</span> <span class="o">=</span> <span class="mi">44</span>
+<span class="n">Music</span> <span class="o">=</span> <span class="mi">160</span>
+<span class="n">the_music</span> <span class="o">=</span> <span class="nb">input</span><span class="p">()</span>
+<span class="k">if</span> <span class="n">the_music</span> <span class="o">==</span> <span class="n">a_guitar</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&#34;Keep on rocking!&#34;</span><span class="p">)</span>
+    <span class="n">the_rhythm</span> <span class="o">=</span> <span class="nb">input</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">the_rhythm</span> <span class="o">-</span> <span class="n">Music</span> <span class="o">==</span> <span class="bp">False</span><span class="p">:</span>
+        <span class="n">Tommy</span> <span class="o">=</span> <span class="mi">66</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">Tommy</span><span class="err">!</span><span class="p">)</span>
+        <span class="n">Music</span> <span class="o">=</span> <span class="mi">79</span>
+        <span class="n">Jamming</span> <span class="o">=</span> <span class="mi">78</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">Music</span><span class="err">!</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">Jamming</span><span class="err">!</span><span class="p">)</span>
+        <span class="n">Tommy</span> <span class="o">=</span> <span class="mi">74</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">Tommy</span><span class="err">!</span><span class="p">)</span>
+        <span class="n">They</span> <span class="n">are</span> <span class="n">dazzled</span> <span class="n">audiences</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">it</span><span class="err">!</span><span class="p">)</span>
+        <span class="n">Rock</span> <span class="o">=</span> <span class="mi">86</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">it</span><span class="err">!</span><span class="p">)</span>
+        <span class="n">Tommy</span> <span class="o">=</span> <span class="mi">73</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">it</span><span class="err">!</span><span class="p">)</span>
+        <span class="k">break</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&#34;Bring on the rock!&#34;</span><span class="p">)</span>
+        <span class="n">Else</span> <span class="k">print</span><span class="p">(</span><span class="s2">&#34;That ain&#39;t it, Chief&#34;</span><span class="p">)</span>
+        <span class="k">break</span>
+
+</code></pre></div><p>Unfortunately, the generated Python code doesn&rsquo;t run :/</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">  File &#34;lyrics.py&#34;, line 12
+    print(Tommy!)
+               ^
+SyntaxError: invalid syntax
+</code></pre></div><p>I tried to fix the errors but eventually gave up, the generated code is still useful to understand what the code is doing!</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">the_music</span> <span class="o">=</span> <span class="nb">input</span><span class="p">()</span>
+<span class="k">if</span> <span class="n">the_music</span> <span class="o">==</span> <span class="n">a_guitar</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&#34;Keep on rocking!&#34;</span><span class="p">)</span>
+</code></pre></div><p>So the first condition to pass is entering a value equal to the variable <code>a_guitar</code>, which is defined earlier as <code>a_guitar = 19</code>. So, entering <code>19</code> as input value in the online interpreter should print <code>Keep on rocking!</code>.</p>
+<p>Except it doesn&rsquo;t work :((</p>
+<p>Seems like I&rsquo;m gonna have to learn some rockstar after all, let&rsquo;s go read bits of <a href="https://codewithrockstar.com/docs">The Rockstar Language Specification</a></p>
+<p>This section should help understanding what value should <code>a_guitar</code> be initialized with.</p>
+<blockquote>
+<p>Poetic Number Literals</p>
+</blockquote>
+<pre><code>A poetic number literal begins with a variable name, followed by the keyword `is`, or the aliases `was` or `were`. As long as the next symbol is not a Literal Word, the rest of the line  is treated as a decimal number in which the values of consecutive digits are given by the lengths of the subsequent barewords, up until the end  of the line. To allow the digit zero, and to compensate for a lack of  suitably rock’n’roll 1- and 2-letter words, word lengths are parsed  modulo 10. A period (.) character denotes a decimal place. Other than  the first period, any non-alphabetical characters are ignored.
+
+-  `Tommy was a lovestruck ladykiller` initialises `Tommy` with the value `100`
+- `Sweet Lucy was a dancer` - initialises `Sweet Lucy` with the value 16
+-  `A killer is on the loose` - initialises `a killer` with the value 235.
+- `My dreams were ice. A life unfulfilled; wakin' everybody up, taking booze and pills` - initialises `my dreams` with the value `3.1415926535`
+- `Tommy was without` initialises `Tommy` with the value `7` because `without` is a Reserved Keyword, but not a Literal Word.
+- Note that poetic literals **can** include Reserved Keywords, as with `taking` in this example.
+- The hyphen (`-`) is counted as a letter – so you can use terms like ‘all-consuming’ (13 letters &gt; 3) and  ‘power-hungry’ (12 letters &gt; 2) instead of having to think of 12- and 13-letter words.
+- The semi-colon, comma, apostrophe and any other non-alphabetical characters are ignored.
+</code></pre>
+<p>Comparing the initialisation of <code>a_guitar</code> in the original rockstar source code:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">A guitar is a six-string
+</code></pre></div><p><code>a_guitar</code> value should actually be:</p>
+<ul>
+<li><code>a</code> = 1</li>
+<li><code>six-string</code> = 10 modulo 10 = 0</li>
+</ul>
+<p>The final value of <code>a guitar</code> is  therefore 10, not 19.</p>
+<p><img src="01_rockstar_10.png" alt=""></p>
+<p>Yay, we passed he first check! Back to the Python code:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">    if the_rhythm - Music == False:
+        Tommy = 66
+        print(Tommy!)
+        Music = 79
+        Jamming = 78
+        print(Music!)
+        print(Jamming!)
+        [...]
+</code></pre></div><p>After that, a loop checks character one by one. However, the interesting thing is that each character is new variable, for example <code>Tommy</code>, it gets assigned and is printed. If we get rid of that loop, all the characters would be printed then!</p>
+<p>Remove this line and run in the interpreter again:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">If the rhythm without Music is nothing
+</code></pre></div><p><img src="02_rockstar_2.png" alt=""></p>
+<p>Only one last thing to turn the output back to a flag:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="ch">#!/usr/bin/python3</span>
+
+<span class="n">DECODER_OUTPUT</span> <span class="o">=</span> <span class="p">[</span><span class="mi">66</span><span class="p">,</span> <span class="mi">79</span><span class="p">,</span> <span class="mi">78</span><span class="p">,</span> <span class="mi">74</span><span class="p">,</span> <span class="mi">79</span><span class="p">,</span> <span class="mi">86</span><span class="p">,</span> <span class="mi">73</span><span class="p">]</span>
+
+<span class="n">DECODED</span> <span class="o">=</span> <span class="p">[</span><span class="nb">chr</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">DECODER_OUTPUT</span><span class="p">]</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s2">&#34;&#34;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">DECODED</span><span class="p">))</span>
+</code></pre></div><p>Flag: <code>picoCTF{BONJOVI}</code></p>
+<hr>
+<p>Pifou, that was a long writeup ~~</p>
+<p><img src="cat_top_hat.gif" alt=""></p>
+
+        </div>
+    </article>
+</div>
+
+
+<div class="column" id="toc-column">    <aside>
+        <div id="toc">
+            What's on this page?
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#lets-warm-up-50">Let&rsquo;s Warm Up [50]</a>
+      <ul>
+        <li><a href="#description">Description</a></li>
+        <li><a href="#solution">Solution</a></li>
+      </ul>
+    </li>
+    <li><a href="#2warm-50">2Warm [50]</a>
+      <ul>
+        <li><a href="#description-1">Description</a></li>
+        <li><a href="#solution-1">Solution</a></li>
+      </ul>
+    </li>
+    <li><a href="#warmed-up-50">Warmed Up [50]</a>
+      <ul>
+        <li><a href="#description-2">Description</a></li>
+        <li><a href="#solution-2">Solution</a></li>
+      </ul>
+    </li>
+    <li><a href="#bases-100">Bases [100]</a>
+      <ul>
+        <li><a href="#description-3">Description</a></li>
+        <li><a href="#solution-3">Solution</a></li>
+      </ul>
+    </li>
+    <li><a href="#first-grep-100">First Grep [100]</a>
+      <ul>
+        <li><a href="#description-4">Description</a></li>
+        <li><a href="#solution-4">Solution</a></li>
+      </ul>
+    </li>
+    <li><a href="#resources-100">Resources [100]</a>
+      <ul>
+        <li><a href="#description-5">Description</a></li>
+        <li><a href="#solution-5">Solution</a></li>
+      </ul>
+    </li>
+    <li><a href="#strings-it-100">Strings It [100]</a>
+      <ul>
+        <li><a href="#description-6">Description</a></li>
+        <li><a href="#solution-6">Solution</a></li>
+      </ul>
+    </li>
+    <li><a href="#whats--a-net-cat-100">What&rsquo;s  a Net Cat? [100]</a>
+      <ul>
+        <li><a href="#description-7">Description</a></li>
+        <li><a href="#solution-7">Solution</a></li>
+      </ul>
+    </li>
+    <li><a href="#first-grep-part-ii-200">First Grep: Part II [200]</a>
+      <ul>
+        <li><a href="#description-8">Description</a></li>
+        <li><a href="#solution-8">Solution</a></li>
+      </ul>
+    </li>
+    <li><a href="#plumbing-200">Plumbing [200]</a>
+      <ul>
+        <li><a href="#description-9">Description</a></li>
+        <li><a href="#solution-9">Solution</a></li>
+      </ul>
+    </li>
+    <li><a href="#where-is-the-file-200">Where Is the File [200]</a>
+      <ul>
+        <li><a href="#description-10">Description</a></li>
+        <li><a href="#solution-10">Solution</a></li>
+      </ul>
+    </li>
+    <li><a href="#whats-the-difference-200">What&rsquo;s the difference [200]</a>
+      <ul>
+        <li><a href="#description-11">Description</a></li>
+        <li><a href="#solution-11">Solution</a></li>
+      </ul>
+    </li>
+    <li><a href="#based-200">Based [200]</a>
+      <ul>
+        <li><a href="#description-12">Description</a></li>
+        <li><a href="#solution-12">Solution</a></li>
+      </ul>
+    </li>
+    <li><a href="#flag_shop-300">flag_shop [300]</a>
+      <ul>
+        <li><a href="#description-13">Description</a></li>
+        <li><a href="#solution-13">Solution</a></li>
+      </ul>
+    </li>
+    <li><a href="#mus1c-300">Mus1c [300]</a>
+      <ul>
+        <li><a href="#description-14">Description</a></li>
+        <li><a href="#solution-14">Solution</a></li>
+      </ul>
+    </li>
+    <li><a href="#1_wanna_b3_a_r0ck5tar-350">1_wanna_b3_a_r0ck5tar [350]</a>
+      <ul>
+        <li><a href="#description-15">Description</a></li>
+        <li><a href="#solution-15">Solution</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+        </div>
+    </aside>
+
+</div>
+
+</div></div>
+            </div><footer class="footer">
+  <div class="content has-text-centered">
+    <p>
+        <div class="copyright">
+        
+            Handcrafted with <span style="color: #e25555;">&hearts;</span> by kylma
+        
+        </div>
+
+    </p>
+  </div>
+
+  <div id="to-top">
+    <a href="#logo" class="top-btn no-squiggly">^</a>
+  </div>
+
+</footer>
+</div>
+    </body>
+</html>

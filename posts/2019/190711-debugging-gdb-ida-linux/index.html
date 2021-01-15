@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en-us"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="generator" content="Hugo 0.80.0" />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://shiny-labs.re/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://shiny-labs.re/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://shiny-labs.re/favicon-16x16.png">
+    <link rel="manifest" href="https://shiny-labs.re/site.webmanifest">
+    <link rel="mask-icon" href="https://shiny-labs.re/safari-pinned-tab.svg" color="#000000">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
+
+
+    <link rel="stylesheet" href="https://shiny-labs.re/css/bulma.min.css">
+    <link rel="stylesheet" href="https://shiny-labs.re/css/main.css">
+    <link rel="stylesheet" href="https://shiny-labs.re/css/syntax.css">
+
+    
+    <title>shiny-labs || Debugging with GDB in IDA Linux</title>
+</head>
+<body><nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item no-squiggly" href="https://shiny-labs.re/">
+            <h1 id="logo" class="glitch">shiny-labs</h1>
+        </a>
+    </div>
+
+    <div class="navbar-menu">
+        <div class="navbar-start">
+            
+        </div>
+
+        <div class="navbar-end">
+            
+            <h3 id="subtitle">Exploit, reverse engineering and cats.</h3>
+        </div>
+    </div>
+</nav>
+
+<div id="content">
+
+            <div class="columns is-centered">
+                <div class="column is-three-fifths" id="menu-column"><div id="menu" class="tabs is-centered is-medium">
+    <ul>
+            <li><a href="https://shiny-labs.re/" class="no-squiggly">Home</a></li>
+            <li><a href="https://shiny-labs.re/archives/" class="no-squiggly">Archives</a></li>
+            <li><a href="https://shiny-labs.re/tags/" class="no-squiggly">Tags</a></li>
+            <li><a href="https://shiny-labs.re/about/" class="no-squiggly">About</a></li>
+  </ul>
+</div>
+
+<div class="columns">
+<div class="column is-10" id="main-column">
+    <article class="article">
+        <div >
+            <h1 class="article-title">Debugging with GDB in IDA Linux</h1>
+            
+<div class="post-meta">
+  <p class="article-meta">
+  <span>Date</span> &#x5b;
+  <time datetime="July 11, 2019">
+      Jul 11
+    </time>
+  &#x5d;
+        
+        
+  <span>Categories</span> &#x5b;
+    <a href="https://shiny-labs.re/categories/reverse">Reverse</a>
+  &#x5d;
+        
+        
+  <span>Series</span> &#x5b;
+    <a href="https://shiny-labs.re/series"></a>
+  &#x5d;
+        
+        
+  <span>Tags</span> &#x5b;
+    <a href="https://shiny-labs.re/tags/ida">ida</a>
+    <a href="https://shiny-labs.re/tags/linux">linux</a>
+  &#x5d;
+  </p>
+</div>
+
+        </div>
+        <div>
+            <p>There are tons of tutorial telling you how to debug with gdb and IDA Windows, but what about IDA Linux eh?</p>
+<h2 id="how-does-debugging-work">How does debugging work?</h2>
+<p>IDALinux doesn&rsquo;t have real local debugging :(( A debug server stub is used to relay information between IDA and the debugger.</p>
+<p><img src="dbgsrv.png" alt=""></p>
+<p>And Breakpoints?</p>
+<p>Breakpoints are implemented using software interrupts or traps:</p>
+<p><img src="int3.png" alt=""></p>
+<p>More precisely, they are implemented by the trap <code>int 3</code>, ie trap to debugger.</p>
+<p>According to the Intel manual:</p>
+<blockquote>
+<p>The INT3 instruction uses a one-byte opcode (CC) and is intended for
+calling the debug exception handler with a breakpoint exception (#BP).
+(This one-byte form is useful because it can replace the first byte of
+any instruction at which a breakpoint is desired, including other
+one-byte instructions, without overwriting other instructions.)</p>
+</blockquote>
+<p>In effect, it means that when a breakpoint is set, the instruction is saved somewhere (so we can put it back later) and it replaced by 0xCC. When the CPU executes the program and stumble upon the 0xCC, it will generate a trap signal that the debugger will receive and from there, the debugger is in control.</p>
+<h2 id="our-target">Our Target</h2>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="cm">/* compile me:
+</span><span class="cm">       gcc target.c -o target
+</span><span class="cm">*/</span>
+
+<span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;time.h&gt;</span><span class="cp">
+</span><span class="cp"></span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span><span class="o">*</span> <span class="n">argv</span><span class="p">[])</span>
+<span class="p">{</span>
+    <span class="c1">// get current time
+</span><span class="c1"></span>    <span class="n">time_t</span> <span class="n">now</span><span class="p">;</span>
+    <span class="n">time</span><span class="p">(</span><span class="o">&amp;</span><span class="n">now</span><span class="p">);</span>
+
+    <span class="c1">// convert it to calendar time
+</span><span class="c1"></span>    <span class="k">struct</span> <span class="n">tm</span> <span class="o">*</span><span class="n">local</span> <span class="o">=</span> <span class="n">localtime</span><span class="p">(</span><span class="o">&amp;</span><span class="n">now</span><span class="p">);</span>
+
+    <span class="kt">int</span> <span class="n">day</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="n">year</span><span class="p">;</span>
+    <span class="n">day</span> <span class="o">=</span> <span class="n">local</span><span class="o">-&gt;</span><span class="n">tm_mday</span><span class="p">;</span>         <span class="cm">/* Day of the month (1-31) */</span>
+    <span class="n">month</span> <span class="o">=</span>  <span class="n">local</span><span class="o">-&gt;</span><span class="n">tm_mon</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>   <span class="cm">/* Month (0-11) */</span>
+    <span class="n">year</span> <span class="o">=</span> <span class="n">local</span><span class="o">-&gt;</span><span class="n">tm_year</span> <span class="o">+</span> <span class="mi">1900</span><span class="p">;</span> <span class="cm">/* Year - 1900 */</span>
+
+    <span class="k">if</span> <span class="p">((</span><span class="n">day</span> <span class="o">==</span> <span class="mi">15</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">month</span> <span class="o">==</span> <span class="mi">9</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">year</span> <span class="o">==</span> <span class="mi">1995</span><span class="p">))</span>
+    <span class="p">{</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Yay, congratz</span><span class="se">\n\n</span><span class="s">&#34;</span><span class="p">);</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">&#34;-- There is no right or wrong, only fun and boring.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">else</span>
+    <span class="p">{</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Nope.</span><span class="se">\n\n</span><span class="s">&#34;</span><span class="p">);</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">&#34;-- Mess with the best, die like the rest.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div><p>Compile our target binary and execute:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ gcc target.c -o target <span class="o">&amp;&amp;</span> ./target
+Nope.
+
+-- Mess with the best, die like the rest.
+
+</code></pre></div><p>Oooh, we get the negative message :(( Let&rsquo;s debug the binary to bypass the check and get the nice message.</p>
+<h2 id="configuration-steps">Configuration steps</h2>
+<p>Before you can use GDB, you need to locate your IDA installation:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ locate idaq64
+/home/kylma/ida-6.8/idaq64
+</code></pre></div><p>Next, go into the <code>dbgsrv</code> directory:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ <span class="nb">cd</span> /home/kylma/ida-6.8/dbgsrv
+$ tree .
+.
+├── android_server
+├── android_server_nonpie
+├── armlinux_server
+├── armuclinux_server
+├── dbghelp.dll
+├── linux_server
+├── linux_serverx64
+├── mac_server
+├── mac_serverx64
+├── symsrv.dll
+├── win32_remote.exe
+└── win64_remotex64.exe
+
+<span class="m">0</span> directories, <span class="m">12</span> files
+</code></pre></div><p>Run <code>linux_serverx64</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ ./linux_serverx64
+IDA Linux 64-bit remote debug server<span class="o">(</span>ST<span class="o">)</span> v1.19. Hex-Rays <span class="o">(</span>c<span class="o">)</span> 2004-2015
+Listening on port <span class="c1">#23946...</span>
+</code></pre></div><p>Take note of that port number, we will need it later.</p>
+<p>Open the binary in IDA:</p>
+<p><img src="ida_0.png" alt=""></p>
+<p>Select <code>Remote Linux Debugger</code> as debugger:</p>
+<p><img src="ida_1.png" alt=""></p>
+<p>Then configure the debugger options in <code>Debugger &gt; Process Options</code>, put <code>127.0.0.1</code> as Hostname. And make sure the Port matches the one from the console earlier.</p>
+<p><img src="ida_2.png" alt=""></p>
+<h2 id="actual-debugging">Actual Debugging</h2>
+<p>Everything is now ready! Click on a line in the disassembly output and hit <!-- raw HTML omitted -->F2<!-- raw HTML omitted -->, the line should have a red background indicating that a breakpoint has been set on this particular line.</p>
+<p><img src="ida_3.png" alt=""></p>
+<p>Start the debugging with <!-- raw HTML omitted -->F9<!-- raw HTML omitted --> , the binary will be run from the start until it hits the breakpoint. By default, when you starts the debugging, IDA will switch to the text view, hit <!-- raw HTML omitted -->space<!-- raw HTML omitted --> to go back to the graph view.</p>
+<p><img src="ida_4.png" alt=""></p>
+<p>A few shortcuts are enough to get complete control of the debugger:</p>
+<ul>
+<li><!-- raw HTML omitted -->F9<!-- raw HTML omitted -->: continue until the next breakpoint (or the end of the binary)</li>
+<li><!-- raw HTML omitted -->F7<!-- raw HTML omitted -->: step into</li>
+<li><!-- raw HTML omitted -->F8<!-- raw HTML omitted -->: step over</li>
+<li><!-- raw HTML omitted -->F4<!-- raw HTML omitted -->: run until cursor</li>
+</ul>
+<p>Now hit <!-- raw HTML omitted -->F7<!-- raw HTML omitted --> to execute the next instruction: <code>cmp     [rbp+var_24], 15</code>. The green arrow below the <code>jnz</code> is now blinking to indicate that execution will follow this path, and it leads to the negative message.</p>
+<p>Let&rsquo;s hijack this! We want to stay on the path to the congratz message. The decision to follow the green arrow depends on the results of the <code>cmp</code>, as it will set (or not) flags like ZF which is used by <code>jnz</code> to decide where we go next.</p>
+<p>Right click on the value of the ZF flag and choose <code>Toggle Value</code>:</p>
+<p><img src="ida_5.png" alt=""></p>
+<p>The red arrow should now be blinking, indicating that the flow of execution has been modified /o/.</p>
+<p>Repeat this technique until the green message is executed, the terminal running <code>linux_serverx64</code> should now display the message of victory:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">➔ ./linux_serverx64
+IDA Linux 64-bit remote debug server<span class="o">(</span>ST<span class="o">)</span> v1.19. Hex-Rays <span class="o">(</span>c<span class="o">)</span> 2004-2015
+Listening on port <span class="c1">#23946...</span>
+<span class="o">=========================================================</span>
+<span class="o">[</span>1<span class="o">]</span> Accepting connection from 127.0.0.1...
+Yay, congratz
+
+-- There is no right or wrong, only fun and boring.
+<span class="o">[</span>1<span class="o">]</span> Closing connection from 127.0.0.1...
+</code></pre></div><h2 id="afterthoughts">Afterthoughts</h2>
+<ul>
+<li>The binary is only checking that the date of your system is equal to 15/09/1995, you can also cheat your way to the victory message by changing the date of your system.</li>
+<li>Hack the planet.</li>
+</ul>
+<h2 id="references">References</h2>
+<p>Various stuff I read to write this article:</p>
+<ul>
+<li><a href="http://www.alexonlinux.com/how-debugger-works">http://www.alexonlinux.com/how-debugger-works</a></li>
+<li><a href="https://eli.thegreenplace.net/2011/01/27/how-debuggers-work-part-2-breakpoints">https://eli.thegreenplace.net/2011/01/27/how-debuggers-work-part-2-breakpoints</a></li>
+<li><a href="https://www.hex-rays.com/products/ida/support/idadoc/1463.shtml">https://www.hex-rays.com/products/ida/support/idadoc/1463.shtml</a></li>
+</ul>
+
+        </div>
+    </article>
+</div>
+
+
+<div class="column" id="toc-column">    <aside>
+        <div id="toc">
+            What's on this page?
+            <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#how-does-debugging-work">How does debugging work?</a></li>
+        <li><a href="#our-target">Our Target</a></li>
+        <li><a href="#configuration-steps">Configuration steps</a></li>
+        <li><a href="#actual-debugging">Actual Debugging</a></li>
+        <li><a href="#afterthoughts">Afterthoughts</a></li>
+        <li><a href="#references">References</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+        </div>
+    </aside>
+
+</div>
+
+</div></div>
+            </div><footer class="footer">
+  <div class="content has-text-centered">
+    <p>
+        <div class="copyright">
+        
+            Handcrafted with <span style="color: #e25555;">&hearts;</span> by kylma
+        
+        </div>
+
+    </p>
+  </div>
+
+  <div id="to-top">
+    <a href="#logo" class="top-btn no-squiggly">^</a>
+  </div>
+
+</footer>
+</div>
+    </body>
+</html>

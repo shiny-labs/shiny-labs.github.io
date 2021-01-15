@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>forensics on shiny-labs</title>
+    <link>https://shiny-labs.re/categories/forensics/</link>
+    <description>Recent content in forensics on shiny-labs</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <managingEditor>shiny-labs@kylma.fr (shiny-labs)</managingEditor>
+    <webMaster>shiny-labs@kylma.fr (shiny-labs)</webMaster>
+    <lastBuildDate>Sat, 19 Dec 2020 08:22:42 +0100</lastBuildDate><atom:link href="https://shiny-labs.re/categories/forensics/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>HackTheBox Challenge - Took the Byte</title>
+      <link>https://shiny-labs.re/posts/2020/201219-hackthebox-took-the-byte/201219-hackthebox-took-the-byte/</link>
+      <pubDate>Sat, 19 Dec 2020 08:22:42 +0100</pubDate>
+      <author>shiny-labs@kylma.fr (shiny-labs)</author>
+      <guid>https://shiny-labs.re/posts/2020/201219-hackthebox-took-the-byte/201219-hackthebox-took-the-byte/</guid>
+      <description>Description  Someone took my bytes! Can you recover my password for me? sha256: ee86f6c49a6c7e8adc09f03efd21825e3d4b5e5058e733e5cc3c9f69826c59a4
+ Solution Inside the archive, there&amp;rsquo;s only a file named password. Buh, that file looks like garbage.
+$ hd password 00000000 af b4 fc fb eb ff f7 ff f7 ff 28 63 aa b1 ff ff |..........(c....| 00000010 ff ff ff ff ff ff ff ff ff ff f3 ff ef ff 8f 9e |.</description>
+    </item>
+    
+  </channel>
+</rss>

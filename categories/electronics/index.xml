@@ -11,10 +11,10 @@
     <lastBuildDate>Tue, 21 Jul 2020 22:27:57 +0200</lastBuildDate><atom:link href="https://shiny-labs.re/categories/electronics/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>My First Circuit</title>
-      <link>https://shiny-labs.re/posts/200721-my-first-circuit/</link>
+      <link>https://shiny-labs.re/posts/2020/200721-my-first-circuit/</link>
       <pubDate>Tue, 21 Jul 2020 22:27:57 +0200</pubDate>
       <author>shiny-labs@kylma.fr (shiny-labs)</author>
-      <guid>https://shiny-labs.re/posts/200721-my-first-circuit/</guid>
+      <guid>https://shiny-labs.re/posts/2020/200721-my-first-circuit/</guid>
       <description>Welcome to electronics 101: My First Circuit. I had to write this post because I have brain glitches and sometimes forget how a breadboard works&amp;hellip;
 When you learn to code, the first thing you learn is how to output the string Hello World!. Allow me to introduce the electronics equivalent of the hello world: a circuit which lights up a LED.
 For this circuit, you&amp;rsquo;ll need:

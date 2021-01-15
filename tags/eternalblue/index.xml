@@ -11,10 +11,10 @@
     <lastBuildDate>Sat, 21 Nov 2020 09:49:04 +0100</lastBuildDate><atom:link href="https://shiny-labs.re/tags/eternalblue/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>TryHackMe - Blue</title>
-      <link>https://shiny-labs.re/posts/201121-tryhackme-blue/</link>
+      <link>https://shiny-labs.re/posts/2020/201121-tryhackme-blue/</link>
       <pubDate>Sat, 21 Nov 2020 09:49:04 +0100</pubDate>
       <author>shiny-labs@kylma.fr (shiny-labs)</author>
-      <guid>https://shiny-labs.re/posts/201121-tryhackme-blue/</guid>
+      <guid>https://shiny-labs.re/posts/2020/201121-tryhackme-blue/</guid>
       <description>Description  Scan and learn what exploit this machine is vulnerable to. Please note that this machine does not respond to ping (ICMP) and may take a few minutes to boot up. This room is not meant to be a boot2root CTF, rather, this is an educational series for complete beginners. Professionals will likely get very little out of this room beyond basic practice as the process here is meant to be beginner-focused.</description>
     </item>
     

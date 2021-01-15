@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en-us"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="generator" content="Hugo 0.80.0" />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://shiny-labs.re/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://shiny-labs.re/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://shiny-labs.re/favicon-16x16.png">
+    <link rel="manifest" href="https://shiny-labs.re/site.webmanifest">
+    <link rel="mask-icon" href="https://shiny-labs.re/safari-pinned-tab.svg" color="#000000">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
+
+
+    <link rel="stylesheet" href="https://shiny-labs.re/css/bulma.min.css">
+    <link rel="stylesheet" href="https://shiny-labs.re/css/main.css">
+    <link rel="stylesheet" href="https://shiny-labs.re/css/syntax.css">
+
+    
+    <title>shiny-labs || Disassemble a Specific Function</title>
+</head>
+<body><nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item no-squiggly" href="https://shiny-labs.re/">
+            <h1 id="logo" class="glitch">shiny-labs</h1>
+        </a>
+    </div>
+
+    <div class="navbar-menu">
+        <div class="navbar-start">
+            
+        </div>
+
+        <div class="navbar-end">
+            
+            <h3 id="subtitle">Exploit, reverse engineering and cats.</h3>
+        </div>
+    </div>
+</nav>
+
+<div id="content">
+
+            <div class="columns is-centered">
+                <div class="column is-three-fifths" id="menu-column"><div id="menu" class="tabs is-centered is-medium">
+    <ul>
+            <li><a href="https://shiny-labs.re/" class="no-squiggly">Home</a></li>
+            <li><a href="https://shiny-labs.re/archives/" class="no-squiggly">Archives</a></li>
+            <li><a href="https://shiny-labs.re/tags/" class="no-squiggly">Tags</a></li>
+            <li><a href="https://shiny-labs.re/about/" class="no-squiggly">About</a></li>
+  </ul>
+</div>
+
+<div class="columns">
+<div class="column is-10" id="main-column">
+    <article class="article">
+        <div >
+            <h1 class="article-title">Disassemble a Specific Function</h1>
+            
+<div class="post-meta">
+  <p class="article-meta">
+  <span>Date</span> &#x5b;
+  <time datetime="May 17, 2019">
+      May 17
+    </time>
+  &#x5d;
+        
+        
+  <span>Categories</span> &#x5b;
+    <a href="https://shiny-labs.re/categories/reverse">Reverse</a>
+  &#x5d;
+        
+        
+  <span>Series</span> &#x5b;
+    <a href="https://shiny-labs.re/series"></a>
+  &#x5d;
+        
+        
+  <span>Tags</span> &#x5b;
+    <a href="https://shiny-labs.re/tags/objdump">objdump</a>
+    <a href="https://shiny-labs.re/tags/gdb">gdb</a>
+  &#x5d;
+  </p>
+</div>
+
+        </div>
+        <div>
+            <p>Have you ever tried to disassemble only one function with objdump?</p>
+<p>Let&rsquo;s take a tiny code which prints the result of an addition function:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;stdint.h&gt;</span><span class="cp">
+</span><span class="cp"></span>
+<span class="n">uint32_t</span> <span class="nf">add</span><span class="p">(</span><span class="n">uint32_t</span> <span class="n">a</span><span class="p">,</span> <span class="n">uint32_t</span> <span class="n">b</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span><span class="o">*</span> <span class="n">argv</span><span class="p">[])</span>
+<span class="p">{</span>
+    <span class="n">uint32_t</span> <span class="n">result</span> <span class="o">=</span> <span class="n">add</span><span class="p">(</span><span class="mi">1300</span><span class="p">,</span> <span class="mi">37</span><span class="p">);</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;result is %i</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">result</span><span class="p">);</span>
+
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div><p>Compile it and run it:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ gcc add.c -g -o add
+$ ./add           
+result is <span class="m">1337</span>
+</code></pre></div><p>Let&rsquo;s now try to dump only <em>one</em> specific function, for example, add.</p>
+<p>My first idea was to use <code>objdump</code> :</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ objdump -d add 
+
+add:     file format elf64-x86-64
+
+
+Disassembly of section .init:
+
+<span class="m">0000000000001000</span> &lt;_init&gt;:
+    1000:	f3 0f 1e fa          	endbr64 
+    1004:	<span class="m">48</span> <span class="m">83</span> ec <span class="m">08</span>          	sub    <span class="nv">$0</span>x8,%rsp
+    1008:	<span class="m">48</span> 8b <span class="m">05</span> d9 2f <span class="m">00</span> <span class="m">00</span> 	mov    0x2fd9<span class="o">(</span>%rip<span class="o">)</span>,%rax        <span class="c1"># 3fe8 &lt;__gmon_start__&gt;</span>
+    100f:	<span class="m">48</span> <span class="m">85</span> c0             	<span class="nb">test</span>   %rax,%rax
+    1012:	<span class="m">74</span> <span class="m">02</span>                	je     <span class="m">1016</span> &lt;_init+0x16&gt;
+    1014:	ff d0                	callq  *%rax
+    1016:	<span class="m">48</span> <span class="m">83</span> c4 <span class="m">08</span>          	add    <span class="nv">$0</span>x8,%rsp
+    101a:	c3                   	retq   
+
+Disassembly of section .plt:
+
+<span class="m">0000000000001020</span> &lt;.plt&gt;:
+    1020:	ff <span class="m">35</span> e2 2f <span class="m">00</span> <span class="m">00</span>    	pushq  0x2fe2<span class="o">(</span>%rip<span class="o">)</span>        <span class="c1"># 4008 &lt;_GLOBAL_OFFSET_TABLE_+0x8&gt;</span>
+    1026:	ff <span class="m">25</span> e4 2f <span class="m">00</span> <span class="m">00</span>    	jmpq   *0x2fe4<span class="o">(</span>%rip<span class="o">)</span>        <span class="c1"># 4010 &lt;_GLOBAL_OFFSET_TABLE_+0x10&gt;</span>
+    102c:	0f 1f <span class="m">40</span> <span class="m">00</span>          	nopl   0x0<span class="o">(</span>%rax<span class="o">)</span>
+
+<span class="m">0000000000001030</span> &lt;printf@plt&gt;:
+    1030:	ff <span class="m">25</span> e2 2f <span class="m">00</span> <span class="m">00</span>    	jmpq   *0x2fe2<span class="o">(</span>%rip<span class="o">)</span>        <span class="c1"># 4018 &lt;printf@GLIBC_2.2.5&gt;</span>
+    1036:	<span class="m">68</span> <span class="m">00</span> <span class="m">00</span> <span class="m">00</span> <span class="m">00</span>       	pushq  <span class="nv">$0</span>x0
+    103b:	e9 e0 ff ff ff       	jmpq   <span class="m">1020</span> &lt;.plt&gt;
+
+Disassembly of section .text:
+
+<span class="m">0000000000001040</span> &lt;_start&gt;:
+    1040:	f3 0f 1e fa          	endbr64 
+    1044:	<span class="m">31</span> ed                	xor    %ebp,%ebp
+    1046:	<span class="m">49</span> <span class="m">89</span> d1             	mov    %rdx,%r9
+    1049:	5e                   	pop    %rsi
+    104a:	<span class="m">48</span> <span class="m">89</span> e2             	mov    %rsp,%rdx
+    104d:	<span class="m">48</span> <span class="m">83</span> e4 f0          	and    <span class="nv">$0</span>xfffffffffffffff0,%rsp
+    1051:	<span class="m">50</span>                   	push   %rax
+    1052:	<span class="m">54</span>                   	push   %rsp
+    1053:	4c 8d <span class="m">05</span> a6 <span class="m">01</span> <span class="m">00</span> <span class="m">00</span> 	lea    0x1a6<span class="o">(</span>%rip<span class="o">)</span>,%r8        <span class="c1"># 1200 &lt;__libc_csu_fini&gt;</span>
+    105a:	<span class="m">48</span> 8d 0d 2f <span class="m">01</span> <span class="m">00</span> <span class="m">00</span> 	lea    0x12f<span class="o">(</span>%rip<span class="o">)</span>,%rcx        <span class="c1"># 1190 &lt;__libc_csu_init&gt;</span>
+    1061:	<span class="m">48</span> 8d 3d e5 <span class="m">00</span> <span class="m">00</span> <span class="m">00</span> 	lea    0xe5<span class="o">(</span>%rip<span class="o">)</span>,%rdi        <span class="c1"># 114d &lt;main&gt;</span>
+    1068:	ff <span class="m">15</span> <span class="m">72</span> 2f <span class="m">00</span> <span class="m">00</span>    	callq  *0x2f72<span class="o">(</span>%rip<span class="o">)</span>        <span class="c1"># 3fe0 &lt;__libc_start_main@GLIBC_2.2.5&gt;</span>
+    106e:	f4                   	hlt    
+    106f:	<span class="m">90</span>                   	nop
+
+<span class="m">0000000000001070</span> &lt;deregister_tm_clones&gt;:
+    1070:	<span class="m">48</span> 8d 3d b9 2f <span class="m">00</span> <span class="m">00</span> 	lea    0x2fb9<span class="o">(</span>%rip<span class="o">)</span>,%rdi        <span class="c1"># 4030 &lt;__TMC_END__&gt;</span>
+    1077:	<span class="m">48</span> 8d <span class="m">05</span> b2 2f <span class="m">00</span> <span class="m">00</span> 	lea    0x2fb2<span class="o">(</span>%rip<span class="o">)</span>,%rax        <span class="c1"># 4030 &lt;__TMC_END__&gt;</span>
+    107e:	<span class="m">48</span> <span class="m">39</span> f8             	cmp    %rdi,%rax
+    1081:	<span class="m">74</span> <span class="m">15</span>                	je     <span class="m">1098</span> &lt;deregister_tm_clones+0x28&gt;
+    1083:	<span class="m">48</span> 8b <span class="m">05</span> 4e 2f <span class="m">00</span> <span class="m">00</span> 	mov    0x2f4e<span class="o">(</span>%rip<span class="o">)</span>,%rax        <span class="c1"># 3fd8 &lt;_ITM_deregisterTMCloneTable&gt;</span>
+    108a:	<span class="m">48</span> <span class="m">85</span> c0             	<span class="nb">test</span>   %rax,%rax
+    108d:	<span class="m">74</span> <span class="m">09</span>                	je     <span class="m">1098</span> &lt;deregister_tm_clones+0x28&gt;
+    108f:	ff e0                	jmpq   *%rax
+    1091:	0f 1f <span class="m">80</span> <span class="m">00</span> <span class="m">00</span> <span class="m">00</span> <span class="m">00</span> 	nopl   0x0<span class="o">(</span>%rax<span class="o">)</span>
+    1098:	c3                   	retq   
+    1099:	0f 1f <span class="m">80</span> <span class="m">00</span> <span class="m">00</span> <span class="m">00</span> <span class="m">00</span> 	nopl   0x0<span class="o">(</span>%rax<span class="o">)</span>
+
+00000000000010a0 &lt;register_tm_clones&gt;:
+    10a0:	<span class="m">48</span> 8d 3d <span class="m">89</span> 2f <span class="m">00</span> <span class="m">00</span> 	lea    0x2f89<span class="o">(</span>%rip<span class="o">)</span>,%rdi        <span class="c1"># 4030 &lt;__TMC_END__&gt;</span>
+    10a7:	<span class="m">48</span> 8d <span class="m">35</span> <span class="m">82</span> 2f <span class="m">00</span> <span class="m">00</span> 	lea    0x2f82<span class="o">(</span>%rip<span class="o">)</span>,%rsi        <span class="c1"># 4030 &lt;__TMC_END__&gt;</span>
+    10ae:	<span class="m">48</span> <span class="m">29</span> fe             	sub    %rdi,%rsi
+    10b1:	<span class="m">48</span> c1 fe <span class="m">03</span>          	sar    <span class="nv">$0</span>x3,%rsi
+    10b5:	<span class="m">48</span> <span class="m">89</span> f0             	mov    %rsi,%rax
+    10b8:	<span class="m">48</span> c1 e8 3f          	shr    <span class="nv">$0</span>x3f,%rax
+    10bc:	<span class="m">48</span> <span class="m">01</span> c6             	add    %rax,%rsi
+    10bf:	<span class="m">48</span> d1 fe             	sar    %rsi
+    10c2:	<span class="m">74</span> <span class="m">14</span>                	je     10d8 &lt;register_tm_clones+0x38&gt;
+    10c4:	<span class="m">48</span> 8b <span class="m">05</span> <span class="m">25</span> 2f <span class="m">00</span> <span class="m">00</span> 	mov    0x2f25<span class="o">(</span>%rip<span class="o">)</span>,%rax        <span class="c1"># 3ff0 &lt;_ITM_registerTMCloneTable&gt;</span>
+    10cb:	<span class="m">48</span> <span class="m">85</span> c0             	<span class="nb">test</span>   %rax,%rax
+    10ce:	<span class="m">74</span> <span class="m">08</span>                	je     10d8 &lt;register_tm_clones+0x38&gt;
+    10d0:	ff e0                	jmpq   *%rax
+    10d2:	<span class="m">66</span> 0f 1f <span class="m">44</span> <span class="m">00</span> <span class="m">00</span>    	nopw   0x0<span class="o">(</span>%rax,%rax,1<span class="o">)</span>
+    10d8:	c3                   	retq   
+    10d9:	0f 1f <span class="m">80</span> <span class="m">00</span> <span class="m">00</span> <span class="m">00</span> <span class="m">00</span> 	nopl   0x0<span class="o">(</span>%rax<span class="o">)</span>
+
+00000000000010e0 &lt;__do_global_dtors_aux&gt;:
+    10e0:	f3 0f 1e fa          	endbr64 
+    10e4:	<span class="m">80</span> 3d <span class="m">45</span> 2f <span class="m">00</span> <span class="m">00</span> <span class="m">00</span> 	cmpb   <span class="nv">$0</span>x0,0x2f45<span class="o">(</span>%rip<span class="o">)</span>        <span class="c1"># 4030 &lt;__TMC_END__&gt;</span>
+    10eb:	<span class="m">75</span> <span class="m">33</span>                	jne    <span class="m">1120</span> &lt;__do_global_dtors_aux+0x40&gt;
+    10ed:	<span class="m">55</span>                   	push   %rbp
+    10ee:	<span class="m">48</span> <span class="m">83</span> 3d <span class="m">02</span> 2f <span class="m">00</span> <span class="m">00</span> 	cmpq   <span class="nv">$0</span>x0,0x2f02<span class="o">(</span>%rip<span class="o">)</span>        <span class="c1"># 3ff8 &lt;__cxa_finalize@GLIBC_2.2.5&gt;</span>
+    10f5:	<span class="m">00</span> 
+    10f6:	<span class="m">48</span> <span class="m">89</span> e5             	mov    %rsp,%rbp
+    10f9:	<span class="m">74</span> 0d                	je     <span class="m">1108</span> &lt;__do_global_dtors_aux+0x28&gt;
+    10fb:	<span class="m">48</span> 8b 3d <span class="m">26</span> 2f <span class="m">00</span> <span class="m">00</span> 	mov    0x2f26<span class="o">(</span>%rip<span class="o">)</span>,%rdi        <span class="c1"># 4028 &lt;__dso_handle&gt;</span>
+    1102:	ff <span class="m">15</span> f0 2e <span class="m">00</span> <span class="m">00</span>    	callq  *0x2ef0<span class="o">(</span>%rip<span class="o">)</span>        <span class="c1"># 3ff8 &lt;__cxa_finalize@GLIBC_2.2.5&gt;</span>
+    1108:	e8 <span class="m">63</span> ff ff ff       	callq  <span class="m">1070</span> &lt;deregister_tm_clones&gt;
+    110d:	c6 <span class="m">05</span> 1c 2f <span class="m">00</span> <span class="m">00</span> <span class="m">01</span> 	movb   <span class="nv">$0</span>x1,0x2f1c<span class="o">(</span>%rip<span class="o">)</span>        <span class="c1"># 4030 &lt;__TMC_END__&gt;</span>
+    1114:	5d                   	pop    %rbp
+    1115:	c3                   	retq   
+    1116:	<span class="m">66</span> 2e 0f 1f <span class="m">84</span> <span class="m">00</span> <span class="m">00</span> 	nopw   %cs:0x0<span class="o">(</span>%rax,%rax,1<span class="o">)</span>
+    111d:	<span class="m">00</span> <span class="m">00</span> <span class="m">00</span> 
+    1120:	c3                   	retq   
+    1121:	<span class="m">66</span> <span class="m">66</span> 2e 0f 1f <span class="m">84</span> <span class="m">00</span> 	data16 nopw %cs:0x0<span class="o">(</span>%rax,%rax,1<span class="o">)</span>
+    1128:	<span class="m">00</span> <span class="m">00</span> <span class="m">00</span> <span class="m">00</span> 
+    112c:	0f 1f <span class="m">40</span> <span class="m">00</span>          	nopl   0x0<span class="o">(</span>%rax<span class="o">)</span>
+
+<span class="m">0000000000001130</span> &lt;frame_dummy&gt;:
+    1130:	f3 0f 1e fa          	endbr64 
+    1134:	e9 <span class="m">67</span> ff ff ff       	jmpq   10a0 &lt;register_tm_clones&gt;
+
+<span class="m">0000000000001139</span> &lt;add&gt;:
+    1139:	<span class="m">55</span>                   	push   %rbp
+    113a:	<span class="m">48</span> <span class="m">89</span> e5             	mov    %rsp,%rbp
+    113d:	<span class="m">89</span> 7d <span class="nb">fc</span>             	mov    %edi,-0x4<span class="o">(</span>%rbp<span class="o">)</span>
+    1140:	<span class="m">89</span> <span class="m">75</span> f8             	mov    %esi,-0x8<span class="o">(</span>%rbp<span class="o">)</span>
+    1143:	8b <span class="m">55</span> <span class="nb">fc</span>             	mov    -0x4<span class="o">(</span>%rbp<span class="o">)</span>,%edx
+    1146:	8b <span class="m">45</span> f8             	mov    -0x8<span class="o">(</span>%rbp<span class="o">)</span>,%eax
+    1149:	<span class="m">01</span> d0                	add    %edx,%eax
+    114b:	5d                   	pop    %rbp
+    114c:	c3                   	retq   
+
+000000000000114d &lt;main&gt;:
+    114d:	<span class="m">55</span>                   	push   %rbp
+    114e:	<span class="m">48</span> <span class="m">89</span> e5             	mov    %rsp,%rbp
+    1151:	<span class="m">48</span> <span class="m">83</span> ec <span class="m">20</span>          	sub    <span class="nv">$0</span>x20,%rsp
+    1155:	<span class="m">89</span> 7d ec             	mov    %edi,-0x14<span class="o">(</span>%rbp<span class="o">)</span>
+    1158:	<span class="m">48</span> <span class="m">89</span> <span class="m">75</span> e0          	mov    %rsi,-0x20<span class="o">(</span>%rbp<span class="o">)</span>
+    115c:	be <span class="m">25</span> <span class="m">00</span> <span class="m">00</span> <span class="m">00</span>       	mov    <span class="nv">$0</span>x25,%esi
+    1161:	bf <span class="m">14</span> <span class="m">05</span> <span class="m">00</span> <span class="m">00</span>       	mov    <span class="nv">$0</span>x514,%edi
+    1166:	e8 ce ff ff ff       	callq  <span class="m">1139</span> &lt;add&gt;
+    116b:	<span class="m">89</span> <span class="m">45</span> <span class="nb">fc</span>             	mov    %eax,-0x4<span class="o">(</span>%rbp<span class="o">)</span>
+    116e:	8b <span class="m">45</span> <span class="nb">fc</span>             	mov    -0x4<span class="o">(</span>%rbp<span class="o">)</span>,%eax
+    1171:	<span class="m">89</span> c6                	mov    %eax,%esi
+    1173:	<span class="m">48</span> 8d 3d 8a 0e <span class="m">00</span> <span class="m">00</span> 	lea    0xe8a<span class="o">(</span>%rip<span class="o">)</span>,%rdi        <span class="c1"># 2004 &lt;_IO_stdin_used+0x4&gt;</span>
+    117a:	b8 <span class="m">00</span> <span class="m">00</span> <span class="m">00</span> <span class="m">00</span>       	mov    <span class="nv">$0</span>x0,%eax
+    117f:	e8 ac fe ff ff       	callq  <span class="m">1030</span> &lt;printf@plt&gt;
+    1184:	b8 <span class="m">00</span> <span class="m">00</span> <span class="m">00</span> <span class="m">00</span>       	mov    <span class="nv">$0</span>x0,%eax
+    1189:	c9                   	leaveq 
+    118a:	c3                   	retq   
+    118b:	0f 1f <span class="m">44</span> <span class="m">00</span> <span class="m">00</span>       	nopl   0x0<span class="o">(</span>%rax,%rax,1<span class="o">)</span>
+
+<span class="m">0000000000001190</span> &lt;__libc_csu_init&gt;:
+    1190:	f3 0f 1e fa          	endbr64 
+    1194:	<span class="m">41</span> <span class="m">57</span>                	push   %r15
+    1196:	<span class="m">49</span> <span class="m">89</span> d7             	mov    %rdx,%r15
+    1199:	<span class="m">41</span> <span class="m">56</span>                	push   %r14
+    119b:	<span class="m">49</span> <span class="m">89</span> f6             	mov    %rsi,%r14
+    119e:	<span class="m">41</span> <span class="m">55</span>                	push   %r13
+    11a0:	<span class="m">41</span> <span class="m">89</span> fd             	mov    %edi,%r13d
+    11a3:	<span class="m">41</span> <span class="m">54</span>                	push   %r12
+    11a5:	4c 8d <span class="m">25</span> 3c 2c <span class="m">00</span> <span class="m">00</span> 	lea    0x2c3c<span class="o">(</span>%rip<span class="o">)</span>,%r12        <span class="c1"># 3de8 &lt;__frame_dummy_init_array_entry&gt;</span>
+    11ac:	<span class="m">55</span>                   	push   %rbp
+    11ad:	<span class="m">48</span> 8d 2d 3c 2c <span class="m">00</span> <span class="m">00</span> 	lea    0x2c3c<span class="o">(</span>%rip<span class="o">)</span>,%rbp        <span class="c1"># 3df0 &lt;__init_array_end&gt;</span>
+    11b4:	<span class="m">53</span>                   	push   %rbx
+    11b5:	4c <span class="m">29</span> e5             	sub    %r12,%rbp
+    11b8:	<span class="m">48</span> <span class="m">83</span> ec <span class="m">08</span>          	sub    <span class="nv">$0</span>x8,%rsp
+    11bc:	<span class="m">67</span> e8 3e fe ff ff    	addr32 callq <span class="m">1000</span> &lt;_init&gt;
+    11c2:	<span class="m">48</span> c1 fd <span class="m">03</span>          	sar    <span class="nv">$0</span>x3,%rbp
+    11c6:	<span class="m">74</span> 1e                	je     11e6 &lt;__libc_csu_init+0x56&gt;
+    11c8:	<span class="m">31</span> db                	xor    %ebx,%ebx
+    11ca:	<span class="m">66</span> 0f 1f <span class="m">44</span> <span class="m">00</span> <span class="m">00</span>    	nopw   0x0<span class="o">(</span>%rax,%rax,1<span class="o">)</span>
+    11d0:	4c <span class="m">89</span> fa             	mov    %r15,%rdx
+    11d3:	4c <span class="m">89</span> f6             	mov    %r14,%rsi
+    11d6:	<span class="m">44</span> <span class="m">89</span> ef             	mov    %r13d,%edi
+    11d9:	<span class="m">41</span> ff <span class="m">14</span> dc          	callq  *<span class="o">(</span>%r12,%rbx,8<span class="o">)</span>
+    11dd:	<span class="m">48</span> <span class="m">83</span> c3 <span class="m">01</span>          	add    <span class="nv">$0</span>x1,%rbx
+    11e1:	<span class="m">48</span> <span class="m">39</span> dd             	cmp    %rbx,%rbp
+    11e4:	<span class="m">75</span> ea                	jne    11d0 &lt;__libc_csu_init+0x40&gt;
+    11e6:	<span class="m">48</span> <span class="m">83</span> c4 <span class="m">08</span>          	add    <span class="nv">$0</span>x8,%rsp
+    11ea:	5b                   	pop    %rbx
+    11eb:	5d                   	pop    %rbp
+    11ec:	<span class="m">41</span> 5c                	pop    %r12
+    11ee:	<span class="m">41</span> 5d                	pop    %r13
+    11f0:	<span class="m">41</span> 5e                	pop    %r14
+    11f2:	<span class="m">41</span> 5f                	pop    %r15
+    11f4:	c3                   	retq   
+    11f5:	<span class="m">66</span> <span class="m">66</span> 2e 0f 1f <span class="m">84</span> <span class="m">00</span> 	data16 nopw %cs:0x0<span class="o">(</span>%rax,%rax,1<span class="o">)</span>
+    11fc:	<span class="m">00</span> <span class="m">00</span> <span class="m">00</span> <span class="m">00</span> 
+
+<span class="m">0000000000001200</span> &lt;__libc_csu_fini&gt;:
+    1200:	f3 0f 1e fa          	endbr64 
+    1204:	c3                   	retq   
+
+Disassembly of section .fini:
+
+<span class="m">0000000000001208</span> &lt;_fini&gt;:
+    1208:	f3 0f 1e fa          	endbr64 
+    120c:	<span class="m">48</span> <span class="m">83</span> ec <span class="m">08</span>          	sub    <span class="nv">$0</span>x8,%rsp
+    1210:	<span class="m">48</span> <span class="m">83</span> c4 <span class="m">08</span>          	add    <span class="nv">$0</span>x8,%rsp
+    1214:	c3                   	retq   
+</code></pre></div><p><img src="kitty_avalanche.gif" alt=""></p>
+<p>Wooooow, gee. Thanks <code>objdump</code> , that&rsquo;s a bit more than what I wanted :D. 	  <code>objdump</code> belongs to the all-or-nothing type. Amazingly, there is no option in objdump to disassemble a specific function&hellip; You can always redirect this output to a file and edit it with your favorite text editor (vim).</p>
+<p>But I still want to disassemble my <code>add</code> function!</p>
+<p>Fortunately, <code>gdb</code> is here to save the day! <code>gdb</code> provides the aptly named <code>disassemble</code> command. In <code>batch</code> mode, all commands supplied with <code>-ex</code> will be executed before gdb exits on its own:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ gdb -batch -ex <span class="s1">&#39;file add&#39;</span> -ex <span class="s1">&#39;disassemble add&#39;</span>  
+Dump of assembler code <span class="k">for</span> <span class="k">function</span> add:
+   0x0000000000001139 &lt;+0&gt;:	push   rbp
+   0x000000000000113a &lt;+1&gt;:	mov    rbp,rsp
+   0x000000000000113d &lt;+4&gt;:	mov    DWORD PTR <span class="o">[</span>rbp-0x4<span class="o">]</span>,edi
+   0x0000000000001140 &lt;+7&gt;:	mov    DWORD PTR <span class="o">[</span>rbp-0x8<span class="o">]</span>,esi
+   0x0000000000001143 &lt;+10&gt;:	mov    edx,DWORD PTR <span class="o">[</span>rbp-0x4<span class="o">]</span>
+   0x0000000000001146 &lt;+13&gt;:	mov    eax,DWORD PTR <span class="o">[</span>rbp-0x8<span class="o">]</span>
+   0x0000000000001149 &lt;+16&gt;:	add    eax,edx
+   0x000000000000114b &lt;+18&gt;:	pop    rbp
+   0x000000000000114c &lt;+19&gt;:	ret    
+End of assembler dump.
+</code></pre></div>
+        </div>
+    </article>
+</div>
+
+
+<div class="column" id="toc-column">    <aside>
+        <div id="toc">
+            What's on this page?
+            <nav id="TableOfContents"></nav>
+        </div>
+    </aside>
+
+</div>
+
+</div></div>
+            </div><footer class="footer">
+  <div class="content has-text-centered">
+    <p>
+        <div class="copyright">
+        
+            Handcrafted with <span style="color: #e25555;">&hearts;</span> by kylma
+        
+        </div>
+
+    </p>
+  </div>
+
+  <div id="to-top">
+    <a href="#logo" class="top-btn no-squiggly">^</a>
+  </div>
+
+</footer>
+</div>
+    </body>
+</html>

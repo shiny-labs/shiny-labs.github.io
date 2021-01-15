@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en-us"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="generator" content="Hugo 0.80.0" />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://shiny-labs.re/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://shiny-labs.re/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://shiny-labs.re/favicon-16x16.png">
+    <link rel="manifest" href="https://shiny-labs.re/site.webmanifest">
+    <link rel="mask-icon" href="https://shiny-labs.re/safari-pinned-tab.svg" color="#000000">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
+
+
+    <link rel="stylesheet" href="https://shiny-labs.re/css/bulma.min.css">
+    <link rel="stylesheet" href="https://shiny-labs.re/css/main.css">
+    <link rel="stylesheet" href="https://shiny-labs.re/css/syntax.css">
+
+    
+    <title>shiny-labs || TryHackMe - OhSINT</title>
+</head>
+<body><nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item no-squiggly" href="https://shiny-labs.re/">
+            <h1 id="logo" class="glitch">shiny-labs</h1>
+        </a>
+    </div>
+
+    <div class="navbar-menu">
+        <div class="navbar-start">
+            
+        </div>
+
+        <div class="navbar-end">
+            
+            <h3 id="subtitle">Exploit, reverse engineering and cats.</h3>
+        </div>
+    </div>
+</nav>
+
+<div id="content">
+
+            <div class="columns is-centered">
+                <div class="column is-three-fifths" id="menu-column"><div id="menu" class="tabs is-centered is-medium">
+    <ul>
+            <li><a href="https://shiny-labs.re/" class="no-squiggly">Home</a></li>
+            <li><a href="https://shiny-labs.re/archives/" class="no-squiggly">Archives</a></li>
+            <li><a href="https://shiny-labs.re/tags/" class="no-squiggly">Tags</a></li>
+            <li><a href="https://shiny-labs.re/about/" class="no-squiggly">About</a></li>
+  </ul>
+</div>
+
+<div class="columns">
+<div class="column is-10" id="main-column">
+    <article class="article">
+        <div >
+            <h1 class="article-title">TryHackMe - OhSINT</h1>
+            
+<div class="post-meta">
+  <p class="article-meta">
+  <span>Date</span> &#x5b;
+  <time datetime="April 13, 2020">
+      Apr 13
+    </time>
+  &#x5d;
+        
+        
+  <span>Categories</span> &#x5b;
+    <a href="https://shiny-labs.re/categories"></a>
+  &#x5d;
+        
+        
+  <span>Series</span> &#x5b;
+    <a href="https://shiny-labs.re/series"></a>
+  &#x5d;
+        
+        
+  <span>Tags</span> &#x5b;
+    <a href="https://shiny-labs.re/tags/osint">OSINT</a>
+  &#x5d;
+  </p>
+</div>
+
+        </div>
+        <div>
+            <p>Today we try the OhSINT room on tryhackme, <a href="https://tryhackme.com/room/ohsint">https://tryhackme.com/room/ohsint</a> to follow along!</p>
+<h1 id="description">Description</h1>
+<blockquote>
+<p>What information can you possible get starting with just one photo?</p>
+</blockquote>
+<p><img src="WindowsXP.jpg" alt=""></p>
+<h1 id="-1-what-is-this-users-avatar-of"># 1 What is this users avatar of?</h1>
+<p>Awww, it&rsquo;s that background from windows XP! What should we do with it.</p>
+<p>Let&rsquo;s do some recon on that image and checkout the metadata of the image first:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">exiftool -a WindowsXP.jpg 
+ExifTool Version Number         : 11.85
+File Name                       : WindowsXP.jpg
+Directory                       : .
+File Size                       : 229 kB
+File Modification Date/Time     : 2020:04:13 09:45:08+02:00
+File Access Date/Time           : 2020:04:13 09:46:31+02:00
+File Inode Change Date/Time     : 2020:04:13 09:45:08+02:00
+File Permissions                : rw-r--r--
+File Type                       : JPEG
+File Type Extension             : jpg
+MIME Type                       : image/jpeg
+XMP Toolkit                     : Image::ExifTool 11.27
+GPS Latitude                    : 54 deg 17&#39; 41.27&#34; N
+GPS Longitude                   : 2 deg 15&#39; 1.33&#34; W
+Copyright                       : OWoodflint
+Image Width                     : 1920
+Image Height                    : 1080
+Encoding Process                : Baseline DCT, Huffman coding
+Bits Per Sample                 : 8
+Color Components                : 3
+Y Cb Cr Sub Sampling            : YCbCr4:2:0 (2 2)
+Image Size                      : 1920x1080
+Megapixels                      : 2.1
+GPS Latitude Ref                : North
+GPS Longitude Ref               : West
+GPS Position                    : 54 deg 17&#39; 41.27&#34; N, 2 deg 15&#39; 1.33&#34; W
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ md5sum WindowsXP.jpg 
+49e91584068dd192c849496cba8e2883  WindowsXP.jpg
+</code></pre></div><p>The Copyright field gives us a name: <code>OWoodflint</code>. Digging for information we find lots of interesting stuff:</p>
+<ul>
+<li>his twitter account <a href="https://twitter.com/owoodflint">https://twitter.com/owoodflint</a></li>
+<li>his blog <a href="https://oliverwoodflint.wordpress.com/author/owoodflint/">https://oliverwoodflint.wordpress.com/author/owoodflint/</a></li>
+<li>his github <a href="https://github.com/OWoodfl1nt/people_finder">https://github.com/OWoodfl1nt/people_finder</a></li>
+</ul>
+<p>And his twitter account has a cat avatar!</p>
+<p><img src="00_tweet_bssid.png" alt=""></p>
+<p>Flag: <code>cat</code></p>
+<h1 id="2-what-city-is-this-person-in">#2 What city is this person in?</h1>
+<p>From the README.md file of his people_finder repository on <a href="https://github.com/OWoodfl1nt/people_finder">https://github.com/OWoodfl1nt/people_finder</a></p>
+<p><img src="01_github_people_finder.png" alt="01_github_people_finder.png"></p>
+<p>Bonus: we also get his personal email</p>
+<p>Flag: <code>London</code></p>
+<h1 id="3-whats-the-ssid-of-the-wap-he-connected-to">#3 Whats the SSID of the WAP he connected to?</h1>
+<p>There is a tweet about that! <a href="https://twitter.com/OWoodflint/status/1102220421091463168">https://twitter.com/OWoodflint/status/1102220421091463168</a>. Apparently he likes to steal the WiFi of his neighbours :D</p>
+<p><img src="00_tweet_bssid.png" alt=""></p>
+<p>I thought  <code>Go nuts!</code> might be the answer, but it&rsquo;s totally not :D</p>
+<p>Let&rsquo;s try to check that BSSID on <a href="https://.wigle.net">https://.wigle.net</a>: filter on the BSSID: <code>B4:5D:50:AA:86:41</code>, hit the <code>Filter</code> button, then jump to <code>London</code>! There is exactly one match, which you&rsquo;ll need to zoom a lot until you can see the SSID name: <code>UnileverWiFi</code>:</p>
+<p><img src="02_wigle.png" alt=""></p>
+<p>Flag: <code>UnileverWiFi</code></p>
+<h1 id="4-what-is-his-personal-email-address">#4 What is his personal email address?</h1>
+<p>The README.md of his people finder repository <a href="https://github.com/OWoodfl1nt/people_finder">https://github.com/OWoodfl1nt/people_finder</a> has the answer:</p>
+<p><img src="03_github_people_finder.png" alt=""></p>
+<p>flag:  <code>OWoodflint@gmail.com</code></p>
+<h1 id="5-what-site-did-you-find-his-email-address-on">#5 What site did you find his email address on?</h1>
+<p>Well, we were just on it! It&rsquo;s github!</p>
+<p>flag: <code>github</code></p>
+<h1 id="6--where-has-he-gone-on-holiday">#6  Where has he gone on holiday?</h1>
+<p>Good thing he&rsquo;s keeping us posted on his blog:</p>
+<p><img src="04_blog.png" alt=""></p>
+<p>We also get to loot his full name: <code>Oliver Woodflint</code></p>
+<p>Flag: <code>New York</code></p>
+<h1 id="7-what-is-this-persons-password">#7 What is this persons password?</h1>
+<p>maybe his email was in a password leak? =&gt; nope, I checked the major breaches, nothing</p>
+<p>maybe his password is stored in a gist? =&gt; nope, nothing on <a href="https://gist.github.com/OWoodfl1nt">https://gist.github.com/OWoodfl1nt</a></p>
+<p>List of handles/names I looked for: OWoodfl1nt, owoodflint, Oliver Woodflint, @OWoodflint.</p>
+<p>This one was tricky. After tons of research and avoiding all the spoilers of the write-ups laying around, I still had nothing :((</p>
+<p>And then I found the password by accident while copying stuff for the writeup :&lsquo;DD If you select the text of his only blog article, there&rsquo;s actually a hidden line, because it&rsquo;s white text on a white background:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">Hey
+
+Im in New York right now, so I will update this site right away with new photos!
+
+pennYDr0pper.!
+</code></pre></div><p>Source code of the article:</p>
+<div class="highlight"><pre class="chroma"><code class="language-html" data-lang="html"><span class="p">&lt;</span><span class="nt">article</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;post-3&#34;</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;post-3 post type-post status-publish format-standard hentry category-uncategorised&#34;</span><span class="p">&gt;</span>
+			<span class="p">&lt;</span><span class="nt">header</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;entry-header&#34;</span><span class="p">&gt;</span>
+			<span class="p">&lt;</span><span class="nt">h1</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;entry-title&#34;</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&#34;https://oliverwoodflint.wordpress.com/2019/03/03/the-journey-begins/&#34;</span> <span class="na">rel</span><span class="o">=</span><span class="s">&#34;bookmark&#34;</span><span class="p">&gt;</span>Hey<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;&lt;/</span><span class="nt">h1</span><span class="p">&gt;</span>		<span class="p">&lt;/</span><span class="nt">header</span><span class="p">&gt;</span><span class="c">&lt;!-- .entry-header --&gt;</span>	
+	<span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;entry-content&#34;</span><span class="p">&gt;</span>
+		
+<span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>Im in New York right now, so I will update this site right away with new photos!<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+
+
+
+<span class="p">&lt;</span><span class="nt">p</span> <span class="na">style</span><span class="o">=</span><span class="s">&#34;color:#ffffff;&#34;</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;has-text-color&#34;</span><span class="p">&gt;</span>pennYDr0pper.!<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+	<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span><span class="c">&lt;!-- .entry-content --&gt;</span>
+</code></pre></div><p>And there we have our last flag: <code>pennYDr0pper.!</code></p>
+<p>That&rsquo;s it gentlepeople! It was  a short room but a good introduction to OSINT for beginners :3</p>
+<p><img src="cat_tape.gif" alt=""></p>
+
+        </div>
+    </article>
+</div>
+
+
+<div class="column" id="toc-column">    <aside>
+        <div id="toc">
+            What's on this page?
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#description">Description</a></li>
+    <li><a href="#-1-what-is-this-users-avatar-of"># 1 What is this users avatar of?</a></li>
+    <li><a href="#2-what-city-is-this-person-in">#2 What city is this person in?</a></li>
+    <li><a href="#3-whats-the-ssid-of-the-wap-he-connected-to">#3 Whats the SSID of the WAP he connected to?</a></li>
+    <li><a href="#4-what-is-his-personal-email-address">#4 What is his personal email address?</a></li>
+    <li><a href="#5-what-site-did-you-find-his-email-address-on">#5 What site did you find his email address on?</a></li>
+    <li><a href="#6--where-has-he-gone-on-holiday">#6  Where has he gone on holiday?</a></li>
+    <li><a href="#7-what-is-this-persons-password">#7 What is this persons password?</a></li>
+  </ul>
+</nav>
+        </div>
+    </aside>
+
+</div>
+
+</div></div>
+            </div><footer class="footer">
+  <div class="content has-text-centered">
+    <p>
+        <div class="copyright">
+        
+            Handcrafted with <span style="color: #e25555;">&hearts;</span> by kylma
+        
+        </div>
+
+    </p>
+  </div>
+
+  <div id="to-top">
+    <a href="#logo" class="top-btn no-squiggly">^</a>
+  </div>
+
+</footer>
+</div>
+    </body>
+</html>

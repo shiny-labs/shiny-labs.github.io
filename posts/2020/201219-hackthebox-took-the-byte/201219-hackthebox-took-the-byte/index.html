@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en-us"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="generator" content="Hugo 0.80.0" />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://shiny-labs.re/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://shiny-labs.re/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://shiny-labs.re/favicon-16x16.png">
+    <link rel="manifest" href="https://shiny-labs.re/site.webmanifest">
+    <link rel="mask-icon" href="https://shiny-labs.re/safari-pinned-tab.svg" color="#000000">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
+
+
+    <link rel="stylesheet" href="https://shiny-labs.re/css/bulma.min.css">
+    <link rel="stylesheet" href="https://shiny-labs.re/css/main.css">
+    <link rel="stylesheet" href="https://shiny-labs.re/css/syntax.css">
+
+    
+    <title>shiny-labs || HackTheBox Challenge - Took the Byte</title>
+</head>
+<body><nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item no-squiggly" href="https://shiny-labs.re/">
+            <h1 id="logo" class="glitch">shiny-labs</h1>
+        </a>
+    </div>
+
+    <div class="navbar-menu">
+        <div class="navbar-start">
+            
+        </div>
+
+        <div class="navbar-end">
+            
+            <h3 id="subtitle">Exploit, reverse engineering and cats.</h3>
+        </div>
+    </div>
+</nav>
+
+<div id="content">
+
+            <div class="columns is-centered">
+                <div class="column is-three-fifths" id="menu-column"><div id="menu" class="tabs is-centered is-medium">
+    <ul>
+            <li><a href="https://shiny-labs.re/" class="no-squiggly">Home</a></li>
+            <li><a href="https://shiny-labs.re/archives/" class="no-squiggly">Archives</a></li>
+            <li><a href="https://shiny-labs.re/tags/" class="no-squiggly">Tags</a></li>
+            <li><a href="https://shiny-labs.re/about/" class="no-squiggly">About</a></li>
+  </ul>
+</div>
+
+<div class="columns">
+<div class="column is-10" id="main-column">
+    <article class="article">
+        <div >
+            <h1 class="article-title">HackTheBox Challenge - Took the Byte</h1>
+            
+<div class="post-meta">
+  <p class="article-meta">
+  <span>Date</span> &#x5b;
+  <time datetime="December 19, 2020">
+      Dec 19
+    </time>
+  &#x5d;
+        
+        
+  <span>Categories</span> &#x5b;
+    <a href="https://shiny-labs.re/categories/forensics">forensics</a>
+  &#x5d;
+        
+        
+  <span>Series</span> &#x5b;
+    <a href="https://shiny-labs.re/series/hackthebox-challenges">hackthebox-challenges</a>
+  &#x5d;
+        
+        
+  <span>Tags</span> &#x5b;
+    <a href="https://shiny-labs.re/tags/xor">xor</a>
+  &#x5d;
+  </p>
+</div>
+
+        </div>
+        <div>
+            <h1 id="description">Description</h1>
+<blockquote>
+<p>Someone took my bytes! Can you recover my password for me?
+sha256: ee86f6c49a6c7e8adc09f03efd21825e3d4b5e5058e733e5cc3c9f69826c59a4</p>
+</blockquote>
+<h1 id="solution">Solution</h1>
+<p>Inside the archive, there&rsquo;s only a file named <code>password</code>. Buh, that file looks like garbage.</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ hd password
+00000000  af b4 fc fb eb ff f7 ff  f7 ff 28 63 aa b1 ff ff  |..........(c....|
+00000010  ff ff ff ff ff ff ff ff  ff ff f3 ff ef ff 8f 9e  |................|
+00000020  8c 8c 88 90 8d 9b d1 8b  87 8b aa a7 f3 ff 24 bb  |..............$.|
+00000030  90 a3 6a bb 90 a3 0a fe  eb ff 0c f7 8e 55 c9 cd  |..j..........U..|
+00000040  88 33 8d 8c 36 d1 33 cb  d3 08 55 1a fd ff af b4  |.3..6.3...U.....|
+00000050  f8 f7 b2 37 01 c1 eb ff  ff ff ed ff ff ff af b4  |...7............|
+00000060  fe fd ea fc eb ff f7 ff  f7 ff 28 63 aa b1 b2 37  |..........(c...7|
+00000070  01 c1 eb ff ff ff ed ff  ff ff f3 ff f3 ff ff ff  |................|
+00000080  ff ff ff ff ff bf 5b 7e  ff ff ff ff 8f 9e 8c 8c  |......[~........|
+00000090  88 90 8d 9b d1 8b 87 8b  aa a7 f7 ff 24 bb 90 a3  |............$...|
+000000a0  6a bb 90 a3 af b4 fa f9  ff ff ff ff fe ff fe ff  |j...............|
+000000b0  b9 ff ff ff a1 ff ff ff  ff ff                    |..........|
+000000ba
+</code></pre></div><p>But, garbage with a lots of 0xff! That&rsquo;s suspicious. Given the title, it could be a XOR with a one byte key. All of those 0xff could be bytes that were originally 0 since 0 xor 0xFF = 0xFF.</p>
+<p>Let&rsquo;s see if xortool agrees it&rsquo;s a 1 byte key:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ xortool password
+The most probable key lengths:
+   1:   37.7%
+  22:   11.0%
+  24:   10.1%
+  26:   8.1%
+  28:   7.9%
+  30:   6.5%
+  32:   6.2%
+  38:   4.8%
+  48:   3.6%
+  55:   4.1%
+Key-length can be 4*n
+Most possible char is needed to guess the key!
+</code></pre></div><p>It does, now let&rsquo;s bruteforce all possible keys:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ xortool -l 1 -b password
+256 possible key(s) of length 1:
+&#39;\xff
+&#39;\xfe
+&#39;\xfd
+&#39;\xfc
+&#39;\xfb
+...
+Found 0 plaintexts with 95%+ valid characters
+See files filename-key.csv, filename-char_used-perc_valid.csv
+</code></pre></div><p>This will try all 256 potential XOR keys and dump the results in the directory xortool_out.</p>
+<p>Let&rsquo;s run <code>file</code> on the results and filter all result that contains only <code>data</code>, because they are garbage:
+(the <code>$</code> in grep will match an end of line).</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ file xortool_out/* | grep -v &#34;data$&#34;
+xortool_out/000.out:                           Zip archive data, at least v2.0 to extract
+xortool_out/163.out:                           Non-ISO extended-ASCII text, with no line terminators
+xortool_out/173.out:                           Non-ISO extended-ASCII text, with no line terminators
+xortool_out/197.out:                           PGP Secret Key -
+xortool_out/199.out:                           PGP Secret Sub-key -
+xortool_out/220.out:                           DOS executable (COM, 0x8C-variant)
+xortool_out/232.out:                           COM executable for DOS
+xortool_out/filename-char_used-perc_valid.csv: ASCII text
+xortool_out/filename-key.csv:                  ASCII text
+</code></pre></div><p>Let&rsquo;s check if that <code>000.out</code> is a valid archive:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ unzip 000.out
+Archive:  000.out
+  inflating: password.txt
+</code></pre></div><p>Success ~~ Let&rsquo;s grab that flag:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ cat password.txt
+</code></pre></div>
+        </div>
+    </article>
+</div>
+
+
+<div class="column" id="toc-column">    <aside>
+        <div id="toc">
+            What's on this page?
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#description">Description</a></li>
+    <li><a href="#solution">Solution</a></li>
+  </ul>
+</nav>
+        </div>
+    </aside>
+
+</div>
+
+</div></div>
+            </div><footer class="footer">
+  <div class="content has-text-centered">
+    <p>
+        <div class="copyright">
+        
+            Handcrafted with <span style="color: #e25555;">&hearts;</span> by kylma
+        
+        </div>
+
+    </p>
+  </div>
+
+  <div id="to-top">
+    <a href="#logo" class="top-btn no-squiggly">^</a>
+  </div>
+
+</footer>
+</div>
+    </body>
+</html>

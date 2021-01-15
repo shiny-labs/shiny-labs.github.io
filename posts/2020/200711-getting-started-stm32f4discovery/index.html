@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en-us"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="generator" content="Hugo 0.80.0" />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://shiny-labs.re/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://shiny-labs.re/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://shiny-labs.re/favicon-16x16.png">
+    <link rel="manifest" href="https://shiny-labs.re/site.webmanifest">
+    <link rel="mask-icon" href="https://shiny-labs.re/safari-pinned-tab.svg" color="#000000">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
+
+
+    <link rel="stylesheet" href="https://shiny-labs.re/css/bulma.min.css">
+    <link rel="stylesheet" href="https://shiny-labs.re/css/main.css">
+    <link rel="stylesheet" href="https://shiny-labs.re/css/syntax.css">
+
+    
+    <title>shiny-labs || Getting Started With The STM32F4Discovery</title>
+</head>
+<body><nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item no-squiggly" href="https://shiny-labs.re/">
+            <h1 id="logo" class="glitch">shiny-labs</h1>
+        </a>
+    </div>
+
+    <div class="navbar-menu">
+        <div class="navbar-start">
+            
+        </div>
+
+        <div class="navbar-end">
+            
+            <h3 id="subtitle">Exploit, reverse engineering and cats.</h3>
+        </div>
+    </div>
+</nav>
+
+<div id="content">
+
+            <div class="columns is-centered">
+                <div class="column is-three-fifths" id="menu-column"><div id="menu" class="tabs is-centered is-medium">
+    <ul>
+            <li><a href="https://shiny-labs.re/" class="no-squiggly">Home</a></li>
+            <li><a href="https://shiny-labs.re/archives/" class="no-squiggly">Archives</a></li>
+            <li><a href="https://shiny-labs.re/tags/" class="no-squiggly">Tags</a></li>
+            <li><a href="https://shiny-labs.re/about/" class="no-squiggly">About</a></li>
+  </ul>
+</div>
+
+<div class="columns">
+<div class="column is-10" id="main-column">
+    <article class="article">
+        <div >
+            <h1 class="article-title">Getting Started With The STM32F4Discovery</h1>
+            
+<div class="post-meta">
+  <p class="article-meta">
+  <span>Date</span> &#x5b;
+  <time datetime="July 11, 2020">
+      Jul 11
+    </time>
+  &#x5d;
+        
+        
+  <span>Categories</span> &#x5b;
+    <a href="https://shiny-labs.re/categories/embedded">embedded</a>
+  &#x5d;
+        
+        
+  <span>Series</span> &#x5b;
+    <a href="https://shiny-labs.re/series"></a>
+  &#x5d;
+        
+        
+  <span>Tags</span> &#x5b;
+    <a href="https://shiny-labs.re/tags/stm32">STM32</a>
+  &#x5d;
+  </p>
+</div>
+
+        </div>
+        <div>
+            <p>These are my notes on how to setup a development environment for this board, mostly based on these resources:</p>
+<ul>
+<li><a href="https://blog.podkalicki.com/how-to-compile-and-burn-the-code-to-stm32-chip-on-linux-ubuntu/">How to compile and burn the code to STM32 chip on Linux</a></li>
+<li><a href="https://leanpub.com/mastering-stm32">Mastering STM32 by Carmine Noviello</a></li>
+<li><a href="https://www.youtube.com/watch?v=6RqUkFIeN6w">How to build a “Blink LED” project from STM32CubeMX for ST/Atollic TrueSTUDIO® for STM32™</a></li>
+</ul>
+<p>We&rsquo;ll talk about how to setup the environment and write the Hello World! of the embedded world: a program that blinks a LED (or several).</p>
+<h1 id="the-hardware">The Hardware</h1>
+<p>The <a href="https://www.st.com/en/evaluation-tools/stm32f4discovery.html">STM32F4Discovery</a> is an inexpensive development board I got a while ago&hellip; 3 years or something like that? It&rsquo;s been collecting dust forever!</p>
+<p>The board has the following stuff:</p>
+<ul>
+<li>STM32F407VGT6 ARM Cortex-M4 microcontroller, 1 Mbyte of Flash memory and 192 Kbyte RAM</li>
+<li>a 3-axis ST-MEMS digital accelerometer</li>
+<li>4 user LEDs</li>
+<li>two push buttons: reset and a user defined</li>
+<li>a digital microphone and an audio DAC</li>
+<li>a ST-LINK/V2 embedded debugger</li>
+</ul>
+<p><img src="stm32f4-discovery-annotated.jpeg" alt="Picture of the STM32f4-discovery board with some annotations"></p>
+<p>The part number for this board is STM32F407G-DISCOVERY but it was retired in favor of the STM32F407G-DISC1. The main difference is that the newer  STM32F407G-DISC1 has a ST-LINK/V2-A.</p>
+<p>The best part about this board is that it&rsquo;s actually composed of 2 parts:</p>
+<ul>
+<li>the dev board with the STM32</li>
+<li>a ST-LINK/V2 debugger/programmer</li>
+</ul>
+<p>This design choice was made more obvious with the next series of board, for example on the Nucleo, you can snap the board in two to separate them.</p>
+<p><img src="nucleo-front.png" alt="Front of the stm32nucleo board"></p>
+<p>These documents might be handy at some point, let&rsquo;s keep them nearby:</p>
+<ul>
+<li><a href="https://www.st.com/content/ccc/resource/technical/document/user_manual/70/fe/4a/3f/e7/e1/4f/7d/DM00039084.pdf/files/DM00039084.pdf/jcr:content/translations/en.DM00039084.pdf">UM1472 User manual - Discovery kit with STM32F407VG MCU</a></li>
+<li><a href="https://www.st.com/resource/en/reference_manual/dm00031020-stm32f405415-stm32f407417-stm32f427437-and-stm32f429439-advanced-armbased-32bit-mcus-stmicroelectronics.pdf">RM0090 Reference Manual - STM32F407 advanced Arm®-based 32-bit MCUs</a></li>
+<li><a href="https://www.st.com/resource/en/datasheet/stm32f405rg.pdf">Datasheet - STM32F407xx</a></li>
+</ul>
+<h1 id="the-software-side">The Software Side</h1>
+<p>When you get started on embedded programming, it&rsquo;s super easy to get lost in all the available options for software, toolchains, libraries, IDEs and more&hellip; And that&rsquo;s exactly what I did!</p>
+<p>~~ A couple of hours later, because I just had to compare all the things in the world  ~~</p>
+<p>In the end, it boils down to:</p>
+<ul>
+<li>a library (no one wants to recode LED_toggle again and again)</li>
+<li>a compiler that can do ARM binaries</li>
+<li>something to build your project</li>
+<li>something to flash your compiled binary on the board</li>
+</ul>
+<p>Now, you can have all of those included in one big thing like an IDE, these are the main ones:</p>
+<ul>
+<li>TrueStudio by ST</li>
+<li>OpenSTM32</li>
+<li>MDK ARM by Keil</li>
+</ul>
+<p>Or you can pick and choose each component individually. I&rsquo;m not a huge fan of IDEs, as they hide too much of the magic happening behind the scenes.</p>
+<p>Since I&rsquo;m doing this to learn, we are going for a barebones installation, with components that I understand:</p>
+<ul>
+<li>STM32CubeMX to generate the project (startup code, linker script, Makefile, main function and libraries installation)</li>
+<li>A library: I&rsquo;m going with the STM32Cube library which comes with STM32CubeMX. A popular alternative is <code>libopencm3</code> which is open source and works on a bunch of Cortex.</li>
+<li>a cross compiling toolchain: ie a GCC that can do ARM binaries</li>
+<li>stlink to program the board. Alternatives to stlink: openocd or STM32CubeProg</li>
+<li>a good old Makefile to build a project</li>
+</ul>
+<p>On Archlinux, you can install gcc-arm-none-eabi and stlink from the community repository:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">sudo pacman -S arm-none-eabi-gcc stlink
+</code></pre></div><p>And STM32CubeMX is available in AUR:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">yay -S stm32cubemx
+</code></pre></div><h1 id="bootstrapping-the-project">Bootstrapping The Project</h1>
+<p>STM32CubeMX is a GUI tool used to bootstrap our tinyblink project, it will do all the boring stuff for us:</p>
+<ul>
+<li>Generate  a new project for a variety of toolchains, here we will go with a traditional Makefile</li>
+<li>Generate a configuration for the STM32 microcontroller (What communications interface do you want to enable? What role should have this pin?)</li>
+<li>Download libraries</li>
+<li>Generate the C code for hardware initialization and the main function</li>
+</ul>
+<p>See <a href="https://www.st.com/resource/en/data_brief/stm32cubemx.pdf">UM1718 User manual - STM32CubeMX for STM32 configuration and initialization C code generation</a> for the full details.</p>
+<p>Okay, now run STM32CubeMX and click <code>access to the board selector</code>:</p>
+<p><img src="stm32cubemx_board_selector.png" alt="STM32CubeMX Access to board selector"></p>
+<p>Part number is STM32F4DISCOVERY, so let&rsquo;s search for that:</p>
+<p><img src="stm32cubemx_board_selector_2.png" alt="STM32CubeMX board selector, results for STM32F search"></p>
+<p>Then hit &ldquo;start project&rdquo; in the top-right corner.</p>
+<p>In the next pop-up, answer <code>No</code>, we&rsquo;ll only blink a LED, we just need access to the GPIOs, no need to add I2C/SPI/USB OTG to the project :p</p>
+<p><img src="stm32cubemx_board_selector_3.png" alt="STM32CubeMX popup asking to initialize all peripherals with their default Mode"></p>
+<p>You should land on the Pinout view. By defaults, all GPIOs will still be configured, clear all pinouts with <code>Ctrl-P</code>. In the pinout view, click on each pin (for example PD12) and select GPIO Output. You can leave the default settings and just add a User Label for each PIN:</p>
+<table>
+<thead>
+<tr>
+<th>PIN</th>
+<th>User Label</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PD12</td>
+<td>LD4 [Green Led]</td>
+</tr>
+<tr>
+<td>PD13</td>
+<td>LD3 [Orange Led]</td>
+</tr>
+<tr>
+<td>PD14</td>
+<td>LD5 [Red Led]</td>
+</tr>
+<tr>
+<td>PD15</td>
+<td>LD6 [Blue Led]</td>
+</tr>
+</tbody>
+</table>
+<p><img src="stm32cubemx_gpio_config.png" alt="STM32CubeMx pinout view with the custom configuration for PD12, PD13, PD14 and PD15"></p>
+<p>In the Project Manager tab:</p>
+<ul>
+<li>change the toolchain to <code>Makefile</code></li>
+<li>fill in the Project Name and the Project Location</li>
+</ul>
+<p><img src="stm32cubemx_project_manager.png" alt="STM32CubeMX, Project Manager tab"></p>
+<p>When you&rsquo;re done, click <code>generate code</code> in the top right hand corner.</p>
+<p>If you don&rsquo;t have it already, the firmware package (here STM32Cube_FW_F4_V1.25.0) will be downloaded.</p>
+<p><img src="stm32cubemx_generated_code.png" alt="STM32CubeMX popup saying the code was successfully generated"></p>
+<h1 id="coding-the-code">Coding the Code</h1>
+<p>Let&rsquo;s have a look at the generated Code then ~~</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ tree -L 2 tinyblink
+├── Drivers
+│   ├── CMSIS
+│   └── STM32F4xx_HAL_Driver
+├── Inc // this is where the includes live
+│   ├── main.h
+│   ├── stm32f4xx_hal_conf.h
+│   └── stm32f4xx_it.h
+├── Makefile
+├── Src // source code goes here
+│   ├── main.c
+│   ├── stm32f4xx_hal_msp.c // MSP=MCU support package, peripheral system-level initialization (clock, GPIO, DMA, interrupts)
+│   ├── stm32f4xx_it.c // interrupt service routines
+│   └── system_stm32f4xx.c
+├── startup_stm32f407xx.s // vector table directly coded in assembly
+├── STM32F407VGTx_FLASH.ld // linker script defines heap/stack size and location
+└── tinyblink.ioc
+
+5 directories, 11 files
+</code></pre></div><p>The whole project is available on <a href="https://github.com/shiny-labs/STM32F407VGT6">https://github.com/shiny-labs/STM32F407VGT6</a> to check the code from there.</p>
+<p>Open <code>Src/main.c</code> and navigate to the <code>main()</code> function: (I removed some of the USER CODE comments for clarity)</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="cm">/**
+</span><span class="cm">  * @brief  The application entry point.
+</span><span class="cm">  * @retval int
+</span><span class="cm">  */</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+
+  <span class="cm">/* MCU Configuration--------------------------------------------------------*/</span>
+  <span class="cm">/* Reset of all peripherals, Initializes the Flash interface and the Systick. */</span>
+  <span class="n">HAL_Init</span><span class="p">();</span>
+  <span class="cm">/* Configure the system clock */</span>
+  <span class="n">SystemClock_Config</span><span class="p">();</span>
+  <span class="cm">/* Initialize all configured peripherals */</span>
+  <span class="n">MX_GPIO_Init</span><span class="p">();</span>
+
+  <span class="cm">/* Infinite loop */</span>
+  <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="cm">/* USER CODE END WHILE */</span>
+
+    <span class="cm">/* USER CODE BEGIN 3 */</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div><p>Our GPIOs are initialized in the <code>MX_GPIO_Init</code> function:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c">  <span class="cm">/*Configure GPIO pins : LD4_Pin LD3_Pin LD5_Pin LD6_Pin 
+</span><span class="cm">                           Audio_RST_Pin */</span>
+  <span class="n">GPIO_InitStruct</span><span class="p">.</span><span class="n">Pin</span> <span class="o">=</span> <span class="n">LD4_Pin</span><span class="o">|</span><span class="n">LD3_Pin</span><span class="o">|</span><span class="n">LD5_Pin</span><span class="o">|</span><span class="n">LD6_Pin</span> 
+                          <span class="o">|</span><span class="n">Audio_RST_Pin</span><span class="p">;</span>
+  <span class="n">GPIO_InitStruct</span><span class="p">.</span><span class="n">Mode</span> <span class="o">=</span> <span class="n">GPIO_MODE_OUTPUT_PP</span><span class="p">;</span>
+  <span class="n">GPIO_InitStruct</span><span class="p">.</span><span class="n">Pull</span> <span class="o">=</span> <span class="n">GPIO_NOPULL</span><span class="p">;</span>
+  <span class="n">GPIO_InitStruct</span><span class="p">.</span><span class="n">Speed</span> <span class="o">=</span> <span class="n">GPIO_SPEED_FREQ_LOW</span><span class="p">;</span>
+  <span class="n">HAL_GPIO_Init</span><span class="p">(</span><span class="n">GPIOD</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">GPIO_InitStruct</span><span class="p">);</span>
+</code></pre></div><p>Now, locate the <code>while</code> loop in the <code>main()</code> function. This is where we will add code!</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c">  <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="cm">/* USER CODE END WHILE */</span>
+
+    <span class="cm">/* USER CODE BEGIN 3 */</span>
+  <span class="p">}</span>
+</code></pre></div><p>Next, we will invoke the function <code>HAL_GPIO_TogglePin</code> from the HAL library, defined in <code>Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.c</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="cm">/**
+</span><span class="cm">  * @brief  Toggles the specified GPIO pins.
+</span><span class="cm">  * @param  GPIOx Where x can be (A..K) to select the GPIO peripheral for STM32F429X device or
+</span><span class="cm">  *                      x can be (A..I) to select the GPIO peripheral for STM32F40XX and STM32F427X devices.
+</span><span class="cm">  * @param  GPIO_Pin Specifies the pins to be toggled.
+</span><span class="cm">  * @retval None
+</span><span class="cm">  */</span>
+<span class="kt">void</span> <span class="nf">HAL_GPIO_TogglePin</span><span class="p">(</span><span class="n">GPIO_TypeDef</span><span class="o">*</span> <span class="n">GPIOx</span><span class="p">,</span> <span class="n">uint16_t</span> <span class="n">GPIO_Pin</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="cm">/* Check the parameters */</span>
+  <span class="n">assert_param</span><span class="p">(</span><span class="n">IS_GPIO_PIN</span><span class="p">(</span><span class="n">GPIO_Pin</span><span class="p">));</span>
+
+  <span class="k">if</span> <span class="p">((</span><span class="n">GPIOx</span><span class="o">-&gt;</span><span class="n">ODR</span> <span class="o">&amp;</span> <span class="n">GPIO_Pin</span><span class="p">)</span> <span class="o">==</span> <span class="n">GPIO_Pin</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="n">GPIOx</span><span class="o">-&gt;</span><span class="n">BSRR</span> <span class="o">=</span> <span class="p">(</span><span class="n">uint32_t</span><span class="p">)</span><span class="n">GPIO_Pin</span> <span class="o">&lt;&lt;</span> <span class="n">GPIO_NUMBER</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">else</span>
+  <span class="p">{</span>
+    <span class="n">GPIOx</span><span class="o">-&gt;</span><span class="n">BSRR</span> <span class="o">=</span> <span class="n">GPIO_Pin</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div><p>And we can use the constants auto-generated in <code>Inc/main.h</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="cm">/* Private defines -----------------------------------------------------------*/</span>
+<span class="cp">#define LD4_Pin GPIO_PIN_12
+</span><span class="cp">#define LD4_GPIO_Port GPIOD
+</span><span class="cp">#define LD3_Pin GPIO_PIN_13
+</span><span class="cp">#define LD3_GPIO_Port GPIOD
+</span><span class="cp">#define LD5_Pin GPIO_PIN_14
+</span><span class="cp">#define LD5_GPIO_Port GPIOD
+</span><span class="cp">#define LD6_Pin GPIO_PIN_15
+</span><span class="cp">#define LD6_GPIO_Port GPIOD
+</span></code></pre></div><p>Remember when I said we were going to blink one LED? I lied. We&rsquo;re blinking the 4 LEDs available on the board. So our while loop from earlier looks like:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c">  <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="cm">/* USER CODE END WHILE */</span>
+    <span class="n">HAL_GPIO_TogglePin</span><span class="p">(</span><span class="n">LD4_GPIO_Port</span><span class="p">,</span> <span class="n">LD4_Pin</span><span class="p">);</span>
+    <span class="n">HAL_GPIO_TogglePin</span><span class="p">(</span><span class="n">LD3_GPIO_Port</span><span class="p">,</span> <span class="n">LD3_Pin</span><span class="p">);</span>
+    <span class="n">HAL_GPIO_TogglePin</span><span class="p">(</span><span class="n">LD5_GPIO_Port</span><span class="p">,</span> <span class="n">LD5_Pin</span><span class="p">);</span>
+    <span class="n">HAL_GPIO_TogglePin</span><span class="p">(</span><span class="n">LD6_GPIO_Port</span><span class="p">,</span> <span class="n">LD6_Pin</span><span class="p">);</span>
+    <span class="n">HAL_Delay</span><span class="p">(</span><span class="mi">200</span><span class="p">);</span>
+    <span class="cm">/* USER CODE BEGIN 3 */</span>
+  <span class="p">}</span>
+</code></pre></div><h1 id="building">Building</h1>
+<p>Build the project with:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ make
+Makefile:119: *** missing separator.  Stop.
+</code></pre></div><p>Oopsie, something&rsquo;s gone wrong with the magically generated Makefile!</p>
+<div class="highlight"><pre class="chroma"><code class="language-makefile" data-lang="makefile"><span class="c"># C includes
+</span><span class="c"></span><span class="nv">C_INCLUDES</span> <span class="o">=</span>  <span class="se">\
+</span><span class="se"></span>-IInc <span class="se">\
+</span><span class="se"></span>-IDrivers/STM32F4xx_HAL_Driver/Inc <span class="se">\
+</span><span class="se"></span>-IDrivers/STM32F4xx_HAL_Driver/Inc/Legacy <span class="se">\
+</span><span class="se"></span>-IDrivers/CMSIS/Device/ST/STM32F4xx/Include <span class="se">\
+</span><span class="se"></span><span class="err">-IDrivers/CMSIS/Include</span>
+<span class="err">-IDrivers/CMSIS/Include</span>
+</code></pre></div><p>Remove the offending duplicated line and try again!</p>
+<p>A new directory appears!</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ tree build 
+build
+├── main.d
+├── main.lst
+├── main.o
+<span class="o">[</span>...<span class="o">]</span> // a bunch of .d, .lst and .o
+├── tinyblink.bin
+├── tinyblink.elf
+├── tinyblink.hex
+└── tinyblink.map
+
+</code></pre></div><p>The .elf is an ARM binary:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ file build/tinyblink.elf 
+build/tinyblink.elf: ELF 32-bit LSB executable, ARM, EABI5 version 1 (SYSV), statically linked, with debug_info, not stripped
+
+</code></pre></div><p>And the .bin is the whole firmware that we will flash:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ file build/tinyblink.bin 
+build/tinyblink.bin: data
+</code></pre></div><h1 id="flashing">Flashing</h1>
+<p>To transfer our new firmware into the microcontroller, let&rsquo;s use the ST-LINK/V2 programmer embedded in the board along with the stlink software.</p>
+<p>You should have this when plugging in the mini USB cable:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ lsusb
+[...]
+Bus 002 Device 019: ID 0483:3748 STMicroelectronics ST-LINK/V2
+</code></pre></div><p>Check that the <code>st-info</code> command finds your programmer correctly:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback"> $ sudo st-info --probe
+ Found 1 stlink programmers
+ serial:     303030303030303030303031
+ hla-serial: &#34;\x30\x30\x30\x30\x30\x30\x30\x30\x30\x30\x30\x31&#34;
+ flash:      1048576 (pagesize: 16384)
+ sram:       196608
+ chipid:     0x0413
+ descr:      F4xx
+</code></pre></div><p>Bonus: the COM LED should blink in red/green.</p>
+<p>Flash a program:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ st-flash write build/tinyblink.bin 0x8000000
+st-flash 1.6.1
+2020-07-05T09:16:34 INFO common.c: F4xx: 192 KiB SRAM, 1024 KiB flash in at least 16 KiB pages.
+file build/tinyblink.bin md5 checksum: 4a434ae6f8dbbed7bc6172c11acedbd, stlink checksum: 0x000604bc
+2020-07-05T09:16:34 INFO common.c: Attempting to write 4276 (0x10b4) bytes to stm32 address: 134217728 (0x8000000)
+EraseFlash - Sector:0x0 Size:0x4000 2020-07-05T09:16:34 INFO common.c: Flash page at addr: 0x08000000 erased
+2020-07-05T09:16:34 INFO common.c: Finished erasing 1 pages of 16384 (0x4000) bytes
+2020-07-05T09:16:34 INFO common.c: Starting Flash write for F2/F4/L4
+2020-07-05T09:16:34 INFO flash_loader.c: Successfully loaded flash loader in sram
+enabling 32-bit flash writes
+size: 4276
+2020-07-05T09:16:35 INFO common.c: Starting verification of write complete
+2020-07-05T09:16:35 INFO common.c: Flash written and verified! jolly good!
+</code></pre></div><p>If you have the <code>Flash written and verified! jolly good!</code> , then you are good to go.</p>
+<h1 id="testing">Testing</h1>
+<p>Hit the reset button on your board (the black one)!</p>
+<video controls preload="auto" width="600px" loop class="html-video">
+    <source src="https://shiny-labs.re/posts/2020/200711-getting-started-stm32f4discovery/tinyblink.mp4" type="video/mp4" }}>
+  <p>Your browser doesn't support embedded videos, but don't worry, you can <a href="https://shiny-labs.re/posts/2020/200711-getting-started-stm32f4discovery/tinyblink.mp4">download it</a> and watch it with your favorite video player!</p>
+</video>
+<hr>
+<p>Victory /o/ That&rsquo;s all for today, stay safe gentlepeople.</p>
+<p><img src="cat_magic_trick.gif" alt="cat flabbergasted by a card magic trick"></p>
+
+        </div>
+    </article>
+</div>
+
+
+<div class="column" id="toc-column">    <aside>
+        <div id="toc">
+            What's on this page?
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#the-hardware">The Hardware</a></li>
+    <li><a href="#the-software-side">The Software Side</a></li>
+    <li><a href="#bootstrapping-the-project">Bootstrapping The Project</a></li>
+    <li><a href="#coding-the-code">Coding the Code</a></li>
+    <li><a href="#building">Building</a></li>
+    <li><a href="#flashing">Flashing</a></li>
+    <li><a href="#testing">Testing</a></li>
+  </ul>
+</nav>
+        </div>
+    </aside>
+
+</div>
+
+</div></div>
+            </div><footer class="footer">
+  <div class="content has-text-centered">
+    <p>
+        <div class="copyright">
+        
+            Handcrafted with <span style="color: #e25555;">&hearts;</span> by kylma
+        
+        </div>
+
+    </p>
+  </div>
+
+  <div id="to-top">
+    <a href="#logo" class="top-btn no-squiggly">^</a>
+  </div>
+
+</footer>
+</div>
+    </body>
+</html>

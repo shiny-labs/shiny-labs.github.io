@@ -11,29 +11,29 @@
     <lastBuildDate>Sat, 21 Nov 2020 09:49:04 +0100</lastBuildDate><atom:link href="https://shiny-labs.re/tags/windows/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>TryHackMe - Blue</title>
-      <link>https://shiny-labs.re/posts/201121-tryhackme-blue/</link>
+      <link>https://shiny-labs.re/posts/2020/201121-tryhackme-blue/</link>
       <pubDate>Sat, 21 Nov 2020 09:49:04 +0100</pubDate>
       <author>shiny-labs@kylma.fr (shiny-labs)</author>
-      <guid>https://shiny-labs.re/posts/201121-tryhackme-blue/</guid>
+      <guid>https://shiny-labs.re/posts/2020/201121-tryhackme-blue/</guid>
       <description>Description  Scan and learn what exploit this machine is vulnerable to. Please note that this machine does not respond to ping (ICMP) and may take a few minutes to boot up. This room is not meant to be a boot2root CTF, rather, this is an educational series for complete beginners. Professionals will likely get very little out of this room beyond basic practice as the process here is meant to be beginner-focused.</description>
     </item>
     
     <item>
       <title>HackTheBox - Netmon [no metasploit]</title>
-      <link>https://shiny-labs.re/posts/201111-hackthebox-netmon/</link>
+      <link>https://shiny-labs.re/posts/2020/201111-hackthebox-netmon/</link>
       <pubDate>Wed, 11 Nov 2020 09:27:51 +0100</pubDate>
       <author>shiny-labs@kylma.fr (shiny-labs)</author>
-      <guid>https://shiny-labs.re/posts/201111-hackthebox-netmon/</guid>
+      <guid>https://shiny-labs.re/posts/2020/201111-hackthebox-netmon/</guid>
       <description>Reconnaissance export ip=10.10.10.152 Nmap Starting with a Nmap TCP scan to discover used ports and services behind, with our usual options:
  -sC runs defaults Nmap scripts -sV tries to identify the software versions -oA will output the results in files prefixed by nmap_tcp and using the formats xml, nmap and gnmap -p- will scan all ports and not the 1000 usual ones  sudo nmap -O -sV -sC -oA nmap_tcp -p- $ip Nmap scan report for 10.</description>
     </item>
     
     <item>
       <title>HackTheBox - Grandpa [no Metasploit]</title>
-      <link>https://shiny-labs.re/posts/201109-hackthebox-grandpa/</link>
+      <link>https://shiny-labs.re/posts/2020/201109-hackthebox-grandpa/</link>
       <pubDate>Mon, 09 Nov 2020 08:47:15 +0100</pubDate>
       <author>shiny-labs@kylma.fr (shiny-labs)</author>
-      <guid>https://shiny-labs.re/posts/201109-hackthebox-grandpa/</guid>
+      <guid>https://shiny-labs.re/posts/2020/201109-hackthebox-grandpa/</guid>
       <description>Summary IP: 10.10.10.14
    Port Service Version Notes     80 http Microsoft IIS httpd 6.0 WebDAV    OS: Microsoft(R) Windows(R) Server 2003, Standard Edition 5.2.3790 Service Pack 2 Build 3790 x86
 Flags    user.txt root.txt     bdff5ec67c3cff017f2bedc146a5d869 9359e905a2c35f861f6a57cecf28bb7b    Reconnaissance export ip=10.10.10.14 Starting with a Nmap TCP scan to discover used ports and services behind, with our usual options:</description>
@@ -41,30 +41,30 @@ Flags    user.txt root.txt     bdff5ec67c3cff017f2bedc146a5d869 9359e905a2c35f86
     
     <item>
       <title>HackTheBox - Granny</title>
-      <link>https://shiny-labs.re/posts/201106-hackthebox-granny/</link>
+      <link>https://shiny-labs.re/posts/2020/201106-hackthebox-granny/</link>
       <pubDate>Fri, 06 Nov 2020 22:40:40 +0100</pubDate>
       <author>shiny-labs@kylma.fr (shiny-labs)</author>
-      <guid>https://shiny-labs.re/posts/201106-hackthebox-granny/</guid>
+      <guid>https://shiny-labs.re/posts/2020/201106-hackthebox-granny/</guid>
       <description>Reconnaissance export ip=10.10.10.15 Starting with a Nmap TCP scan to discover used ports and services behind, with our usual options:
  -sC runs defaults Nmap scripts -sV tries to identify the software versions -oA will output the results in files prefixed by nmap_tcp and using the formats xml, nmap and gnmap -p- will scan all ports and not the 1000 usual ones  $ sudo nmap -O -sV -sC -oA nmap_tcp -p- $ip Starting Nmap 7.</description>
     </item>
     
     <item>
       <title>HackTheBox - Optimum</title>
-      <link>https://shiny-labs.re/posts/201029-hackthebox-optimum/</link>
+      <link>https://shiny-labs.re/posts/2020/201029-hackthebox-optimum/</link>
       <pubDate>Thu, 29 Oct 2020 22:39:47 +0100</pubDate>
       <author>shiny-labs@kylma.fr (shiny-labs)</author>
-      <guid>https://shiny-labs.re/posts/201029-hackthebox-optimum/</guid>
+      <guid>https://shiny-labs.re/posts/2020/201029-hackthebox-optimum/</guid>
       <description>Reconnaissance Starting with a Nmap scan to discover used ports and services behind, with our usual options:
  -sC runs defaults Nmap scripts -sV tries to identify the software versions -oA will output the results in files prefixed by nmap_tcp and using the formats xml, nmap and gnmap -p- will scan all ports and not the 1000 usual ones  $ sudo nmap -sC -sV -O -oA nmap_tcp -p- $ip Nmap scan report for 10.</description>
     </item>
     
     <item>
       <title>HackTheBox - jerry [no Metasploit]</title>
-      <link>https://shiny-labs.re/posts/201026-hackthebox-jerry/</link>
+      <link>https://shiny-labs.re/posts/2020/201026-hackthebox-jerry/</link>
       <pubDate>Mon, 26 Oct 2020 21:16:57 +0100</pubDate>
       <author>shiny-labs@kylma.fr (shiny-labs)</author>
-      <guid>https://shiny-labs.re/posts/201026-hackthebox-jerry/</guid>
+      <guid>https://shiny-labs.re/posts/2020/201026-hackthebox-jerry/</guid>
       <description>Reconnaissance Let&amp;rsquo;s start with a usual Nmap scan for services on TCP ports:
 kali@kali:~$ export TARGET=10.10.10.95 kali@kali:~$ nmap -sV -sC -p- -O -oA nmap_tcp $TARGET Results of the TCP scan:
 Nmap scan report for 10.10.10.95 Host is up (0.16s latency). Not shown: 65534 filtered ports PORT STATE SERVICE VERSION 8080/tcp open http Apache Tomcat/Coyote JSP engine 1.1 |_http-favicon: Apache Tomcat |_http-open-proxy: Proxy might be redirecting requests |_http-server-header: Apache-Coyote/1.1 |_http-title: Apache Tomcat/7.</description>
@@ -72,10 +72,10 @@ Nmap scan report for 10.10.10.95 Host is up (0.16s latency). Not shown: 65534 fi
     
     <item>
       <title>HackTheBox - devel [no Metasploit]</title>
-      <link>https://shiny-labs.re/posts/201022-hackthebox-devel/</link>
+      <link>https://shiny-labs.re/posts/2020/201022-hackthebox-devel/</link>
       <pubDate>Thu, 22 Oct 2020 18:47:05 +0200</pubDate>
       <author>shiny-labs@kylma.fr (shiny-labs)</author>
-      <guid>https://shiny-labs.re/posts/201022-hackthebox-devel/</guid>
+      <guid>https://shiny-labs.re/posts/2020/201022-hackthebox-devel/</guid>
       <description>Reconnaissance Reconnaissance is everything in this game ~~ Let&amp;rsquo;s run a Nmap scan and see what&amp;rsquo;s exposed:
 kali@kali:~$ export TARGET=10.10.10.5 kali@kali:~$ sudo nmap -sC -sV -oA nmap_tcp -p- $TARGET Usual set of options:
  -sC runs defaults Nmap scripts -sV tries to identify the software versions -oA will output the results in files prefixed by nmap_tcp and using the formats xml, nmap and gnmap -p- will scan all ports and not the 1000 usual ones  PORT STATE SERVICE VERSION 21/tcp open ftp Microsoft ftpd | ftp-anon: Anonymous FTP login allowed (FTP code 230) | 03-18-17 02:06AM &amp;lt;DIR&amp;gt; aspnet_client | 03-17-17 05:37PM 689 iisstart.</description>
@@ -83,10 +83,10 @@ kali@kali:~$ export TARGET=10.10.10.5 kali@kali:~$ sudo nmap -sC -sV -oA nmap_tc
     
     <item>
       <title>HackTheBox - legacy</title>
-      <link>https://shiny-labs.re/posts/201015-hackthebox-legacy/</link>
+      <link>https://shiny-labs.re/posts/2020/201015-hackthebox-legacy/</link>
       <pubDate>Thu, 15 Oct 2020 09:06:36 +0200</pubDate>
       <author>shiny-labs@kylma.fr (shiny-labs)</author>
-      <guid>https://shiny-labs.re/posts/201015-hackthebox-legacy/</guid>
+      <guid>https://shiny-labs.re/posts/2020/201015-hackthebox-legacy/</guid>
       <description>Recon Let&amp;rsquo;s fire Nmap and see if it can find any fun service running on the host! I use an environment variable to store the IP of the machine so I don&amp;rsquo;t have to type it all the time and I don&amp;rsquo;t fat finger and scan the wrong machine (that definitely didn&amp;rsquo;t happen in real life):
 $ export TARGET=10.10.10.4 $ sudo nmap -T4 -p- -oA nmap_tcp $TARGET Nmap scan report for 10.</description>
     </item>

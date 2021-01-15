@@ -8,7 +8,16 @@
     <language>en-us</language>
     <managingEditor>shiny-labs@kylma.fr (shiny-labs)</managingEditor>
     <webMaster>shiny-labs@kylma.fr (shiny-labs)</webMaster>
-    <lastBuildDate>Sat, 21 Nov 2020 09:49:04 +0100</lastBuildDate><atom:link href="https://shiny-labs.re/series/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 19 Dec 2020 08:22:42 +0100</lastBuildDate><atom:link href="https://shiny-labs.re/series/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>hackthebox-challenges</title>
+      <link>https://shiny-labs.re/series/hackthebox-challenges/</link>
+      <pubDate>Sat, 19 Dec 2020 08:22:42 +0100</pubDate>
+      <author>shiny-labs@kylma.fr (shiny-labs)</author>
+      <guid>https://shiny-labs.re/series/hackthebox-challenges/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>tryhackme</title>
       <link>https://shiny-labs.re/series/tryhackme/</link>

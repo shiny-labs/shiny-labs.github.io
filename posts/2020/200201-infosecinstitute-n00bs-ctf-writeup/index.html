@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en-us"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="generator" content="Hugo 0.80.0" />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://shiny-labs.re/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://shiny-labs.re/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://shiny-labs.re/favicon-16x16.png">
+    <link rel="manifest" href="https://shiny-labs.re/site.webmanifest">
+    <link rel="mask-icon" href="https://shiny-labs.re/safari-pinned-tab.svg" color="#000000">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
+
+
+    <link rel="stylesheet" href="https://shiny-labs.re/css/bulma.min.css">
+    <link rel="stylesheet" href="https://shiny-labs.re/css/main.css">
+    <link rel="stylesheet" href="https://shiny-labs.re/css/syntax.css">
+
+    
+    <title>shiny-labs || Infosec Institute - n00bs CTF Labs Writeup</title>
+</head>
+<body><nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item no-squiggly" href="https://shiny-labs.re/">
+            <h1 id="logo" class="glitch">shiny-labs</h1>
+        </a>
+    </div>
+
+    <div class="navbar-menu">
+        <div class="navbar-start">
+            
+        </div>
+
+        <div class="navbar-end">
+            
+            <h3 id="subtitle">Exploit, reverse engineering and cats.</h3>
+        </div>
+    </div>
+</nav>
+
+<div id="content">
+
+            <div class="columns is-centered">
+                <div class="column is-three-fifths" id="menu-column"><div id="menu" class="tabs is-centered is-medium">
+    <ul>
+            <li><a href="https://shiny-labs.re/" class="no-squiggly">Home</a></li>
+            <li><a href="https://shiny-labs.re/archives/" class="no-squiggly">Archives</a></li>
+            <li><a href="https://shiny-labs.re/tags/" class="no-squiggly">Tags</a></li>
+            <li><a href="https://shiny-labs.re/about/" class="no-squiggly">About</a></li>
+  </ul>
+</div>
+
+<div class="columns">
+<div class="column is-10" id="main-column">
+    <article class="article">
+        <div >
+            <h1 class="article-title">Infosec Institute - n00bs CTF Labs Writeup</h1>
+            
+<div class="post-meta">
+  <p class="article-meta">
+  <span>Date</span> &#x5b;
+  <time datetime="February 1, 2020">
+      Feb 1
+    </time>
+  &#x5d;
+        
+        
+  <span>Categories</span> &#x5b;
+    <a href="https://shiny-labs.re/categories/ctf">CTF</a>
+  &#x5d;
+        
+        
+  <span>Series</span> &#x5b;
+    <a href="https://shiny-labs.re/series"></a>
+  &#x5d;
+        
+        
+  <span>Tags</span> &#x5b;
+    <a href="https://shiny-labs.re/tags"></a>
+  &#x5d;
+  </p>
+</div>
+
+        </div>
+        <div>
+            <div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">       _____  _____ _           _____ ___________   _           _
+      |  _  ||  _  | |         /  __ \_   _|  ___| | |         | |
+ _ __ | |/&#39; || |/&#39; | |__  ___  | /  \/ | | | |_    | |     __ _| |__  ___
+| &#39;_ \|  /| ||  /| | &#39;_ \/ __| | |     | | |  _|   | |    / _` | &#39;_ \/ __|
+| | | \ |_/ /\ |_/ / |_) \__ \ | \__/\ | | | |     | |___| (_| | |_) \__ \
+|_| |_|\___/  \___/|_.__/|___/  \____/ \_/ \_|     \_____/\__,_|_.__/|___/
+
+                                                                         by Infosec Institute
+</code></pre></div><p>I tried the n00bs CTF Labs, it&rsquo;s still online on <a href="http://ctf.infosecinstitute.com/index.php">http://ctf.infosecinstitute.com/index.php</a>.</p>
+<p>Description:</p>
+<blockquote>
+<p>woot! $1200 bounty available.</p>
+<p>The Infosec Instite n00bs CTF Labs is a web application that hosts 15 mini Capture the Flag (CTF) challenges intended for beginners. The levels can be navigated in the navbar. There is no scoring or leaderboard, but to claim the bounty for each level (bounties range from $10 to $150) you&rsquo;ll need to write up the solution and any other helpful instructions or information and post that in a public place (blog, forum, etc.). If you don&rsquo;t have a place to post it&hellip;ask a friend!</p>
+<p>Why? This is a learning tool and we want to promote using it as a learning tool in other places where new students of information security might be reading. After you have written up your explanation, send the link to <a href="mailto:ryan.fahey@infosecinstitute.com">ryan.fahey@infosecinstitute.com</a>.</p>
+<p>We will judge the most helpful posts, choose a winner, and post them on the InfoSec Institute Resources site. You can win up to 3 flags - we will award your highest paying 3 if you capture more. No current or former InfoSec Institute employees may enter</p>
+<p>Happy hacking!</p>
+</blockquote>
+<h2 id="level-01">Level 01</h2>
+<p><img src="level01/level1.png" alt=""></p>
+<p>The hint phrase is talking about source code, let&rsquo;s go check it!</p>
+<p>In Firefox, you can just right click somewhere on the web page and choose <code>View Page Source</code> or use the keyboard shortcut <code>CTRL+U</code>. The beginning of the code looks like this:</p>
+<div class="highlight"><pre class="chroma"><code class="language-html" data-lang="html"><span class="c">&lt;!-- infosec_flagis_welcome --&gt;</span>
+<span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="p">&lt;</span><span class="nt">html</span> <span class="na">lang</span><span class="o">=</span><span class="s">&#34;en&#34;</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">meta</span> <span class="na">charset</span><span class="o">=</span><span class="s">&#34;utf-8&#34;</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">meta</span> <span class="na">name</span><span class="o">=</span><span class="s">&#34;viewport&#34;</span> <span class="na">content</span><span class="o">=</span><span class="s">&#34;width=device-width, initial-scale=1.0&#34;</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">meta</span> <span class="na">name</span><span class="o">=</span><span class="s">&#34;description&#34;</span> <span class="na">content</span><span class="o">=</span><span class="s">&#34;a ctf for newbies&#34;</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">title</span><span class="p">&gt;</span>Infosec Institute n00bs CTF Labs<span class="p">&lt;/</span><span class="nt">title</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">link</span> <span class="na">href</span><span class="o">=</span><span class="s">&#34;css/bootstrap.css&#34;</span> <span class="na">rel</span><span class="o">=</span><span class="s">&#34;stylesheet&#34;</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">link</span> <span class="na">href</span><span class="o">=</span><span class="s">&#34;css/custom.css&#34;</span> <span class="na">rel</span><span class="o">=</span><span class="s">&#34;stylesheet&#34;</span><span class="p">&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+
+<span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;navbar navbar-inverse navbar-fixed-top&#34;</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;navbar-inner&#34;</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;container-fluid&#34;</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">a</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;brand&#34;</span> <span class="na">href</span><span class="o">=</span><span class="s">&#34;index.php&#34;</span><span class="p">&gt;</span>Home Page<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
+      <span class="p">&lt;</span><span class="nt">ul</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;nav nav-pills&#34;</span><span class="p">&gt;</span>
+</code></pre></div><p>And&hellip; there we have it, our first flag! How come it doesn&rsquo;t show up in the webpage along with yoda you might ask? Well, this weird syntax, with text enclosed between <code>&lt;!--</code> and <code>--&gt;</code> is actually how you add comments in your code.</p>
+<p>Flag: <code>infosec_flagis_welcome</code></p>
+<h2 id="level-02">Level 02</h2>
+<p><img src="level02/level2.png" alt=""></p>
+<p>Huh, a broken image? Let&rsquo;s have a closer look at it, most web browsers have a tool for inspecting the content of web pages&hellip; In Firefox, you can right click on the broken image icon and choose <code>Inspect Element</code>. You should be automagically transported to the following code:</p>
+<div class="highlight"><pre class="chroma"><code class="language-html" data-lang="html"><span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;lvlone&#34;</span><span class="p">&gt;</span>
+  	<span class="p">&lt;</span><span class="nt">img</span> <span class="na">src</span><span class="o">=</span><span class="s">&#34;img/leveltwo.jpeg&#34;</span> <span class="p">/&gt;</span> <span class="p">&lt;</span><span class="nt">br</span> <span class="p">/&gt;</span> <span class="p">&lt;</span><span class="nt">br</span> <span class="p">/&gt;</span>
+	<span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>
+  		<span class="p">&lt;</span><span class="nt">button</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;btn btn-large btn-primary&#34;</span> <span class="na">type</span><span class="o">=</span><span class="s">&#34;button&#34;</span><span class="p">&gt;</span>
+      It seems like the image is broken..Can you check the file?
+      <span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+</code></pre></div><p>The source of the image is <code>img/leveltwo.jpeg</code>, which is a relative path. To have the full path, just prepend the URL to it: <a href="http://ctf.infosecinstitute.com/img/leveltwo.jpeg">http://ctf.infosecinstitute.com/img/leveltwo.jpeg</a>.</p>
+<p>If we try to consult that URL, we get an error message:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">The image “http://ctf.infosecinstitute.com/img/leveltwo.jpeg” cannot be displayed because it contains errors.
+</code></pre></div><p>Alrighty, let&rsquo;s download that image and see if we can fix it somehow. <code>wget</code> is a command line tool to retrieve stuff from the internetz.</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ wget http://ctf.infosecinstitute.com/img/leveltwo.jpeg
+</code></pre></div><p>And, another Linux utility, <code>file</code> can help us verity that this file is a real image.</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ file leveltwo.jpeg
+leveltwo.jpeg: ASCII text
+</code></pre></div><p>Oops, someone has been lying on their file type!</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ cat leveltwo.jpeg
+aW5mb3NlY19mbGFnaXNfd2VhcmVqdXN0c3RhcnRpbmc=
+</code></pre></div><p>The content is encoded using base64, which can be decoded with the <code>-d</code> option:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback"> $ cat leveltwo.jpeg | base64 -d
+infosec_flagis_wearejuststarting
+</code></pre></div><p>Flag: <code>infosec_flagis_wearejuststarting</code></p>
+<h2 id="level-03">Level 03</h2>
+<p><img src="level03/level03.png" alt=""></p>
+<p>I think that progress bar is a decoy&hellip; Let&rsquo;s start with that QR code instead huhu. We can use a website to decode it online, like <a href="https://zxing.org/w/decode.jspx">https://zxing.org/w/decode.jspx</a>. The result is a bunch of dashes, dots and spaces. That should ring a bell as being morse code :D</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">.. -. ..-. --- ... . -.-. ..-. .-.. .- --. .. ... -- --- .-. ... .. -. --.
+</code></pre></div><p>Using <a href="https://morsecode.world/international/translator.html">https://morsecode.world/international/translator.html</a> to decode it online:</p>
+<p><img src="level03/flag.png" alt=""></p>
+<p>Flag: <code>infosec_flagis_morsing</code></p>
+<h2 id="level-04">Level 04</h2>
+<p><img src="level04/level04.png" alt=""></p>
+<p>Huh, a popup <code>Stop poking me</code> keeps showing as soon as we hover on the picture on the webpage.</p>
+<p>Let&rsquo;s have a look at the source code then:</p>
+<div class="highlight"><pre class="chroma"><code class="language-html" data-lang="html">  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;hero-unit lvlfour&#34;</span><span class="p">&gt;</span>
+
+    <span class="p">&lt;</span><span class="nt">img</span> <span class="na">src</span><span class="o">=</span><span class="s">&#34;img/thumb.jpg&#34;</span> <span class="na">onmouseover</span><span class="o">=</span><span class="s">&#34;poke()&#34;</span> <span class="p">/&gt;</span> <span class="p">&lt;</span><span class="nt">br</span> <span class="p">/&gt;</span> <span class="p">&lt;</span><span class="nt">br</span> <span class="p">/&gt;</span>
+
+    <span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>
+      HTTP means Hypertext Transfer Protocol
+    <span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+
+  <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</code></pre></div><p>And if we follow the <code>poke()</code> function in <code>custom.js</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-js" data-lang="js"><span class="kd">function</span> <span class="nx">poke</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">alert</span><span class="p">(</span><span class="s2">&#34;Stop poking me!&#34;</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">learn</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">alert</span><span class="p">(</span><span class="s2">&#34;You just got trolled&#34;</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div><p>So yeah, nothing to see here&hellip;</p>
+<p>Let&rsquo;s follow the hint, I mean, it&rsquo;s a cookie monster, and check the HTTP request and its cookies. The web developers tools in browsers usually some kind of network analysis thinggy. In Firefox, open the developers tools and go to the <code>Network</code> tab. Then reload the page so you can examine what&rsquo;s happening.</p>
+<p>Huh, there&rsquo;s a suspicious cookie around there:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">fusrodah: vasbfrp_syntvf_jrybirpbbxvrf
+</code></pre></div><p>And that cookie value has a format very similar to the flags&hellip; Huh. The letters look like they have been shifted in the alphabet, let&rsquo;s try a caesar cipher decoder, like <a href="https://www.xarg.org/tools/caesar-cipher/">https://www.xarg.org/tools/caesar-cipher/</a></p>
+<p><img src="level04/flag.png" alt=""></p>
+<p>Flag: <code>infosec_flagis_welovecookies</code></p>
+<h2 id="level-05">Level 05</h2>
+<p><img src="level05/level05.png" alt=""></p>
+<p>How rude! Since the website is just spawning pop-ups in a infinite loop, let&rsquo;s just retrieve the source code of the page:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ wget http://ctf.infosecinstitute.com/levelfive.php
+</code></pre></div><p>Yup, as I said, just plain rude:</p>
+<div class="highlight"><pre class="chroma"><code class="language-html" data-lang="html"> <span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+    <span class="k">for</span><span class="p">(;;){</span>
+      <span class="nx">alert</span><span class="p">(</span><span class="s1">&#39;Hacker!!!&#39;</span><span class="p">);</span>
+    <span class="p">}</span>
+ <span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+
+ <span class="p">&lt;</span><span class="nt">img</span> <span class="na">src</span><span class="o">=</span><span class="s">&#34;img/aliens.jpg&#34;</span> <span class="p">/&gt;</span> <span class="p">&lt;</span><span class="nt">br</span> <span class="p">/&gt;</span> <span class="p">&lt;</span><span class="nt">br</span> <span class="p">/&gt;</span>
+
+</code></pre></div><p>What about that <code>aliens.jpg</code> though?</p>
+<p><img src="level05/aliens.jpg" alt=""></p>
+<p>Huh. Okay. Let&rsquo;s try&hellip; steghide on it maybe?</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ steghide extract -sf aliens.jpg
+Enter passphrase:  &lt;enter&gt;
+wrote extracted data to <span class="s2">&#34;all.txt&#34;</span>.
+$ cat all.txt
+<span class="m">01101001011011100110011001101111011100110110010101100011010111110110011001101100011000010110011101101001011100110101111101110011011101000110010101100111011000010110110001101001011001010110111001110011</span>
+
+</code></pre></div><p>Flag in binary now huh? Let&rsquo;s convert it back to hooman-readable with a Python shell:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">binascii</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">n</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="s2">&#34;01101001011011100110011001101111011100110110010101100011010111110110011001101100011000010110011101101001011100110101111101110011011101000110010101100111011000010110110001101001011001010110111001110011&#34;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">binascii</span><span class="o">.</span><span class="n">unhexlify</span><span class="p">(</span><span class="s2">&#34;{:x}&#34;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
+<span class="sa">b</span><span class="s1">&#39;infosec_flagis_stegaliens</span>
+</code></pre></div><p>Flag: <code>infosec_flagis_stegaliens</code></p>
+<h2 id="level-06">Level 06</h2>
+<p><img src="level06/level06.png" alt=""></p>
+<p>I don&rsquo;t trust the files anymore :D</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ file sharkfin.pcap
+sharkfin.pcap: pcap capture file, microsecond ts <span class="o">(</span>little-endian<span class="o">)</span> - version 2.4 <span class="o">(</span>Ethernet, capture length 65535<span class="o">)</span>
+</code></pre></div><p><code>pcap</code> files is format for network capture packets and can be opened with Wireshark ~~</p>
+<p>Lots of encrypted data there&hellip; Let&rsquo;s have a look at who&rsquo;s talking to who!</p>
+<p>In the top menu of Wireshark, go to <code>Statistics &gt; Conversations</code>:</p>
+<p><img src="level06/udp.png" alt=""></p>
+<p>There&rsquo;s a total of 26 TCP conversations and 6 UDP conversations. But, there&rsquo;s only one amongst all these that exchanged <em>one</em> packet. Right click on the first line of the UDP and select <code>apply as filter &gt; selected &gt; A-B</code>. The wireshark filter is now set to:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">ip.addr==127.0.0.1 &amp;&amp; udp.port==32769 &amp;&amp; ip.addr==127.0.0.1 &amp;&amp; udp.port==139
+</code></pre></div><p>Now, select that packet and choose <code>follow UDP stream</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">696e666f7365635f666c616769735f736e6966666564
+</code></pre></div><p>Which could be a flag encoded in hexadecimal, let&rsquo;s verify it with the Python shell:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">binascii</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">binascii</span><span class="o">.</span><span class="n">unhexlify</span><span class="p">(</span><span class="s2">&#34;696e666f7365635f666c616769735f736e6966666564&#34;</span><span class="p">)</span>
+<span class="sa">b</span><span class="s1">&#39;infosec_flagis_sniffed&#39;</span>
+</code></pre></div><p>Flag: <code>infosec_flagis_sniffed</code></p>
+<h2 id="level-07">Level 07</h2>
+<p><img src="level07/level07.png" alt=""></p>
+<p>Let&rsquo;s try various URLs:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">http://ctf.infosecinstitute.com/f00.php // Not Found
+</code></pre></div><p>And following the scheme from the previous pages:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">http://ctf.infosecinstitute.com/levelseven.php // Blank page
+</code></pre></div><p>Strangely enough, it returns an empty page, but not a page not found or anything else.</p>
+<p>Hum, let&rsquo;s examine the network request&hellip;</p>
+<p><img src="level07/status_code.png" alt=""></p>
+<p>That&rsquo;s an interesting status code right there&hellip;</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">aW5mb3NlY19mbGFnaXNfeW91Zm91bmRpdA==
+</code></pre></div><p>Another base64 encoded flag!</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ <span class="nb">echo</span> <span class="s2">&#34;aW5mb3NlY19mbGFnaXNfeW91Zm91bmRpdA==&#34;</span> <span class="p">|</span> base64 -d
+infosec_flagis_youfoundit
+</code></pre></div><p>Flag: <code>infosec_flagis_youfoundit</code></p>
+<h2 id="level-08">Level 08</h2>
+<p><img src="level08/level08.png" alt=""></p>
+<p>Huh, an app! Let&rsquo;s have a look at the strings first&hellip;</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ strings app.exe <span class="p">|</span> grep infosec
+infosec_flagis_0x1a
+<span class="c1"># Welcome to infosec institute net app v1.0#</span>
+</code></pre></div><p>Flag:  <code>infosec_flagis_0x1a</code></p>
+<h2 id="level-09">Level 09</h2>
+<p><img src="level09/level09.png" alt=""></p>
+<p><code>Cisco IDS Web Login</code> huh? Let&rsquo;s try to see if we can find some defaults credentials lying around:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">cisco/cisco
+Cisco/Cisco
+admin/admin
+localadmin/secur4u
+root/secur4u
+operator/operator
+</code></pre></div><p>I finally stumbled upon the right ones in <a href="https://cirt.net/passwords?vendor=Cisco">https://cirt.net/passwords?vendor=Cisco</a></p>
+<p><img src="level09/creds.png" alt=""></p>
+<p>Entering the credentials <code>root</code> / <code>attack</code> show a pop-up with the flag:</p>
+<p><img src="level09/flag.png" alt=""></p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ <span class="nb">echo</span> <span class="s2">&#34;ssaptluafed_sigalf_cesofni&#34;</span> <span class="p">|</span> rev
+infosec_flagis_defaultpass
+</code></pre></div><p>Flag: <code>infosec_flagis_defaultpass</code></p>
+<h2 id="level-10">Level 10</h2>
+<p><img src="level10/level10.png" alt=""></p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ file Flag.wav
+Flag.wav: RIFF <span class="o">(</span>little-endian<span class="o">)</span> data, WAVE audio, Microsoft PCM, <span class="m">16</span> bit, mono <span class="m">44100</span> Hz
+</code></pre></div><p>That sounds like a squeeky mice!</p>
+<p>Anyway, let&rsquo;s try to slow it down, open the file in Audacity and modify the playback speed with the slider next to the tiny green play button:</p>
+<p><img src="level10/audacity.png" alt=""></p>
+<p>With a playback speed of 12%, you can hear the words: <code>infosec</code> <code>underscore</code> <code>flagis</code> <code>underscore</code> <code>s</code> <code>o</code> <code>u</code> <code>n</code> <code>d</code>.</p>
+<p>Flag: <code>infosec_flagis_sound</code></p>
+<h2 id="level-11">Level 11</h2>
+<p><img src="level11/level11.png" alt=""></p>
+<p>Okay, let&rsquo;s start by retrieving that PHP image:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ wget http://ctf.infosecinstitute.com/img/php-logo-virus.jpg
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ file php-logo-virus.jpg
+php-logo-virus.jpg: JPEG image data, JFIF standard 1.01, resolution <span class="o">(</span>DPI<span class="o">)</span>, density 96x96, segment length 16, Exif Standard: <span class="o">[</span>TIFF image data, big-endian, <span class="nv">direntries</span><span class="o">=</span>6, <span class="nv">name</span><span class="o">=</span>infosec_flagis_aHR0cDovL3d3dy5yb2xsZXJza2kuY28udWsvaW1hZ2VzYi9wb3dlcnNsaWRlX2xvZ29fbGFyZ2UuZ2lm<span class="o">]</span>, baseline, precision 8, 450x237, components <span class="m">3</span>
+</code></pre></div><p>Look, a flag in the name field of the EXIF metadata:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ <span class="nb">echo</span> <span class="s2">&#34;aHR0cDovL3d3dy5yb2xsZXJza2kuY28udWsvaW1hZ2VzYi9wb3dlcnNsaWRlX2xvZ29fbGFyZ2UuZ2lm&#34;</span> <span class="p">|</span> base64 -d
+http://www.rollerski.co.uk/imagesb/powerslide_logo_large.gif
+</code></pre></div><p>Eh. I&rsquo;m very confused. What is that rollerski.co.uk link&hellip;?</p>
+<p>Flag: <code>infosec_flagis_powerslide</code>???</p>
+<h2 id="level-12">Level 12</h2>
+<p><img src="level12/level12.png" alt=""></p>
+<p>Lol. Don&rsquo;t go dig deeper in the picture people. It&rsquo;s. not. there. I didn&rsquo;t find that one, and after throwing everything at that <code>yoda.png</code> and being none the wiser, I checked the other write-ups for a hint.</p>
+<p>There&rsquo;s actually an additional CSS file in the source code of this page. A <em>CSS</em> file. WHO CHECKS FOR THAT?!</p>
+<div class="highlight"><pre class="chroma"><code class="language-html" data-lang="html">    <span class="p">&lt;</span><span class="nt">link</span> <span class="na">href</span><span class="o">=</span><span class="s">&#34;css/bootstrap.css&#34;</span> <span class="na">rel</span><span class="o">=</span><span class="s">&#34;stylesheet&#34;</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">link</span> <span class="na">href</span><span class="o">=</span><span class="s">&#34;css/custom.css&#34;</span> <span class="na">rel</span><span class="o">=</span><span class="s">&#34;stylesheet&#34;</span><span class="p">&gt;</span>
+   <span class="p">&lt;</span><span class="nt">link</span> <span class="na">href</span><span class="o">=</span><span class="s">&#34;css/design.css&#34;</span> <span class="na">rel</span><span class="o">=</span><span class="s">&#34;stylesheet&#34;</span><span class="p">&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+</code></pre></div><p>Content of <code>design.css</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-css" data-lang="css"><span class="p">.</span><span class="nc">thisloveis</span><span class="p">{</span>
+	<span class="k">color</span><span class="p">:</span> <span class="mh">#696e66</span><span class="mi">6</span><span class="n">f7365635f666c616769735f686579696d6e6f7461636f6c6f72</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div><p>That&rsquo;s kind of a very long color isn&rsquo;t it? Let&rsquo;s decode it with some Python:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ python -c <span class="s1">&#39;import binascii;print(binascii.unhexlify(&#34;696e666f7365635f666c616769735f686579696d6e6f7461636f6c6f72&#34;))&#39;</span>
+b<span class="s1">&#39;infosec_flagis_heyimnotacolor&#39;</span>
+</code></pre></div><p>Flag: <code>infosec_flagis_heyimnotacolor</code></p>
+<h2 id="level-13">Level 13</h2>
+<p><img src="level13/level13.png" alt=""></p>
+<p>Okay, let&rsquo;s try some backup path then:</p>
+<ul>
+<li><a href="http://ctf.infosecinstitute.com/levelthirteen.php.bak">http://ctf.infosecinstitute.com/levelthirteen.php.bak</a></li>
+<li><a href="http://ctf.infosecinstitute.com/levelthirteen.php~">http://ctf.infosecinstitute.com/levelthirteen.php~</a></li>
+<li><a href="http://ctf.infosecinstitute.com/levelthirteen.php.old">http://ctf.infosecinstitute.com/levelthirteen.php.old</a> &raquo; bingo</li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">    &lt;?php
+
+    /* &lt;img src=&#34;img/clippy1.jpg&#34; class=&#34;imahe&#34; /&gt; &lt;br /&gt; &lt;br /&gt;
+
+    &lt;p&gt;Do you want to download this mysterious file?&lt;/p&gt;
+
+    &lt;a href=&#34;misc/imadecoy&#34;&gt;
+      &lt;button class=&#34;btn&#34;&gt;Yes&lt;/button&gt;
+    &lt;/a&gt;
+
+    &lt;a href=&#34;index.php&#34;&gt;
+      &lt;button class=&#34;btn&#34;&gt;No&lt;/button&gt;
+    &lt;/a&gt;
+    */
+
+    ?&gt;
+</code></pre></div><p>Okay, let&rsquo;s retrieve this so called decoy&hellip;</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ wget http://ctf.infosecinstitute.com/misc/imadecoy
+$ file imadecoy
+imadecoy: pcap capture file, microsecond ts <span class="o">(</span>little-endian<span class="o">)</span> - version 2.4 <span class="o">(</span>Linux cooked v1, capture length 65535<span class="o">)</span>
+</code></pre></div><p>Huh, pcap files are back, let&rsquo;s take Wireshark out ~~</p>
+<p>The traffic seems to have lots of HTTP requests, let&rsquo;s have a look at the HTTP objects we can extract: <code>File &gt; Export Objects &gt; HTTP</code>. Hit <code>Save All</code> in the new windows to easily browse them. The flag is in <code>HoneyPY.PNG</code>:</p>
+<p><img src="level13/flag.png" alt=""></p>
+<p>Flag: <code>infosec_flagis_morepackets</code></p>
+<h2 id="level-14">Level 14</h2>
+<p>Clippy is back~~ What mysterious thing does he have for us now?</p>
+<p><img src="level14/level14.png" alt=""></p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ file level14
+level14: ASCII text, with very long lines
+</code></pre></div><p>a phpMyAdmin SQL Dump apparently&hellip; Here are the bits I targeted first:</p>
+<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="c1">--
+</span><span class="c1">-- Dumping data for table `administrator`
+</span><span class="c1">--
+</span><span class="c1"></span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="o">`</span><span class="n">administrator</span><span class="o">`</span> <span class="p">(</span><span class="o">`</span><span class="n">username</span><span class="o">`</span><span class="p">,</span> <span class="o">`</span><span class="n">password</span><span class="o">`</span><span class="p">)</span> <span class="k">VALUES</span>
+<span class="p">(</span><span class="s1">&#39;admin&#39;</span><span class="p">,</span> <span class="s1">&#39;password&#39;</span><span class="p">),</span>
+<span class="p">(</span><span class="s1">&#39;celso&#39;</span><span class="p">,</span> <span class="s1">&#39;celso!@#&#39;</span><span class="p">);</span>
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="c1">--
+</span><span class="c1">-- Dumping data for table `flag?`
+</span><span class="c1">--
+</span><span class="c1"></span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="o">`</span><span class="n">flag</span><span class="o">?`</span> <span class="p">(</span><span class="o">`</span><span class="n">ID</span><span class="o">`</span><span class="p">,</span> <span class="o">`</span><span class="n">user_login</span><span class="o">`</span><span class="p">,</span> <span class="o">`</span><span class="n">user_pass</span><span class="o">`</span><span class="p">,</span> <span class="o">`</span><span class="n">user_nicename</span><span class="o">`</span><span class="p">,</span> <span class="o">`</span><span class="n">user_email</span><span class="o">`</span><span class="p">,</span> <span class="o">`</span><span class="n">user_url</span><span class="o">`</span><span class="p">,</span> <span class="o">`</span><span class="n">user_registered</span><span class="o">`</span><span class="p">,</span> <span class="o">`</span><span class="n">user_activation_key</span><span class="o">`</span><span class="p">,</span> <span class="o">`</span><span class="n">user_status</span><span class="o">`</span><span class="p">,</span> <span class="o">`</span><span class="n">display_name</span><span class="o">`</span><span class="p">)</span> <span class="k">VALUES</span>
+<span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;admin&#39;</span><span class="p">,</span> <span class="s1">&#39;$P$B8p.TUJAbjULMWrNXm8GsH4fb2PWfF.&#39;</span><span class="p">,</span> <span class="s1">&#39;admin&#39;</span><span class="p">,</span> <span class="s1">&#39;christyhaigcreations@gmail.com&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;2012-09-06 20:09:55&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;admin&#39;</span><span class="p">);</span>
+</code></pre></div><p>But&hellip; it went nowhere. Because the flag is actually in the <code>friends</code> table&hellip;</p>
+<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="c1">--
+</span><span class="c1">-- Dumping data for table `friends`
+</span><span class="c1">--
+</span><span class="c1"></span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="o">`</span><span class="n">friends</span><span class="o">`</span> <span class="p">(</span><span class="o">`</span><span class="n">id</span><span class="o">`</span><span class="p">,</span> <span class="o">`</span><span class="n">name</span><span class="o">`</span><span class="p">,</span> <span class="o">`</span><span class="n">address</span><span class="o">`</span><span class="p">,</span> <span class="o">`</span><span class="n">status</span><span class="o">`</span><span class="p">)</span> <span class="k">VALUES</span>
+<span class="p">(</span><span class="mi">102</span><span class="p">,</span> <span class="s1">&#39;Sasha Grey&#39;</span><span class="p">,</span> <span class="s1">&#39;Vatican City&#39;</span><span class="p">,</span> <span class="s1">&#39;Active&#39;</span><span class="p">),</span>
+<span class="p">(</span><span class="mi">101</span><span class="p">,</span> <span class="s1">&#39;Andres Bonifacio&#39;</span><span class="p">,</span> <span class="s1">&#39;Tondo, Manila&#39;</span><span class="p">,</span> <span class="s1">&#39;Active&#39;</span><span class="p">),</span>
+<span class="p">(</span><span class="mi">103</span><span class="p">,</span> <span class="s1">&#39;lol&#39;</span><span class="p">,</span> <span class="s1">&#39;what the???&#39;</span><span class="p">,</span> <span class="s1">&#39;Inactive&#39;</span><span class="p">),</span>
+<span class="p">(</span><span class="mi">104</span><span class="p">,</span> <span class="s1">&#39;\\u0069\\u006e\\u0066\\u006f\\u0073\\u0065\\u0063\\u005f\\u0066\\u006c\\u0061\\u0067\\u0069\\u0073\\u005f\\u0077\\u0068\\u0061\\u0074\\u0073\\u006f\\u0072\\u0063\\u0065\\u0072\\u0079\\u0069\\u0073\\u0074\\u0068\\u0069\\u0073&#39;</span><span class="p">,</span> <span class="s1">&#39;annoying&#39;</span><span class="p">,</span> <span class="s1">&#39;0x0a&#39;</span><span class="p">);</span>
+</code></pre></div><p>Convert it back to ASCII with the <code>printf</code> from bash:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ printf \\u0069\\u006e\\u0066\\u006f\\u0073\\u0065\\u0063\\u005f\\u0066\\u006c\\u0061\\u0067\\u0069\\u0073\\u005f\\u0077\\u0068\\u0061\\u0074\\u0073\\u006f\\u0072\\u0063\\u0065\\u0072\\u0079\\u0069\\u0073\\u0074\\u0068\\u0069\\u0073
+infosec_flagis_whatsorceryisthis
+</code></pre></div><p>Flag: <code>infosec_flagis_whatsorceryisthis</code></p>
+<h2 id="level-15">Level 15</h2>
+<p>ARE YOU READY FOR THE EXCITEMENT OF THE LAST CHALLENGE?</p>
+<p>Well, don&rsquo;t be.</p>
+<p><img src="level15/level15.png" alt=""></p>
+<p>huh, maybe finding the page was part of the challenge? After trying a couple of URLs, I turned to the all-mighty Google. And. Some interesting informations turned up :&lsquo;D</p>
+<blockquote>
+<p>NOTE: This challenge was taken down shortly after the conclusion of the  CTF due to vulnerabilities in the web server. You can read about the  challenge and solution below, but you won’t be able to perform it. This  write-up will be longer than most as a result.</p>
+</blockquote>
+<p>I know, I know, disappointment, you can check another write-up on it though <a href="https://rtheory.net/n00bs%20ctf/level-15/">https://rtheory.net/n00bs%20ctf/level-15/</a>.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>That&rsquo;s it folks~~
+Mixed feelings about this one, the flag format is not specified, there&rsquo;s no interface to validate the flags, no categories for the challenges. Surprise stego is never appreciated. At least with a category tag, you can avoid it.</p>
+<p>I didn&rsquo;t learned anything new, so yeah, it was too easy for me. But at the same time, I feel a beginner would be lost by the cheap tricks to encode the flags or the surprise steganography. It lacks real &ldquo;hacking&rdquo; for me, there was no reverse engineering, exploitation or cryptography challenges.</p>
+<p>If you&rsquo;re truly starting in CTFs, I recommend you check picoCTF as the progression is much more easier and coherent, and they have challenges covering more areas of the usual CTFs.</p>
+
+        </div>
+    </article>
+</div>
+
+
+<div class="column" id="toc-column">    <aside>
+        <div id="toc">
+            What's on this page?
+            <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#level-01">Level 01</a></li>
+        <li><a href="#level-02">Level 02</a></li>
+        <li><a href="#level-03">Level 03</a></li>
+        <li><a href="#level-04">Level 04</a></li>
+        <li><a href="#level-05">Level 05</a></li>
+        <li><a href="#level-06">Level 06</a></li>
+        <li><a href="#level-07">Level 07</a></li>
+        <li><a href="#level-08">Level 08</a></li>
+        <li><a href="#level-09">Level 09</a></li>
+        <li><a href="#level-10">Level 10</a></li>
+        <li><a href="#level-11">Level 11</a></li>
+        <li><a href="#level-12">Level 12</a></li>
+        <li><a href="#level-13">Level 13</a></li>
+        <li><a href="#level-14">Level 14</a></li>
+        <li><a href="#level-15">Level 15</a></li>
+        <li><a href="#conclusion">Conclusion</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+        </div>
+    </aside>
+
+</div>
+
+</div></div>
+            </div><footer class="footer">
+  <div class="content has-text-centered">
+    <p>
+        <div class="copyright">
+        
+            Handcrafted with <span style="color: #e25555;">&hearts;</span> by kylma
+        
+        </div>
+
+    </p>
+  </div>
+
+  <div id="to-top">
+    <a href="#logo" class="top-btn no-squiggly">^</a>
+  </div>
+
+</footer>
+</div>
+    </body>
+</html>

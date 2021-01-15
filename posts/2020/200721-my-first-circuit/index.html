@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en-us"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="generator" content="Hugo 0.80.0" />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://shiny-labs.re/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://shiny-labs.re/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://shiny-labs.re/favicon-16x16.png">
+    <link rel="manifest" href="https://shiny-labs.re/site.webmanifest">
+    <link rel="mask-icon" href="https://shiny-labs.re/safari-pinned-tab.svg" color="#000000">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
+
+
+    <link rel="stylesheet" href="https://shiny-labs.re/css/bulma.min.css">
+    <link rel="stylesheet" href="https://shiny-labs.re/css/main.css">
+    <link rel="stylesheet" href="https://shiny-labs.re/css/syntax.css">
+
+    
+    <title>shiny-labs || My First Circuit</title>
+</head>
+<body><nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item no-squiggly" href="https://shiny-labs.re/">
+            <h1 id="logo" class="glitch">shiny-labs</h1>
+        </a>
+    </div>
+
+    <div class="navbar-menu">
+        <div class="navbar-start">
+            
+        </div>
+
+        <div class="navbar-end">
+            
+            <h3 id="subtitle">Exploit, reverse engineering and cats.</h3>
+        </div>
+    </div>
+</nav>
+
+<div id="content">
+
+            <div class="columns is-centered">
+                <div class="column is-three-fifths" id="menu-column"><div id="menu" class="tabs is-centered is-medium">
+    <ul>
+            <li><a href="https://shiny-labs.re/" class="no-squiggly">Home</a></li>
+            <li><a href="https://shiny-labs.re/archives/" class="no-squiggly">Archives</a></li>
+            <li><a href="https://shiny-labs.re/tags/" class="no-squiggly">Tags</a></li>
+            <li><a href="https://shiny-labs.re/about/" class="no-squiggly">About</a></li>
+  </ul>
+</div>
+
+<div class="columns">
+<div class="column is-10" id="main-column">
+    <article class="article">
+        <div >
+            <h1 class="article-title">My First Circuit</h1>
+            
+<div class="post-meta">
+  <p class="article-meta">
+  <span>Date</span> &#x5b;
+  <time datetime="July 21, 2020">
+      Jul 21
+    </time>
+  &#x5d;
+        
+        
+  <span>Categories</span> &#x5b;
+    <a href="https://shiny-labs.re/categories/electronics">electronics</a>
+  &#x5d;
+        
+        
+  <span>Series</span> &#x5b;
+    <a href="https://shiny-labs.re/series"></a>
+  &#x5d;
+        
+        
+  <span>Tags</span> &#x5b;
+    <a href="https://shiny-labs.re/tags"></a>
+  &#x5d;
+  </p>
+</div>
+
+        </div>
+        <div>
+            <p>Welcome to electronics 101: My First Circuit. I had to write this post because I have brain glitches and sometimes forget how a breadboard works&hellip;</p>
+<p>When you learn to code, the first thing you learn is how to output the string <code>Hello World!</code>. Allow me to introduce the electronics equivalent of the hello world: a circuit which lights up a LED.</p>
+<p>For this circuit, you&rsquo;ll need:</p>
+<ul>
+<li>a breadboard</li>
+<li>a power source</li>
+<li>a LED</li>
+<li>a resistor</li>
+<li>jumper wires</li>
+</ul>
+<p>I recommend getting a &ldquo;electronics starter kit&rdquo;, they should all have these basic components.</p>
+<h1 id="breadboard-101">Breadboard 101</h1>
+<p>The breadboard is the thing full of tiny holes in which we will put all our components to create a circuit without having to solder anything.</p>
+<p><img src="breadboard_anatomy.png" alt="Picture of a breadboard with the main components highlighted (power rail, terminal strips, DIP support)"></p>
+<ul>
+<li>Power rail: composed of two horizontal lines of metal
+<ul>
+<li>the red line for the <code>+</code></li>
+<li>the blue (or black) line for <code>-</code></li>
+<li>note: the top and bottom power rails are <em>not</em> connected, you&rsquo;ll need to connect them with jumper wires if you want the same power source on both sides.</li>
+</ul>
+</li>
+<li>Terminal strips: Pins of a vertical row are connected</li>
+<li>DIP support: used to plug integrated circuit with a DIP package. Legs of the chip are on each side of the ravine and prevent them from being connected.</li>
+</ul>
+<p>If you&rsquo;re interested by the anatomy of a breadboard, check out <a href="https://www.engineersgarage.com/insight/insight-how-breadboard-works/">&ldquo;how breadboard works&rdquo; on Engineers Garage</a>.</p>
+<p>To connect components on the breadboard, we use jumper wires. Jumper wires are named from their end points:</p>
+<ul>
+<li>If the end has a pin and can be plugged into something, it&rsquo;s a male end.</li>
+<li>If the end has a slot and things are plugged into it, it&rsquo;s a female end.</li>
+</ul>
+<p>This gives us 3 types of jumper wires:</p>
+<p><img src="types_of_jumpers.png" alt="Types of jumper wires (male/male, female/female, female/male)"></p>
+<p>To connect 2 points on the breadboard, you&rsquo;ll need a M/M jumper.</p>
+<h1 id="powering-up-the-breadboard">Powering up the breadboard</h1>
+<p>There are many ways to supply power to the breadboard! I&rsquo;ll present two of them that I can actually show, check out <a href="https://www.mschoeffler.de/2017/11/10/seven-ways-to-supply-power-to-a-breadboard/">Seven Ways To Supply Power To Your Breadboard</a> for more ideas.</p>
+<h2 id="with-a-microcontroller">With A Microcontroller</h2>
+<p>If you have a microcontroller, like an Arduino, you can connect the power and ground pins of the Arduino to the breadboard:</p>
+<p><img src="power_breadboard_from_arduino.png" alt="Pins 5V and GND of an Arduino connected to the power rail of a breadboard"></p>
+<p>The Arduino itself can be powered from a USB cable either plugged to a computer or a battery pack.</p>
+<h2 id="with-a-power-supply-module">With A Power Supply Module</h2>
+<p>These tiny modules can be plugged directly in the breadboard! Here&rsquo;s is the &ldquo;MB102 breadboard power supply&rdquo; module:</p>
+<p><img src="power_module_anatomy.png" alt=""></p>
+<p>It can output 3.3V or 5V, and you can choose the value for the top power rail and the bottom power rail. It also has a power on/off switch with a LED indicating the state.</p>
+<p>The power supply board gets its power from a barrel jack power supply. What&rsquo;s going on with the USB port: honestly, I have no idea. Some sources say you can also power it from the USB, but I&rsquo;m not entirely sure what&rsquo;s going on with the USB female socket. If it was an input USB, I would expect a micro USB rather than a USB female. Anyway, I don&rsquo;t have male-male USB cable to test, so I just don&rsquo;t use the USB on that board.</p>
+<p>/!\ Avoid mixing up the <code>+</code> and <code>-</code> of the module with those of the power rail when you plug it in, this will reduce the risk of having reverse polarity in your circuit.</p>
+<p><img src="power_module_on_breadboard.png" alt="Bad and good way to plug the power module on a breadboard"></p>
+<h1 id="building-the-circuit">Building The Circuit</h1>
+<p><img src="led_legs.png" alt="Anode and cathode of a LED"></p>
+<p>A LED has 2 pins:</p>
+<ul>
+<li>a long pin (anode) as the positive part</li>
+<li>a short pin (cathode) as the negative part</li>
+</ul>
+<p>A LED will only light up if current is applied in the right direction: from positive to negative. Putting a LED backwards will not damage it, so if your LED doesn&rsquo;t light up, try flipping it up.</p>
+<p>Your first instinct might be to build something like this:</p>
+<p><img src="circuit_0_no_resistor.png" alt="Circuit without a resistor"></p>
+<p>A LED might be fine with a 3V powered circuit, but the LED will be permanently damaged if the circuit is powered with 9V for example. Kirchoff&rsquo;s voltage law (or KVL) states that in any closed loop of the circuit, the sum of voltages is 0. This means that any current injected in the circuit must be consumed. We need to add an element which will consume the excess current: that&rsquo;s exactly what resistors are for!</p>
+<p>LEDs typically work with 20mA, so a 220 Ohm resistor is fine here. We&rsquo;ll see later how to calculate and pick a resistor for a given LED.</p>
+<p><img src="circuit_1_resistor.png" alt="Circuit with a resistor"></p>
+<p>The circuit works as follows:</p>
+<ul>
+<li>A red wire goes from the Arduino 5V pin to the positive power rail</li>
+<li>An orange wire connects the positive power tail to the positive pin of the LED (the anode)</li>
+<li>The negative pin of the LED (the cathode) is connected to one end of the resistor</li>
+<li>A blue wire connects the other end of the resistor to the negative power rail</li>
+<li>The negative power rail is connected to the GND pin of the Arduino</li>
+</ul>
+<p>And when you actually apply power (the Arduino wasn&rsquo;t powered up before):</p>
+<p><img src="circuit_2_lighted_up.png" alt="Circuit with the LED lighted up"></p>
+<p>Huzzah, the LED lights up! Impressive, I know, I know.</p>
+<h1 id="links">Links</h1>
+<ul>
+<li><a href="https://learn.sparkfun.com/tutorials/how-to-use-a-breadboard/all">How to Use a Breadboard - Sparkfun</a></li>
+<li><a href="https://learn.adafruit.com/all-about-leds">All About LEDs</a></li>
+</ul>
+<hr>
+<p>That&rsquo;s it for tonight gentlefolks, stay awesome.</p>
+<p><img src="cat_lamp.gif" alt=""></p>
+
+        </div>
+    </article>
+</div>
+
+
+<div class="column" id="toc-column">    <aside>
+        <div id="toc">
+            What's on this page?
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#breadboard-101">Breadboard 101</a></li>
+    <li><a href="#powering-up-the-breadboard">Powering up the breadboard</a>
+      <ul>
+        <li><a href="#with-a-microcontroller">With A Microcontroller</a></li>
+        <li><a href="#with-a-power-supply-module">With A Power Supply Module</a></li>
+      </ul>
+    </li>
+    <li><a href="#building-the-circuit">Building The Circuit</a></li>
+    <li><a href="#links">Links</a></li>
+  </ul>
+</nav>
+        </div>
+    </aside>
+
+</div>
+
+</div></div>
+            </div><footer class="footer">
+  <div class="content has-text-centered">
+    <p>
+        <div class="copyright">
+        
+            Handcrafted with <span style="color: #e25555;">&hearts;</span> by kylma
+        
+        </div>
+
+    </p>
+  </div>
+
+  <div id="to-top">
+    <a href="#logo" class="top-btn no-squiggly">^</a>
+  </div>
+
+</footer>
+</div>
+    </body>
+</html>

